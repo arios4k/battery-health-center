@@ -63,6 +63,14 @@ platforms:
     build-on: [amd64]
     build-for: [amd64]
 
+# GApplication owns its app ID on the session bus at startup; strict
+# confinement only allows that for names declared here.
+slots:
+  dbus-app-id:
+    interface: dbus
+    bus: session
+    name: io.github.BatteryHealthCenter
+
 apps:
   battery-health-center:
     command: bin/battery-health-center
@@ -73,6 +81,8 @@ apps:
     plugs:
       - hardware-observe
       - system-observe
+    slots:
+      - dbus-app-id
 
   # Root service that applies charge limits for the app (pkexec can't be
   # used inside a snap) and re-applies saved limits at boot and after sleep.
