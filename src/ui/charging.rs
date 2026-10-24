@@ -263,7 +263,9 @@ impl ChargingPage {
             self.end.set_value(if end < 100 { end as f64 } else { 80.0 });
             let start = b.start_threshold.filter(|s| *s > 0 && *s < end).map(|s| s as f64);
             self.start.set_value(start.unwrap_or(self.end.value() - 5.0));
-            self.persist.set_active(end >= 100 || system::limit_persisted(&b.name));
+            // Default to keeping the limit: a limit that is active but not yet
+            // saved (e.g. after reinstalling) should be saved on the next Apply.
+            self.persist.set_active(true);
             self.sync_sensitivity();
         }
 

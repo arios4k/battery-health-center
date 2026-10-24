@@ -34,12 +34,6 @@ pub fn missing_snap_plugs() -> Vec<&'static str> {
         .collect()
 }
 
-fn helper_config() -> PathBuf {
-    match std::env::var_os("SNAP_COMMON") {
-        Some(dir) => PathBuf::from(dir).join("battery-health-center.conf"),
-        None => PathBuf::from("/etc/battery-health-center.conf"),
-    }
-}
 
 /// Locates bhc-helper: the installed copy (whose path the polkit policy
 /// names), or the one next to this binary when running from the build tree.
@@ -97,12 +91,6 @@ pub async fn run_helper(args: Vec<String>) -> Result<(), String> {
     }
 }
 
-/// Whether the charge limit for this battery is saved to be restored at boot.
-pub fn limit_persisted(battery: &str) -> bool {
-    std::fs::read_to_string(helper_config())
-        .map(|c| c.lines().any(|l| l.split_whitespace().next() == Some(battery)))
-        .unwrap_or(false)
-}
 
 pub struct PowerProfiles {
     proxy: gio::DBusProxy,
