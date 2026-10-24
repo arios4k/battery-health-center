@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE policyconfig PUBLIC "-//freedesktop//DTD PolicyKit Policy Configuration 1.0//EN"
+ "http://www.freedesktop.org/standards/PolicyKit/1/policyconfig.dtd">
+<policyconfig>
+  <vendor>Battery Health Center</vendor>
+  <icon_name>io.github.BatteryHealthCenter</icon_name>
+  <action id="io.github.BatteryHealthCenter.helper">
+    <description>Change battery charging settings</description>
+    <message>Authentication is required to change battery charging settings</message>
+    <defaults>
+      <allow_any>auth_admin</allow_any>
+      <allow_inactive>auth_admin</allow_inactive>
+      <allow_active>auth_admin_keep</allow_active>
+    </defaults>
+    <annotate key="org.freedesktop.policykit.exec.path">/usr/local/libexec/battery-health-center/bhc-helper</annotate>
+  </action>
+</policyconfig>

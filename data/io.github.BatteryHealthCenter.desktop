@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Name=Battery Health Center
+GenericName=Battery Information
+Comment=Battery health, charge limits and energy usage in one place
+Exec=battery-health-center
+Icon=io.github.BatteryHealthCenter
+Terminal=false
+Categories=GTK;GNOME;System;Monitor;
+Keywords=battery;power;health;charge;limit;cycles;energy;
+StartupNotify=true

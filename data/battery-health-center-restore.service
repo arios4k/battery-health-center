@@ -1,0 +1,11 @@
+[Unit]
+Description=Restore battery charge limits (Battery Health Center)
+After=suspend.target hibernate.target hybrid-sleep.target suspend-then-hibernate.target
+ConditionPathExists=/etc/battery-health-center.conf
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/libexec/battery-health-center/bhc-helper restore
+
+[Install]
+WantedBy=multi-user.target suspend.target hibernate.target hybrid-sleep.target suspend-then-hibernate.target

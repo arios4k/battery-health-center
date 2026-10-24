@@ -1,0 +1,23 @@
+[package]
+name = "battery-health-center"
+version = "0.1.0"
+edition = "2021"
+description = "All your laptop battery information in one place, for GNOME"
+license = "GPL-3.0-or-later"
+authors = ["Alexis Rios-Negron"]
+
+[dependencies]
+gtk = { package = "gtk4", version = "0.11", features = ["v4_14"] }
+adw = { package = "libadwaita", version = "0.9", features = ["v1_5"] }
+
+[[bin]]
+name = "battery-health-center"
+path = "src/main.rs"
+
+[[bin]]
+name = "bhc-helper"
+path = "src/bin/bhc-helper.rs"
+
+[profile.release]
+lto = true
+strip = true
