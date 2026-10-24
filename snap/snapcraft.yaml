@@ -1,7 +1,7 @@
 name: battery-health-center
 title: Battery Health Center
 base: core24
-version: '0.1.2'
+version: '0.1.3'
 summary: Battery health, charge limits and app energy usage in one place
 description: |
   Battery Health Center brings everything about your laptop battery together
@@ -63,14 +63,6 @@ platforms:
     build-on: [amd64]
     build-for: [amd64]
 
-# GApplication owns its app ID on the session bus at startup; strict
-# confinement only allows that for names declared here.
-slots:
-  dbus-app-id:
-    interface: dbus
-    bus: session
-    name: io.github.BatteryHealthCenter
-
 apps:
   battery-health-center:
     command: bin/battery-health-center
@@ -81,8 +73,6 @@ apps:
     plugs:
       - hardware-observe
       - system-observe
-    slots:
-      - dbus-app-id
 
   # Root service that applies charge limits for the app (pkexec can't be
   # used inside a snap) and re-applies saved limits at boot and after sleep.

@@ -1,6 +1,6 @@
 //! Battery level history, stored as CSV in ~/.local/share/battery-health-center.
 
-use std::fs::{self, OpenOptions};
+use std::fs::{self, File, OpenOptions};
 use std::io::Write;
 use std::path::PathBuf;
 use std::time::{SystemTime, UNIX_EPOCH};
@@ -29,6 +29,10 @@ impl Sample {
 pub struct History {
     path: PathBuf,
     pub samples: Vec<Sample>,
+    /// Held while this process is the one writing the file. In the snap each
+    /// launch is a separate process (see main.rs), so a window opened while the
+    /// background copy runs must not write too, or every sample is doubled.
+    writer_lock: Option<File>,
 }
 
 pub fn now_unix() -> i64 {
@@ -60,9 +64,28 @@ impl History {
             .filter_map(parse_line)
             .filter(|s| s.ts >= cutoff)
             .collect();
-        let history = History { path, samples };
-        history.rewrite();
+        let mut history = History { path, samples, writer_lock: None };
+        if history.try_become_writer() {
+            history.rewrite();
+        }
         history
+    }
+
+    /// Takes the writer lock if no other process holds it. The OS releases it
+    /// when the holder exits, so a later call can take over.
+    fn try_become_writer(&mut self) -> bool {
+        if self.writer_lock.is_none() {
+            if let Some(dir) = self.path.parent() {
+                let _ = fs::create_dir_all(dir);
+            }
+            let lock_path = self.path.with_extension("lock");
+            if let Ok(file) = OpenOptions::new().create(true).truncate(false).write(true).open(lock_path) {
+                if file.try_lock().is_ok() {
+                    self.writer_lock = Some(file);
+                }
+            }
+        }
+        self.writer_lock.is_some()
     }
 
     /// Rewrites the file with only retained samples (prunes old entries).
@@ -86,8 +109,12 @@ impl History {
             power_w: battery.power_w,
             health: battery.health_percent(),
         };
-        if let Ok(mut f) = OpenOptions::new().create(true).append(true).open(&self.path) {
-            let _ = f.write_all(format_line(&sample).as_bytes());
+        // Another process records to the file; keep the sample in memory only
+        // so this window's charts stay current.
+        if self.try_become_writer() {
+            if let Ok(mut f) = OpenOptions::new().create(true).append(true).open(&self.path) {
+                let _ = f.write_all(format_line(&sample).as_bytes());
+            }
         }
         self.samples.push(sample);
     }

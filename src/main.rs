@@ -21,8 +21,10 @@ fn main() -> glib::ExitCode {
     let args: Vec<String> = args.into_iter().filter(|a| a != "--background").collect();
 
     let mut flags = gio::ApplicationFlags::empty();
-    if std::env::var_os("BHC_SCREENSHOTS").is_some() {
-        // Capture mode runs alongside an already-running copy.
+    // Capture mode runs alongside an already-running copy. Inside the snap,
+    // AppArmor won't let the app own its ID on the session bus without a
+    // dbus slot, which needs a manual store review.
+    if std::env::var_os("BHC_SCREENSHOTS").is_some() || system::in_snap() {
         flags |= gio::ApplicationFlags::NON_UNIQUE;
     }
     let app = adw::Application::builder().application_id(APP_ID).flags(flags).build();
