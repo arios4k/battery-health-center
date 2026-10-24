@@ -1,0 +1,106 @@
+name: battery-health-center
+title: Battery Health Center
+base: core24
+version: '0.1.0'
+summary: Battery health, charge limits and app energy usage in one place
+description: |
+  Battery Health Center brings everything about your laptop battery together
+  in one native GNOME app, much like the Battery settings on macOS.
+
+  **Overview**
+  - Charge level, status and time remaining (until empty, or until your charge limit)
+  - Live power draw in watts
+  - A quick health summary: maximum capacity, condition and cycle count
+  - Recommendations, such as limiting charging when you're always plugged in,
+    or that an app is draining your battery
+
+  **Battery health**
+  - Maximum capacity compared with when the battery was new
+  - Condition: Normal, Worn or Service Recommended
+  - Full-charge and design capacity in Wh, and how much capacity has been lost
+  - Charge cycle count
+  - How capacity has changed over the last 30 days
+  - Voltage, average power draw, manufacturer, model, chemistry and serial number
+
+  **Charge limit**
+  Lithium batteries wear faster when kept at 100%. If your laptop is plugged in
+  most of the time, limiting the charge to about 80% can noticeably extend the
+  battery's lifespan. Set where charging stops and where it resumes, and keep
+  the limit after restarts and sleep.
+
+  **Usage and energy**
+  - Battery level history for the last 24 hours or 7 days
+  - Apps using significant energy right now, and their average impact,
+    with estimated power draw while on battery
+  - Optionally keeps recording history in the background after you log in
+
+  **Permissions**
+  This snap is strictly confined. After installing, connect these interfaces:
+
+      sudo snap connect battery-health-center:hardware-observe
+      sudo snap connect battery-health-center:system-observe
+      sudo snap connect battery-health-center:power-control
+
+  hardware-observe reads battery information, system-observe sees which apps
+  use energy, and power-control changes the charge limit. The app shows which
+  ones are missing.
+
+  **Compatibility**
+  Battery information works on any laptop with a standard Linux battery driver.
+  Charge limits need firmware support exposed by the kernel as
+  charge_start_threshold / charge_stop_threshold, as on ThinkPads and many
+  other laptops.
+
+  Linux doesn't measure power per app, so app energy usage is an estimate
+  based on CPU time.
+grade: stable
+confinement: strict
+license: GPL-3.0-or-later
+icon: data/icons/hicolor/scalable/apps/io.github.BatteryHealthCenter.svg
+
+platforms:
+  amd64:
+    build-on: [amd64]
+    build-for: [amd64]
+
+apps:
+  battery-health-center:
+    command: bin/battery-health-center
+    desktop: usr/share/applications/io.github.BatteryHealthCenter.desktop
+    common-id: io.github.BatteryHealthCenter
+    autostart: io.github.BatteryHealthCenter.desktop
+    extensions: [gnome]
+    plugs:
+      - hardware-observe
+      - system-observe
+
+  # Root service that applies charge limits for the app (pkexec can't be
+  # used inside a snap) and re-applies saved limits at boot and after sleep.
+  helper:
+    command: bin/bhc-helper serve
+    daemon: simple
+    restart-condition: always
+    plugs:
+      - hardware-observe
+      - power-control
+      - network-bind # listening on the app's local socket (auto-connected)
+
+parts:
+  battery-health-center:
+    # Built with an explicit cargo call because the gnome extension's
+    # LD_LIBRARY_PATH (the SDK's own libc) crashes rustup; it's cleared just for
+    # the Rust toolchain. pkg-config still finds GTK in the SDK.
+    plugin: nil
+    source: .
+    build-snaps: [rustup]
+    override-build: |
+      env -u LD_LIBRARY_PATH /snap/bin/rustup toolchain install stable --profile minimal
+      env -u LD_LIBRARY_PATH /snap/bin/rustup default stable
+      env -u LD_LIBRARY_PATH /snap/bin/cargo install --locked --path . --root "$CRAFT_PART_INSTALL"
+      rm -f "$CRAFT_PART_INSTALL/.crates.toml" "$CRAFT_PART_INSTALL/.crates2.json"
+      install -Dm644 data/io.github.BatteryHealthCenter.desktop \
+        "$CRAFT_PART_INSTALL/usr/share/applications/io.github.BatteryHealthCenter.desktop"
+      install -Dm644 data/io.github.BatteryHealthCenter.metainfo.xml \
+        "$CRAFT_PART_INSTALL/usr/share/metainfo/io.github.BatteryHealthCenter.metainfo.xml"
+      install -Dm644 data/icons/hicolor/scalable/apps/io.github.BatteryHealthCenter.svg \
+        "$CRAFT_PART_INSTALL/usr/share/icons/hicolor/scalable/apps/io.github.BatteryHealthCenter.svg"

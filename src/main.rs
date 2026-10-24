@@ -20,7 +20,12 @@ fn main() -> glib::ExitCode {
     let background = args.iter().any(|a| a == "--background");
     let args: Vec<String> = args.into_iter().filter(|a| a != "--background").collect();
 
-    let app = adw::Application::builder().application_id(APP_ID).build();
+    let mut flags = gio::ApplicationFlags::empty();
+    if std::env::var_os("BHC_SCREENSHOTS").is_some() {
+        // Capture mode runs alongside an already-running copy.
+        flags |= gio::ApplicationFlags::NON_UNIQUE;
+    }
+    let app = adw::Application::builder().application_id(APP_ID).flags(flags).build();
     let controller: Rc<RefCell<Option<Rc<controller::Controller>>>> = Rc::default();
     let hold = Rc::new(RefCell::new(None));
     let skip_window = Rc::new(Cell::new(background));
@@ -35,7 +40,15 @@ fn main() -> glib::ExitCode {
         }
         if let Some(display) = gtk::gdk::Display::default() {
             // Lets the app icon show when running from the build tree.
-            gtk::IconTheme::for_display(&display).add_search_path(concat!(env!("CARGO_MANIFEST_DIR"), "/data/icons"));
+            let icons = gtk::IconTheme::for_display(&display);
+            icons.add_search_path(concat!(env!("CARGO_MANIFEST_DIR"), "/data/icons"));
+            // Inside a snap the desktop's icon theme may not exist, and GTK then
+            // only falls back to hicolor, which lacks symbolic icons.
+            if !icons.has_icon("battery-level-80-symbolic") {
+                if let Some(settings) = gtk::Settings::default() {
+                    settings.set_gtk_icon_theme_name(Some("Adwaita"));
+                }
+            }
         }
         let ctrl = controller::Controller::new();
         ctrl.start();

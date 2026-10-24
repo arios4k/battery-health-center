@@ -1,6 +1,8 @@
 //! Privileged helper for Battery Health Center.
 //!
-//! Runs as root through pkexec (see data/io.github.BatteryHealthCenter.policy).
+//! Runs as root, either through pkexec (see
+//! data/io.github.BatteryHealthCenter.policy) or, in the snap, as a service
+//! the app talks to over a Unix socket (pkexec can't be used inside a snap).
 //! It only writes the battery charge-control files in sysfs and its own config
 //! file, and validates every argument. It intentionally depends on std only.
 //!
@@ -8,13 +10,30 @@
 //!   bhc-helper set-thresholds <BATTERY> <START|-> <END> [--persist|--no-persist]
 //!   bhc-helper set-behaviour <BATTERY> <auto|inhibit-charge|force-discharge>
 //!   bhc-helper restore
+//!   bhc-helper serve        (snap service; accepts set-thresholds requests)
 
 use std::fs;
+use std::io::{BufRead, BufReader, Read, Write};
+use std::os::unix::fs::PermissionsExt;
+use std::os::unix::net::UnixListener;
 use std::path::{Path, PathBuf};
 use std::process::ExitCode;
+use std::time::Duration;
 
 const ROOT: &str = "/sys/class/power_supply";
-const CONFIG: &str = "/etc/battery-health-center.conf";
+pub const SOCKET_NAME: &str = "helper.sock";
+
+/// $SNAP_COMMON when running inside the snap.
+fn snap_common() -> Option<PathBuf> {
+    std::env::var_os("SNAP_COMMON").map(PathBuf::from)
+}
+
+fn config_path() -> PathBuf {
+    match snap_common() {
+        Some(dir) => dir.join("battery-health-center.conf"),
+        None => PathBuf::from("/etc/battery-health-center.conf"),
+    }
+}
 
 fn battery_dir(name: &str) -> Result<PathBuf, String> {
     let valid = !name.is_empty()
@@ -36,7 +55,10 @@ fn threshold_file(dir: &Path, which: &str) -> Option<PathBuf> {
         "start" => ("charge_control_start_threshold", "charge_start_threshold"),
         _ => ("charge_control_end_threshold", "charge_stop_threshold"),
     };
-    [modern, legacy].iter().map(|f| dir.join(f)).find(|p| p.exists())
+    // Inside the snap, the power-control interface only allows writing the
+    // legacy names, so prefer those there.
+    let order = if snap_common().is_some() { [legacy, modern] } else { [modern, legacy] };
+    order.iter().map(|f| dir.join(f)).find(|p| p.exists())
 }
 
 fn read_threshold(dir: &Path, which: &str) -> Option<u8> {
@@ -70,6 +92,10 @@ fn apply_thresholds(name: &str, start: Option<u8>, end: u8) -> Result<(), String
     // Firmware usually requires start < end at all times, so the write order
     // depends on whether the window moves up or down.
     let cur_end = read_threshold(&dir, "end").unwrap_or(100);
+    let cur_start = read_threshold(&dir, "start");
+    if cur_end == end && (start.is_none() || start == cur_start) {
+        return Ok(());
+    }
     match (start, &start_file) {
         (Some(s), Some(sf)) if s >= cur_end => {
             write(&end_file, &end.to_string())?;
@@ -86,7 +112,8 @@ fn apply_thresholds(name: &str, start: Option<u8>, end: u8) -> Result<(), String
 
 /// Config lines look like: `BAT0 75 80` (start may be `-`).
 fn update_config(name: &str, entry: Option<String>) -> Result<(), String> {
-    let existing = fs::read_to_string(CONFIG).unwrap_or_default();
+    let config = config_path();
+    let existing = fs::read_to_string(&config).unwrap_or_default();
     let mut lines: Vec<String> = existing
         .lines()
         .filter(|l| l.split_whitespace().next() != Some(name))
@@ -94,7 +121,7 @@ fn update_config(name: &str, entry: Option<String>) -> Result<(), String> {
         .collect();
     lines.extend(entry);
     if lines.is_empty() {
-        let _ = fs::remove_file(CONFIG);
+        let _ = fs::remove_file(&config);
         return Ok(());
     }
     let mut data = String::from("# Managed by Battery Health Center: <battery> <start|-> <end>\n");
@@ -102,11 +129,11 @@ fn update_config(name: &str, entry: Option<String>) -> Result<(), String> {
         data.push_str(l);
         data.push('\n');
     }
-    fs::write(CONFIG, data).map_err(|e| format!("writing {CONFIG}: {e}"))
+    fs::write(&config, data).map_err(|e| format!("writing {}: {e}", config.display()))
 }
 
 fn restore() -> Result<(), String> {
-    let Ok(config) = fs::read_to_string(CONFIG) else {
+    let Ok(config) = fs::read_to_string(config_path()) else {
         return Ok(());
     };
     let mut failed = false;
@@ -161,11 +188,51 @@ fn run(args: &[String]) -> Result<(), String> {
             write(&dir.join("charge_behaviour"), mode)
         }
         ["restore"] => restore(),
+        ["serve"] => serve(),
         _ => Err("usage: bhc-helper set-thresholds <BAT> <START|-> <END> [--persist|--no-persist]\n       \
                   bhc-helper set-behaviour <BAT> <auto|inhibit-charge|force-discharge>\n       \
                   bhc-helper restore"
             .into()),
     }
+}
+
+/// Snap service: restores saved limits, re-applies them if firmware resets
+/// them (e.g. after sleep), and accepts `set-thresholds` requests from the
+/// app over a Unix socket in $SNAP_COMMON. One request per connection; the
+/// reply is `OK` or `ERR <message>`.
+fn serve() -> Result<(), String> {
+    let dir = snap_common().ok_or("serve is only used inside the snap")?;
+    let path = dir.join(SOCKET_NAME);
+    let _ = fs::remove_file(&path);
+    let listener = UnixListener::bind(&path).map_err(|e| format!("binding {}: {e}", path.display()))?;
+    // Any local user may change the charge limit, as with GNOME's own setting.
+    fs::set_permissions(&path, fs::Permissions::from_mode(0o666)).map_err(|e| e.to_string())?;
+
+    std::thread::spawn(|| loop {
+        if let Err(e) = restore() {
+            eprintln!("bhc-helper: {e}");
+        }
+        std::thread::sleep(Duration::from_secs(60));
+    });
+
+    for stream in listener.incoming() {
+        let Ok(mut stream) = stream else { continue };
+        let _ = stream.set_read_timeout(Some(Duration::from_secs(5)));
+        let mut line = String::new();
+        if BufReader::new((&stream).take(512)).read_line(&mut line).is_err() {
+            continue;
+        }
+        let args: Vec<String> = line.split_whitespace().map(String::from).collect();
+        let reply = match args.first().map(String::as_str) {
+            Some("set-thresholds") => match run(&args) {
+                Ok(()) => "OK\n".to_string(),
+                Err(e) => format!("ERR {}\n", e.replace('\n', " ")),
+            },
+            _ => "ERR unsupported request\n".to_string(),
+        };
+        let _ = stream.write_all(reply.as_bytes());
+    }
+    Ok(())
 }
 
 fn main() -> ExitCode {

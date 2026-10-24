@@ -11,7 +11,35 @@ use gtk::glib;
 
 use crate::APP_ID;
 
-pub const HELPER_CONFIG: &str = "/etc/battery-health-center.conf";
+/// Interfaces the snap needs, with what each one is for.
+pub const SNAP_PLUGS: &[(&str, &str)] = &[
+    ("hardware-observe", "read battery information"),
+    ("system-observe", "see which apps use energy"),
+    ("power-control", "change the charge limit"),
+];
+
+pub fn in_snap() -> bool {
+    std::env::var_os("SNAP").is_some()
+}
+
+/// Snap interfaces that are not connected yet (empty outside the snap).
+pub fn missing_snap_plugs() -> Vec<&'static str> {
+    if !in_snap() {
+        return Vec::new();
+    }
+    SNAP_PLUGS
+        .iter()
+        .map(|(plug, _)| *plug)
+        .filter(|plug| !Command::new("snapctl").args(["is-connected", plug]).status().is_ok_and(|s| s.success()))
+        .collect()
+}
+
+fn helper_config() -> PathBuf {
+    match std::env::var_os("SNAP_COMMON") {
+        Some(dir) => PathBuf::from(dir).join("battery-health-center.conf"),
+        None => PathBuf::from("/etc/battery-health-center.conf"),
+    }
+}
 
 /// Locates bhc-helper: the installed copy (whose path the polkit policy
 /// names), or the one next to this binary when running from the build tree.
@@ -27,8 +55,33 @@ pub fn helper_path() -> Option<PathBuf> {
         .find(|p| p.is_file())
 }
 
-/// Runs the helper as root through pkexec without blocking the UI.
+/// Sends a request to the snap's helper service (see bhc-helper `serve`).
+fn request_snap_service(args: &[String]) -> Result<(), String> {
+    use std::io::{BufRead, BufReader, Write};
+    let dir = std::env::var_os("SNAP_COMMON").ok_or("SNAP_COMMON is not set")?;
+    let socket = PathBuf::from(dir).join("helper.sock");
+    let mut stream = std::os::unix::net::UnixStream::connect(&socket)
+        .map_err(|_| "The Battery Health Center service is not running".to_string())?;
+    stream.write_all(format!("{}\n", args.join(" ")).as_bytes()).map_err(|e| e.to_string())?;
+    let mut reply = String::new();
+    BufReader::new(stream).read_line(&mut reply).map_err(|e| e.to_string())?;
+    match reply.trim() {
+        "OK" => Ok(()),
+        r if r.contains("Permission denied") => Err(
+            "Permission denied. Run: snap connect battery-health-center:power-control".to_string(),
+        ),
+        r => Err(r.strip_prefix("ERR ").unwrap_or(r).to_string()),
+    }
+}
+
+/// Runs the helper as root without blocking the UI: through the snap's
+/// service when sandboxed, otherwise through pkexec.
 pub async fn run_helper(args: Vec<String>) -> Result<(), String> {
+    if in_snap() {
+        return gio::spawn_blocking(move || request_snap_service(&args))
+            .await
+            .map_err(|_| "The helper crashed".to_string())?;
+    }
     let helper = helper_path().ok_or("The bhc-helper program was not found. Is the app installed?")?;
     let output = gio::spawn_blocking(move || Command::new("pkexec").arg(helper).args(args).output())
         .await
@@ -46,7 +99,7 @@ pub async fn run_helper(args: Vec<String>) -> Result<(), String> {
 
 /// Whether the charge limit for this battery is saved to be restored at boot.
 pub fn limit_persisted(battery: &str) -> bool {
-    std::fs::read_to_string(HELPER_CONFIG)
+    std::fs::read_to_string(helper_config())
         .map(|c| c.lines().any(|l| l.split_whitespace().next() == Some(battery)))
         .unwrap_or(false)
 }
@@ -58,6 +111,10 @@ pub struct PowerProfiles {
 
 impl PowerProfiles {
     pub fn connect() -> Option<Self> {
+        // No snap interface grants access to power-profiles-daemon.
+        if in_snap() {
+            return None;
+        }
         let candidates = [
             ("org.freedesktop.UPower.PowerProfiles", "/org/freedesktop/UPower/PowerProfiles"),
             ("net.hadess.PowerProfiles", "/net/hadess/PowerProfiles"),
@@ -131,7 +188,9 @@ pub fn set_autostart(enabled: bool) -> std::io::Result<()> {
             _ => Ok(()),
         };
     }
-    let exe = std::env::current_exe()?;
+    // In the snap, snapd starts the app named by the `autostart` key and only
+    // takes the arguments from Exec.
+    let exe = if in_snap() { PathBuf::from("battery-health-center") } else { std::env::current_exe()? };
     if let Some(dir) = path.parent() {
         std::fs::create_dir_all(dir)?;
     }

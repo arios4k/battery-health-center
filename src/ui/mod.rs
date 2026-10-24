@@ -1,6 +1,7 @@
 mod charging;
 mod health;
 mod overview;
+mod screenshots;
 mod usage;
 mod widgets;
 
@@ -23,12 +24,17 @@ pub fn build_window(app: &adw::Application, ctrl: &Rc<Controller>) -> adw::Appli
     stack.add_titled_with_icon(&overview.root, Some("overview"), "Overview", "battery-level-80-symbolic");
     stack.add_titled_with_icon(&health.root, Some("health"), "Health", "security-high-symbolic");
     stack.add_titled_with_icon(&charging.root, Some("charging"), "Charging", "battery-level-80-charging-symbolic");
-    stack.add_titled_with_icon(&usage.root, Some("usage"), "Usage", "utilities-system-monitor-symbolic");
+    stack.add_titled_with_icon(&usage.root, Some("usage"), "Usage", "power-profile-balanced-symbolic");
 
     let no_battery = adw::StatusPage::builder()
         .icon_name("battery-missing-symbolic")
         .title("No Battery Found")
-        .description("Battery Health Center needs a laptop battery to show information.")
+        .description(if crate::system::in_snap() {
+            "Battery Health Center needs a laptop battery to show information. If this laptop has one, \
+             make sure the hardware-observe permission is connected."
+        } else {
+            "Battery Health Center needs a laptop battery to show information."
+        })
         .build();
     let content = gtk::Stack::new();
     content.add_named(&stack, Some("main"));
@@ -53,6 +59,9 @@ pub fn build_window(app: &adw::Application, ctrl: &Rc<Controller>) -> adw::Appli
     let switcher_bar = adw::ViewSwitcherBar::builder().stack(&stack).build();
     let toolbar = adw::ToolbarView::new();
     toolbar.add_top_bar(&header);
+    if let Some(banner) = permissions_banner() {
+        toolbar.add_top_bar(&banner);
+    }
     toolbar.add_bottom_bar(&switcher_bar);
     toolbar.set_content(Some(&toasts));
 
@@ -72,6 +81,11 @@ pub fn build_window(app: &adw::Application, ctrl: &Rc<Controller>) -> adw::Appli
     breakpoint.add_setter(&switcher, "visible", Some(&false.to_value()));
     window.add_breakpoint(breakpoint);
 
+    if let Some(dir) = std::env::var_os("BHC_SCREENSHOTS") {
+        let usage = usage.clone();
+        screenshots::capture(&window, &stack, dir.into(), move || usage.scroll_to_apps());
+    }
+
     let weak_window = window.downgrade();
     ctrl.subscribe(move |st| {
         if weak_window.upgrade().is_none() {
@@ -86,4 +100,29 @@ pub fn build_window(app: &adw::Application, ctrl: &Rc<Controller>) -> adw::Appli
     });
 
     window
+}
+
+/// In the snap, explains how to connect any interfaces that aren't connected.
+fn permissions_banner() -> Option<adw::Banner> {
+    let missing = crate::system::missing_snap_plugs();
+    if missing.is_empty() {
+        return None;
+    }
+    let banner = adw::Banner::builder()
+        .title("Some features need permissions that aren't connected yet")
+        .button_label("How to Fix")
+        .revealed(true)
+        .build();
+    banner.connect_button_clicked(move |banner| {
+        let mut body = String::from("Run these commands in a terminal, then restart Battery Health Center:\n\n");
+        for plug in &missing {
+            let purpose = crate::system::SNAP_PLUGS.iter().find(|(p, _)| p == plug).map(|(_, d)| *d).unwrap_or("");
+            body.push_str(&format!("sudo snap connect battery-health-center:{plug}\n    (to {purpose})\n"));
+        }
+        let dialog = adw::AlertDialog::builder().heading("Connect Permissions").body(body.trim_end()).build();
+        dialog.set_body_use_markup(false);
+        dialog.add_response("close", "Close");
+        dialog.present(Some(banner));
+    });
+    Some(banner)
 }

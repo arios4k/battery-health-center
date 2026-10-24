@@ -162,7 +162,7 @@ impl OverviewPage {
         if b.is_on_battery() {
             if let Some(app) = st.apps_now.iter().find(|a| !a.system && a.impact >= 40.0) {
                 recs.push(Recommendation {
-                    icon: "utilities-system-monitor-symbolic",
+                    icon: "power-profile-balanced-symbolic",
                     title: format!("{} is using significant energy", app.name),
                     subtitle: "Quitting apps you are not using makes your battery last longer.".into(),
                     action: Some(("Details", Action::OpenUsage)),

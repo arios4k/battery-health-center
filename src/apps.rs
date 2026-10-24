@@ -80,9 +80,10 @@ fn app_id_candidates(unit: &str) -> Vec<String> {
     let base = base.split('@').next().unwrap_or(base);
 
     if let Some(rest) = base.strip_prefix("snap.") {
-        let mut it = rest.split('.');
+        // snap.<snap>.<app>-<uuid>.scope; both names may contain dashes.
+        let mut it = rest.splitn(2, '.');
         let snap = it.next().unwrap_or_default();
-        let app = it.next().unwrap_or_default().split('-').next().unwrap_or_default();
+        let app = strip_uuid_suffix(it.next().unwrap_or_default());
         return vec![format!("{snap}_{app}"), snap.to_string()];
     }
 
@@ -97,6 +98,35 @@ fn app_id_candidates(unit: &str) -> Vec<String> {
         .filter(|p| !p.chars().all(|c| c.is_ascii_hexdigit()))
         .map(unescape_unit)
         .collect()
+}
+
+/// Removes a trailing "-<uuid>" (8-4-4-4-12 hex digits) if present.
+fn strip_uuid_suffix(s: &str) -> &str {
+    let is_uuid = |u: &str| {
+        let parts: Vec<&str> = u.split('-').collect();
+        parts.iter().map(|p| p.len()).eq([8, 4, 4, 4, 12])
+            && parts.iter().all(|p| p.chars().all(|c| c.is_ascii_hexdigit()))
+    };
+    match s.len().checked_sub(37) {
+        Some(i) if s.as_bytes()[i] == b'-' && is_uuid(&s[i + 1..]) => &s[..i],
+        _ => s,
+    }
+}
+
+/// The process name, from the command line when the kernel's 15-character
+/// `comm` is truncated.
+fn process_name(pid: i32, comm: &str) -> String {
+    if comm.len() < 15 {
+        return comm.to_string();
+    }
+    fs::read(format!("/proc/{pid}/cmdline"))
+        .ok()
+        .and_then(|c| {
+            let argv0 = c.split(|b| *b == 0).next()?;
+            let base = String::from_utf8_lossy(argv0).rsplit('/').next()?.to_string();
+            base.starts_with(comm).then_some(base)
+        })
+        .unwrap_or_else(|| comm.to_string())
 }
 
 fn pretty_process_name(comm: &str) -> String {
@@ -208,9 +238,10 @@ impl AppSampler {
                 Some((id, (name, icon))) => GroupInfo { key: format!("app:{id}"), name, icon, system: false },
                 None => {
                     let system = !path.starts_with("/user.slice");
-                    let desktop = self.lookup_desktop(&stat.comm);
-                    let (name, icon) = desktop.unwrap_or_else(|| (pretty_process_name(&stat.comm), None));
-                    GroupInfo { key: format!("proc:{}", stat.comm), name, icon, system }
+                    let proc_name = process_name(pid, &stat.comm);
+                    let desktop = self.lookup_desktop(&proc_name);
+                    let (name, icon) = desktop.unwrap_or_else(|| (pretty_process_name(&proc_name), None));
+                    GroupInfo { key: format!("proc:{proc_name}"), name, icon, system }
                 }
             }
         };
@@ -328,6 +359,14 @@ mod tests {
         assert_eq!(app_id_candidates("app-dbus-:1.2-org.gnome.Calculator@0.service"), vec!["org.gnome.Calculator"]);
         assert_eq!(app_id_candidates("app-org.gnome.Terminal.slice"), vec!["org.gnome.Terminal"]);
         assert_eq!(app_id_candidates("app-gnome-google\\x2dchrome-999.scope"), vec!["google-chrome"]);
-        assert_eq!(app_id_candidates("snap.firefox.firefox-abcd.scope")[0], "firefox_firefox");
+        assert_eq!(app_id_candidates("snap.firefox.firefox-abcd.scope")[0], "firefox_firefox-abcd");
+        assert_eq!(
+            app_id_candidates("snap.battery-health-center.battery-health-center-0b6c1a2e-3f4d-4e5f-8a9b-0c1d2e3f4a5b.scope")[0],
+            "battery-health-center_battery-health-center"
+        );
+        assert_eq!(
+            app_id_candidates("snap.firefox.firefox-0b6c1a2e-3f4d-4e5f-8a9b-0c1d2e3f4a5b.scope")[0],
+            "firefox_firefox"
+        );
     }
 }

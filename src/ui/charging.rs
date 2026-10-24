@@ -268,7 +268,8 @@ impl ChargingPage {
         }
 
         // Charging mode (charge_behaviour)
-        let has_modes = b.charge_behaviours.len() > 1;
+        // The snap's interfaces don't allow writing charge_behaviour.
+        let has_modes = b.charge_behaviours.len() > 1 && !system::in_snap();
         self.mode_group.set_visible(has_modes);
         if has_modes {
             if *self.mode_ids.borrow() != b.charge_behaviours {

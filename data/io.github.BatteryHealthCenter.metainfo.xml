@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>io.github.BatteryHealthCenter</id>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>GPL-3.0-or-later</project_license>
+  <name>Battery Health Center</name>
+  <summary>Battery health, charge limits and app energy usage in one place</summary>
+  <developer id="io.github.arios4k">
+    <name>Alexis Rios-Negron</name>
+  </developer>
+  <description>
+    <p>
+      Battery Health Center brings everything about your laptop battery together in one
+      native GNOME app.
+    </p>
+    <ul>
+      <li>Charge level, time remaining and live power draw</li>
+      <li>Maximum capacity compared with when new, condition and cycle count</li>
+      <li>Set a maximum charge level to extend your battery's lifespan</li>
+      <li>Battery level history for the last 24 hours or 7 days</li>
+      <li>Apps using significant energy, with estimated power draw on battery</li>
+      <li>Recommendations to make your battery last longer</li>
+    </ul>
+  </description>
+  <launchable type="desktop-id">io.github.BatteryHealthCenter.desktop</launchable>
+  <categories>
+    <category>System</category>
+    <category>Monitor</category>
+  </categories>
+  <keywords>
+    <keyword>battery</keyword>
+    <keyword>health</keyword>
+    <keyword>charge limit</keyword>
+    <keyword>power</keyword>
+  </keywords>
+  <requires>
+    <display_length compare="ge">360</display_length>
+  </requires>
+  <supports>
+    <control>pointing</control>
+    <control>keyboard</control>
+    <control>touch</control>
+  </supports>
+  <content_rating type="oars-1.1"/>
+  <releases>
+    <release version="0.1.0" date="2026-10-24">
+      <description>
+        <p>First release.</p>
+      </description>
+    </release>
+  </releases>
+</component>

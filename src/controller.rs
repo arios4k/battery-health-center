@@ -97,16 +97,12 @@ impl Controller {
 
             if n.is_multiple_of(APPS_EVERY_TICKS) {
                 let dynamic = st.battery.as_ref().filter(|b| b.is_on_battery()).and_then(|b| b.power_w).map(|p| {
-                    let floor = match self.idle_floor_w.get() {
-                        Some(f) if f <= p => f,
-                        _ => {
-                            self.idle_floor_w.set(Some(p));
-                            p
-                        }
-                    };
-                    // Until we've seen a lower reading, assume half is baseline
-                    // (display, Wi-Fi, etc.) rather than app-driven.
-                    if floor == p { p * 0.5 } else { p - floor }
+                    let lowest = self.idle_floor_w.get().map_or(p, |f| f.min(p));
+                    self.idle_floor_w.set(Some(lowest));
+                    // The baseline (display, Wi-Fi, etc.) is the lowest draw seen,
+                    // but never more than half the current draw: early in a session
+                    // the lowest reading is usually not a true idle reading.
+                    p - lowest.min(p * 0.5)
                 });
                 let mut sampler = self.sampler.borrow_mut();
                 st.apps_now = sampler.sample(dynamic);

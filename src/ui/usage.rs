@@ -191,6 +191,15 @@ impl UsagePage {
         })
     }
 
+    /// Scrolls so the app lists are at the top (used for screenshots).
+    pub fn scroll_to_apps(&self) {
+        let Some(scrolled) = self.root.first_child().and_downcast::<gtk::ScrolledWindow>() else { return };
+        let Some(viewport) = scrolled.child() else { return };
+        if let Some(p) = self.now_group.compute_point(&viewport, &gtk::graphene::Point::zero()) {
+            scrolled.vadjustment().set_value(p.y() as f64 - 12.0);
+        }
+    }
+
     pub fn update(&self, st: &State) {
         if self.last_history_gen.replace(st.history_generation) != st.history_generation {
             self.chart.queue_draw();

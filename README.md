@@ -11,6 +11,24 @@ All your laptop battery information in one place, for GNOME. Written in Rust wit
 - **Usage**: battery level history (24 hours / 7 days) and the apps using the most energy, now and on
   average.
 
+## Install from the Snap Store
+
+```bash
+sudo snap install battery-health-center
+sudo snap connect battery-health-center:hardware-observe
+sudo snap connect battery-health-center:system-observe
+sudo snap connect battery-health-center:power-control
+```
+
+The snap is strictly confined. A bundled root service (`bhc-helper serve`) applies charge limits
+through the `power-control` interface, which only allows the `charge_start_threshold` /
+`charge_stop_threshold` files. Charging Mode and Power Mode are hidden in the snap because no
+interface allows them. To build it locally, run `snapcraft pack`.
+
+Store screenshots are in `screenshots/`. To retake them, run the app with
+`BHC_SCREENSHOTS=<folder>` (and optionally `BHC_SCREENSHOTS_STYLE=light` or `dark`). It saves one
+image per page and quits.
+
 ## Requirements
 
 GTK ≥ 4.14, libadwaita ≥ 1.5, and Rust. On Ubuntu, Zorin OS or Debian:
