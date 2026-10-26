@@ -22,6 +22,9 @@
       <li>Wireless device batteries, notifications, guided calibration and a battery report</li>
     </ul>
   </description>
+  <url type="homepage">https://github.com/arios4k/battery-health-center</url>
+  <url type="bugtracker">https://github.com/arios4k/battery-health-center/issues</url>
+  <url type="vcs-browser">https://github.com/arios4k/battery-health-center</url>
   <launchable type="desktop-id">io.github.BatteryHealthCenter.desktop</launchable>
   <categories>
     <category>System</category>

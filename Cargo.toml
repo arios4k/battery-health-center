@@ -5,6 +5,8 @@ edition = "2021"
 description = "All your laptop battery information in one place, for GNOME"
 license = "GPL-3.0-or-later"
 authors = ["Alexis Rios-Negron"]
+repository = "https://github.com/arios4k/battery-health-center"
+homepage = "https://github.com/arios4k/battery-health-center"
 
 [dependencies]
 gtk = { package = "gtk4", version = "0.11", features = ["v4_14"] }

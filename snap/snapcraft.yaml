@@ -82,6 +82,10 @@ description: |
 grade: stable
 confinement: strict
 license: GPL-3.0-or-later
+website: https://github.com/arios4k/battery-health-center
+source-code: https://github.com/arios4k/battery-health-center
+issues: https://github.com/arios4k/battery-health-center/issues
+contact: https://github.com/arios4k/battery-health-center/issues
 icon: data/icons/hicolor/scalable/apps/io.github.BatteryHealthCenter.svg
 
 platforms:
