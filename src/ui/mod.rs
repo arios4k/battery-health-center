@@ -1,6 +1,7 @@
 mod charging;
 mod health;
 mod overview;
+mod power;
 mod preferences;
 mod screenshots;
 mod usage;
@@ -20,11 +21,13 @@ pub fn build_window(app: &adw::Application, ctrl: &Rc<Controller>) -> adw::Appli
     let overview = overview::OverviewPage::new(ctrl, &stack);
     let health = health::HealthPage::new(ctrl);
     let charging = charging::ChargingPage::new(ctrl, &toasts);
+    let power = power::PowerPage::new(ctrl);
     let usage = usage::UsagePage::new(ctrl);
 
     stack.add_titled_with_icon(&overview.root, Some("overview"), "Overview", "battery-level-80-symbolic");
     stack.add_titled_with_icon(&health.root, Some("health"), "Health", "security-high-symbolic");
     stack.add_titled_with_icon(&charging.root, Some("charging"), "Charging", "battery-level-80-charging-symbolic");
+    stack.add_titled_with_icon(&power.root, Some("power"), "Power", "system-shutdown-symbolic");
     stack.add_titled_with_icon(&usage.root, Some("usage"), "Usage", "power-profile-balanced-symbolic");
 
     let no_battery = adw::StatusPage::builder()
@@ -123,6 +126,7 @@ pub fn build_window(app: &adw::Application, ctrl: &Rc<Controller>) -> adw::Appli
         overview.update(st);
         health.update(st);
         charging.update(st);
+        power.update(st);
         usage.update(st);
         glib::ControlFlow::Continue
     });

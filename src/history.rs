@@ -70,7 +70,10 @@ pub fn boot_id() -> Option<u32> {
 /// Battery use since the charger was last disconnected.
 #[derive(Clone, Debug, PartialEq)]
 pub struct SinceCharge {
+    /// When the charger was disconnected, or, if the app wasn't running then
+    /// (`exact` is false), the last time it saw the laptop plugged in.
     pub unplugged_ts: i64,
+    pub exact: bool,
     pub start_percent: f64,
     pub used_percent: f64,
     pub avg_w: Option<f64>,
@@ -90,6 +93,9 @@ impl SleepSession {
         (self.from_percent - self.to_percent).max(0.0) / (self.slept_secs as f64 / 3600.0)
     }
 }
+
+/// Samples further apart than this mean the app wasn't running in between.
+const UNPLUG_GAP_SECS: i64 = 600;
 
 /// Minimum suspend length worth reporting.
 const MIN_SLEEP_SECS: i64 = 15 * 60;
@@ -223,10 +229,15 @@ fn since_last_charge(samples: &[Sample]) -> Option<SinceCharge> {
     let run = &samples[run_start..];
     let first = run.first()?;
     // The charge when unplugged is best taken from the last plugged-in sample.
-    let start_percent = run_start.checked_sub(1).map_or(first.percent, |i| samples[i].percent);
+    let before = run_start.checked_sub(1).map(|i| &samples[i]);
+    let start_percent = before.map_or(first.percent, |b| b.percent);
+    // If samples stop between the last plugged-in one and the first on-battery
+    // one, the app wasn't running when the charger came out.
+    let gap = before.is_some_and(|b| first.ts - b.ts > UNPLUG_GAP_SECS);
     let watts: Vec<f64> = run.iter().filter_map(|s| s.power_w).filter(|w| *w > 0.0).collect();
     Some(SinceCharge {
-        unplugged_ts: first.ts,
+        unplugged_ts: if gap { before.map_or(first.ts, |b| b.ts) } else { first.ts },
+        exact: !gap,
         start_percent,
         used_percent: (start_percent - last.percent).max(0.0),
         avg_w: (!watts.is_empty()).then(|| watts.iter().sum::<f64>() / watts.len() as f64),
@@ -293,10 +304,26 @@ mod tests {
         ];
         let s = since_last_charge(&samples).unwrap();
         assert_eq!(s.unplugged_ts, 60);
+        assert!(s.exact);
         assert_eq!(s.start_percent, 80.0);
         assert_eq!(s.used_percent, 10.0);
         // Not on battery now: nothing to report.
         assert!(since_last_charge(&samples[..1]).is_none());
+    }
+
+    #[test]
+    fn unplugged_while_the_app_was_closed() {
+        // Plugged in at 84%, then nothing for hours; the next sample is on battery.
+        let samples = vec![
+            sample(0, 84.0, Status::Charging, 0),
+            sample(5 * 3600, 20.0, Status::Discharging, 0),
+            sample(5 * 3600 + 60, 19.0, Status::Discharging, 0),
+        ];
+        let s = since_last_charge(&samples).unwrap();
+        assert!(!s.exact);
+        assert_eq!(s.unplugged_ts, 0, "falls back to when it was last seen plugged in");
+        assert_eq!(s.start_percent, 84.0);
+        assert_eq!(s.used_percent, 65.0);
     }
 
     #[test]

@@ -20,6 +20,7 @@
       <li>Battery level and power draw history, and battery use during sleep</li>
       <li>Apps using the most energy, now and over the last 7 days</li>
       <li>Wireless device batteries, notifications, guided calibration and a battery report</li>
+      <li>Power mode, automatic power mode and GNOME's power-saving settings in one place</li>
     </ul>
   </description>
   <url type="homepage">https://github.com/arios4k/battery-health-center</url>
@@ -46,6 +47,18 @@
   </supports>
   <content_rating type="oars-1.1"/>
   <releases>
+    <release version="0.3.0" date="2026-10-26">
+      <description>
+        <p>New Power page:</p>
+        <ul>
+          <li>Automatic power mode: switches the power mode when you plug in or unplug, or when the charge gets low</li>
+          <li>GNOME's power-saving settings in one place: dim screen, screen blank, automatic suspend and brightness</li>
+          <li>Power button and lid actions, and the battery percentage in the top bar</li>
+          <li>Only the top bar setting works in the snap; the rest needs the regular version</li>
+        </ul>
+        <p>Fixed: Overview showed a wrong unplug time when the app wasn't running as the charger came out.</p>
+      </description>
+    </release>
     <release version="0.2.1" date="2026-10-26">
       <description>
         <p>When "Record History in the Background" is on, the background copy now steps aside when an update is waiting, so updates install within minutes instead of being held back for up to two weeks.</p>

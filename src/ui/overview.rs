@@ -224,6 +224,9 @@ impl OverviewPage {
         }
         if let Some(s) = since {
             let ago = format_hours((now_unix() - s.unplugged_ts).max(60) as f64 / 3600.0);
+            // If the app wasn't running when the charger came out, all it knows is
+            // when it last saw the laptop plugged in.
+            self.unplugged_row.set_title(if s.exact { "Unplugged" } else { "Last Seen Plugged In" });
             self.unplugged.set_label(&format!("{ago} ago, at {:.0}%", s.start_percent));
             self.used.set_label(&format!("{:.0}%", s.used_percent));
             self.avg_row.set_visible(s.avg_w.is_some());
