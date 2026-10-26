@@ -38,6 +38,18 @@ impl Status {
         }
     }
 
+    /// A short form that fits inside the charge ring; the full phrase is shown
+    /// beside it.
+    pub fn short_label(self) -> &'static str {
+        match self {
+            Status::Charging => "Charging",
+            Status::Discharging => "On Battery",
+            Status::NotCharging => "Not Charging",
+            Status::Full => "Full",
+            Status::Unknown => "",
+        }
+    }
+
     pub fn code(self) -> char {
         match self {
             Status::Charging => 'c',

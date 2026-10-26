@@ -156,7 +156,7 @@ impl OverviewPage {
     pub fn update(self: &Rc<Self>, st: &State) {
         let Some(b) = &st.battery else { return };
         let charging = b.status == Status::Charging;
-        self.gauge.set(b.percent, charging, b.status.label());
+        self.gauge.set(b.percent, charging, b.status.short_label());
 
         let (headline, detail) = match (b.status, b.hours_remaining()) {
             (Status::Charging, _) if st.full_charge => (

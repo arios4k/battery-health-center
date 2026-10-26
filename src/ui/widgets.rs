@@ -70,7 +70,12 @@ impl Gauge {
         });
 
         let percent = gtk::Label::builder().css_classes(["title-1", "numeric"]).build();
-        let caption = gtk::Label::builder().css_classes(["caption", "dim-label"]).build();
+        // Whatever the caption, it must stay inside the ring (about 130 px wide).
+        let caption = gtk::Label::builder()
+            .css_classes(["caption", "dim-label"])
+            .ellipsize(gtk::pango::EllipsizeMode::End)
+            .max_width_chars(14)
+            .build();
         let center = gtk::Box::builder()
             .orientation(gtk::Orientation::Vertical)
             .halign(gtk::Align::Center)

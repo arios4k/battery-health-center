@@ -1,3 +1,15 @@
+battery-health-center (0.3.2-1) unstable; urgency=low
+
+  * Fix a crash when changing Screen Blank, Automatic Suspend on Battery or
+    Automatic Suspend When Plugged In: the dropdown's handler kept its list of
+    choices borrowed while saving the setting, and saving triggered a refresh
+    that needed the same list. The dropdown no longer rebuilds its list when
+    nothing changed.
+  * Show "Not Charging" inside the charge ring instead of "Plugged In, Not
+    Charging", which was wider than the ring.
+
+ -- Alexis Rios-Negron <182820807+arios4k@users.noreply.github.com>  Mon, 26 Oct 2026 13:47:27 -0700
+
 battery-health-center (0.3.1-1) unstable; urgency=low
 
   * Fix the Power Mode dropdown: choosing a mode was applied and then undone
