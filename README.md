@@ -102,6 +102,17 @@ the site. `DRY_RUN=1 scripts/publish-apt.sh` shows the steps without doing anyth
 `reprepro`, the signing key in your GPG keyring, and the repository's private files in `~/apt-repo`
 (configuration and database, never published) next to a clone of `arios4k/apt` in `~/apt-site`.
 
+### Publishing a new snap (maintainers)
+
+Bump the version in `Cargo.toml` and `snap/snapcraft.yaml` (they must match), then run
+`scripts/publish-snap.sh`. It checks the versions and the store's 4096-character description limit,
+builds the snap with `snapcraft pack`, releases it to the stable channel, checks the listing kept its
+banner, and compares the store's description with `snap/snapcraft.yaml`. A new version does not change
+the listing's description or images, so when they differ the script writes `store-description.txt`
+for you to paste into the Description box on the store's listing page. `DRY_RUN=1 scripts/publish-snap.sh` shows the steps without doing anything. Don't use
+`snapcraft upload-metadata`: it rewrites the listing's images. If the build fails with "Timed out
+waiting for networking", a firewall is blocking LXD's bridge; the script prints the `ufw` commands.
+
 ## Requirements
 
 GTK ≥ 4.14, libadwaita ≥ 1.5, and Rust. On Ubuntu, Zorin OS or Debian:
