@@ -46,6 +46,11 @@
   </supports>
   <content_rating type="oars-1.1"/>
   <releases>
+    <release version="0.2.1" date="2026-10-26">
+      <description>
+        <p>When "Record History in the Background" is on, the background copy now steps aside when an update is waiting, so updates install within minutes instead of being held back for up to two weeks.</p>
+      </description>
+    </release>
     <release version="0.2.0" date="2026-10-25">
       <description>
         <p>New features:</p>

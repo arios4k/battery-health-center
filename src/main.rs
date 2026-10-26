@@ -90,6 +90,26 @@ fn main() -> glib::ExitCode {
         if background {
             *hold.borrow_mut() = Some(app.hold());
         }
+        // A running app holds back snap updates (for up to about two weeks,
+        // after which snapd closes it anyway). When snapd is waiting and only
+        // the background copy is running, step aside so the update installs;
+        // background recording starts again at the next login.
+        if system::in_snap() {
+            let weak_app = app.downgrade();
+            glib::timeout_add_seconds_local(60, move || {
+                let Some(app) = weak_app.upgrade() else { return glib::ControlFlow::Break };
+                if system::refresh_pending() && app.windows().is_empty() {
+                    let n = gio::Notification::new("Battery Health Center Is Updating");
+                    n.set_body(Some("It closed so the update can install. Background recording starts again the next time you log in or open the app."));
+                    n.set_icon(&gio::ThemedIcon::new(APP_ID));
+                    app.send_notification(Some("updating"), &n);
+                    // Give the notification a moment to be delivered.
+                    glib::timeout_add_seconds_local_once(3, move || app.quit());
+                    return glib::ControlFlow::Break;
+                }
+                glib::ControlFlow::Continue
+            });
+        }
     });
 
     let c = controller.clone();

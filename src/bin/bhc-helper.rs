@@ -36,6 +36,11 @@ fn sysfs_root() -> PathBuf {
     PathBuf::from("/sys/class/power_supply")
 }
 pub const SOCKET_NAME: &str = "helper.sock";
+/// Present while snapd is holding back an update of this snap because the app
+/// is running; the app's background copy exits when it sees it.
+pub const REFRESH_PENDING_NAME: &str = "refresh-pending";
+/// How often the service asks snapd about pending updates (in 30 s rounds).
+const REFRESH_CHECK_ROUNDS: u32 = 10;
 
 /// $SNAP_COMMON when running inside the snap.
 fn snap_common() -> Option<PathBuf> {
@@ -291,6 +296,25 @@ fn run_locked(args: &[String]) -> Result<(), String> {
     run(args)
 }
 
+/// Parses `snapctl refresh --pending` output ("pending: inhibited", ...).
+fn refresh_inhibited(output: &str) -> bool {
+    output.lines().any(|l| l.split_once(':').is_some_and(|(k, v)| k.trim() == "pending" && v.trim() == "inhibited"))
+}
+
+/// Only root may ask snapd whether an update is waiting for the app to
+/// close, so the service asks and leaves a marker the app can see.
+fn update_refresh_marker(marker: &Path) {
+    let Ok(out) = std::process::Command::new("snapctl").args(["refresh", "--pending"]).output() else {
+        return;
+    };
+    if refresh_inhibited(&String::from_utf8_lossy(&out.stdout)) {
+        let _ = fs::write(marker, "");
+        let _ = fs::set_permissions(marker, fs::Permissions::from_mode(0o644));
+    } else {
+        let _ = fs::remove_file(marker);
+    }
+}
+
 /// Snap service: restores saved limits, re-applies them if firmware resets
 /// them (e.g. after sleep), and accepts `set-thresholds` requests from the
 /// app over a Unix socket in $SNAP_COMMON. One request per connection; the
@@ -303,15 +327,26 @@ fn serve() -> Result<(), String> {
     // Any local user may change the charge limit, as with GNOME's own setting.
     fs::set_permissions(&path, fs::Permissions::from_mode(0o666)).map_err(|e| e.to_string())?;
 
-    std::thread::spawn(|| loop {
-        {
-            let _guard = WRITE_LOCK.lock();
-            check_full_charges();
-            if let Err(e) = restore() {
-                eprintln!("bhc-helper: {e}");
+    // This instance runs the new revision, so any marker is stale.
+    let marker = dir.join(REFRESH_PENDING_NAME);
+    let _ = fs::remove_file(&marker);
+
+    std::thread::spawn(move || {
+        let mut round: u32 = 0;
+        loop {
+            {
+                let _guard = WRITE_LOCK.lock();
+                check_full_charges();
+                if let Err(e) = restore() {
+                    eprintln!("bhc-helper: {e}");
+                }
             }
+            if round.is_multiple_of(REFRESH_CHECK_ROUNDS) {
+                update_refresh_marker(&marker);
+            }
+            round = round.wrapping_add(1);
+            std::thread::sleep(Duration::from_secs(30));
         }
-        std::thread::sleep(Duration::from_secs(30));
     });
 
     for stream in listener.incoming() {
@@ -425,6 +460,14 @@ mod tests {
         check_full_charges();
         assert_eq!(limits(), ("75".into(), "80".into()));
         assert!(!full_charge_marker("BAT0").exists());
+    }
+
+    #[test]
+    fn parses_pending_refresh() {
+        assert!(refresh_inhibited("pending: inhibited\nchannel: stable\nversion: 0.2.1\n"));
+        assert!(!refresh_inhibited("pending: ready\nchannel: stable\n"));
+        assert!(!refresh_inhibited("pending: none\n"));
+        assert!(!refresh_inhibited(""));
     }
 
     #[test]
