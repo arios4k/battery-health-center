@@ -193,3 +193,102 @@ pub fn set_autostart(enabled: bool) -> std::io::Result<()> {
         ),
     )
 }
+
+/// Whether a one-time "charge to 100%" is in progress for this battery (the
+/// helper keeps a marker file while it is).
+pub fn full_charge_active(battery: &str) -> bool {
+    let dir = match std::env::var_os("SNAP_COMMON") {
+        Some(d) => PathBuf::from(d),
+        None => PathBuf::from("/run/battery-health-center"),
+    };
+    dir.join(format!("full-charge-{battery}")).exists()
+}
+
+/// A battery-powered peripheral reported by UPower (mouse, headphones, ...).
+#[derive(Clone, Debug, PartialEq)]
+pub struct DeviceBattery {
+    pub name: String,
+    pub icon: &'static str,
+    /// Exact percentage, if the device reports one.
+    pub percent: Option<f64>,
+    /// Coarse level for devices that only report e.g. "Low" or "Full".
+    pub level: Option<&'static str>,
+}
+
+fn device_icon(kind: u32) -> &'static str {
+    // UpDeviceKind values from UPower.
+    match kind {
+        5 => "input-mouse-symbolic",
+        6 => "input-keyboard-symbolic",
+        8 => "phone-symbolic",
+        10 | 13 => "input-tablet-symbolic",
+        12 => "input-gaming-symbolic",
+        14 => "input-touchpad-symbolic",
+        17 => "audio-headset-symbolic",
+        18 => "audio-speakers-symbolic",
+        19 => "audio-headphones-symbolic",
+        23 => "printer-symbolic",
+        25 => "camera-photo-symbolic",
+        _ => "bluetooth-active-symbolic",
+    }
+}
+
+fn device_level(level: u32) -> Option<&'static str> {
+    match level {
+        3 => Some("Low"),
+        4 => Some("Critical"),
+        6 => Some("Normal"),
+        7 => Some("High"),
+        8 => Some("Full"),
+        _ => None,
+    }
+}
+
+/// Peripheral batteries from UPower. Laptop batteries and power supplies
+/// are excluded (they have PowerSupply set).
+pub fn device_batteries() -> Vec<DeviceBattery> {
+    let bus = |path: &str, iface: &str| {
+        gio::DBusProxy::for_bus_sync(
+            gio::BusType::System,
+            gio::DBusProxyFlags::DO_NOT_CONNECT_SIGNALS,
+            None,
+            "org.freedesktop.UPower",
+            path,
+            iface,
+            gio::Cancellable::NONE,
+        )
+        .ok()
+    };
+    let Some(upower) = bus("/org/freedesktop/UPower", "org.freedesktop.UPower") else {
+        return Vec::new();
+    };
+    let Ok(reply) =
+        upower.call_sync("EnumerateDevices", None, gio::DBusCallFlags::NONE, 2000, gio::Cancellable::NONE)
+    else {
+        return Vec::new();
+    };
+    let paths: Vec<String> = reply.child_value(0).iter().filter_map(|p| p.str().map(String::from)).collect();
+    paths
+        .iter()
+        .filter_map(|path| {
+            let dev = bus(path, "org.freedesktop.UPower.Device")?;
+            let prop = |name: &str| dev.cached_property(name);
+            let power_supply = prop("PowerSupply")?.get::<bool>()?;
+            let present = prop("IsPresent").and_then(|v| v.get::<bool>()).unwrap_or(true);
+            let kind = prop("Type")?.get::<u32>()?;
+            // 0 unknown, 1 line power, 2 laptop battery
+            if power_supply || !present || kind <= 2 {
+                return None;
+            }
+            let model = prop("Model").and_then(|v| v.str().map(String::from)).filter(|m| !m.is_empty());
+            let level = prop("BatteryLevel").and_then(|v| v.get::<u32>()).and_then(device_level);
+            let percent = prop("Percentage").and_then(|v| v.get::<f64>()).filter(|p| *p > 0.0 && level.is_none());
+            Some(DeviceBattery {
+                name: model.unwrap_or_else(|| "Wireless Device".into()),
+                icon: device_icon(kind),
+                percent,
+                level,
+            })
+        })
+        .collect()
+}

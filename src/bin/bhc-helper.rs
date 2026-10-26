@@ -9,8 +9,11 @@
 //! Usage:
 //!   bhc-helper set-thresholds <BATTERY> <START|-> <END> [--persist|--no-persist]
 //!   bhc-helper set-behaviour <BATTERY> <auto|inhibit-charge|force-discharge>
+//!   bhc-helper charge-full <BATTERY>          (charge to 100% once)
+//!   bhc-helper finish-full-charge <BATTERY>   (put the previous limit back)
 //!   bhc-helper restore
-//!   bhc-helper serve        (snap service; accepts set-thresholds requests)
+//!   bhc-helper serve        (snap service; accepts set-thresholds,
+//!                            charge-full and finish-full-charge requests)
 
 use std::fs;
 use std::io::{BufRead, BufReader, Read, Write};
@@ -18,9 +21,20 @@ use std::os::unix::fs::PermissionsExt;
 use std::os::unix::net::UnixListener;
 use std::path::{Path, PathBuf};
 use std::process::ExitCode;
+use std::sync::Mutex;
 use std::time::Duration;
 
-const ROOT: &str = "/sys/class/power_supply";
+/// Serializes sysfs writes between the service's request handler and its
+/// background loop.
+static WRITE_LOCK: Mutex<()> = Mutex::new(());
+
+#[cfg(test)]
+use tests::{state_dir, sysfs_root};
+
+#[cfg(not(test))]
+fn sysfs_root() -> PathBuf {
+    PathBuf::from("/sys/class/power_supply")
+}
 pub const SOCKET_NAME: &str = "helper.sock";
 
 /// $SNAP_COMMON when running inside the snap.
@@ -35,6 +49,19 @@ fn config_path() -> PathBuf {
     }
 }
 
+/// Where "charge to 100%" markers live: $SNAP_COMMON in the snap (readable by
+/// the app), otherwise /run (cleared at boot, when the saved limit applies).
+#[cfg(not(test))]
+fn state_dir() -> PathBuf {
+    snap_common().unwrap_or_else(|| PathBuf::from("/run/battery-health-center"))
+}
+
+/// Marker for a one-time full charge; holds the limit to put back
+/// ("<start|-> <end>").
+fn full_charge_marker(name: &str) -> PathBuf {
+    state_dir().join(format!("full-charge-{name}"))
+}
+
 fn battery_dir(name: &str) -> Result<PathBuf, String> {
     let valid = !name.is_empty()
         && name.len() <= 32
@@ -42,7 +69,7 @@ fn battery_dir(name: &str) -> Result<PathBuf, String> {
     if !valid {
         return Err(format!("invalid battery name: {name:?}"));
     }
-    let dir = PathBuf::from(ROOT).join(name);
+    let dir = sysfs_root().join(name);
     let kind = fs::read_to_string(dir.join("type")).map_err(|_| format!("no such power supply: {name}"))?;
     if kind.trim() != "Battery" {
         return Err(format!("{name} is not a battery"));
@@ -140,6 +167,7 @@ fn restore() -> Result<(), String> {
     for line in config.lines().filter(|l| !l.trim().is_empty() && !l.starts_with('#')) {
         let f: Vec<&str> = line.split_whitespace().collect();
         let result = match f.as_slice() {
+            [name, _, _] if full_charge_marker(name).exists() => Ok(()),
             [name, start, end] => {
                 let start = if *start == "-" { Ok(None) } else { parse_percent(start).map(Some) };
                 start.and_then(|s| apply_thresholds(name, s, parse_percent(end)?))
@@ -155,6 +183,64 @@ fn restore() -> Result<(), String> {
         Err("some limits could not be restored".into())
     } else {
         Ok(())
+    }
+}
+
+/// Raises the limit so the battery charges to 100% once, remembering the
+/// current limit so `finish_full_charge` can put it back.
+fn charge_full(name: &str) -> Result<(), String> {
+    let dir = battery_dir(name)?;
+    let marker = full_charge_marker(name);
+    if marker.exists() {
+        return Ok(());
+    }
+    let end = read_threshold(&dir, "end").ok_or("this battery does not support a charge limit")?;
+    let start = read_threshold(&dir, "start");
+    let _ = fs::create_dir_all(state_dir());
+    let saved = format!("{} {end}\n", start.map(|s| s.to_string()).unwrap_or_else(|| "-".into()));
+    fs::write(&marker, saved).map_err(|e| format!("writing {}: {e}", marker.display()))?;
+    // With a start threshold, charging only begins below it, so raise it too.
+    let result = apply_thresholds(name, start.map(|_| 99), 100);
+    if result.is_err() {
+        let _ = fs::remove_file(&marker);
+    }
+    result
+}
+
+/// Puts back the limit saved by `charge_full`.
+fn finish_full_charge(name: &str) -> Result<(), String> {
+    battery_dir(name)?;
+    let marker = full_charge_marker(name);
+    let Ok(saved) = fs::read_to_string(&marker) else {
+        return Ok(());
+    };
+    let f: Vec<&str> = saved.split_whitespace().collect();
+    let [start, end] = f.as_slice() else {
+        let _ = fs::remove_file(&marker);
+        return Err("the saved limit was unreadable; set the limit again".into());
+    };
+    let start = if *start == "-" { None } else { Some(parse_percent(start)?) };
+    apply_thresholds(name, start, parse_percent(end)?)?;
+    fs::remove_file(&marker).map_err(|e| e.to_string())
+}
+
+/// Finishes one-time full charges once the battery is full or unplugged.
+fn check_full_charges() {
+    let Ok(entries) = fs::read_dir(state_dir()) else { return };
+    let ac_online = fs::read_dir(sysfs_root()).into_iter().flatten().flatten().any(|e| {
+        let p = e.path();
+        fs::read_to_string(p.join("type")).is_ok_and(|t| t.trim() == "Mains")
+            && fs::read_to_string(p.join("online")).is_ok_and(|o| o.trim() == "1")
+    });
+    for name in entries.flatten().filter_map(|e| e.file_name().to_str()?.strip_prefix("full-charge-").map(String::from)) {
+        let Ok(dir) = battery_dir(&name) else { continue };
+        let read = |f: &str| fs::read_to_string(dir.join(f)).unwrap_or_default().trim().to_string();
+        let full = read("status") == "Full" || read("capacity").parse::<u8>().is_ok_and(|c| c >= 99);
+        if full || !ac_online {
+            if let Err(e) = finish_full_charge(&name) {
+                eprintln!("bhc-helper: {e}");
+            }
+        }
     }
 }
 
@@ -187,13 +273,22 @@ fn run(args: &[String]) -> Result<(), String> {
             let dir = battery_dir(name)?;
             write(&dir.join("charge_behaviour"), mode)
         }
+        ["charge-full", name] => charge_full(name),
+        ["finish-full-charge", name] => finish_full_charge(name),
         ["restore"] => restore(),
         ["serve"] => serve(),
         _ => Err("usage: bhc-helper set-thresholds <BAT> <START|-> <END> [--persist|--no-persist]\n       \
                   bhc-helper set-behaviour <BAT> <auto|inhibit-charge|force-discharge>\n       \
+                  bhc-helper charge-full <BAT>\n       \
+                  bhc-helper finish-full-charge <BAT>\n       \
                   bhc-helper restore"
             .into()),
     }
+}
+
+fn run_locked(args: &[String]) -> Result<(), String> {
+    let _guard = WRITE_LOCK.lock();
+    run(args)
 }
 
 /// Snap service: restores saved limits, re-applies them if firmware resets
@@ -209,10 +304,14 @@ fn serve() -> Result<(), String> {
     fs::set_permissions(&path, fs::Permissions::from_mode(0o666)).map_err(|e| e.to_string())?;
 
     std::thread::spawn(|| loop {
-        if let Err(e) = restore() {
-            eprintln!("bhc-helper: {e}");
+        {
+            let _guard = WRITE_LOCK.lock();
+            check_full_charges();
+            if let Err(e) = restore() {
+                eprintln!("bhc-helper: {e}");
+            }
         }
-        std::thread::sleep(Duration::from_secs(60));
+        std::thread::sleep(Duration::from_secs(30));
     });
 
     for stream in listener.incoming() {
@@ -224,7 +323,7 @@ fn serve() -> Result<(), String> {
         }
         let args: Vec<String> = line.split_whitespace().map(String::from).collect();
         let reply = match args.first().map(String::as_str) {
-            Some("set-thresholds") => match run(&args) {
+            Some("set-thresholds" | "charge-full" | "finish-full-charge") => match run_locked(&args) {
                 Ok(()) => "OK\n".to_string(),
                 Err(e) => format!("ERR {}\n", e.replace('\n', " ")),
             },
@@ -243,5 +342,95 @@ fn main() -> ExitCode {
             eprintln!("{e}");
             ExitCode::from(2)
         }
+    }
+}
+
+/// Tests run against a fake power_supply folder in a temp directory.
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::cell::RefCell;
+
+    thread_local! {
+        static DIR: RefCell<PathBuf> = const { RefCell::new(PathBuf::new()) };
+    }
+
+    pub fn sysfs_root() -> PathBuf {
+        DIR.with(|d| d.borrow().join("sys"))
+    }
+
+    pub fn state_dir() -> PathBuf {
+        DIR.with(|d| d.borrow().join("state"))
+    }
+
+    fn set(file: &str, value: &str) {
+        fs::write(sysfs_root().join(file), value).unwrap();
+    }
+
+    fn get(file: &str) -> String {
+        fs::read_to_string(sysfs_root().join(file)).unwrap().trim().to_string()
+    }
+
+    /// A battery limited to 75–80%, at 80% and plugged in.
+    fn setup(name: &str) {
+        let dir = std::env::temp_dir().join(format!("bhc-helper-test-{name}-{}", std::process::id()));
+        let _ = fs::remove_dir_all(&dir);
+        DIR.with(|d| *d.borrow_mut() = dir);
+        fs::create_dir_all(sysfs_root().join("BAT0")).unwrap();
+        fs::create_dir_all(sysfs_root().join("AC")).unwrap();
+        set("BAT0/type", "Battery\n");
+        set("BAT0/charge_control_start_threshold", "75\n");
+        set("BAT0/charge_control_end_threshold", "80\n");
+        set("BAT0/capacity", "80\n");
+        set("BAT0/status", "Not charging\n");
+        set("AC/type", "Mains\n");
+        set("AC/online", "1\n");
+    }
+
+    fn limits() -> (String, String) {
+        (get("BAT0/charge_control_start_threshold"), get("BAT0/charge_control_end_threshold"))
+    }
+
+    #[test]
+    fn full_charge_raises_and_restores() {
+        setup("manual");
+        charge_full("BAT0").unwrap();
+        assert_eq!(limits(), ("99".into(), "100".into()));
+        assert_eq!(fs::read_to_string(full_charge_marker("BAT0")).unwrap().trim(), "75 80");
+        // A second request doesn't overwrite the saved limit.
+        charge_full("BAT0").unwrap();
+        assert_eq!(fs::read_to_string(full_charge_marker("BAT0")).unwrap().trim(), "75 80");
+        finish_full_charge("BAT0").unwrap();
+        assert_eq!(limits(), ("75".into(), "80".into()));
+        assert!(!full_charge_marker("BAT0").exists());
+    }
+
+    #[test]
+    fn finishes_when_full() {
+        setup("full");
+        charge_full("BAT0").unwrap();
+        set("BAT0/capacity", "95\n");
+        check_full_charges();
+        assert_eq!(limits(), ("99".into(), "100".into()), "still charging at 95%");
+        set("BAT0/capacity", "100\n");
+        check_full_charges();
+        assert_eq!(limits(), ("75".into(), "80".into()));
+    }
+
+    #[test]
+    fn finishes_when_unplugged() {
+        setup("unplugged");
+        charge_full("BAT0").unwrap();
+        set("AC/online", "0\n");
+        check_full_charges();
+        assert_eq!(limits(), ("75".into(), "80".into()));
+        assert!(!full_charge_marker("BAT0").exists());
+    }
+
+    #[test]
+    fn rejects_bad_names() {
+        setup("names");
+        assert!(charge_full("../BAT0").is_err());
+        assert!(charge_full("AC").is_err());
     }
 }

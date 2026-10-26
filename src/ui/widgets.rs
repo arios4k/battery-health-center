@@ -9,6 +9,7 @@ use gtk::cairo;
 use gtk::gdk;
 use gtk::glib;
 
+use crate::health_log::HealthEntry;
 use crate::history::Sample;
 
 pub const GREEN: (f64, f64, f64) = (0.18, 0.76, 0.49);
@@ -97,56 +98,73 @@ fn set_rgba(cr: &cairo::Context, c: &gdk::RGBA, alpha: f64) {
     cr.set_source_rgba(c.red() as f64, c.green() as f64, c.blue() as f64, alpha);
 }
 
-#[allow(clippy::too_many_arguments)]
-/// Draws battery level history: a line per contiguous run of samples, green
-/// while plugged in and blue on battery, with an optional charge-limit line.
-pub fn draw_history(
-    cr: &cairo::Context,
-    width: f64,
-    height: f64,
-    fg: &gdk::RGBA,
-    samples: &[Sample],
-    now: i64,
-    range_secs: i64,
-    limit: Option<u8>,
-) {
-    let (left, right, top, bottom) = (40.0, 8.0, 10.0, 24.0);
+type Rgb = (f64, f64, f64);
+
+/// What to draw in a time chart.
+pub struct ChartSpec<'a> {
+    pub start: i64,
+    pub end: i64,
+    pub y_min: f64,
+    pub y_max: f64,
+    pub y_ticks: Vec<f64>,
+    pub y_label: &'a dyn Fn(f64) -> String,
+    /// (timestamp, value, color of the segment ending at this point)
+    pub points: &'a [(i64, f64, Rgb)],
+    /// Points further apart than this aren't joined (no data in between).
+    pub gap: i64,
+    pub fill: bool,
+    /// Draws a dot at each point (for sparse data).
+    pub dots: bool,
+    /// Dashed horizontal reference line.
+    pub hline: Option<(f64, Rgb)>,
+    pub empty_text: &'a str,
+}
+
+/// Rounds up to a "nice" chart maximum: 5, 10, 20, 40, 60, ...
+pub fn nice_max(v: f64) -> f64 {
+    [5.0, 10.0, 20.0, 40.0, 60.0, 80.0, 100.0, 150.0, 200.0].into_iter().find(|m| v <= *m).unwrap_or(v.ceil())
+}
+
+pub fn draw_chart(cr: &cairo::Context, width: f64, height: f64, fg: &gdk::RGBA, spec: &ChartSpec) {
+    let (left, right, top, bottom) = (44.0, 8.0, 10.0, 24.0);
     let (pw, ph) = (width - left - right, height - top - bottom);
+    let range = (spec.end - spec.start).max(1);
     if pw <= 0.0 || ph <= 0.0 {
         return;
     }
-    let start = now - range_secs;
-    let x_of = |ts: i64| left + (ts - start) as f64 / range_secs as f64 * pw;
-    let y_of = |pct: f64| top + (1.0 - pct / 100.0) * ph;
+    let x_of = |ts: i64| left + (ts - spec.start) as f64 / range as f64 * pw;
+    let y_span = (spec.y_max - spec.y_min).max(f64::EPSILON);
+    let y_of = |v: f64| top + (1.0 - (v.clamp(spec.y_min, spec.y_max) - spec.y_min) / y_span) * ph;
 
     cr.select_font_face("Sans", cairo::FontSlant::Normal, cairo::FontWeight::Normal);
     cr.set_font_size(11.0);
-
-    // Horizontal grid with percentage labels.
     cr.set_line_width(1.0);
-    for pct in [0.0, 50.0, 100.0] {
-        let y = y_of(pct).round() + 0.5;
+    for &v in &spec.y_ticks {
+        let y = y_of(v).round() + 0.5;
         set_rgba(cr, fg, 0.12);
         cr.move_to(left, y);
         cr.line_to(left + pw, y);
         let _ = cr.stroke();
         set_rgba(cr, fg, 0.55);
-        let label = format!("{pct:.0}%");
+        let label = (spec.y_label)(v);
         if let Ok(ext) = cr.text_extents(&label) {
             cr.move_to(left - 6.0 - ext.width(), y + ext.height() / 2.0);
             let _ = cr.show_text(&label);
         }
     }
 
-    // Time labels along the bottom.
-    let (step, fmt) = if range_secs <= 86_400 { (6 * 3600, "%H:%M") } else { (86_400, "%a") };
-    let first_tick = {
-        // Align ticks to local hour/day boundaries.
-        let offset = glib::DateTime::now_local().map(|d| d.utc_offset().as_seconds()).unwrap_or(0);
-        ((start + offset) / step + 1) * step - offset
+    // Time labels aligned to local hours or days.
+    let day = 86_400;
+    let (step, fmt) = if range <= 2 * day {
+        (6 * 3600, "%H:%M")
+    } else if range <= 10 * day {
+        (day, "%a")
+    } else {
+        (((range / day) / 6).max(1) * day, "%b %-d")
     };
-    let mut t = first_tick;
-    while t <= now {
+    let offset = glib::DateTime::now_local().map(|d| d.utc_offset().as_seconds()).unwrap_or(0);
+    let mut t = ((spec.start + offset) / step + 1) * step - offset;
+    while t <= spec.end {
         let x = x_of(t).round() + 0.5;
         set_rgba(cr, fg, 0.08);
         cr.move_to(x, top);
@@ -154,17 +172,17 @@ pub fn draw_history(
         let _ = cr.stroke();
         if let Ok(label) = glib::DateTime::from_unix_local(t).and_then(|d| d.format(fmt)) {
             set_rgba(cr, fg, 0.55);
-            if let Ok(ext) = cr.text_extents(&label) {
+            if let Ok(ext) = cr.text_extents(label.trim()) {
                 cr.move_to(x - ext.width() / 2.0, height - 6.0);
-                let _ = cr.show_text(&label);
+                let _ = cr.show_text(label.trim());
             }
         }
         t += step;
     }
 
-    if let Some(limit) = limit.filter(|l| *l < 100) {
-        let y = y_of(limit as f64).round() + 0.5;
-        cr.set_source_rgba(GREEN.0, GREEN.1, GREEN.2, 0.6);
+    if let Some((v, (r, g, b))) = spec.hline {
+        let y = y_of(v).round() + 0.5;
+        cr.set_source_rgba(r, g, b, 0.7);
         cr.set_dash(&[4.0, 4.0], 0.0);
         cr.move_to(left, y);
         cr.line_to(left + pw, y);
@@ -172,39 +190,115 @@ pub fn draw_history(
         cr.set_dash(&[], 0.0);
     }
 
-    // Samples more than 10 minutes apart mean the app wasn't running.
-    const GAP: i64 = 600;
-    let visible: Vec<&Sample> = samples.iter().filter(|s| s.ts >= start - GAP).collect();
+    let visible: Vec<&(i64, f64, Rgb)> = spec.points.iter().filter(|p| p.0 >= spec.start - spec.gap).collect();
     cr.set_line_width(2.0);
     cr.set_line_join(cairo::LineJoin::Round);
     for pair in visible.windows(2) {
         let (a, b) = (pair[0], pair[1]);
-        if b.ts - a.ts > GAP || b.ts < start {
+        if b.0 - a.0 > spec.gap || b.0 < spec.start {
             continue;
         }
-        let (r, g, bl) = if b.on_power() { GREEN } else { BLUE };
-        let (x1, x2) = (x_of(a.ts.max(start)), x_of(b.ts));
-        let (y1, y2) = (y_of(a.percent), y_of(b.percent));
-        // Soft fill under the line.
-        cr.set_source_rgba(r, g, bl, 0.15);
-        cr.move_to(x1, y1);
-        cr.line_to(x2, y2);
-        cr.line_to(x2, top + ph);
-        cr.line_to(x1, top + ph);
-        cr.close_path();
-        let _ = cr.fill();
+        let (r, g, bl) = b.2;
+        let (x1, x2) = (x_of(a.0.max(spec.start)), x_of(b.0));
+        let (y1, y2) = (y_of(a.1), y_of(b.1));
+        if spec.fill {
+            cr.set_source_rgba(r, g, bl, 0.15);
+            cr.move_to(x1, y1);
+            cr.line_to(x2, y2);
+            cr.line_to(x2, top + ph);
+            cr.line_to(x1, top + ph);
+            cr.close_path();
+            let _ = cr.fill();
+        }
         cr.set_source_rgb(r, g, bl);
         cr.move_to(x1, y1);
         cr.line_to(x2, y2);
         let _ = cr.stroke();
     }
+    if spec.dots {
+        for p in visible.iter().filter(|p| p.0 >= spec.start) {
+            let (r, g, b) = p.2;
+            cr.set_source_rgb(r, g, b);
+            cr.arc(x_of(p.0), y_of(p.1), 3.0, 0.0, 2.0 * PI);
+            let _ = cr.fill();
+        }
+    }
 
     if visible.len() < 2 {
         set_rgba(cr, fg, 0.55);
-        let msg = "Not enough history yet";
-        if let Ok(ext) = cr.text_extents(msg) {
+        if let Ok(ext) = cr.text_extents(spec.empty_text) {
             cr.move_to(left + (pw - ext.width()) / 2.0, top + ph / 2.0);
-            let _ = cr.show_text(msg);
+            let _ = cr.show_text(spec.empty_text);
         }
     }
+}
+
+/// Samples more than 10 minutes apart mean the app wasn't running.
+const HISTORY_GAP: i64 = 600;
+
+/// Battery level: green while plugged in, blue on battery, dashed limit line.
+#[allow(clippy::too_many_arguments)]
+pub fn draw_level(cr: &cairo::Context, w: f64, h: f64, fg: &gdk::RGBA, samples: &[Sample], now: i64, range: i64, limit: Option<u8>) {
+    let points: Vec<_> = samples.iter().map(|s| (s.ts, s.percent, if s.on_power() { GREEN } else { BLUE })).collect();
+    draw_chart(cr, w, h, fg, &ChartSpec {
+        start: now - range,
+        end: now,
+        y_min: 0.0,
+        y_max: 100.0,
+        y_ticks: vec![0.0, 50.0, 100.0],
+        y_label: &|v| format!("{v:.0}%"),
+        points: &points,
+        gap: HISTORY_GAP,
+        fill: true,
+        dots: false,
+        hline: limit.filter(|l| *l < 100).map(|l| (l as f64, GREEN)),
+        empty_text: "Not enough history yet",
+    });
+}
+
+/// Power draw in watts: blue on battery, green while charging.
+pub fn draw_power(cr: &cairo::Context, w: f64, h: f64, fg: &gdk::RGBA, samples: &[Sample], now: i64, range: i64) {
+    let points: Vec<_> = samples
+        .iter()
+        .filter(|s| s.ts >= now - range - HISTORY_GAP)
+        .filter_map(|s| Some((s.ts, s.power_w?, if s.on_power() { GREEN } else { BLUE })))
+        .collect();
+    let max = nice_max(points.iter().map(|p| p.1).fold(1.0, f64::max));
+    draw_chart(cr, w, h, fg, &ChartSpec {
+        start: now - range,
+        end: now,
+        y_min: 0.0,
+        y_max: max,
+        y_ticks: vec![0.0, max / 2.0, max],
+        y_label: &|v| format!("{v:.0} W"),
+        points: &points,
+        gap: HISTORY_GAP,
+        fill: true,
+        dots: false,
+        hline: None,
+        empty_text: "Not enough history yet",
+    });
+}
+
+/// Maximum capacity over time from the daily health log, with the 80% line
+/// where batteries are usually considered worn.
+pub fn draw_health(cr: &cairo::Context, w: f64, h: f64, fg: &gdk::RGBA, entries: &[HealthEntry], now: i64) {
+    let points: Vec<_> = entries.iter().map(|e| (e.ts, e.health, BLUE)).collect();
+    let start = entries.first().map_or(now - 30 * 86_400, |e| e.ts.min(now - 30 * 86_400));
+    let lowest = points.iter().map(|p| p.1).fold(100.0, f64::min);
+    let y_min = ((lowest.min(80.0) - 5.0) / 10.0).floor().max(0.0) * 10.0;
+    draw_chart(cr, w, h, fg, &ChartSpec {
+        start,
+        end: now,
+        y_min,
+        y_max: 100.0,
+        y_ticks: vec![y_min, 80.0, 100.0],
+        y_label: &|v| format!("{v:.0}%"),
+        points: &points,
+        gap: i64::MAX,
+        fill: false,
+        dots: true,
+        hline: Some((80.0, YELLOW)),
+        empty_text: "Recorded once a day; check back tomorrow",
+    });
 }

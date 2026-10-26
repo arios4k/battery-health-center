@@ -26,6 +26,9 @@ pub struct ChargingPage {
     start: adw::SpinRow,
     persist: adw::SwitchRow,
     apply: gtk::Button,
+    full_group: adw::PreferencesGroup,
+    full_row: adw::ActionRow,
+    full_button: gtk::Button,
     mode_group: adw::PreferencesGroup,
     mode: adw::ComboRow,
     mode_ids: RefCell<Vec<String>>,
@@ -92,6 +95,14 @@ impl ChargingPage {
         unsupported.add(&row);
         root.add(&unsupported);
 
+        let full_group = adw::PreferencesGroup::new();
+        let full_row = adw::ActionRow::builder().title("Charge to 100% Now").build();
+        full_row.add_prefix(&gtk::Image::from_icon_name("battery-level-100-charged-symbolic"));
+        let full_button = gtk::Button::builder().label("Charge Now").valign(gtk::Align::Center).build();
+        full_row.add_suffix(&full_button);
+        full_group.add(&full_row);
+        root.add(&full_group);
+
         let mode_group = adw::PreferencesGroup::builder()
             .title("Charging Mode")
             .description("Temporarily pause charging, or run from the battery while still plugged in.")
@@ -120,6 +131,9 @@ impl ChargingPage {
             start,
             persist,
             apply,
+            full_group,
+            full_row,
+            full_button,
             mode_group,
             mode,
             mode_ids: RefCell::new(Vec::new()),
@@ -153,6 +167,18 @@ impl ChargingPage {
             }
         });
         let this = Rc::downgrade(self);
+        self.full_button.connect_clicked(move |_| {
+            let Some(this) = this.upgrade() else { return };
+            let Some(ctrl) = this.ctrl.upgrade() else { return };
+            if ctrl.state().full_charge {
+                ctrl.finish_full_charge();
+                this.toast("Back to your charge limit");
+            } else {
+                ctrl.start_full_charge();
+                this.toast("Charging to 100% once; your limit comes back when full or unplugged");
+            }
+        });
+        let this = Rc::downgrade(self);
         self.apply.connect_clicked(move |_| {
             if let Some(this) = this.upgrade() {
                 this.apply_limit();
@@ -166,7 +192,7 @@ impl ChargingPage {
             }
             let id = this.mode_ids.borrow().get(row.selected() as usize).cloned();
             if let Some(id) = id {
-                this.run_helper(vec!["set-behaviour".into(), this.battery_name(), id.clone()], format!("Charging mode set to {}", behaviour_label(&id)));
+                this.run_helper(vec![vec!["set-behaviour".into(), this.battery_name(), id.clone()]], format!("Charging mode set to {}", behaviour_label(&id)));
             }
         });
         let this = Rc::downgrade(self);
@@ -204,7 +230,8 @@ impl ChargingPage {
 
     fn apply_limit(self: &Rc<Self>) {
         let Some(ctrl) = self.ctrl.upgrade() else { return };
-        let Some(b) = ctrl.state().battery.clone() else { return };
+        let batteries = ctrl.state().batteries.clone();
+        let Some(b) = batteries.first() else { return };
         let on = self.enable.is_active();
         let end = if on { self.end.value() as u8 } else { 100 };
         let start = match (b.supports_start_threshold(), on) {
@@ -215,17 +242,29 @@ impl ChargingPage {
         };
         let persist = if self.persist.is_active() && on { "--persist" } else { "--no-persist" };
         let msg = if on { format!("Charging will stop at {end}%") } else { "Charge limit removed".to_string() };
-        self.run_helper(vec!["set-thresholds".into(), b.name, start, end.to_string(), persist.into()], msg);
+        // The same limit applies to every battery (some laptops have two).
+        let requests = batteries
+            .iter()
+            .map(|b| vec!["set-thresholds".into(), b.name.clone(), start.clone(), end.to_string(), persist.into()])
+            .collect();
+        self.run_helper(requests, msg);
     }
 
-    fn run_helper(self: &Rc<Self>, args: Vec<String>, success: String) {
+    /// Runs helper requests in order, stopping at the first error.
+    fn run_helper(self: &Rc<Self>, requests: Vec<Vec<String>>, success: String) {
         if self.busy.replace(true) {
             return;
         }
         self.apply.set_sensitive(false);
         let this = self.clone();
         glib::spawn_future_local(async move {
-            let result = system::run_helper(args).await;
+            let mut result = Ok(());
+            for args in requests {
+                result = system::run_helper(args).await;
+                if result.is_err() {
+                    break;
+                }
+            }
             this.busy.set(false);
             this.apply.set_sensitive(true);
             match result {
@@ -248,6 +287,24 @@ impl ChargingPage {
         self.start.set_visible(b.supports_start_threshold());
 
         let end = b.end_threshold.unwrap_or(100);
+        // One-time full charge: only useful with a limit set, and while plugged in.
+        self.full_group.set_visible(supported && (end < 100 || st.full_charge));
+        if st.full_charge {
+            self.full_row.set_title("Charging to 100%");
+            self.full_row.set_subtitle("Your limit comes back when the battery is full or you unplug.");
+            self.full_button.set_label("Cancel");
+            self.full_button.set_sensitive(true);
+            self.full_button.remove_css_class("suggested-action");
+        } else {
+            self.full_row.set_title("Charge to 100% Now");
+            self.full_row.set_subtitle(if b.ac_online {
+                "Charge fully once, for a trip or a long day. Your limit comes back when full or unplugged."
+            } else {
+                "Connect the charger to charge fully once."
+            });
+            self.full_button.set_label("Charge Now");
+            self.full_button.set_sensitive(b.ac_online);
+        }
         let status = match (end < 100, b.start_threshold.filter(|s| *s > 0)) {
             (true, Some(s)) => format!("Stops at {end}%, resumes below {s}%"),
             (true, None) => format!("Stops at {end}%"),

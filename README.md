@@ -2,14 +2,21 @@
 
 All your laptop battery information in one place, for GNOME. Written in Rust with GTK 4 and libadwaita.
 
-- **Overview**: charge level, time remaining, power draw, a health summary and recommendations
-  (for example, to limit charging when you're always plugged in, or that an app is draining the battery).
+- **Overview**: charge level, time remaining, power draw, charger type and wattage, battery use since
+  the last charge, wireless device batteries (mouse, keyboard, headphones), a health summary and
+  recommendations (for example, a weak charger, high drain during sleep, or an app draining the battery).
 - **Health**: maximum capacity compared with design capacity, condition, cycle count, voltage,
-  manufacturer, model, chemistry, and the capacity change over the last 30 days.
+  manufacturer, model, chemistry, capacity over time with a projected 80% date, and guided calibration.
+  Laptops with two batteries are supported.
 - **Charging**: set a maximum charge (and where charging resumes), keep it after a restart or sleep,
-  pause charging or run on battery while plugged in, and switch power mode.
-- **Usage**: battery level history (24 hours / 7 days) and the apps using the most energy, now and on
-  average.
+  charge to 100% once ("Charge to 100% Now"), pause charging or run on battery while plugged in, and
+  switch power mode.
+- **Usage**: battery level and power draw (24 hours / 7 days), battery use during sleep, and the apps
+  using the most energy now, since opening, or over 24 hours / 7 days.
+- **Notifications** (Preferences): charge limit reached, fully charged without a limit, low battery,
+  apps draining the battery, and high drain during sleep.
+- **Battery report**: export an HTML report from the menu, or run
+  `battery-health-center --export-report report.html`.
 
 ## Install from the Snap Store
 
@@ -23,7 +30,8 @@ sudo snap connect battery-health-center:power-control
 The snap is strictly confined. A bundled root service (`bhc-helper serve`) applies charge limits
 through the `power-control` interface, which only allows the `charge_start_threshold` /
 `charge_stop_threshold` files. Charging Mode and Power Mode are hidden in the snap because no
-interface allows them. To build it locally, run `snapcraft pack`.
+interface allows them. Calibration and Charge to 100% Now work in the snap. To build it locally, run
+`snapcraft pack`.
 
 Store screenshots are in `screenshots/`. To retake them, run the app with
 `BHC_SCREENSHOTS=<folder>` (and optionally `BHC_SCREENSHOTS_STYLE=light` or `dark`). It saves one

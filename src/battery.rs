@@ -263,9 +263,106 @@ pub fn read_battery(dir: &Path) -> Option<Battery> {
     })
 }
 
-/// The primary (first) system battery, if any.
-pub fn primary_battery() -> Option<Battery> {
-    battery_paths().first().and_then(|p| read_battery(p))
+/// All system batteries, in name order.
+pub fn all_batteries() -> Vec<Battery> {
+    battery_paths().iter().filter_map(|p| read_battery(p)).collect()
+}
+
+/// Combines several batteries into one overall view: energy-weighted charge,
+/// summed capacity and power. Identity fields and thresholds come from the
+/// first battery. With one battery it is returned as is.
+pub fn combine(batteries: &[Battery]) -> Option<Battery> {
+    let first = batteries.first()?;
+    if batteries.len() == 1 {
+        return Some(first.clone());
+    }
+    let sum = |f: fn(&Battery) -> Option<f64>| -> Option<f64> {
+        batteries.iter().map(f).sum::<Option<f64>>()
+    };
+    let mut b = first.clone();
+    b.name = batteries.iter().map(|b| b.name.as_str()).collect::<Vec<_>>().join(" + ");
+    b.energy_now_wh = sum(|b| b.energy_now_wh);
+    b.energy_full_wh = sum(|b| b.energy_full_wh);
+    b.energy_design_wh = sum(|b| b.energy_design_wh);
+    b.power_w = batteries.iter().filter_map(|b| b.power_w).reduce(|a, p| a + p);
+    if let (Some(now), Some(full)) = (b.energy_now_wh, b.energy_full_wh) {
+        if full > 0.0 {
+            b.percent = (now / full * 100.0).clamp(0.0, 100.0);
+        }
+    }
+    let any = |st: Status| batteries.iter().any(|b| b.status == st);
+    b.status = if any(Status::Charging) {
+        Status::Charging
+    } else if any(Status::Discharging) {
+        Status::Discharging
+    } else {
+        first.status
+    };
+    b.ac_online = batteries.iter().any(|b| b.ac_online);
+    Some(b)
+}
+
+/// The connected charger, if any.
+#[derive(Clone, Debug, PartialEq)]
+pub struct Charger {
+    /// e.g. "USB-C Power Delivery" or "AC adapter"
+    pub kind: String,
+    pub volts: Option<f64>,
+    pub amps: Option<f64>,
+}
+
+impl Charger {
+    pub fn watts(&self) -> Option<f64> {
+        Some(self.volts? * self.amps?).filter(|w| *w > 0.0)
+    }
+}
+
+/// Reads the charger from USB-C sources (which report the negotiated
+/// voltage and current) or a plain AC adapter (which reports neither).
+pub fn charger() -> Option<Charger> {
+    let entries = fs::read_dir(POWER_SUPPLY_ROOT).ok()?;
+    let mut mains = false;
+    let mut best: Option<Charger> = None;
+    for p in entries.flatten().map(|e| e.path()) {
+        if read_str(&p, "online").as_deref() != Some("1") {
+            continue;
+        }
+        match read_str(&p, "type").as_deref() {
+            Some("Mains") => mains = true,
+            Some(t) if t.starts_with("USB") => {
+                let usb_type = read_str(&p, "usb_type").unwrap_or_default();
+                // The active mode is in brackets, e.g. "C [PD] PD_PPS".
+                let active = usb_type.split_whitespace().find(|w| w.starts_with('[')).unwrap_or("");
+                let kind = if active.contains("PD") { "USB-C Power Delivery" } else { "USB-C" };
+                let volts = read_num(&p, "voltage_max").or_else(|| read_num(&p, "voltage_now")).map(|v| v / 1e6).filter(|v| *v > 0.0);
+                let amps = read_num(&p, "current_max").map(|a| a / 1e6).filter(|a| *a > 0.0);
+                let c = Charger { kind: kind.into(), volts, amps };
+                if best.as_ref().is_none_or(|b| c.watts().unwrap_or(0.0) > b.watts().unwrap_or(0.0)) {
+                    best = Some(c);
+                }
+            }
+            _ => {}
+        }
+    }
+    best.or_else(|| mains.then(|| Charger { kind: "AC adapter".into(), volts: None, amps: None }))
+}
+
+/// The selected and available system sleep modes from /sys/power/mem_sleep,
+/// e.g. ("s2idle", ["s2idle", "deep"]).
+pub fn sleep_mode() -> Option<(String, Vec<String>)> {
+    let text = fs::read_to_string("/sys/power/mem_sleep").ok()?;
+    let mut selected = None;
+    let modes: Vec<String> = text
+        .split_whitespace()
+        .map(|w| match w.strip_prefix('[').and_then(|w| w.strip_suffix(']')) {
+            Some(m) => {
+                selected = Some(m.to_string());
+                m.to_string()
+            }
+            None => w.to_string(),
+        })
+        .collect();
+    Some((selected?, modes))
 }
 
 pub fn format_hours(hours: f64) -> String {

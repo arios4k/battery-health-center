@@ -14,12 +14,12 @@
       native GNOME app.
     </p>
     <ul>
-      <li>Charge level, time remaining and live power draw</li>
-      <li>Maximum capacity compared with when new, condition and cycle count</li>
-      <li>Set a maximum charge level to extend your battery's lifespan</li>
-      <li>Battery level history for the last 24 hours or 7 days</li>
-      <li>Apps using significant energy, with estimated power draw on battery</li>
-      <li>Recommendations to make your battery last longer</li>
+      <li>Charge level, time remaining, power draw and charger wattage</li>
+      <li>Maximum capacity, condition, cycle count, and capacity over time with a projection</li>
+      <li>Set a maximum charge level to extend your battery's lifespan, or charge to 100% once</li>
+      <li>Battery level and power draw history, and battery use during sleep</li>
+      <li>Apps using the most energy, now and over the last 7 days</li>
+      <li>Wireless device batteries, notifications, guided calibration and a battery report</li>
     </ul>
   </description>
   <launchable type="desktop-id">io.github.BatteryHealthCenter.desktop</launchable>
@@ -43,6 +43,19 @@
   </supports>
   <content_rating type="oars-1.1"/>
   <releases>
+    <release version="0.2.0" date="2026-10-25">
+      <description>
+        <p>New features:</p>
+        <ul>
+          <li>Charge to 100% Now: a one-time full charge, then your limit comes back</li>
+          <li>Since last charge, charger type and wattage, and battery use during sleep</li>
+          <li>Power draw chart, and capacity over time with a projected 80% date</li>
+          <li>Notifications for your charge limit, low battery, app drain and sleep drain</li>
+          <li>Wireless device batteries, app energy use over 24 hours or 7 days</li>
+          <li>Guided calibration, battery report export, and two-battery laptops</li>
+        </ul>
+      </description>
+    </release>
     <release version="0.1.3" date="2026-10-24">
       <description>
         <p>Fixes the snap closing straight away on launch without showing a window.</p>

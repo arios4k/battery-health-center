@@ -16,6 +16,8 @@ use gtk::gio::prelude::*;
 
 #[derive(Clone, Debug)]
 pub struct AppUsage {
+    /// Stable grouping key: "app:<desktop id>", "proc:<name>" or "kernel".
+    pub key: String,
     pub name: String,
     pub icon: Option<gio::Icon>,
     pub system: bool,
@@ -187,6 +189,15 @@ impl AppSampler {
         self.desktop_apps.get(&id.to_lowercase()).cloned()
     }
 
+    /// The icon for an app key from `AppUsage::key` (for stored history).
+    pub fn icon_for_key(&self, key: &str) -> Option<gio::Icon> {
+        if key == "kernel" {
+            return Some(gio::ThemedIcon::new("computer-symbolic").upcast());
+        }
+        let id = key.strip_prefix("app:").or_else(|| key.strip_prefix("proc:"))?;
+        self.lookup_desktop(id)?.1
+    }
+
     fn classify(&mut self, pid: i32, stat: &ProcStat) -> Rc<GroupInfo> {
         self.classify_with_depth(pid, stat, 0)
     }
@@ -320,6 +331,7 @@ impl AppSampler {
                     processes,
                     impact,
                     watts: dynamic_power_w.map(|p| p * impact / sum),
+                    key,
                 }
             })
             .collect();
@@ -333,7 +345,8 @@ impl AppSampler {
         let mut out: Vec<AppUsage> = self
             .cumulative
             .iter()
-            .map(|(_, (sum, info))| AppUsage {
+            .map(|(key, (sum, info))| AppUsage {
+                key: key.clone(),
                 name: info.name.clone(),
                 icon: info.icon.clone(),
                 system: info.system,

@@ -1,7 +1,7 @@
 name: battery-health-center
 title: Battery Health Center
 base: core24
-version: '0.1.3'
+version: '0.2.0'
 summary: Battery health, charge limits and app energy usage in one place
 description: |
   Battery Health Center brings everything about your laptop battery together
@@ -9,30 +9,40 @@ description: |
 
   **Overview**
   - Charge level, status and time remaining (until empty, or until your charge limit)
-  - Live power draw in watts
+  - Live power draw in watts, and your charger's type and wattage
+  - Since last charge: when you unplugged, how much battery you've used,
+    and your average power draw
   - A quick health summary: maximum capacity, condition and cycle count
+  - Battery levels of your mouse, keyboard, headphones and other wireless devices
   - Recommendations, such as limiting charging when you're always plugged in,
-    or that an app is draining your battery
+    a charger that's too weak, high drain during sleep, or an app draining
+    your battery
 
   **Battery health**
   - Maximum capacity compared with when the battery was new
   - Condition: Normal, Worn or Service Recommended
-  - Full-charge and design capacity in Wh, and how much capacity has been lost
-  - Charge cycle count
-  - How capacity has changed over the last 30 days
-  - Voltage, average power draw, manufacturer, model, chemistry and serial number
+  - Capacity over time, with the trend and when it's projected to reach 80%
+  - Full-charge and design capacity in Wh, cycle count, voltage,
+    manufacturer, model, chemistry and serial number
+  - Guided calibration, for when the percentage jumps or the laptop shuts
+    down early
+  - Laptops with two batteries are supported
 
   **Charge limit**
   Lithium batteries wear faster when kept at 100%. If your laptop is plugged in
   most of the time, limiting the charge to about 80% can noticeably extend the
   battery's lifespan. Set where charging stops and where it resumes, and keep
-  the limit after restarts and sleep.
+  the limit after restarts and sleep. Need a full battery for a trip? "Charge
+  to 100% Now" charges fully once, then your limit comes back by itself.
 
   **Usage and energy**
-  - Battery level history for the last 24 hours or 7 days
-  - Apps using significant energy right now, and their average impact,
-    with estimated power draw while on battery
-  - Optionally keeps recording history in the background after you log in
+  - Battery level and power draw for the last 24 hours or 7 days
+  - Battery use during sleep, with a warning when it's unusually high
+  - Apps using significant energy right now, and which used the most over
+    24 hours or 7 days, with estimated energy on battery
+  - Notifications when charging reaches your limit, the battery is low,
+    an app drains the battery, or sleep drain is high
+  - Export a battery report (HTML) for warranty claims or selling your laptop
 
   **Permissions**
   This snap is strictly confined. After installing, connect these interfaces:
@@ -49,7 +59,7 @@ description: |
   Battery information works on any laptop with a standard Linux battery driver.
   Charge limits need firmware support exposed by the kernel as
   charge_start_threshold / charge_stop_threshold, as on ThinkPads and many
-  other laptops.
+  other laptops. Charger wattage needs a USB-C charger that reports it.
 
   Linux doesn't measure power per app, so app energy usage is an estimate
   based on CPU time.
@@ -73,6 +83,7 @@ apps:
     plugs:
       - hardware-observe
       - system-observe
+      - upower-observe # wireless device batteries (auto-connected)
 
   # Root service that applies charge limits for the app (pkexec can't be
   # used inside a snap) and re-applies saved limits at boot and after sleep.

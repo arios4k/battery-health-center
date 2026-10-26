@@ -1,6 +1,7 @@
 mod charging;
 mod health;
 mod overview;
+mod preferences;
 mod screenshots;
 mod usage;
 mod widgets;
@@ -17,7 +18,7 @@ pub fn build_window(app: &adw::Application, ctrl: &Rc<Controller>) -> adw::Appli
     let toasts = adw::ToastOverlay::new();
 
     let overview = overview::OverviewPage::new(ctrl, &stack);
-    let health = Rc::new(health::HealthPage::new());
+    let health = health::HealthPage::new(ctrl);
     let charging = charging::ChargingPage::new(ctrl, &toasts);
     let usage = usage::UsagePage::new(ctrl);
 
@@ -45,9 +46,15 @@ pub fn build_window(app: &adw::Application, ctrl: &Rc<Controller>) -> adw::Appli
     let header = adw::HeaderBar::builder().title_widget(&switcher).build();
 
     let menu = gio::Menu::new();
-    menu.append(Some("_Refresh"), Some("app.refresh"));
-    menu.append(Some("_About Battery Health Center"), Some("app.about"));
-    menu.append(Some("_Quit"), Some("app.quit"));
+    let section = gio::Menu::new();
+    section.append(Some("_Refresh"), Some("app.refresh"));
+    section.append(Some("_Export Battery Report…"), Some("win.export-report"));
+    menu.append_section(None, &section);
+    let section = gio::Menu::new();
+    section.append(Some("_Preferences"), Some("win.preferences"));
+    section.append(Some("_About Battery Health Center"), Some("app.about"));
+    section.append(Some("_Quit"), Some("app.quit"));
+    menu.append_section(None, &section);
     let menu_button = gtk::MenuButton::builder()
         .icon_name("open-menu-symbolic")
         .menu_model(&menu)
@@ -75,10 +82,31 @@ pub fn build_window(app: &adw::Application, ctrl: &Rc<Controller>) -> adw::Appli
         .content(&toolbar)
         .build();
 
+    let prefs = gio::SimpleAction::new("preferences", None);
+    let (w, c) = (window.downgrade(), Rc::downgrade(ctrl));
+    prefs.connect_activate(move |_, _| {
+        if let (Some(w), Some(c)) = (w.upgrade(), c.upgrade()) {
+            preferences::show(&w, &c);
+        }
+    });
+    window.add_action(&prefs);
+
+    let export = gio::SimpleAction::new("export-report", None);
+    let (w, c, t) = (window.downgrade(), Rc::downgrade(ctrl), toasts.clone());
+    export.connect_activate(move |_, _| {
+        if let (Some(w), Some(c)) = (w.upgrade(), c.upgrade()) {
+            export_report(&w, &c, &t);
+        }
+    });
+    window.add_action(&export);
+
     // On narrow windows, move the page switcher to the bottom.
     let breakpoint = adw::Breakpoint::new(adw::BreakpointCondition::parse("max-width: 600sp").unwrap());
     breakpoint.add_setter(&switcher_bar, "reveal", Some(&true.to_value()));
     breakpoint.add_setter(&switcher, "visible", Some(&false.to_value()));
+    // ...and stack the overview's status text under the gauge.
+    breakpoint.add_setter(&overview.hero, "orientation", Some(&gtk::Orientation::Vertical.to_value()));
+    breakpoint.add_setter(&overview.hero_text, "halign", Some(&gtk::Align::Center.to_value()));
     window.add_breakpoint(breakpoint);
 
     if let Some(dir) = std::env::var_os("BHC_SCREENSHOTS") {
@@ -125,4 +153,37 @@ fn permissions_banner() -> Option<adw::Banner> {
         dialog.present(Some(banner));
     });
     Some(banner)
+}
+
+/// Asks where to save the HTML battery report, then writes it.
+fn export_report(window: &adw::ApplicationWindow, ctrl: &Rc<Controller>, toasts: &adw::ToastOverlay) {
+    let html = crate::report::build_html(&ctrl.state());
+    let today = glib::DateTime::now_local().and_then(|d| d.format("%Y-%m-%d")).map(|d| d.to_string()).unwrap_or_default();
+    let dialog = gtk::FileDialog::builder()
+        .title("Export Battery Report")
+        .initial_name(format!("battery-report-{today}.html"))
+        .build();
+    let (w, toasts) = (window.downgrade(), toasts.clone());
+    dialog.save(Some(window), gio::Cancellable::NONE, move |result| {
+        let Ok(file) = result else { return }; // cancelled
+        let written = file.replace_contents(
+            html.as_bytes(),
+            None,
+            false,
+            gio::FileCreateFlags::REPLACE_DESTINATION,
+            gio::Cancellable::NONE,
+        );
+        let toast = match written {
+            Ok(_) => {
+                let toast = adw::Toast::builder().title("Battery report saved").button_label("Open").build();
+                let w = w.clone();
+                toast.connect_button_clicked(move |_| {
+                    gtk::FileLauncher::new(Some(&file)).launch(w.upgrade().as_ref(), gio::Cancellable::NONE, |_| {});
+                });
+                toast
+            }
+            Err(e) => adw::Toast::new(&format!("Could not save the report: {}", e.message())),
+        };
+        toasts.add_toast(toast);
+    });
 }

@@ -1,7 +1,11 @@
+mod app_history;
 mod apps;
 mod battery;
 mod controller;
+mod health_log;
 mod history;
+mod report;
+mod settings;
 mod system;
 mod ui;
 
@@ -17,6 +21,23 @@ fn main() -> glib::ExitCode {
     // `--background` (used by the login autostart entry) keeps the app running
     // without a window so battery history keeps being recorded.
     let args: Vec<String> = std::env::args().collect();
+    // `--export-report <file>` writes the HTML battery report and exits.
+    if let Some(i) = args.iter().position(|a| a == "--export-report") {
+        let Some(path) = args.get(i + 1) else {
+            eprintln!("usage: battery-health-center --export-report <file.html>");
+            return glib::ExitCode::FAILURE;
+        };
+        let ctrl = controller::Controller::new();
+        ctrl.refresh();
+        let html = report::build_html(&ctrl.state());
+        return match std::fs::write(path, html) {
+            Ok(()) => glib::ExitCode::SUCCESS,
+            Err(e) => {
+                eprintln!("could not write {path}: {e}");
+                glib::ExitCode::FAILURE
+            }
+        };
+    }
     let background = args.iter().any(|a| a == "--background");
     let args: Vec<String> = args.into_iter().filter(|a| a != "--background").collect();
 
@@ -53,6 +74,16 @@ fn main() -> glib::ExitCode {
             }
         }
         let ctrl = controller::Controller::new();
+        let weak_app = app.downgrade();
+        ctrl.set_notifier(move |id, title, body| {
+            if let Some(app) = weak_app.upgrade() {
+                let n = gio::Notification::new(title);
+                n.set_body(Some(body));
+                n.set_icon(&gio::ThemedIcon::new(APP_ID));
+                n.set_default_action("app.activate-window");
+                app.send_notification(Some(id), &n);
+            }
+        });
         ctrl.start();
         setup_actions(app, &ctrl);
         *c.borrow_mut() = Some(ctrl);
@@ -103,6 +134,12 @@ fn setup_actions(app: &adw::Application, ctrl: &Rc<controller::Controller>) {
         dialog.present(a.active_window().as_ref());
     });
 
+    // Clicking a notification opens (or raises) the window.
+    let activate_window = gio::SimpleAction::new("activate-window", None);
+    let a = app.clone();
+    activate_window.connect_activate(move |_, _| a.activate());
+    app.add_action(&activate_window);
+
     let quit = gio::SimpleAction::new("quit", None);
     let a = app.clone();
     quit.connect_activate(move |_, _| a.quit());
@@ -111,5 +148,6 @@ fn setup_actions(app: &adw::Application, ctrl: &Rc<controller::Controller>) {
     app.add_action(&about);
     app.add_action(&quit);
     app.set_accels_for_action("app.refresh", &["<Primary>r"]);
+    app.set_accels_for_action("win.preferences", &["<Primary>comma"]);
     app.set_accels_for_action("app.quit", &["<Primary>q"]);
 }
