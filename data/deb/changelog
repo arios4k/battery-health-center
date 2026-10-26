@@ -1,3 +1,12 @@
+battery-health-center (0.3.1-1) unstable; urgency=low
+
+  * Fix the Power Mode dropdown: choosing a mode was applied and then undone
+    a moment later, because the page re-selected the old mode from a stale
+    cache and treated that as a new choice. The cache is now updated as soon
+    as a change succeeds, and dropdowns ignore selections that change nothing.
+
+ -- Alexis Rios-Negron <182820807+arios4k@users.noreply.github.com>  Mon, 26 Oct 2026 13:03:28 -0700
+
 battery-health-center (0.3.0-1) unstable; urgency=low
 
   * Release 0.3.0: new Power page with automatic power mode, GNOME power

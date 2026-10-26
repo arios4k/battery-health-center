@@ -147,7 +147,12 @@ impl PowerProfiles {
                 -1,
                 gio::Cancellable::NONE,
             )
-            .map(|_| ())
+            .map(|_| ())?;
+        // The daemon announces the change in a signal that is handled later; until
+        // then the cached value would still be the old mode, and a page refresh
+        // would wrongly put the old mode back on screen.
+        self.proxy.set_cached_property("ActiveProfile", Some(&profile.to_variant()));
+        Ok(())
     }
 }
 

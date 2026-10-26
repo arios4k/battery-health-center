@@ -47,6 +47,12 @@
   </supports>
   <content_rating type="oars-1.1"/>
   <releases>
+    <release version="0.3.1" date="2026-10-26">
+      <description>
+        <p>Fixes the Power Mode dropdown, which undid your choice a moment after you made it.</p>
+        <p>Dropdowns on the Power page now ignore selections that change nothing.</p>
+      </description>
+    </release>
     <release version="0.3.0" date="2026-10-26">
       <description>
         <p>New Power page:</p>
