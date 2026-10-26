@@ -49,6 +49,31 @@ The `.deb` is the full, unsandboxed version: real app icons, per-app energy use,
 page, and charge limits through the normal PolicyKit password prompt. It needs libadwaita 1.5 or newer
 (Ubuntu 24.04+, Zorin OS 18, Linux Mint 22, Debian 13).
 
+### From the apt repository
+
+The package is published in a signed apt repository (amd64), so `apt` installs it and keeps it up to date:
+
+```bash
+sudo install -d -m 0755 /etc/apt/keyrings
+```
+
+```bash
+curl -fsSL https://arios4k.github.io/apt/key.asc | sudo tee /etc/apt/keyrings/battery-health-center.asc > /dev/null
+```
+
+```bash
+echo "deb [signed-by=/etc/apt/keyrings/battery-health-center.asc] https://arios4k.github.io/apt stable main" | sudo tee /etc/apt/sources.list.d/battery-health-center.list
+```
+
+```bash
+sudo apt update && sudo apt install battery-health-center
+```
+
+The signing key's fingerprint is `F090 D01D 74F7 14C8 5A95 23CA 4773 367E BD97 6CF5`. The repository is
+served from [arios4k/apt](https://github.com/arios4k/apt) through GitHub Pages.
+
+### Build it yourself
+
 Build it from a checkout (needs [`cargo-deb`](https://crates.io/crates/cargo-deb), installed with
 `cargo install cargo-deb`):
 
@@ -68,6 +93,14 @@ it together with the snap, since both would manage the same charge limit. If you
 back up its history first, because removing the snap deletes it: copy
 `~/snap/battery-health-center/current/.local/share/battery-health-center/*.csv` to
 `~/.local/share/battery-health-center/`.
+
+### Publishing a new version (maintainers)
+
+Bump the version in `Cargo.toml`, add an entry to `data/deb/changelog`, then run
+`scripts/publish-apt.sh`. It builds the package, adds it to the repository, signs the index and pushes
+the site. `DRY_RUN=1 scripts/publish-apt.sh` shows the steps without doing anything. It needs
+`reprepro`, the signing key in your GPG keyring, and the repository's private files in `~/apt-repo`
+(configuration and database, never published) next to a clone of `arios4k/apt` in `~/apt-site`.
 
 ## Requirements
 
