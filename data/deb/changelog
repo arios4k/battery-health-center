@@ -1,0 +1,9 @@
+battery-health-center (0.3.0-1) unstable; urgency=low
+
+  * Release 0.3.0: new Power page with automatic power mode, GNOME power
+    saving settings, power button and lid actions.
+  * Package for Debian and Ubuntu: charge limits ask for a password through
+    PolicyKit, and a systemd service re-applies a saved limit at boot and
+    after sleep.
+
+ -- Alexis Rios-Negron <182820807+arios4k@users.noreply.github.com>  Mon, 26 Oct 2026 12:17:52 -0700
