@@ -43,6 +43,32 @@ Store screenshots are in `screenshots/`. To retake them, run the app with
 `BHC_SCREENSHOTS=<folder>` (and optionally `BHC_SCREENSHOTS_STYLE=light` or `dark`). It saves one
 image per page and quits.
 
+## Install as a Debian/Ubuntu package
+
+The `.deb` is the full, unsandboxed version: real app icons, per-app energy use, the complete Power
+page, and charge limits through the normal PolicyKit password prompt. It needs libadwaita 1.5 or newer
+(Ubuntu 24.04+, Zorin OS 18, Linux Mint 22, Debian 13).
+
+Build it from a checkout (needs [`cargo-deb`](https://crates.io/crates/cargo-deb), installed with
+`cargo install cargo-deb`):
+
+```bash
+cargo deb
+```
+
+Install it, which also pulls in the dependencies:
+
+```bash
+sudo apt install ./target/debian/battery-health-center_*_amd64.deb
+```
+
+The package installs the app, the root helper in `/usr/libexec/battery-health-center/`, the PolicyKit
+rule and a systemd service that re-applies a saved charge limit at boot and after sleep. Don't install
+it together with the snap, since both would manage the same charge limit. If you switch from the snap,
+back up its history first, because removing the snap deletes it: copy
+`~/snap/battery-health-center/current/.local/share/battery-health-center/*.csv` to
+`~/.local/share/battery-health-center/`.
+
 ## Requirements
 
 GTK ≥ 4.14, libadwaita ≥ 1.5, and Rust. On Ubuntu, Zorin OS or Debian:

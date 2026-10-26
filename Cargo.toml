@@ -24,3 +24,44 @@ path = "src/bin/bhc-helper.rs"
 [profile.release]
 lto = true
 strip = true
+
+# Debian/Ubuntu package: `cargo deb` (see README). Unlike the snap, this is the
+# unsandboxed version: charge limits go through pkexec, and the restore service
+# re-applies a saved limit at boot and after sleep.
+[package.metadata.deb]
+name = "battery-health-center"
+maintainer = "Alexis Rios-Negron <182820807+arios4k@users.noreply.github.com>"
+copyright = "2026, Alexis Rios-Negron"
+license-file = ["data/deb/copyright", "0"]
+changelog = "data/deb/changelog"
+maintainer-scripts = "data/deb/scripts"
+section = "utils"
+priority = "optional"
+depends = "$auto, libgtk-4-1 (>= 4.14), libadwaita-1-0 (>= 1.5), pkexec | policykit-1, upower"
+recommends = "power-profiles-daemon"
+extended-description = """\
+Battery Health Center shows everything about your laptop battery in one \
+GNOME app: health and cycle count, charge limits to reduce wear, charge to \
+100% once, battery use during sleep, power modes and power-saving settings, \
+and which apps use the most energy.
+.
+Charge limits need a laptop whose firmware exposes charge thresholds to the \
+kernel (as on ThinkPads and many others). Changing them asks for your \
+password through PolicyKit."""
+assets = [
+    ["target/release/battery-health-center", "usr/bin/", "755"],
+    ["target/release/bhc-helper", "usr/libexec/battery-health-center/", "755"],
+    ["data/deb/io.github.BatteryHealthCenter.policy", "usr/share/polkit-1/actions/", "644"],
+    ["data/io.github.BatteryHealthCenter.desktop", "usr/share/applications/", "644"],
+    ["data/io.github.BatteryHealthCenter.metainfo.xml", "usr/share/metainfo/", "644"],
+    ["data/icons/hicolor/scalable/apps/io.github.BatteryHealthCenter.svg", "usr/share/icons/hicolor/scalable/apps/", "644"],
+    ["data/deb/battery-health-center.1", "usr/share/man/man1/", "644"],
+    ["README.md", "usr/share/doc/battery-health-center/", "644"],
+]
+
+[package.metadata.deb.systemd-units]
+unit-name = "battery-health-center-restore"
+unit-scripts = "data/deb"
+enable = true
+start = false
+restart-after-upgrade = false

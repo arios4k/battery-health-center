@@ -1,0 +1,41 @@
+.TH BATTERY-HEALTH-CENTER 1 "October 2026" "battery-health-center 0.3.0" "User Commands"
+.SH NAME
+battery-health-center \- battery health, charge limits and energy use in one place
+.SH SYNOPSIS
+.B battery-health-center
+.RB [ \-\-background ]
+.br
+.B battery-health-center \-\-export\-report
+.I FILE
+.SH DESCRIPTION
+A GNOME application showing the health of the laptop battery (maximum capacity,
+condition, cycle count), the charger, battery use during sleep and which
+applications use the most energy.
+It can limit how far the battery charges, charge it to 100% once, switch the
+power mode automatically, and change GNOME's power-saving settings.
+.PP
+Changing the charge limit asks for a password through PolicyKit.
+.SH OPTIONS
+.TP
+.B \-\-background
+Start without a window, so that battery history keeps being recorded.
+The Usage page can start the application this way at login.
+.TP
+.BI \-\-export\-report " FILE"
+Write an HTML battery report to
+.I FILE
+and exit.
+.SH FILES
+.TP
+.I ~/.local/share/battery-health-center/
+Recorded history.
+.TP
+.I ~/.config/battery-health-center/settings.ini
+Preferences.
+.TP
+.I /etc/battery-health-center.conf
+Saved charge limits, re-applied at boot and after sleep.
+.SH AUTHOR
+Alexis Rios-Negron.
+.SH SEE ALSO
+Project page: https://github.com/arios4k/battery-health-center
