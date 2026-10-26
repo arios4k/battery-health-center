@@ -13,7 +13,8 @@ description: |
   - Since last charge: when you unplugged, how much battery you've used,
     and your average power draw
   - A quick health summary: maximum capacity, condition and cycle count
-  - Battery levels of your mouse, keyboard, headphones and other wireless devices
+  - Battery levels of wireless devices such as mice, keyboards and headphones
+    (for devices that report them)
   - Recommendations, such as limiting charging when you're always plugged in,
     a charger that's too weak, high drain during sleep, or an app draining
     your battery
@@ -21,28 +22,42 @@ description: |
   **Battery health**
   - Maximum capacity compared with when the battery was new
   - Condition: Normal, Worn or Service Recommended
-  - Capacity over time, with the trend and when it's projected to reach 80%
-  - Full-charge and design capacity in Wh, cycle count, voltage,
-    manufacturer, model, chemistry and serial number
-  - Guided calibration, for when the percentage jumps or the laptop shuts
-    down early
+  - Full-charge and design capacity in Wh, capacity lost, cycle count,
+    voltage, average draw, manufacturer, model, chemistry and serial number
+  - Capacity over time, recorded daily; after about two weeks it shows the
+    trend and when capacity is projected to reach 80%
+  - Guided calibration (charge to 100%, use until nearly empty, charge to
+    100% again), for when the percentage jumps or the laptop shuts down early
   - Laptops with two batteries are supported
 
-  **Charge limit**
+  **Charging**
   Lithium batteries wear faster when kept at 100%. If your laptop is plugged in
   most of the time, limiting the charge to about 80% can noticeably extend the
   battery's lifespan. Set where charging stops and where it resumes, and keep
   the limit after restarts and sleep. Need a full battery for a trip? "Charge
-  to 100% Now" charges fully once, then your limit comes back by itself.
+  to 100% Now" charges fully once, then your limit comes back by itself when
+  the battery is full or you unplug.
 
-  **Usage and energy**
+  **Usage**
   - Battery level and power draw for the last 24 hours or 7 days
-  - Battery use during sleep, with a warning when it's unusually high
-  - Apps using significant energy right now, and which used the most over
-    24 hours or 7 days, with estimated energy on battery
-  - Notifications when charging reaches your limit, the battery is low,
-    an app drains the battery, or sleep drain is high
-  - Export a battery report (HTML) for warranty claims or selling your laptop
+  - Battery use during sleep, with a warning when it's unusually high, and
+    which sleep mode your laptop uses
+  - Apps using significant energy right now, and which used the most since
+    the app opened or over the last 24 hours or 7 days, with estimated energy
+    used on battery
+  - Record history in the background: starts hidden when you log in, so
+    history, sleep drain and notifications keep working with the window closed
+
+  **Notifications**
+  Charge limit reached, fully charged without a limit, low battery (at a level
+  you choose), an app draining the battery, high drain during sleep, and each
+  step of calibration. All but the calibration steps can be turned off in
+  Preferences.
+
+  **Battery report**
+  Export an HTML report with battery details, capacity history, recent usage,
+  sleep drain and top apps, for warranty claims, selling your laptop or your
+  own records. Open it in a browser to print or save as PDF.
 
   **Permissions**
   This snap is strictly confined. After installing, connect these interfaces:
@@ -53,7 +68,8 @@ description: |
 
   hardware-observe reads battery information, system-observe sees which apps
   use energy, and power-control changes the charge limit. The app shows which
-  ones are missing.
+  ones are missing. Wireless device batteries use upower-observe, which
+  connects automatically.
 
   **Compatibility**
   Battery information works on any laptop with a standard Linux battery driver.
