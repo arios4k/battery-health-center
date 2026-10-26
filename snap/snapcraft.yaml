@@ -1,7 +1,7 @@
 name: battery-health-center
 title: Battery Health Center
 base: core24
-version: '0.2.0'
+version: '0.2.1'
 summary: Battery health, charge limits and app energy usage in one place
 description: |
   Battery Health Center brings everything about your laptop battery together

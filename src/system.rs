@@ -194,6 +194,12 @@ pub fn set_autostart(enabled: bool) -> std::io::Result<()> {
     )
 }
 
+/// In the snap: whether snapd is holding back an update of this snap
+/// because the app is running (the helper service leaves this marker).
+pub fn refresh_pending() -> bool {
+    std::env::var_os("SNAP_COMMON").is_some_and(|d| PathBuf::from(d).join("refresh-pending").exists())
+}
+
 /// Whether a one-time "charge to 100%" is in progress for this battery (the
 /// helper keeps a marker file while it is).
 pub fn full_charge_active(battery: &str) -> bool {
