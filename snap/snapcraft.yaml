@@ -7,6 +7,10 @@ description: |
   Battery Health Center brings everything about your laptop battery together
   in one native GNOME app, much like the Battery settings on macOS.
 
+  This is the sandboxed edition. The full version, with real app icons and the
+  power-mode and power-saving controls, is in the apt repository:
+  https://arios4k.github.io/apt
+
   **Overview**
   - Charge level, status and time remaining (until empty, or until your charge limit)
   - Live power draw in watts, and your charger's type and wattage
@@ -38,13 +42,10 @@ description: |
 
   **Power**
   - Show the battery percentage in the top bar
-  - Power mode (Power Saver, Balanced, Performance), and automatic power mode:
-    switch it by itself when you plug in or unplug, or when the charge gets low
-  - GNOME's power-saving settings in one place: dim screen, screen blank,
-    automatic suspend, power button and lid actions
-  - In the snap only the top bar setting works: its sandbox blocks the power
-    mode service and GNOME's power settings. The rest needs the regular
-    (non-snap) version, and the page says so
+  - Power mode, automatic power mode (switches when you plug in or unplug, or
+    when the charge gets low) and GNOME's power-saving settings (dim, screen
+    blank, suspend, power button, lid) are only in the full version: this
+    sandbox blocks them
 
   **Usage**
   - Battery level and power draw for the last 24 hours or 7 days
@@ -53,14 +54,13 @@ description: |
   - Apps using significant energy right now, and which used the most since
     the app opened or over the last 24 hours or 7 days, with estimated energy
     used on battery
-  - Record history in the background: starts hidden when you log in, so
-    history, sleep drain and notifications keep working with the window closed
+  - Optional background recording (starts hidden at login) keeps history,
+    sleep drain and notifications working with the window closed
 
   **Notifications**
   Charge limit reached, fully charged without a limit, low battery (at a level
   you choose), an app draining the battery, high drain during sleep, and each
-  step of calibration. All but the calibration steps can be turned off in
-  Preferences.
+  step of calibration. Turn them off in Preferences (except calibration).
 
   **Battery report**
   Export an HTML report with battery details, capacity history, recent usage,
