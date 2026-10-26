@@ -2,6 +2,7 @@ mod app_history;
 mod apps;
 mod battery;
 mod controller;
+mod desktop;
 mod health_log;
 mod history;
 mod report;

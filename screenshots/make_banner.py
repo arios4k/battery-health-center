@@ -71,7 +71,7 @@ def place(canvas, im, x, y):
 
 # Two screenshots: the usage page behind, the overview in front; both run off
 # the bottom edge so the banner feels like a window into the app.
-back = shot("dark/4-usage.png", 560)
+back = shot("dark/5-usage.png", 560)
 # Dim the back window so the front one leads.
 back = Image.alpha_composite(back, Image.new("RGBA", back.size, (8, 38, 30, 0)))
 back.putalpha(back.split()[3].point(lambda a: int(a * 0.85)))

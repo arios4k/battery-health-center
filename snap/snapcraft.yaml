@@ -1,7 +1,7 @@
 name: battery-health-center
 title: Battery Health Center
 base: core24
-version: '0.2.1'
+version: '0.3.0'
 summary: Battery health, charge limits and app energy usage in one place
 description: |
   Battery Health Center brings everything about your laptop battery together
@@ -13,11 +13,9 @@ description: |
   - Since last charge: when you unplugged, how much battery you've used,
     and your average power draw
   - A quick health summary: maximum capacity, condition and cycle count
-  - Battery levels of wireless devices such as mice, keyboards and headphones
-    (for devices that report them)
-  - Recommendations, such as limiting charging when you're always plugged in,
-    a charger that's too weak, high drain during sleep, or an app draining
-    your battery
+  - Battery levels of wireless devices (mice, keyboards, headphones) that report them
+  - Recommendations: limit charging, a weak charger, high drain during sleep,
+    or an app draining your battery
 
   **Battery health**
   - Maximum capacity compared with when the battery was new
@@ -26,8 +24,8 @@ description: |
     voltage, average draw, manufacturer, model, chemistry and serial number
   - Capacity over time, recorded daily; after about two weeks it shows the
     trend and when capacity is projected to reach 80%
-  - Guided calibration (charge to 100%, use until nearly empty, charge to
-    100% again), for when the percentage jumps or the laptop shuts down early
+  - Guided calibration (charge, use until nearly empty, charge again) for when
+    the percentage jumps or the laptop shuts down early
   - Laptops with two batteries are supported
 
   **Charging**
@@ -37,6 +35,16 @@ description: |
   the limit after restarts and sleep. Need a full battery for a trip? "Charge
   to 100% Now" charges fully once, then your limit comes back by itself when
   the battery is full or you unplug.
+
+  **Power**
+  - Show the battery percentage in the top bar
+  - Power mode (Power Saver, Balanced, Performance), and automatic power mode:
+    switch it by itself when you plug in or unplug, or when the charge gets low
+  - GNOME's power-saving settings in one place: dim screen, screen blank,
+    automatic suspend, power button and lid actions
+  - In the snap only the top bar setting works: its sandbox blocks the power
+    mode service and GNOME's power settings. The rest needs the regular
+    (non-snap) version, and the page says so
 
   **Usage**
   - Battery level and power draw for the last 24 hours or 7 days
@@ -57,7 +65,7 @@ description: |
   **Battery report**
   Export an HTML report with battery details, capacity history, recent usage,
   sleep drain and top apps, for warranty claims, selling your laptop or your
-  own records. Open it in a browser to print or save as PDF.
+  records. Print it or save it as PDF from a browser.
 
   **Permissions**
   This snap is strictly confined. After installing, connect these interfaces:
@@ -69,7 +77,7 @@ description: |
   hardware-observe reads battery information, system-observe sees which apps
   use energy, and power-control changes the charge limit. The app shows which
   ones are missing. Wireless device batteries use upower-observe, which
-  connects automatically.
+  connects by itself.
 
   **Compatibility**
   Battery information works on any laptop with a standard Linux battery driver.

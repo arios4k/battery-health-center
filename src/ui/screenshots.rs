@@ -8,7 +8,7 @@ use std::time::Duration;
 use adw::prelude::*;
 use gtk::{glib, gsk};
 
-const PAGES: &[&str] = &["overview", "health", "charging", "usage"];
+const PAGES: &[&str] = &["overview", "health", "charging", "power", "usage"];
 
 pub fn capture(window: &adw::ApplicationWindow, stack: &adw::ViewStack, dir: PathBuf, scroll_usage: impl Fn() + 'static) {
     let _ = std::fs::create_dir_all(&dir);

@@ -32,9 +32,6 @@ pub struct ChargingPage {
     mode_group: adw::PreferencesGroup,
     mode: adw::ComboRow,
     mode_ids: RefCell<Vec<String>>,
-    profile_group: adw::PreferencesGroup,
-    profile: adw::ComboRow,
-    profile_ids: RefCell<Vec<String>>,
     initialized: Cell<bool>,
     /// Set while the UI is updated programmatically, to ignore change signals.
     updating: Cell<bool>,
@@ -112,15 +109,6 @@ impl ChargingPage {
         mode_group.add(&mode);
         root.add(&mode_group);
 
-        let profile_group = adw::PreferencesGroup::builder()
-            .title("Power Mode")
-            .description("Power Saver reduces performance to extend battery life.")
-            .visible(false)
-            .build();
-        let profile = adw::ComboRow::builder().title("Power Mode").build();
-        profile_group.add(&profile);
-        root.add(&profile_group);
-
         let page = Rc::new(ChargingPage {
             root,
             limit_group,
@@ -137,9 +125,6 @@ impl ChargingPage {
             mode_group,
             mode,
             mode_ids: RefCell::new(Vec::new()),
-            profile_group,
-            profile,
-            profile_ids: RefCell::new(Vec::new()),
             initialized: Cell::new(false),
             updating: Cell::new(false),
             busy: Cell::new(false),
@@ -193,20 +178,6 @@ impl ChargingPage {
             let id = this.mode_ids.borrow().get(row.selected() as usize).cloned();
             if let Some(id) = id {
                 this.run_helper(vec![vec!["set-behaviour".into(), this.battery_name(), id.clone()]], format!("Charging mode set to {}", behaviour_label(&id)));
-            }
-        });
-        let this = Rc::downgrade(self);
-        self.profile.connect_selected_notify(move |row| {
-            let Some(this) = this.upgrade() else { return };
-            if this.updating.get() {
-                return;
-            }
-            let Some(ctrl) = this.ctrl.upgrade() else { return };
-            let id = this.profile_ids.borrow().get(row.selected() as usize).cloned();
-            if let (Some(profiles), Some(id)) = (&ctrl.profiles, id) {
-                if let Err(e) = profiles.set_active(&id) {
-                    this.toast(&format!("Could not change power mode: {}", e.message()));
-                }
             }
         });
     }
@@ -339,22 +310,6 @@ impl ChargingPage {
             if let Some(i) = b.charge_behaviours.iter().position(|m| Some(m) == b.charge_behaviour.as_ref()) {
                 if !self.busy.get() {
                     self.mode.set_selected(i as u32);
-                }
-            }
-        }
-
-        // Power profile
-        if let Some(ctrl) = self.ctrl.upgrade() {
-            if let Some(profiles) = &ctrl.profiles {
-                let ids = profiles.available();
-                self.profile_group.set_visible(!ids.is_empty());
-                if *self.profile_ids.borrow() != ids {
-                    let labels: Vec<&str> = ids.iter().map(|s| system::profile_label(s)).collect();
-                    self.profile.set_model(Some(&gtk::StringList::new(&labels)));
-                    *self.profile_ids.borrow_mut() = ids.clone();
-                }
-                if let Some(i) = profiles.active().and_then(|a| ids.iter().position(|p| *p == a)) {
-                    self.profile.set_selected(i as u32);
                 }
             }
         }

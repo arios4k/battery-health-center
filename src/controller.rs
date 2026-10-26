@@ -86,6 +86,9 @@ pub struct Controller {
     settings_mtime: Cell<Option<SystemTime>>,
     /// A helper request started by the controller is in flight.
     helper_busy: Cell<bool>,
+    /// The power mode automatic mode last chose, so it only acts when the
+    /// choice changes and never fights a mode picked by hand.
+    last_auto_profile: RefCell<Option<String>>,
     pub profiles: Option<PowerProfiles>,
 }
 
@@ -124,6 +127,7 @@ impl Controller {
             announced: RefCell::new(Announced::default()),
             settings_mtime: Cell::new(settings_mtime()),
             helper_busy: Cell::new(false),
+            last_auto_profile: RefCell::new(None),
             profiles: PowerProfiles::connect(),
         })
     }
@@ -245,6 +249,7 @@ impl Controller {
         if self.state.borrow().history.is_writer() {
             self.finish_full_charge_outside_snap();
             self.advance_calibration();
+            self.apply_auto_profile();
             self.send_notifications(n == 0, now);
         }
         self.notify();
@@ -294,6 +299,29 @@ impl Controller {
         if done {
             self.finish_full_charge();
         }
+    }
+
+    /// Applies "automatic power mode": when the charger is connected or
+    /// removed, or the charge crosses the low level, switch to the chosen mode.
+    fn apply_auto_profile(&self) {
+        let Some(profiles) = self.profiles.as_ref() else { return };
+        let wanted = {
+            let st = self.state.borrow();
+            let Some(b) = st.battery.as_ref() else { return };
+            st.settings.desired_profile(b.ac_online, b.percent, &profiles.available())
+        };
+        let mut last = self.last_auto_profile.borrow_mut();
+        if *last == wanted {
+            return;
+        }
+        if let Some(mode) = &wanted {
+            if profiles.active().as_deref() != Some(mode.as_str()) {
+                if let Err(e) = profiles.set_active(mode) {
+                    eprintln!("battery-health-center: could not switch power mode to {mode}: {}", e.message());
+                }
+            }
+        }
+        *last = wanted;
     }
 
     pub fn start_calibration(self: &Rc<Self>) {

@@ -9,8 +9,12 @@ All your laptop battery information in one place, for GNOME. Written in Rust wit
   manufacturer, model, chemistry, capacity over time with a projected 80% date, and guided calibration.
   Laptops with two batteries are supported.
 - **Charging**: set a maximum charge (and where charging resumes), keep it after a restart or sleep,
-  charge to 100% once ("Charge to 100% Now"), pause charging or run on battery while plugged in, and
-  switch power mode.
+  charge to 100% once ("Charge to 100% Now"), and pause charging or run on battery while plugged in.
+- **Power**: the power mode (Power Saver, Balanced, Performance); **automatic power mode**, which
+  switches it when you plug in or unplug the charger or when the charge gets low; GNOME's power-saving
+  settings (dim screen, screen blank, automatic suspend and brightness, power saver on low battery);
+  the power button and lid actions; and the battery percentage in the top bar. Only what your
+  hardware supports is shown. ([Screenshot of the regular version](screenshots/regular/power-dark.png))
 - **Usage**: battery level and power draw (24 hours / 7 days), battery use during sleep, and the apps
   using the most energy now, since opening, or over 24 hours / 7 days.
 - **Notifications** (Preferences): charge limit reached, fully charged without a limit, low battery,
@@ -30,7 +34,9 @@ sudo snap connect battery-health-center:power-control
 The snap is strictly confined. A bundled root service (`bhc-helper serve`) applies charge limits
 through the `power-control` interface, which only allows the `charge_start_threshold` /
 `charge_stop_threshold` files. Charging Mode and Power Mode are hidden in the snap because no
-interface allows them. Calibration and Charge to 100% Now work in the snap. To build it locally, run
+interface allows them. Calibration and Charge to 100% Now work in the snap. On the Power page, only
+**Show Battery Percentage** works in the snap: the sandbox blocks the power mode service and can't see
+GNOME's power settings, so the page says so and the rest is available in the regular (non-snap) version. To build it locally, run
 `snapcraft pack`.
 
 Store screenshots are in `screenshots/`. To retake them, run the app with
