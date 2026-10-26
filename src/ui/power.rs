@@ -67,7 +67,7 @@ fn enum_row(settings: &gio::Settings, key: &str, title: &str, subtitle: &str, hi
         if updating.get() {
             return;
         }
-        if let Some(v) = values.get(row.selected() as usize) {
+        if let Some(v) = values.get(row.selected() as usize).filter(|v| **v != settings.string(&key)) {
             let _ = settings.set_string(&key, v);
         }
     });
@@ -117,7 +117,7 @@ fn timeout_row(
         if updating.get() {
             return;
         }
-        if let Some(choice) = entries.borrow().get(row.selected() as usize).copied() {
+        if let Some(choice) = entries.borrow().get(row.selected() as usize).copied().filter(|c| *c != current()) {
             apply(choice);
         }
     });
@@ -325,10 +325,14 @@ impl PowerPage {
                 return;
             };
             if let Some(profiles) = &ctrl.profiles {
-                if let Err(e) = profiles.set_active(&id) {
-                    eprintln!("battery-health-center: could not change power mode: {}", e.message());
+                // A selection that matches the current mode isn't a user choice (the
+                // page also selects the current mode itself when it refreshes).
+                if profiles.active().as_deref() != Some(id.as_str()) {
+                    if let Err(e) = profiles.set_active(&id) {
+                        eprintln!("battery-health-center: could not change power mode: {}", e.message());
+                    }
+                    ctrl.refresh();
                 }
-                ctrl.refresh();
             }
         });
 

@@ -19,6 +19,13 @@ if [ "${1:-}" = "--uninstall" ]; then
         "$PREFIX/share/icons/hicolor/scalable/apps/$APP_ID.svg"
     sudo rmdir "$LIBEXEC" 2>/dev/null || true
     sudo systemctl daemon-reload
+    # Refresh the caches the install built. A stale icon cache in /usr/local keeps
+    # listing the removed icon, and since /usr/local is searched before /usr, it
+    # hides the icon of any other copy of the app (such as the .deb): blank icon.
+    if [ -d "$PREFIX/share/icons/hicolor" ]; then
+        sudo gtk-update-icon-cache -q -t -f "$PREFIX/share/icons/hicolor" 2>/dev/null || true
+    fi
+    sudo update-desktop-database -q "$PREFIX/share/applications" 2>/dev/null || true
     echo "Uninstalled. Charge limit config (if any) left at /etc/battery-health-center.conf"
     exit 0
 fi

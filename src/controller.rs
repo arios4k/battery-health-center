@@ -164,7 +164,11 @@ impl Controller {
     pub fn update_settings(&self, f: impl FnOnce(&mut Settings)) {
         {
             let mut st = self.state.borrow_mut();
+            let before = st.settings.clone();
             f(&mut st.settings);
+            if st.settings == before {
+                return;
+            }
             st.settings.save();
         }
         self.settings_mtime.set(settings_mtime());
