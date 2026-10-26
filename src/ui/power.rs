@@ -98,14 +98,20 @@ fn timeout_row(
                 list.push(Some(c));
                 list[1..].sort();
             }
-            let labels: Vec<String> =
-                list.iter().map(|e| e.map_or_else(|| "Never".to_string(), desktop::duration_label)).collect();
-            let refs: Vec<&str> = labels.iter().map(String::as_str).collect();
+            // Decide first, so no borrow is held while the widgets change.
+            let list_changed = *entries.borrow() != list;
             updating.set(true);
-            row.set_model(Some(&gtk::StringList::new(&refs)));
+            if list_changed {
+                let labels: Vec<String> =
+                    list.iter().map(|e| e.map_or_else(|| "Never".to_string(), desktop::duration_label)).collect();
+                let refs: Vec<&str> = labels.iter().map(String::as_str).collect();
+                row.set_model(Some(&gtk::StringList::new(&refs)));
+            }
             row.set_selected(list.iter().position(|e| *e == now).unwrap_or(0) as u32);
             updating.set(false);
-            *entries.borrow_mut() = list;
+            if list_changed {
+                *entries.borrow_mut() = list;
+            }
         })
     };
     rebuild();
@@ -117,7 +123,10 @@ fn timeout_row(
         if updating.get() {
             return;
         }
-        if let Some(choice) = entries.borrow().get(row.selected() as usize).copied().filter(|c| *c != current()) {
+        // Copy the choice out first: saving it triggers a refresh (via the settings'
+        // "changed" signal) that needs `entries` again, so no borrow may be held here.
+        let choice = entries.borrow().get(row.selected() as usize).copied();
+        if let Some(choice) = choice.filter(|c| *c != current()) {
             apply(choice);
         }
     });

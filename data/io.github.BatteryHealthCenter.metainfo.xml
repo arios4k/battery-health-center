@@ -47,6 +47,12 @@
   </supports>
   <content_rating type="oars-1.1"/>
   <releases>
+    <release version="0.3.2" date="2026-10-26">
+      <description>
+        <p>Fixes a crash when changing Screen Blank or Automatic Suspend on the Power page.</p>
+        <p>The charge ring now says "Not Charging" instead of a longer phrase that didn't fit.</p>
+      </description>
+    </release>
     <release version="0.3.1" date="2026-10-26">
       <description>
         <p>Fixes the Power Mode dropdown, which undid your choice a moment after you made it.</p>
