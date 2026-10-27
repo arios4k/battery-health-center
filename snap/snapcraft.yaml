@@ -6,6 +6,7 @@ summary: Battery health, charge limits and app energy usage in one place
 description: |
   Battery Health Center brings everything about your laptop battery together
   in one native GNOME app, much like the Battery settings on macOS.
+  Available in English, Spanish and German.
 
   This is the sandboxed edition. The full version, with real app icons and the
   power-mode and power-saving controls, is in the apt repository:
