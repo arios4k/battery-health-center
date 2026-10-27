@@ -6,6 +6,8 @@ mod desktop;
 mod health_log;
 mod history;
 mod i18n;
+#[allow(dead_code)]
+mod schedule;
 mod report;
 mod settings;
 mod system;

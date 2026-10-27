@@ -10,6 +10,7 @@ use gtk::glib::prelude::ToVariant;
 use gtk::glib;
 
 use crate::APP_ID;
+use crate::schedule::{self, Learned, Schedule};
 use crate::i18n::{tr, tr_noop, trf};
 
 /// Interfaces the snap needs, with what each one is for.
@@ -214,6 +215,50 @@ pub fn full_charge_active(battery: &str) -> bool {
         None => PathBuf::from("/run/battery-health-center"),
     };
     dir.join(format!("full-charge-{battery}")).exists()
+}
+
+/// The helper's files for the saved limit and the schedule: in the snap's
+/// common folder, otherwise /etc and /var/lib. All world-readable.
+/// `BHC_HELPER_FILES=<folder>` reads them from a folder instead, to try the
+/// schedule screens without touching the real settings.
+fn helper_file(snap_name: &str, etc: &str) -> PathBuf {
+    if let Some(dir) = std::env::var_os("BHC_HELPER_FILES") {
+        return PathBuf::from(dir).join(snap_name);
+    }
+    match std::env::var_os("SNAP_COMMON") {
+        Some(d) => PathBuf::from(d).join(snap_name),
+        None => PathBuf::from(etc),
+    }
+}
+
+/// Whether a charge limit below 100% is saved to be re-applied (the schedule
+/// lifts and restores that saved limit).
+pub fn has_saved_limit() -> bool {
+    let config = std::fs::read_to_string(helper_file("battery-health-center.conf", "/etc/battery-health-center.conf")).unwrap_or_default();
+    config.lines().filter(|l| !l.starts_with('#')).any(|l| l.split_whitespace().nth(2).and_then(|e| e.parse::<u8>().ok()).is_some_and(|e| e < 100))
+}
+
+/// The saved charging schedule (empty when there is none).
+pub fn read_schedule() -> Schedule {
+    let text = std::fs::read_to_string(helper_file("battery-health-center.schedule", "/etc/battery-health-center.schedule")).unwrap_or_default();
+    Schedule::parse(&text)
+}
+
+/// What optimized charging has learned so far from when you unplug.
+pub fn read_learned() -> Learned {
+    let text = std::fs::read_to_string(helper_file("unplug-log", "/var/lib/battery-health-center/unplug-log")).unwrap_or_default();
+    let unplugs: Vec<i64> = text.lines().filter_map(|l| l.trim().parse().ok()).collect();
+    let now = std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).map(|d| d.as_secs() as i64).unwrap_or(0);
+    schedule::learn(&unplugs, now)
+}
+
+/// Whether the schedule has lifted the limit for a charge to 100% right now.
+pub fn scheduled_full_active(battery: &str) -> bool {
+    let dir = match std::env::var_os("SNAP_COMMON") {
+        Some(d) => PathBuf::from(d),
+        None => PathBuf::from("/run/battery-health-center"),
+    };
+    dir.join(format!("scheduled-full-{battery}")).exists()
 }
 
 /// A battery-powered peripheral reported by UPower (mouse, headphones, ...).

@@ -8,12 +8,15 @@ cd "$(dirname "$0")"
 PREFIX=/usr/local
 LIBEXEC="$PREFIX/libexec/battery-health-center"
 UNIT=battery-health-center-restore.service
+SCHEDULE=battery-health-center-scheduler
 POLICY=/usr/share/polkit-1/actions/io.github.BatteryHealthCenter.policy
 APP_ID=io.github.BatteryHealthCenter
 
 if [ "${1:-}" = "--uninstall" ]; then
     sudo systemctl disable "$UNIT" 2>/dev/null || true
-    sudo rm -f "/etc/systemd/system/$UNIT" "$POLICY" \
+    sudo systemctl disable --now "$SCHEDULE.path" 2>/dev/null || true
+    sudo systemctl stop "$SCHEDULE.service" 2>/dev/null || true
+    sudo rm -f "/etc/systemd/system/$UNIT" "/etc/systemd/system/$SCHEDULE.path" "/etc/systemd/system/$SCHEDULE.service" "$POLICY" \
         "$PREFIX/bin/battery-health-center" "$LIBEXEC/bhc-helper" \
         "$PREFIX/share/applications/$APP_ID.desktop" \
         "$PREFIX/share/icons/hicolor/scalable/apps/$APP_ID.svg" \
@@ -44,8 +47,11 @@ for mo in locale/*/LC_MESSAGES/battery-health-center.mo; do
     sudo install -Dm644 "$mo" "$PREFIX/share/${mo#locale/}"
 done
 sudo install -Dm644 "data/$UNIT" "/etc/systemd/system/$UNIT"
+sudo install -Dm644 "data/$SCHEDULE.service" "/etc/systemd/system/$SCHEDULE.service"
+sudo install -Dm644 "data/$SCHEDULE.path" "/etc/systemd/system/$SCHEDULE.path"
 sudo systemctl daemon-reload
 sudo systemctl enable "$UNIT"
+sudo systemctl enable --now "$SCHEDULE.path"
 sudo gtk-update-icon-cache -q -t "$PREFIX/share/icons/hicolor" 2>/dev/null || true
 sudo update-desktop-database -q "$PREFIX/share/applications" 2>/dev/null || true
 

@@ -11,6 +11,9 @@ All your laptop battery information in one place, for GNOME. Written in Rust wit
 - **Charging**: pick a charge profile (Maximum Lifespan 60%, Balanced 80% or Full Capacity 100%) or set a
   maximum charge (and where charging resumes), keep it after a restart or sleep,
   charge to 100% once ("Charge to 100% Now"), and pause charging or run on battery while plugged in.
+  A **charging schedule** charges to 100% just before the time you pick (for example, weekdays at 07:30)
+  and keeps your limit the rest of the time; **optimized charging** learns those times from when you
+  usually unplug.
 - **Power**: the power mode (Power Saver, Balanced, Performance); **automatic power mode**, which
   switches it when you plug in or unplug the charger or when the charge gets low; GNOME's power-saving
   settings (dim screen, screen blank, automatic suspend and brightness, power saver on low battery);
@@ -222,6 +225,7 @@ This installs:
 | Privileged helper | `/usr/local/libexec/battery-health-center/bhc-helper` |
 | Polkit policy | `/usr/share/polkit-1/actions/io.github.BatteryHealthCenter.policy` |
 | Restore service | `/etc/systemd/system/battery-health-center-restore.service` |
+| Schedule service | `/etc/systemd/system/battery-health-center-scheduler.service` and `.path` |
 | Launcher and icon | `/usr/local/share/applications`, `/usr/local/share/icons` |
 
 To remove it, run `./install.sh --uninstall`.
@@ -231,11 +235,21 @@ To remove it, run `./install.sh --uninstall`.
 - **Battery data** is read directly from `/sys/class/power_supply/BAT*`. Both energy-based (µWh) and
   charge-based (µAh) drivers are supported.
 - **Charge limits** are written to `charge_control_start_threshold` and `charge_control_end_threshold`
-  by `bhc-helper`, the only part that runs as root. It uses only the Rust standard library, accepts only
-  validated arguments, and writes only those sysfs files and `/etc/battery-health-center.conf`. If you
+  by `bhc-helper`, the only part that runs as root. It uses only the Rust standard library (plus libc for
+  the local time), accepts only validated arguments, and writes only those sysfs files, its own config
+  files in `/etc` (the saved limit and the charging schedule) and, for optimized charging, a list of
+  unplug times in `/var/lib/battery-health-center`. If you
   turn on **Keep After Restart**, the systemd service re-applies the limit at boot and after resume.
   Supported by ThinkPads, many ASUS, Dell, Huawei, LG, Samsung and System76 laptops, and others with
   a kernel driver for the thresholds.
+- **The charging schedule** needs a saved charge limit, because it lifts that limit to 100% from the
+  lead time (2 hours by default) before each time you set, until 30 minutes after it, and then puts it
+  back. A root systemd service (`battery-health-center-scheduler`, started by a `.path` unit only while
+  a schedule exists; in the snap, the helper service) does this without asking for a password each
+  time. **Optimized charging** also records when you unplug after the laptop has been plugged in for
+  at least 3 hours. Once it has seen at least 3 such unplugs in the last 28 days on weekdays (or on
+  weekends) that fall within an hour and a half of each other, it uses the earlier end of that range as
+  a ready-by time. Nothing leaves your computer.
 - **App energy usage** is an estimate, because Linux doesn't measure power per app. CPU time is sampled
   from `/proc`. Processes are grouped into apps using the systemd scope GNOME launches each app in,
   falling back to the parent process for apps that move their processes elsewhere (such as Chromium-based
