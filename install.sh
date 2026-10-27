@@ -16,7 +16,8 @@ if [ "${1:-}" = "--uninstall" ]; then
     sudo rm -f "/etc/systemd/system/$UNIT" "$POLICY" \
         "$PREFIX/bin/battery-health-center" "$LIBEXEC/bhc-helper" \
         "$PREFIX/share/applications/$APP_ID.desktop" \
-        "$PREFIX/share/icons/hicolor/scalable/apps/$APP_ID.svg"
+        "$PREFIX/share/icons/hicolor/scalable/apps/$APP_ID.svg" \
+        "$PREFIX"/share/locale/*/LC_MESSAGES/battery-health-center.mo
     sudo rmdir "$LIBEXEC" 2>/dev/null || true
     sudo systemctl daemon-reload
     # Refresh the caches the install built. A stale icon cache in /usr/local keeps
@@ -31,6 +32,7 @@ if [ "${1:-}" = "--uninstall" ]; then
 fi
 
 cargo build --release
+scripts/build-locale.sh locale
 
 sudo install -Dm755 target/release/battery-health-center "$PREFIX/bin/battery-health-center"
 sudo install -Dm755 target/release/bhc-helper "$LIBEXEC/bhc-helper"
@@ -38,6 +40,9 @@ sudo install -Dm644 "data/$APP_ID.policy" "$POLICY"
 sudo install -Dm644 "data/$APP_ID.desktop" "$PREFIX/share/applications/$APP_ID.desktop"
 sudo install -Dm644 "data/icons/hicolor/scalable/apps/$APP_ID.svg" \
     "$PREFIX/share/icons/hicolor/scalable/apps/$APP_ID.svg"
+for mo in locale/*/LC_MESSAGES/battery-health-center.mo; do
+    sudo install -Dm644 "$mo" "$PREFIX/share/${mo#locale/}"
+done
 sudo install -Dm644 "data/$UNIT" "/etc/systemd/system/$UNIT"
 sudo systemctl daemon-reload
 sudo systemctl enable "$UNIT"

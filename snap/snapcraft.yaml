@@ -132,11 +132,13 @@ parts:
     plugin: nil
     source: .
     build-snaps: [rustup]
+    build-packages: [gettext]
     override-build: |
       env -u LD_LIBRARY_PATH /snap/bin/rustup toolchain install stable --profile minimal
       env -u LD_LIBRARY_PATH /snap/bin/rustup default stable
       env -u LD_LIBRARY_PATH /snap/bin/cargo install --locked --path . --root "$CRAFT_PART_INSTALL"
       rm -f "$CRAFT_PART_INSTALL/.crates.toml" "$CRAFT_PART_INSTALL/.crates2.json"
+      scripts/build-locale.sh "$CRAFT_PART_INSTALL/share/locale"
       install -Dm644 data/io.github.BatteryHealthCenter.desktop \
         "$CRAFT_PART_INSTALL/usr/share/applications/io.github.BatteryHealthCenter.desktop"
       install -Dm644 data/io.github.BatteryHealthCenter.metainfo.xml \

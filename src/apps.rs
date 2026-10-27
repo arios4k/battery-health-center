@@ -13,6 +13,7 @@ use std::rc::Rc;
 
 use gtk::gio;
 use gtk::gio::prelude::*;
+use crate::i18n::tr;
 
 #[derive(Clone, Debug)]
 pub struct AppUsage {
@@ -133,13 +134,13 @@ fn process_name(pid: i32, comm: &str) -> String {
 
 fn pretty_process_name(comm: &str) -> String {
     let known = match comm {
-        "gnome-shell" => "GNOME Shell",
+        "gnome-shell" => tr("GNOME Shell"),
         "Xwayland" => "Xwayland",
-        "pipewire" | "pipewire-pulse" | "wireplumber" => "Audio (PipeWire)",
-        "tracker-miner-f" | "localsearch-3" => "File Indexer",
-        "gnome-software" => "Software",
-        "packagekitd" => "Software Updates",
-        "Xorg" => "Display Server (Xorg)",
+        "pipewire" | "pipewire-pulse" | "wireplumber" => tr("Audio (PipeWire)"),
+        "tracker-miner-f" | "localsearch-3" => tr("File Indexer"),
+        "gnome-software" => tr("Software"),
+        "packagekitd" => tr("Software Updates"),
+        "Xorg" => tr("Display Server (Xorg)"),
         "systemd" => "systemd",
         _ => "",
     };
@@ -233,7 +234,7 @@ impl AppSampler {
         let info = if stat.ppid == 2 || pid == 2 {
             GroupInfo {
                 key: "kernel".into(),
-                name: "Linux Kernel".into(),
+                name: tr("Linux Kernel").into(),
                 icon: Some(gio::ThemedIcon::new("computer-symbolic").upcast()),
                 system: true,
             }

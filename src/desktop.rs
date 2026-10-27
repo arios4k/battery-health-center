@@ -7,6 +7,7 @@
 
 use gtk::gio;
 use gtk::gio::prelude::*;
+use crate::i18n::{tr, trnf};
 
 pub const POWER_SCHEMA: &str = "org.gnome.settings-daemon.plugins.power";
 pub const SESSION_SCHEMA: &str = "org.gnome.desktop.session";
@@ -112,13 +113,13 @@ pub fn has_ambient_light() -> bool {
 
 pub fn action_label(value: &str) -> String {
     match value {
-        "suspend" => "Suspend".into(),
-        "hibernate" => "Hibernate".into(),
-        "nothing" => "Do Nothing".into(),
-        "interactive" => "Ask What to Do".into(),
-        "blank" => "Turn Off the Screen".into(),
-        "shutdown" => "Shut Down".into(),
-        "logout" => "Log Out".into(),
+        "suspend" => tr("Suspend").into(),
+        "hibernate" => tr("Hibernate").into(),
+        "nothing" => tr("Do Nothing").into(),
+        "interactive" => tr("Ask What to Do").into(),
+        "blank" => tr("Turn Off the Screen").into(),
+        "shutdown" => tr("Shut Down").into(),
+        "logout" => tr("Log Out").into(),
         other => {
             let mut c = other.chars();
             c.next().map(|f| f.to_uppercase().chain(c).collect()).unwrap_or_default()
@@ -128,13 +129,12 @@ pub fn action_label(value: &str) -> String {
 
 /// "5 minutes", "1 hour", "90 minutes".
 pub fn duration_label(secs: i64) -> String {
+    let count = |n: i64| [("n", n.to_string())];
     match secs {
-        s if s < 60 => format!("{s} seconds"),
-        60 => "1 minute".into(),
-        s if s < 3600 => format!("{} minutes", s / 60),
-        3600 => "1 hour".into(),
-        s if s % 3600 == 0 => format!("{} hours", s / 3600),
-        s => format!("{} minutes", s / 60),
+        s if s < 60 => trnf("{n} second", "{n} seconds", s as u64, &count(s)),
+        s if s < 3600 => trnf("{n} minute", "{n} minutes", (s / 60) as u64, &count(s / 60)),
+        s if s % 3600 == 0 => trnf("{n} hour", "{n} hours", (s / 3600) as u64, &count(s / 3600)),
+        s => trnf("{n} minute", "{n} minutes", (s / 60) as u64, &count(s / 60)),
     }
 }
 

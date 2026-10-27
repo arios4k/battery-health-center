@@ -25,7 +25,7 @@ path = "src/bin/bhc-helper.rs"
 lto = true
 strip = true
 
-# Debian/Ubuntu package: `cargo deb` (see README). Unlike the snap, this is the
+# Debian/Ubuntu package: `scripts/build-locale.sh && cargo deb` (see README). Unlike the snap, this is the
 # unsandboxed version: charge limits go through pkexec, and the restore service
 # re-applies a saved limit at boot and after sleep.
 [package.metadata.deb]
@@ -56,6 +56,9 @@ assets = [
     ["data/io.github.BatteryHealthCenter.metainfo.xml", "usr/share/metainfo/", "644"],
     ["data/icons/hicolor/scalable/apps/io.github.BatteryHealthCenter.svg", "usr/share/icons/hicolor/scalable/apps/", "644"],
     ["data/deb/battery-health-center.1", "usr/share/man/man1/", "644"],
+    # One line per language in po/ (cargo-deb flattens globs).
+    ["locale/de/LC_MESSAGES/battery-health-center.mo", "usr/share/locale/de/LC_MESSAGES/", "644"],
+    ["locale/es/LC_MESSAGES/battery-health-center.mo", "usr/share/locale/es/LC_MESSAGES/", "644"],
     ["README.md", "usr/share/doc/battery-health-center/", "644"],
 ]
 

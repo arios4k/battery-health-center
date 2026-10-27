@@ -2,10 +2,16 @@
 Type=Application
 Name=Battery Health Center
 GenericName=Battery Information
+GenericName[de]=Akkuinformationen
+GenericName[es]=Información de la batería
 Comment=Battery health, charge limits and energy usage in one place
+Comment[de]=Akkuzustand, Ladelimits und Energieverbrauch an einem Ort
+Comment[es]=Salud de la batería, límites de carga y consumo de energía en un solo lugar
 Exec=battery-health-center
 Icon=io.github.BatteryHealthCenter
 Terminal=false
 Categories=GTK;GNOME;System;Monitor;
 Keywords=battery;power;health;charge;limit;cycles;energy;
+Keywords[de]=Akku;Batterie;Energie;Zustand;Laden;Limit;Zyklen;Verbrauch;
+Keywords[es]=batería;energía;salud;carga;límite;ciclos;consumo;
 StartupNotify=true

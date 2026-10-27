@@ -5,6 +5,8 @@
   <project_license>GPL-3.0-or-later</project_license>
   <name>Battery Health Center</name>
   <summary>Battery health, charge limits and app energy usage in one place</summary>
+  <summary xml:lang="de">Akkuzustand, Ladelimits und Energieverbrauch der Anwendungen an einem Ort</summary>
+  <summary xml:lang="es">Salud de la batería, límites de carga y consumo de energía de las aplicaciones en un solo lugar</summary>
   <developer id="io.github.arios4k">
     <name>Alexis Rios-Negron</name>
   </developer>

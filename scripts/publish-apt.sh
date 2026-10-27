@@ -44,6 +44,7 @@ if [ -n "$(git -C "$SITE_DIR" status --porcelain)" ]; then
     exit 1
 fi
 
+run scripts/build-locale.sh
 run cargo deb --deb-revision "$REVISION"
 # reprepro refuses to replace a version it already has; bump the revision to rebuild.
 run reprepro -b "$REPO_DIR" includedeb "$SUITE" "$deb"
