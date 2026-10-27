@@ -18,11 +18,13 @@
     <ul>
       <li>Charge level, time remaining, power draw and charger wattage</li>
       <li>Maximum capacity, condition, cycle count, and capacity over time with a projection</li>
-      <li>Set a maximum charge level to extend your battery's lifespan, or charge to 100% once</li>
+      <li>Set a maximum charge level or pick a charge profile to extend your battery's lifespan, or charge to 100% once</li>
+      <li>A charging schedule and optimized charging: full just before you need the laptop, your limit the rest of the time</li>
       <li>Battery level and power draw history, and battery use during sleep</li>
-      <li>Apps using the most energy, now and over the last 7 days</li>
-      <li>Wireless device batteries, notifications, guided calibration and a battery report</li>
-      <li>Power mode, automatic power mode and GNOME's power-saving settings in one place</li>
+      <li>Apps using the most energy, now and over the last 7 days, with an hour-by-hour view for each app</li>
+      <li>Wireless device batteries, notifications, guided calibration, a battery report and CSV export of your history</li>
+      <li>Power mode, automatic power mode and GNOME's power-saving settings in one place, plus battery-saving tips</li>
+      <li>Available in English, Spanish and German</li>
     </ul>
   </description>
   <url type="homepage">https://github.com/arios4k/battery-health-center</url>
@@ -49,6 +51,23 @@
   </supports>
   <content_rating type="oars-1.1"/>
   <releases>
+    <release version="0.4.0" date="2026-10-27">
+      <description>
+        <p>New in this release:</p>
+        <ul>
+          <li>Charge profiles: Maximum Lifespan (60%), Balanced (80%) and Full Capacity (100%)</li>
+          <li>A charging schedule and optimized charging, which learns when you usually unplug</li>
+          <li>Click an app on the Usage page to see its energy use hour by hour</li>
+          <li>Export your history as CSV files from the menu</li>
+          <li>Battery-saving tips: lower a bright screen, turn off the keyboard backlight or an idle Bluetooth adapter</li>
+        </ul>
+      </description>
+    </release>
+    <release version="0.3.3" date="2026-10-26">
+      <description>
+        <p>Adds Spanish and German translations.</p>
+      </description>
+    </release>
     <release version="0.3.2" date="2026-10-26">
       <description>
         <p>Fixes a crash when changing Screen Blank or Automatic Suspend on the Power page.</p>
