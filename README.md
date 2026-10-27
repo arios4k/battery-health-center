@@ -214,6 +214,14 @@ To try a translation, compile it first and point the app at it:
 scripts/build-locale.sh && LANGUAGE=es BHC_LOCALEDIR=$PWD/locale cargo run --release
 ```
 
+To try the Charging Schedule screens without touching your real settings, point the app at a folder
+that holds a stand-in `battery-health-center.conf` (a line like `BAT0 75 80`), and optionally a
+`battery-health-center.schedule` and an `unplug-log`:
+
+```bash
+BHC_HELPER_FILES=/path/to/folder cargo run --release
+```
+
 Changing the charge limit uses `pkexec` to run `bhc-helper` from the build folder, so it asks for your
 password every time until the app is installed.
 

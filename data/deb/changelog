@@ -1,3 +1,20 @@
+battery-health-center (0.4.0-1) unstable; urgency=low
+
+  * Add charge profiles to the Charging page: Maximum Lifespan (60%), Balanced
+    (80%) and Full Capacity (100%).
+  * Add a charging schedule and optimized charging. The limit is lifted to 100%
+    shortly before the times you choose, or before the times learned from when
+    you usually unplug, and put back afterwards. A root service
+    (battery-health-center-scheduler, started by a .path unit while a schedule
+    exists) carries it out without asking for a password each time.
+  * Click an app on the Usage page to see its energy impact and estimated
+    energy use hour by hour over a day or a week.
+  * Add "Export Data as CSV" to the menu and a --export-csv option.
+  * Suggest, while on battery, turning down a bright screen, turning off the
+    keyboard backlight, or turning off Bluetooth when nothing is connected.
+
+ -- Alexis Rios-Negron <182820807+arios4k@users.noreply.github.com>  Tue, 27 Oct 2026 11:33:19 -0700
+
 battery-health-center (0.3.3-1) unstable; urgency=low
 
   * Add Spanish and German translations. The app follows the system language and

@@ -1,6 +1,6 @@
 [package]
 name = "battery-health-center"
-version = "0.3.3"
+version = "0.4.0"
 edition = "2021"
 description = "All your laptop battery information in one place, for GNOME"
 license = "GPL-3.0-or-later"
@@ -42,13 +42,16 @@ depends = "$auto, libgtk-4-1 (>= 4.14), libadwaita-1-0 (>= 1.5), pkexec | policy
 recommends = "power-profiles-daemon"
 extended-description = """\
 Battery Health Center shows everything about your laptop battery in one \
-GNOME app: health and cycle count, charge limits to reduce wear, charge to \
-100% once, battery use during sleep, power modes and power-saving settings, \
-and which apps use the most energy.
+GNOME app: health and cycle count, charge limits and profiles to reduce \
+wear, a charging schedule and optimized charging, battery use during sleep, \
+power modes and power-saving settings, battery-saving tips, and which apps \
+use the most energy (with an hour-by-hour view per app). History can be \
+exported as CSV. It is available in English, Spanish and German.
 .
 Charge limits need a laptop whose firmware exposes charge thresholds to the \
 kernel (as on ThinkPads and many others). Changing them asks for your \
-password through PolicyKit."""
+password through PolicyKit; the charging schedule is then carried out by a \
+small root service without asking again."""
 assets = [
     ["target/release/battery-health-center", "usr/bin/", "755"],
     ["target/release/bhc-helper", "usr/libexec/battery-health-center/", "755"],
