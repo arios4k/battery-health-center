@@ -1,7 +1,7 @@
 name: battery-health-center
 title: Battery Health Center
 base: core24
-version: '0.3.2'
+version: '0.3.3'
 summary: Battery health, charge limits and app energy usage in one place
 description: |
   Battery Health Center brings everything about your laptop battery together
@@ -136,7 +136,12 @@ parts:
     override-build: |
       env -u LD_LIBRARY_PATH /snap/bin/rustup toolchain install stable --profile minimal
       env -u LD_LIBRARY_PATH /snap/bin/rustup default stable
-      env -u LD_LIBRARY_PATH /snap/bin/cargo install --locked --path . --root "$CRAFT_PART_INSTALL"
+      # cargo runs without the SDK's LD_LIBRARY_PATH, but the SDK's pkg-config
+      # needs it to start, so the build scripts call it through a small wrapper.
+      sdk_pkg_config="$(command -v pkg-config)"
+      printf '#!/bin/sh\nLD_LIBRARY_PATH="%s" exec "%s" "$@"\n' "$LD_LIBRARY_PATH" "$sdk_pkg_config" > /tmp/bhc-pkg-config
+      chmod +x /tmp/bhc-pkg-config
+      PKG_CONFIG=/tmp/bhc-pkg-config env -u LD_LIBRARY_PATH /snap/bin/cargo install --locked --path . --root "$CRAFT_PART_INSTALL"
       rm -f "$CRAFT_PART_INSTALL/.crates.toml" "$CRAFT_PART_INSTALL/.crates2.json"
       scripts/build-locale.sh "$CRAFT_PART_INSTALL/share/locale"
       install -Dm644 data/io.github.BatteryHealthCenter.desktop \

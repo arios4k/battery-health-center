@@ -1,3 +1,11 @@
+battery-health-center (0.3.3-1) unstable; urgency=low
+
+  * Add Spanish and German translations. The app follows the system language and
+    shows English for anything that isn't translated.
+  * Translate the application menu entry and its description.
+
+ -- Alexis Rios-Negron <182820807+arios4k@users.noreply.github.com>  Mon, 26 Oct 2026 19:42:58 -0700
+
 battery-health-center (0.3.2-1) unstable; urgency=low
 
   * Fix a crash when changing Screen Blank, Automatic Suspend on Battery or
