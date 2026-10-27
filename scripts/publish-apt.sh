@@ -48,6 +48,10 @@ run scripts/build-locale.sh
 run cargo deb --deb-revision "$REVISION"
 # reprepro refuses to replace a version it already has; bump the revision to rebuild.
 run reprepro -b "$REPO_DIR" includedeb "$SUITE" "$deb"
+# Keep the "Latest version" line of the site's README and landing page current.
+if [ "${DRY_RUN:-0}" != 1 ]; then
+    sed -i -E "s/(Latest version:\*{0,2} )[0-9][0-9.]*/\1${version}/" "$SITE_DIR/README.md" "$SITE_DIR/index.html"
+fi
 run git -C "$SITE_DIR" add -A
 run git -C "$SITE_DIR" commit -q -m "battery-health-center ${version}-${REVISION}"
 run git -C "$SITE_DIR" push -q origin main
