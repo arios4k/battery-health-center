@@ -3,6 +3,7 @@ mod apps;
 mod battery;
 mod controller;
 mod desktop;
+mod export;
 mod health_log;
 mod history;
 mod i18n;
@@ -40,6 +41,29 @@ fn main() -> glib::ExitCode {
             Ok(()) => glib::ExitCode::SUCCESS,
             Err(e) => {
                 eprintln!("could not write {path}: {e}");
+                glib::ExitCode::FAILURE
+            }
+        };
+    }
+    // `--export-csv <folder>` writes the history as CSV files and exits.
+    if let Some(i) = args.iter().position(|a| a == "--export-csv") {
+        let Some(dir) = args.get(i + 1) else {
+            eprintln!("usage: battery-health-center --export-csv <folder>");
+            return glib::ExitCode::FAILURE;
+        };
+        let ctrl = controller::Controller::new();
+        ctrl.refresh();
+        let iso = |ts: i64| glib::DateTime::from_unix_local(ts).and_then(|d| d.format("%Y-%m-%dT%H:%M:%S%:z")).map(|s| s.to_string()).unwrap_or_default();
+        let dir = std::path::Path::new(dir);
+        return match std::fs::create_dir_all(dir).and_then(|()| export::write_all(dir, &ctrl.state(), &iso)) {
+            Ok(files) => {
+                for f in files {
+                    println!("{}", f.display());
+                }
+                glib::ExitCode::SUCCESS
+            }
+            Err(e) => {
+                eprintln!("could not write the files: {e}");
                 glib::ExitCode::FAILURE
             }
         };

@@ -20,12 +20,18 @@ All your laptop battery information in one place, for GNOME. Written in Rust wit
   the power button and lid actions; and the battery percentage in the top bar. Only what your
   hardware supports is shown. ([Screenshot of the regular version](screenshots/regular/power-dark.png))
 - **Usage**: battery level and power draw (24 hours / 7 days), battery use during sleep, and the apps
-  using the most energy now, since opening, or over 24 hours / 7 days.
+  using the most energy now, since opening, or over 24 hours / 7 days. Click an app to see its energy
+  impact and estimated energy hour by hour over the last day or week.
 - **Languages**: English, Spanish and German (see [Translations](#translations)).
+- **Saving tips**: while on battery, the Overview suggests turning down a bright screen, switching off the
+  keyboard backlight, or turning off Bluetooth when nothing is connected, with a button for each.
 - **Notifications** (Preferences): charge limit reached, fully charged without a limit, low battery,
   apps draining the battery, and high drain during sleep.
 - **Battery report**: export an HTML report from the menu, or run
   `battery-health-center --export-report report.html`.
+- **CSV export**: **Export Data as CSV** in the menu (or `battery-health-center --export-csv <folder>`)
+  writes the battery level and power history, capacity over time, sleep sessions and each app's energy
+  use per hour as four CSV files for a spreadsheet.
 
 > **Recommended: install with apt.** It gives you the full app (real app icons, the whole Power page, nothing to connect by hand) and updates with your system. Jump to [Install with apt](#install-with-apt-recommended). The snap is a limited, sandboxed edition that needs manual permissions.
 

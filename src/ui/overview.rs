@@ -18,6 +18,9 @@ enum Action {
     OpenHealth,
     OpenUsage,
     UseBalanced,
+    LowerBrightness,
+    KeyboardBacklightOff,
+    BluetoothOff,
 }
 
 #[derive(PartialEq)]
@@ -321,6 +324,31 @@ impl OverviewPage {
                     action: Some((tr("Use Balanced"), Action::UseBalanced)),
                 });
             }
+            let saving = crate::desktop::saving_state();
+            if let Some(percent) = saving.screen.filter(|p| *p >= 80) {
+                recs.push(Recommendation {
+                    icon: "display-brightness-symbolic",
+                    title: trf("Screen brightness is at {percent}%", &[("percent", percent.to_string())]),
+                    subtitle: tr("The screen is usually the biggest power user. Lowering the brightness makes the battery last noticeably longer.").into(),
+                    action: Some((tr("Lower to 50%"), Action::LowerBrightness)),
+                });
+            }
+            if saving.keyboard.is_some_and(|p| p > 0) {
+                recs.push(Recommendation {
+                    icon: "keyboard-brightness-symbolic",
+                    title: tr("Keyboard backlight is on").into(),
+                    subtitle: tr("Turning it off while you don't need it saves a little power.").into(),
+                    action: Some((tr("Turn Off"), Action::KeyboardBacklightOff)),
+                });
+            }
+            if saving.bluetooth.as_ref().is_some_and(|bt| bt.powered && bt.connected_devices == 0) {
+                recs.push(Recommendation {
+                    icon: "bluetooth-symbolic",
+                    title: tr("Bluetooth is on but nothing is connected").into(),
+                    subtitle: tr("Turning Bluetooth off saves a little power until you need it again.").into(),
+                    action: Some((tr("Turn Off"), Action::BluetoothOff)),
+                });
+            }
             if b.percent <= 20.0 {
                 recs.push(Recommendation {
                     icon: "battery-level-20-symbolic",
@@ -372,11 +400,31 @@ impl OverviewPage {
         *self.last_recs.borrow_mut() = recs;
     }
 
+    fn refresh_after_tip(&self) {
+        if let Some(ctrl) = self.ctrl.upgrade() {
+            ctrl.refresh();
+        }
+    }
+
     fn run(&self, action: Action) {
         match action {
             Action::OpenCharging => self.stack.set_visible_child_name("charging"),
             Action::OpenHealth => self.stack.set_visible_child_name("health"),
             Action::OpenUsage => self.stack.set_visible_child_name("usage"),
+            Action::LowerBrightness => {
+                crate::desktop::set_screen_brightness(50);
+                self.refresh_after_tip();
+            }
+            Action::KeyboardBacklightOff => {
+                crate::desktop::set_keyboard_brightness(0);
+                self.refresh_after_tip();
+            }
+            Action::BluetoothOff => {
+                if let Some(bt) = crate::desktop::saving_state().bluetooth {
+                    crate::desktop::set_bluetooth_power(&bt.adapter, false);
+                }
+                self.refresh_after_tip();
+            }
             Action::UseBalanced => {
                 if let Some(ctrl) = self.ctrl.upgrade() {
                     if let Some(p) = &ctrl.profiles {

@@ -6,6 +6,7 @@
 //! visible at all.
 
 use gtk::gio;
+use gtk::glib;
 use gtk::gio::prelude::*;
 use crate::i18n::{tr, trnf};
 
@@ -92,6 +93,140 @@ pub fn can_hibernate() -> bool {
         .ok()
         .and_then(|r| r.child_value(0).str().map(|s| s == "yes"))
         .unwrap_or(false)
+}
+
+/// What could save battery right now: screen and keyboard brightness (through
+/// GNOME's power daemon) and Bluetooth (through BlueZ). Each part is None when
+/// it can't be read, for example inside the snap's sandbox.
+#[derive(Clone, Debug, Default, PartialEq)]
+pub struct SavingState {
+    /// Percent.
+    pub screen: Option<u8>,
+    pub keyboard: Option<u8>,
+    pub bluetooth: Option<Bluetooth>,
+}
+
+#[derive(Clone, Debug, PartialEq)]
+pub struct Bluetooth {
+    /// D-Bus path of the adapter, e.g. /org/bluez/hci0.
+    pub adapter: String,
+    pub powered: bool,
+    pub connected_devices: usize,
+}
+
+const POWER_NAME: &str = "org.gnome.SettingsDaemon.Power";
+const POWER_PATH: &str = "/org/gnome/SettingsDaemon/Power";
+const SCREEN_IFACE: &str = "org.gnome.SettingsDaemon.Power.Screen";
+const KEYBOARD_IFACE: &str = "org.gnome.SettingsDaemon.Power.Keyboard";
+
+fn power_proxy(iface: &str) -> Option<gio::DBusProxy> {
+    gio::DBusProxy::for_bus_sync(
+        gio::BusType::Session,
+        gio::DBusProxyFlags::DO_NOT_CONNECT_SIGNALS,
+        None,
+        POWER_NAME,
+        POWER_PATH,
+        iface,
+        gio::Cancellable::NONE,
+    )
+    .ok()
+}
+
+fn read_brightness(iface: &str) -> Option<u8> {
+    let percent = power_proxy(iface)?.cached_property("Brightness")?.get::<i32>()?;
+    u8::try_from(percent).ok().filter(|p| *p <= 100)
+}
+
+fn write_brightness(iface: &str, percent: u8) -> bool {
+    let Some(proxy) = power_proxy(iface) else { return false };
+    let args = (iface, "Brightness", i32::from(percent).to_variant()).to_variant();
+    proxy.call_sync("org.freedesktop.DBus.Properties.Set", Some(&args), gio::DBusCallFlags::NONE, 1000, gio::Cancellable::NONE).is_ok()
+}
+
+fn bluez_proxy(path: &str, iface: &str) -> Option<gio::DBusProxy> {
+    gio::DBusProxy::for_bus_sync(
+        gio::BusType::System,
+        gio::DBusProxyFlags::DO_NOT_CONNECT_SIGNALS | gio::DBusProxyFlags::DO_NOT_LOAD_PROPERTIES,
+        None,
+        "org.bluez",
+        path,
+        iface,
+        gio::Cancellable::NONE,
+    )
+    .ok()
+}
+
+fn read_bluetooth() -> Option<Bluetooth> {
+    let reply = bluez_proxy("/", "org.freedesktop.DBus.ObjectManager")?
+        .call_sync("GetManagedObjects", None, gio::DBusCallFlags::NONE, 1000, gio::Cancellable::NONE)
+        .ok()?;
+    let objects = reply.child_value(0);
+    let mut adapter = None;
+    let mut connected = 0;
+    for i in 0..objects.n_children() {
+        let entry = objects.child_value(i);
+        let path = entry.child_value(0).str()?.to_string();
+        let interfaces = entry.child_value(1);
+        for j in 0..interfaces.n_children() {
+            let iface = interfaces.child_value(j);
+            let props = glib::VariantDict::new(Some(&iface.child_value(1)));
+            let flag = |name: &str| props.lookup_value(name, None).and_then(|v| v.get::<bool>()).unwrap_or(false);
+            match iface.child_value(0).str() {
+                Some("org.bluez.Adapter1") => {
+                    adapter.get_or_insert((path.clone(), flag("Powered")));
+                }
+                Some("org.bluez.Device1") if flag("Connected") => connected += 1,
+                _ => {}
+            }
+        }
+    }
+    let (adapter, powered) = adapter?;
+    Some(Bluetooth { adapter, powered, connected_devices: connected })
+}
+
+thread_local! {
+    /// The last reading and when it was taken; reading asks other programs
+    /// over D-Bus, so it's reused for a while.
+    static SAVING: std::cell::RefCell<Option<(std::time::Instant, SavingState)>> = const { std::cell::RefCell::new(None) };
+}
+
+const SAVING_TTL: std::time::Duration = std::time::Duration::from_secs(20);
+
+pub fn saving_state() -> SavingState {
+    SAVING.with(|cache| {
+        if let Some((at, state)) = &*cache.borrow() {
+            if at.elapsed() < SAVING_TTL {
+                return state.clone();
+            }
+        }
+        let state = SavingState { screen: read_brightness(SCREEN_IFACE), keyboard: read_brightness(KEYBOARD_IFACE), bluetooth: read_bluetooth() };
+        *cache.borrow_mut() = Some((std::time::Instant::now(), state.clone()));
+        state
+    })
+}
+
+/// Forget the last reading, after changing something.
+fn forget_saving_state() {
+    SAVING.with(|cache| *cache.borrow_mut() = None);
+}
+
+pub fn set_screen_brightness(percent: u8) -> bool {
+    let ok = write_brightness(SCREEN_IFACE, percent);
+    forget_saving_state();
+    ok
+}
+
+pub fn set_keyboard_brightness(percent: u8) -> bool {
+    let ok = write_brightness(KEYBOARD_IFACE, percent);
+    forget_saving_state();
+    ok
+}
+
+pub fn set_bluetooth_power(adapter: &str, on: bool) -> bool {
+    forget_saving_state();
+    let Some(proxy) = bluez_proxy(adapter, "org.freedesktop.DBus.Properties") else { return false };
+    let args = ("org.bluez.Adapter1", "Powered", on.to_variant()).to_variant();
+    proxy.call_sync("Set", Some(&args), gio::DBusCallFlags::NONE, 2000, gio::Cancellable::NONE).is_ok()
 }
 
 /// Whether an ambient light sensor is available (needed for automatic brightness).
