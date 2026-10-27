@@ -51,6 +51,11 @@
   </supports>
   <content_rating type="oars-1.1"/>
   <releases>
+    <release version="0.4.1" date="2026-10-27">
+      <description>
+        <p>Clearer labels: the Power page row is now "Current Mode", the low-battery notification level is "Notify At", and "Charging Mode" on the Charging page is now "Charging Behavior".</p>
+      </description>
+    </release>
     <release version="0.4.0" date="2026-10-27">
       <description>
         <p>New in this release:</p>

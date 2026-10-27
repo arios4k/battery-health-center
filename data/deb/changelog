@@ -1,3 +1,13 @@
+battery-health-center (0.4.1-1) unstable; urgency=low
+
+  * Make the labels clearer: the Power page row under "Power Mode" is now
+    "Current Mode", the low-battery notification level in Preferences is
+    "Notify At", and "Charging Mode" on the Charging page is now "Charging
+    Behavior" with a "While Plugged In" row. The Spanish and German
+    translations follow.
+
+ -- Alexis Rios-Negron <182820807+arios4k@users.noreply.github.com>  Tue, 27 Oct 2026 13:51:02 -0700
+
 battery-health-center (0.4.0-1) unstable; urgency=low
 
   * Add charge profiles to the Charging page: Maximum Lifespan (60%), Balanced
