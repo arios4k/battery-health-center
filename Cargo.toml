@@ -63,9 +63,17 @@ assets = [
     ["README.md", "usr/share/doc/battery-health-center/", "644"],
 ]
 
-[package.metadata.deb.systemd-units]
+[[package.metadata.deb.systemd-units]]
 unit-name = "battery-health-center-restore"
 unit-scripts = "data/deb"
 enable = true
 start = false
 restart-after-upgrade = false
+
+# Carries out the charging schedule; the .path unit starts it once a schedule exists.
+[[package.metadata.deb.systemd-units]]
+unit-name = "battery-health-center-scheduler"
+unit-scripts = "data/deb"
+enable = true
+start = true
+restart-after-upgrade = true

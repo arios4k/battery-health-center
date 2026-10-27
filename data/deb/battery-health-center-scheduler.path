@@ -1,0 +1,9 @@
+[Unit]
+Description=Start the charging schedule when one is set (Battery Health Center)
+
+[Path]
+PathExists=/etc/battery-health-center.schedule
+Unit=battery-health-center-scheduler.service
+
+[Install]
+WantedBy=multi-user.target

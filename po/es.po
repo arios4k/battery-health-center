@@ -45,7 +45,7 @@ msgstr "Servidor gráfico (Xorg)"
 msgid "Linux Kernel"
 msgstr "Núcleo de Linux"
 
-#: src/battery.rs:110 src/system.rs:252 src/ui/charging.rs:13
+#: src/battery.rs:110 src/system.rs:297 src/ui/charging.rs:14
 #: src/ui/usage.rs:159
 msgid "Normal"
 msgstr "Normal"
@@ -109,7 +109,7 @@ msgstr "{h} h {m} min"
 msgid "Not Charging"
 msgstr "Sin cargar"
 
-#: src/battery.rs:49 src/system.rs:254
+#: src/battery.rs:49 src/system.rs:299
 msgid "Full"
 msgstr "Llena"
 
@@ -251,11 +251,11 @@ msgid_plural "{n} hours"
 msgstr[0] "{n} hora"
 msgstr[1] "{n} horas"
 
-#: src/main.rs:106
+#: src/main.rs:108
 msgid "Battery Health Center Is Updating"
 msgstr "Battery Health Center se está actualizando"
 
-#: src/main.rs:107
+#: src/main.rs:109
 msgid ""
 "It closed so the update can install. Background recording starts again the "
 "next time you log in or open the app."
@@ -263,244 +263,87 @@ msgstr ""
 "Se cerró para poder instalar la actualización. El registro en segundo plano "
 "se reanuda la próxima vez que inicies sesión o abras la aplicación."
 
-#: src/main.rs:155
+#: src/main.rs:157
 msgid "Battery health, charge limits and energy usage in one place."
 msgstr ""
 "Salud de la batería, límites de carga y consumo de energía en un solo lugar."
 
-#: src/system.rs:162
+#: src/system.rs:163
 msgid "Power Saver"
 msgstr "Ahorro de energía"
 
-#: src/system.rs:163
+#: src/system.rs:164
 msgid "Balanced"
 msgstr "Equilibrado"
 
-#: src/system.rs:164
+#: src/system.rs:165
 msgid "Performance"
 msgstr "Rendimiento"
 
-#: src/system.rs:17
+#: src/system.rs:18
 msgid "read battery information"
 msgstr "leer la información de la batería"
 
-#: src/system.rs:18
+#: src/system.rs:19
 msgid "see which apps use energy"
 msgstr "ver qué aplicaciones consumen energía"
 
-#: src/system.rs:19
+#: src/system.rs:20
 msgid "change the charge limit"
 msgstr "cambiar el límite de carga"
 
-#: src/system.rs:250 src/ui/usage.rs:50
+#: src/system.rs:295 src/ui/usage.rs:50
 msgid "Low"
 msgstr "Bajo"
 
-#: src/system.rs:251
+#: src/system.rs:296
 msgid "Critical"
 msgstr "Crítico"
 
-#: src/system.rs:253 src/ui/usage.rs:46 src/ui/usage.rs:159
+#: src/system.rs:298 src/ui/usage.rs:46 src/ui/usage.rs:159
 msgid "High"
 msgstr "Alto"
 
-#: src/system.rs:299
+#: src/system.rs:344
 msgid "Wireless Device"
 msgstr "Dispositivo inalámbrico"
 
-#: src/system.rs:59
+#: src/system.rs:60
 msgid "The Battery Health Center service is not running"
 msgstr "El servicio de Battery Health Center no se está ejecutando"
 
-#: src/system.rs:66
+#: src/system.rs:67
 msgid ""
 "Permission denied. Run: snap connect battery-health-center:power-control"
 msgstr ""
 "Permiso denegado. Ejecuta: snap connect battery-health-center:power-control"
 
-#: src/system.rs:78 src/system.rs:83
+#: src/system.rs:79 src/system.rs:84
 msgid "The helper crashed"
 msgstr "El asistente se cerró inesperadamente"
 
-#: src/system.rs:80
+#: src/system.rs:81
 msgid "The bhc-helper program was not found. Is the app installed?"
 msgstr "No se encontró el programa bhc-helper. ¿Está instalada la aplicación?"
 
-#: src/system.rs:84
+#: src/system.rs:85
 #, no-c-format
 msgid "Could not run pkexec: {e}"
 msgstr "No se pudo ejecutar pkexec: {e}"
 
-#: src/system.rs:87
+#: src/system.rs:88
 msgid "Authorization was cancelled"
 msgstr "Se canceló la autorización"
 
-#: src/system.rs:90
+#: src/system.rs:91
 msgid "The change could not be applied"
 msgstr "No se pudo aplicar el cambio"
 
-#: src/ui/charging.rs:100
-msgid "Resume Charging Below"
-msgstr "Volver a cargar por debajo del"
-
-#: src/ui/charging.rs:101
-msgid "Avoids topping up after every small drop"
-msgstr "Evita recargar tras cada pequeña bajada"
-
-#: src/ui/charging.rs:105
-msgid "Keep After Restart"
-msgstr "Mantener tras reiniciar"
-
-#: src/ui/charging.rs:106
-msgid "Re-apply the limit at startup and after waking from sleep"
-msgstr "Vuelve a aplicar el límite al iniciar y al despertar de la suspensión"
-
-#: src/ui/charging.rs:110
-msgid "Apply"
-msgstr "Aplicar"
-
-#: src/ui/charging.rs:126
-msgid "Not supported on this laptop"
-msgstr "No compatible con este portátil"
-
-#: src/ui/charging.rs:127
-msgid ""
-"The battery driver does not expose charge thresholds "
-"(charge_control_end_threshold)."
-msgstr ""
-"El controlador de la batería no expone los umbrales de carga "
-"(charge_control_end_threshold)."
-
-#: src/ui/charging.rs:134 src/ui/charging.rs:347
-msgid "Charge to 100% Now"
-msgstr "Cargar al 100 % ahora"
-
-#: src/ui/charging.rs:136 src/ui/charging.rs:353
-msgid "Charge Now"
-msgstr "Cargar ahora"
-
-#: src/ui/charging.rs:14
-msgid "Pause Charging"
-msgstr "Pausar la carga"
-
-#: src/ui/charging.rs:142
-msgid "Charging Mode"
-msgstr "Modo de carga"
-
-#: src/ui/charging.rs:143
-msgid ""
-"Temporarily pause charging, or run from the battery while still plugged in."
-msgstr ""
-"Pausa la carga temporalmente o usa la batería aunque el cargador esté "
-"conectado."
-
-#: src/ui/charging.rs:146
-msgid "Mode"
-msgstr "Modo"
-
-#: src/ui/charging.rs:15
-msgid "Run on Battery"
-msgstr "Usar la batería"
-
-#: src/ui/charging.rs:207
-msgid "Back to your charge limit"
-msgstr "De vuelta a tu límite de carga"
-
-#: src/ui/charging.rs:210
-msgid "Charging to 100% once; your limit comes back when full or unplugged"
-msgstr ""
-"Cargando al 100 % una vez; tu límite vuelve cuando esté llena o la "
-"desconectes"
-
-#: src/ui/charging.rs:248
-#, no-c-format
-msgid "Charging mode set to {0}"
-msgstr "Modo de carga establecido en {0}"
-
-#: src/ui/charging.rs:28
-msgid "Maximum Lifespan (60%)"
-msgstr "Máxima duración (60 %)"
-
-#: src/ui/charging.rs:29
-msgid "Balanced (80%)"
-msgstr "Equilibrado (80 %)"
-
-#: src/ui/charging.rs:292
-#, no-c-format
-msgid "Charging will stop at {end}%"
-msgstr "La carga se detendrá en el {end} %"
-
-#: src/ui/charging.rs:292
-msgid "Charge limit removed"
-msgstr "Límite de carga eliminado"
-
-#: src/ui/charging.rs:30
-msgid "Full Capacity (100%)"
-msgstr "Capacidad completa (100 %)"
-
-#: src/ui/charging.rs:31
-msgid "Custom"
-msgstr "Personalizado"
-
-#: src/ui/charging.rs:341 src/ui/overview.rs:164
-msgid "Charging to 100%"
-msgstr "Cargando al 100 %"
-
-#: src/ui/charging.rs:342
-msgid "Your limit comes back when the battery is full or you unplug."
-msgstr "Tu límite vuelve cuando la batería esté llena o la desconectes."
-
-#: src/ui/charging.rs:343 src/ui/health.rs:191 src/ui/health.rs:228
-msgid "Cancel"
-msgstr "Cancelar"
-
-#: src/ui/charging.rs:349
-msgid ""
-"Charge fully once, for a trip or a long day. Your limit comes back when full "
-"or unplugged."
-msgstr ""
-"Carga completa una vez, para un viaje o un día largo. Tu límite vuelve "
-"cuando esté llena o la desconectes."
-
-#: src/ui/charging.rs:351
-msgid "Connect the charger to charge fully once."
-msgstr "Conecta el cargador para cargar por completo una vez."
-
-#: src/ui/charging.rs:360
-#, no-c-format
-msgid "Stops at {end}%, resumes below {s}%"
-msgstr "Se detiene en el {end} %, se reanuda por debajo del {s} %"
-
-#: src/ui/charging.rs:361
-#, no-c-format
-msgid "Stops at {end}%"
-msgstr "Se detiene en el {end} %"
-
-#: src/ui/charging.rs:362
-msgid "Charges to 100%"
-msgstr "Carga hasta el 100 %"
-
-#: src/ui/charging.rs:37
-msgid "Stops at 60%. Best when you're plugged in most of the time."
-msgstr "Se detiene en el 60 %. Lo mejor si casi siempre estás conectado a la corriente."
-
-#: src/ui/charging.rs:38
-msgid "Stops at 80%. A good everyday balance."
-msgstr "Se detiene en el 80 %. Un buen equilibrio para el día a día."
-
-#: src/ui/charging.rs:39
-msgid "Charges to 100%. For the longest time away from the charger."
-msgstr "Carga hasta el 100 %. Para estar el mayor tiempo posible sin cargador."
-
-#: src/ui/charging.rs:40
-msgid "Your own settings below."
-msgstr "Tus propios ajustes, más abajo."
-
-#: src/ui/charging.rs:79 src/ui/charging.rs:124
+#: src/ui/charging.rs:131 src/ui/charging.rs:208
 msgid "Charge Limit"
 msgstr "Límite de carga"
 
-#: src/ui/charging.rs:81
+#: src/ui/charging.rs:133
 msgid ""
 "Lithium batteries wear faster when kept at full charge. If your laptop is "
 "plugged in most of the time, limiting the charge to about 80% can noticeably "
@@ -510,25 +353,312 @@ msgstr ""
 "cargadas. Si tu portátil está conectado casi siempre, limitar la carga a "
 "cerca del 80 % puede alargar notablemente la vida útil de la batería."
 
-#: src/ui/charging.rs:84
+#: src/ui/charging.rs:136
 msgid "Current Setting"
 msgstr "Ajuste actual"
 
-#: src/ui/charging.rs:88
+#: src/ui/charging.rs:140
 msgid "Profile"
 msgstr "Perfil"
 
-#: src/ui/charging.rs:93
+#: src/ui/charging.rs:145
 msgid "Limit Maximum Charge"
 msgstr "Limitar la carga máxima"
 
-#: src/ui/charging.rs:95
+#: src/ui/charging.rs:147
 msgid "Stop Charging At"
 msgstr "Dejar de cargar al"
 
-#: src/ui/charging.rs:96 src/ui/power.rs:189 src/ui/preferences.rs:53
+#: src/ui/charging.rs:148 src/ui/power.rs:189 src/ui/preferences.rs:53
 msgid "Percent"
 msgstr "Porcentaje"
+
+#: src/ui/charging.rs:15
+msgid "Pause Charging"
+msgstr "Pausar la carga"
+
+#: src/ui/charging.rs:152
+msgid "Resume Charging Below"
+msgstr "Volver a cargar por debajo del"
+
+#: src/ui/charging.rs:153
+msgid "Avoids topping up after every small drop"
+msgstr "Evita recargar tras cada pequeña bajada"
+
+#: src/ui/charging.rs:157
+msgid "Keep After Restart"
+msgstr "Mantener tras reiniciar"
+
+#: src/ui/charging.rs:158
+msgid "Re-apply the limit at startup and after waking from sleep"
+msgstr "Vuelve a aplicar el límite al iniciar y al despertar de la suspensión"
+
+#: src/ui/charging.rs:16
+msgid "Run on Battery"
+msgstr "Usar la batería"
+
+#: src/ui/charging.rs:162
+msgid "Apply"
+msgstr "Aplicar"
+
+#: src/ui/charging.rs:177
+msgid "Charging Schedule"
+msgstr "Programación de carga"
+
+#: src/ui/charging.rs:178
+msgid ""
+"Charge to 100% just before you need the laptop, and keep your limit the rest "
+"of the time. This needs a saved charge limit: turn on Limit Maximum Charge "
+"and Keep After Restart, then Apply."
+msgstr ""
+"Carga al 100 % justo antes de que necesites el portátil y mantén tu límite el resto del tiempo. Para ello hace falta un límite de carga guardado: activa «Limitar la carga máxima» y «Mantener tras reiniciar», y pulsa Aplicar."
+
+#: src/ui/charging.rs:181
+msgid "Optimized Charging"
+msgstr "Carga optimizada"
+
+#: src/ui/charging.rs:182
+msgid "Learns when you usually unplug and charges to 100% just before"
+msgstr "Aprende cuándo sueles desconectarlo y carga al 100 % justo antes"
+
+#: src/ui/charging.rs:184
+msgid "Learned So Far"
+msgstr "Aprendido hasta ahora"
+
+#: src/ui/charging.rs:187
+msgid "Start Charging Before"
+msgstr "Empezar a cargar antes"
+
+#: src/ui/charging.rs:188
+msgid "Hours before the time, to have it full by then"
+msgstr "Horas antes de la hora, para tenerlo lleno a tiempo"
+
+#: src/ui/charging.rs:192
+msgid "Add a Time…"
+msgstr "Añadir una hora…"
+
+#: src/ui/charging.rs:195
+msgid "Save Schedule"
+msgstr "Guardar programación"
+
+#: src/ui/charging.rs:210
+msgid "Not supported on this laptop"
+msgstr "No compatible con este portátil"
+
+#: src/ui/charging.rs:211
+msgid ""
+"The battery driver does not expose charge thresholds "
+"(charge_control_end_threshold)."
+msgstr ""
+"El controlador de la batería no expone los umbrales de carga "
+"(charge_control_end_threshold)."
+
+#: src/ui/charging.rs:218 src/ui/charging.rs:590
+msgid "Charge to 100% Now"
+msgstr "Cargar al 100 % ahora"
+
+#: src/ui/charging.rs:220 src/ui/charging.rs:596
+msgid "Charge Now"
+msgstr "Cargar ahora"
+
+#: src/ui/charging.rs:226
+msgid "Charging Mode"
+msgstr "Modo de carga"
+
+#: src/ui/charging.rs:227
+msgid ""
+"Temporarily pause charging, or run from the battery while still plugged in."
+msgstr ""
+"Pausa la carga temporalmente o usa la batería aunque el cargador esté "
+"conectado."
+
+#: src/ui/charging.rs:230
+msgid "Mode"
+msgstr "Modo"
+
+#: src/ui/charging.rs:29
+msgid "Maximum Lifespan (60%)"
+msgstr "Máxima duración (60 %)"
+
+#: src/ui/charging.rs:30
+msgid "Balanced (80%)"
+msgstr "Equilibrado (80 %)"
+
+#: src/ui/charging.rs:302
+msgid "Back to your charge limit"
+msgstr "De vuelta a tu límite de carga"
+
+#: src/ui/charging.rs:305
+msgid "Charging to 100% once; your limit comes back when full or unplugged"
+msgstr ""
+"Cargando al 100 % una vez; tu límite vuelve cuando esté llena o la "
+"desconectes"
+
+#: src/ui/charging.rs:31
+msgid "Full Capacity (100%)"
+msgstr "Capacidad completa (100 %)"
+
+#: src/ui/charging.rs:32
+msgid "Custom"
+msgstr "Personalizado"
+
+#: src/ui/charging.rs:373
+#, no-c-format
+msgid "Charging mode set to {0}"
+msgstr "Modo de carga establecido en {0}"
+
+#: src/ui/charging.rs:38
+msgid "Stops at 60%. Best when you're plugged in most of the time."
+msgstr ""
+"Se detiene en el 60 %. Lo mejor si casi siempre estás conectado a la "
+"corriente."
+
+#: src/ui/charging.rs:39
+msgid "Stops at 80%. A good everyday balance."
+msgstr "Se detiene en el 80 %. Un buen equilibrio para el día a día."
+
+#: src/ui/charging.rs:394
+#, no-c-format
+msgid "Full by {time}"
+msgstr "Lleno a las {time}"
+
+#: src/ui/charging.rs:40
+msgid "Charges to 100%. For the longest time away from the charger."
+msgstr "Carga hasta el 100 %. Para estar el mayor tiempo posible sin cargador."
+
+#: src/ui/charging.rs:400
+msgid "Remove"
+msgstr "Quitar"
+
+#: src/ui/charging.rs:41
+msgid "Your own settings below."
+msgstr "Tus propios ajustes, más abajo."
+
+#: src/ui/charging.rs:454
+msgid "Add a Time"
+msgstr "Añadir una hora"
+
+#: src/ui/charging.rs:455
+msgid "Choose the days, and the time you want the battery to be full by."
+msgstr "Elige los días y la hora a la que quieres tener la batería llena."
+
+#: src/ui/charging.rs:458 src/ui/charging.rs:586 src/ui/health.rs:191
+#: src/ui/health.rs:228
+msgid "Cancel"
+msgstr "Cancelar"
+
+#: src/ui/charging.rs:458
+msgid "Add"
+msgstr "Añadir"
+
+#: src/ui/charging.rs:469
+msgid "Choose at least one day"
+msgstr "Elige al menos un día"
+
+#: src/ui/charging.rs:490
+msgid "Schedule removed"
+msgstr "Programación eliminada"
+
+#: src/ui/charging.rs:490
+msgid "Schedule saved"
+msgstr "Programación guardada"
+
+#: src/ui/charging.rs:52
+msgid "Mon"
+msgstr "lun"
+
+#: src/ui/charging.rs:53
+msgid "Tue"
+msgstr "mar"
+
+#: src/ui/charging.rs:533
+#, no-c-format
+msgid "Charging will stop at {end}%"
+msgstr "La carga se detendrá en el {end} %"
+
+#: src/ui/charging.rs:533
+msgid "Charge limit removed"
+msgstr "Límite de carga eliminado"
+
+#: src/ui/charging.rs:54
+msgid "Wed"
+msgstr "mié"
+
+#: src/ui/charging.rs:55
+msgid "Thu"
+msgstr "jue"
+
+#: src/ui/charging.rs:56
+msgid "Fri"
+msgstr "vie"
+
+#: src/ui/charging.rs:57
+msgid "Sat"
+msgstr "sáb"
+
+#: src/ui/charging.rs:58
+msgid "Sun"
+msgstr "dom"
+
+#: src/ui/charging.rs:584 src/ui/overview.rs:164
+msgid "Charging to 100%"
+msgstr "Cargando al 100 %"
+
+#: src/ui/charging.rs:585
+msgid "Your limit comes back when the battery is full or you unplug."
+msgstr "Tu límite vuelve cuando la batería esté llena o la desconectes."
+
+#: src/ui/charging.rs:592
+msgid ""
+"Charge fully once, for a trip or a long day. Your limit comes back when full "
+"or unplugged."
+msgstr ""
+"Carga completa una vez, para un viaje o un día largo. Tu límite vuelve "
+"cuando esté llena o la desconectes."
+
+#: src/ui/charging.rs:594
+msgid "Connect the charger to charge fully once."
+msgstr "Conecta el cargador para cargar por completo una vez."
+
+#: src/ui/charging.rs:605
+#, no-c-format
+msgid "Stops at {end}%, resumes below {s}%"
+msgstr "Se detiene en el {end} %, se reanuda por debajo del {s} %"
+
+#: src/ui/charging.rs:606
+#, no-c-format
+msgid "Stops at {end}%"
+msgstr "Se detiene en el {end} %"
+
+#: src/ui/charging.rs:607
+msgid "Charges to 100%"
+msgstr "Carga hasta el 100 %"
+
+#: src/ui/charging.rs:647
+msgid "Charging to 100% for your schedule; your limit comes back afterwards"
+msgstr "Cargando al 100 % por tu programación; tu límite vuelve después"
+
+#: src/ui/charging.rs:65
+msgid "Every day"
+msgstr "Todos los días"
+
+#: src/ui/charging.rs:66 src/ui/charging.rs:83
+msgid "Weekdays"
+msgstr "Entre semana"
+
+#: src/ui/charging.rs:67 src/ui/charging.rs:84
+msgid "Weekends"
+msgstr "Fines de semana"
+
+#: src/ui/charging.rs:75
+#, no-c-format
+msgid "{days}: charged by about {time}"
+msgstr "{days}: cargada hacia las {time}"
+
+#: src/ui/charging.rs:76
+#, no-c-format
+msgid "{days}: still learning ({n} of {min} unplugs)"
+msgstr "{days}: aún aprendiendo ({n} de {min} desconexiones)"
 
 #: src/ui/health.rs:100
 msgid "When batteries are usually considered worn"

@@ -7,6 +7,7 @@ use gtk::glib;
 use crate::controller::{Controller, State};
 use crate::system;
 use crate::i18n::{tr, trf};
+use crate::schedule::{self, Learned, Rule, Schedule};
 
 fn behaviour_label(id: &str) -> &str {
     match id {
@@ -46,6 +47,44 @@ fn profile_for(end: u8) -> usize {
     PROFILES.iter().position(|(stop, _)| *stop == end).unwrap_or(CUSTOM_PROFILE)
 }
 
+fn weekday_name(i: u8) -> &'static str {
+    match i {
+        0 => tr("Mon"),
+        1 => tr("Tue"),
+        2 => tr("Wed"),
+        3 => tr("Thu"),
+        4 => tr("Fri"),
+        5 => tr("Sat"),
+        _ => tr("Sun"),
+    }
+}
+
+/// "Weekdays", "Every day", "Mon, Wed" ...
+fn days_label(days: u8) -> String {
+    match days {
+        schedule::EVERY_DAY => tr("Every day").to_string(),
+        schedule::WEEKDAYS => tr("Weekdays").to_string(),
+        schedule::WEEKEND => tr("Weekends").to_string(),
+        _ => (0..7).filter(|i| days >> i & 1 == 1).map(weekday_name).collect::<Vec<_>>().join(", "),
+    }
+}
+
+/// What has been learned so far, for the "Learned" row.
+fn learned_text(l: &Learned) -> String {
+    let line = |name: &str, time: Option<u16>, samples: usize| match time {
+        Some(m) => trf("{days}: charged by about {time}", &[("days", name.to_string()), ("time", schedule::format_time(m))]),
+        None => trf(
+            "{days}: still learning ({n} of {min} unplugs)",
+            &[("days", name.to_string()), ("n", samples.min(schedule::MIN_SAMPLES).to_string()), ("min", schedule::MIN_SAMPLES.to_string())],
+        ),
+    };
+    format!(
+        "{}\n{}",
+        line(tr("Weekdays"), l.weekdays, l.weekday_samples),
+        line(tr("Weekends"), l.weekend, l.weekend_samples)
+    )
+}
+
 pub struct ChargingPage {
     pub root: adw::PreferencesPage,
     limit_group: adw::PreferencesGroup,
@@ -57,6 +96,16 @@ pub struct ChargingPage {
     start: adw::SpinRow,
     persist: adw::SwitchRow,
     apply: gtk::Button,
+    schedule_group: adw::PreferencesGroup,
+    optimized: adw::SwitchRow,
+    learned_row: adw::ActionRow,
+    lead: adw::SpinRow,
+    add_row: adw::ActionRow,
+    save_schedule: gtk::Button,
+    rule_rows: RefCell<Vec<adw::ActionRow>>,
+    /// The schedule as edited here, and as last saved.
+    plan: RefCell<Schedule>,
+    saved_plan: RefCell<Schedule>,
     full_group: adw::PreferencesGroup,
     full_row: adw::ActionRow,
     full_button: gtk::Button,
@@ -64,6 +113,7 @@ pub struct ChargingPage {
     mode: adw::ComboRow,
     mode_ids: RefCell<Vec<String>>,
     initialized: Cell<bool>,
+    schedule_loaded: Cell<bool>,
     /// The stop point the profile was last matched against.
     profile_end: Cell<Option<u8>>,
     /// Set while the UI is updated programmatically, to ignore change signals.
@@ -123,6 +173,38 @@ impl ChargingPage {
         limit_group.add(&apply);
         root.add(&limit_group);
 
+        let schedule_group = adw::PreferencesGroup::builder()
+            .title(tr("Charging Schedule"))
+            .description(tr("Charge to 100% just before you need the laptop, and keep your limit the rest of the time. This needs a saved charge limit: turn on Limit Maximum Charge and Keep After Restart, then Apply."))
+            .build();
+        let optimized = adw::SwitchRow::builder()
+            .title(tr("Optimized Charging"))
+            .subtitle(tr("Learns when you usually unplug and charges to 100% just before"))
+            .build();
+        let learned_row = adw::ActionRow::builder().title(tr("Learned So Far")).css_classes(["property"]).visible(false).build();
+        learned_row.add_prefix(&gtk::Image::from_icon_name("preferences-system-time-symbolic"));
+        let lead = adw::SpinRow::builder()
+            .title(tr("Start Charging Before"))
+            .subtitle(tr("Hours before the time, to have it full by then"))
+            .adjustment(&gtk::Adjustment::new(2.0, schedule::MIN_LEAD_MIN as f64 / 60.0, schedule::MAX_LEAD_MIN as f64 / 60.0, 0.5, 1.0, 0.0))
+            .digits(1)
+            .build();
+        let add_row = adw::ActionRow::builder().title(tr("Add a Time…")).activatable(true).build();
+        add_row.add_prefix(&gtk::Image::from_icon_name("list-add-symbolic"));
+        let save_schedule = gtk::Button::builder()
+            .label(tr("Save Schedule"))
+            .css_classes(["suggested-action", "pill"])
+            .halign(gtk::Align::Center)
+            .margin_top(12)
+            .sensitive(false)
+            .build();
+        schedule_group.add(&optimized);
+        schedule_group.add(&learned_row);
+        schedule_group.add(&lead);
+        schedule_group.add(&add_row);
+        schedule_group.add(&save_schedule);
+        root.add(&schedule_group);
+
         let unsupported = adw::PreferencesGroup::builder().title(tr("Charge Limit")).visible(false).build();
         let row = adw::ActionRow::builder()
             .title(tr("Not supported on this laptop"))
@@ -160,6 +242,15 @@ impl ChargingPage {
             start,
             persist,
             apply,
+            schedule_group,
+            optimized,
+            learned_row,
+            lead,
+            add_row,
+            save_schedule,
+            rule_rows: RefCell::new(Vec::new()),
+            plan: RefCell::new(Schedule::default()),
+            saved_plan: RefCell::new(Schedule::default()),
             full_group,
             full_row,
             full_button,
@@ -167,6 +258,7 @@ impl ChargingPage {
             mode,
             mode_ids: RefCell::new(Vec::new()),
             initialized: Cell::new(false),
+            schedule_loaded: Cell::new(false),
             profile_end: Cell::new(None),
             updating: Cell::new(false),
             busy: Cell::new(false),
@@ -235,6 +327,36 @@ impl ChargingPage {
             this.apply_limit();
         });
         let this = Rc::downgrade(self);
+        self.optimized.connect_active_notify(move |row| {
+            if let Some(this) = this.upgrade() {
+                if !this.updating.get() {
+                    this.plan.borrow_mut().optimized = row.is_active();
+                    this.plan_changed();
+                }
+            }
+        });
+        let this = Rc::downgrade(self);
+        self.lead.connect_value_notify(move |row| {
+            if let Some(this) = this.upgrade() {
+                if !this.updating.get() {
+                    this.plan.borrow_mut().lead_min = (row.value() * 60.0).round() as u16;
+                    this.plan_changed();
+                }
+            }
+        });
+        let this = Rc::downgrade(self);
+        self.add_row.connect_activated(move |_| {
+            if let Some(this) = this.upgrade() {
+                this.ask_for_time();
+            }
+        });
+        let this = Rc::downgrade(self);
+        self.save_schedule.connect_clicked(move |_| {
+            if let Some(this) = this.upgrade() {
+                this.save_plan();
+            }
+        });
+        let this = Rc::downgrade(self);
         self.apply.connect_clicked(move |_| {
             if let Some(this) = this.upgrade() {
                 this.apply_limit();
@@ -251,6 +373,122 @@ impl ChargingPage {
                 this.run_helper(vec![vec!["set-behaviour".into(), this.battery_name(), id.clone()]], trf("Charging mode set to {0}", &[("0", behaviour_label(&id).to_string())]));
             }
         });
+    }
+
+    /// Shows the edited schedule's times and enables Save when it differs from the saved one.
+    fn plan_changed(self: &Rc<Self>) {
+        self.rebuild_rules();
+        self.save_schedule.set_sensitive(*self.plan.borrow() != *self.saved_plan.borrow() && !self.busy.get());
+    }
+
+    fn rebuild_rules(self: &Rc<Self>) {
+        for row in self.rule_rows.borrow_mut().drain(..) {
+            self.schedule_group.remove(&row);
+        }
+        // Keep "Add a Time" last.
+        self.schedule_group.remove(&self.add_row);
+        self.schedule_group.remove(&self.save_schedule);
+        let rules = self.plan.borrow().rules.clone();
+        for (i, rule) in rules.iter().enumerate() {
+            let row = adw::ActionRow::builder()
+                .title(trf("Full by {time}", &[("time", schedule::format_time(rule.ready))]))
+                .subtitle(days_label(rule.days))
+                .build();
+            row.add_prefix(&gtk::Image::from_icon_name("alarm-symbolic"));
+            let remove = gtk::Button::builder()
+                .icon_name("user-trash-symbolic")
+                .tooltip_text(tr("Remove"))
+                .valign(gtk::Align::Center)
+                .css_classes(["flat"])
+                .build();
+            let this = Rc::downgrade(self);
+            remove.connect_clicked(move |_| {
+                if let Some(this) = this.upgrade() {
+                    if i < this.plan.borrow().rules.len() {
+                        this.plan.borrow_mut().rules.remove(i);
+                    }
+                    this.plan_changed();
+                }
+            });
+            row.add_suffix(&remove);
+            self.schedule_group.add(&row);
+            self.rule_rows.borrow_mut().push(row);
+        }
+        self.add_row.set_visible(rules.len() < schedule::MAX_RULES);
+        self.schedule_group.add(&self.add_row);
+        self.schedule_group.add(&self.save_schedule);
+    }
+
+    /// Asks for the days and the time of a new "full by" entry.
+    fn ask_for_time(self: &Rc<Self>) {
+        let content = gtk::Box::builder().orientation(gtk::Orientation::Vertical).spacing(12).build();
+        let days_box = gtk::Box::builder().css_classes(["linked"]).halign(gtk::Align::Center).build();
+        let day_buttons: Vec<gtk::ToggleButton> = (0..7u8)
+            .map(|i| {
+                let b = gtk::ToggleButton::builder().label(weekday_name(i)).active(i < 5).build();
+                days_box.append(&b);
+                b
+            })
+            .collect();
+        let two_digits = |spin: &gtk::SpinButton| {
+            spin.connect_output(|s| {
+                s.set_text(&format!("{:02}", s.value() as u32));
+                glib::Propagation::Stop
+            });
+        };
+        let hours = gtk::SpinButton::with_range(0.0, 23.0, 1.0);
+        let minutes = gtk::SpinButton::with_range(0.0, 55.0, 5.0);
+        hours.set_value(8.0);
+        hours.set_wrap(true);
+        minutes.set_wrap(true);
+        two_digits(&hours);
+        two_digits(&minutes);
+        let time_box = gtk::Box::builder().spacing(6).halign(gtk::Align::Center).build();
+        time_box.append(&hours);
+        time_box.append(&gtk::Label::new(Some(":")));
+        time_box.append(&minutes);
+        content.append(&days_box);
+        content.append(&time_box);
+
+        let dialog = adw::AlertDialog::builder()
+            .heading(tr("Add a Time"))
+            .body(tr("Choose the days, and the time you want the battery to be full by."))
+            .extra_child(&content)
+            .build();
+        dialog.add_responses(&[("cancel", tr("Cancel")), ("add", tr("Add"))]);
+        dialog.set_response_appearance("add", adw::ResponseAppearance::Suggested);
+        dialog.set_default_response(Some("add"));
+        let this = Rc::downgrade(self);
+        dialog.connect_response(None, move |_, response| {
+            let Some(this) = this.upgrade() else { return };
+            if response != "add" {
+                return;
+            }
+            let days = day_buttons.iter().enumerate().filter(|(_, b)| b.is_active()).fold(0u8, |m, (i, _)| m | 1 << i);
+            if days == 0 {
+                this.toast(tr("Choose at least one day"));
+                return;
+            }
+            let ready = hours.value() as u16 * 60 + minutes.value() as u16;
+            let rule = Rule { days, ready };
+            {
+                let mut plan = this.plan.borrow_mut();
+                if !plan.rules.contains(&rule) && plan.rules.len() < schedule::MAX_RULES {
+                    plan.rules.push(rule);
+                    plan.rules.sort_by_key(|r| (r.ready, r.days));
+                }
+            }
+            this.plan_changed();
+        });
+        dialog.present(Some(&self.root));
+    }
+
+    fn save_plan(self: &Rc<Self>) {
+        let plan = self.plan.borrow().clone();
+        let mut args: Vec<String> = vec!["set-schedule".into(), u8::from(plan.optimized).to_string(), plan.lead_min.to_string()];
+        args.extend(plan.rules.iter().map(|r| format!("{}@{}", r.days, schedule::format_time(r.ready))));
+        let msg = if plan.is_empty() { tr("Schedule removed").to_string() } else { tr("Schedule saved").to_string() };
+        self.run_helper(vec![args], msg);
     }
 
     /// Editing the settings by hand no longer matches a preset.
@@ -307,6 +545,7 @@ impl ChargingPage {
             return;
         }
         self.apply.set_sensitive(false);
+        self.save_schedule.set_sensitive(false);
         let this = self.clone();
         glib::spawn_future_local(async move {
             let mut result = Ok(());
@@ -318,6 +557,7 @@ impl ChargingPage {
             }
             this.busy.set(false);
             this.apply.set_sensitive(true);
+            this.save_schedule.set_sensitive(*this.plan.borrow() != *this.saved_plan.borrow());
             match result {
                 Ok(()) => this.toast(&success),
                 Err(e) => this.toast(&e),
@@ -328,7 +568,7 @@ impl ChargingPage {
         });
     }
 
-    pub fn update(&self, st: &State) {
+    pub fn update(self: &Rc<Self>, st: &State) {
         let Some(b) = &st.battery else { return };
         self.updating.set(true);
 
@@ -380,6 +620,31 @@ impl ChargingPage {
             // saved (e.g. after reinstalling) should be saved on the next Apply.
             self.persist.set_active(true);
             self.sync_sensitivity();
+        }
+
+        // The schedule: load what is saved, unless you are in the middle of editing.
+        let saved = system::read_schedule();
+        let editing = *self.plan.borrow() != *self.saved_plan.borrow();
+        if !self.schedule_loaded.get() || (!editing && saved != *self.saved_plan.borrow()) {
+            self.schedule_loaded.set(true);
+            *self.saved_plan.borrow_mut() = saved.clone();
+            *self.plan.borrow_mut() = saved.clone();
+            self.optimized.set_active(saved.optimized);
+            self.lead.set_value(saved.lead_min as f64 / 60.0);
+            self.rebuild_rules();
+            self.save_schedule.set_sensitive(false);
+        }
+        self.schedule_group.set_visible(supported);
+        let has_limit = system::has_saved_limit();
+        self.optimized.set_sensitive(has_limit);
+        self.lead.set_sensitive(has_limit);
+        self.add_row.set_sensitive(has_limit);
+        self.learned_row.set_visible(self.optimized.is_active());
+        if self.optimized.is_active() {
+            self.learned_row.set_subtitle(&learned_text(&system::read_learned()));
+        }
+        if system::scheduled_full_active(&b.name) {
+            self.status_row.set_subtitle(tr("Charging to 100% for your schedule; your limit comes back afterwards"));
         }
 
         // Charging mode (charge_behaviour)

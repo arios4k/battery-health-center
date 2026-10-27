@@ -1,0 +1,9 @@
+[Unit]
+Description=Charging schedule (Battery Health Center)
+ConditionPathExists=/etc/battery-health-center.schedule
+
+[Service]
+Type=simple
+ExecStart=/usr/local/libexec/battery-health-center/bhc-helper schedule-daemon
+Restart=on-failure
+RestartSec=30
