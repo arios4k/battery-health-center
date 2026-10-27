@@ -49,7 +49,7 @@ pub fn show(parent: &impl IsA<gtk::Widget>, ctrl: &Rc<Controller>) {
     let low = switch(ctrl, tr("Low Battery"), tr("When the battery drops to the level below"), |s| s.notify_low, |s, v| s.notify_low = v);
     group.add(&low);
     let level = adw::SpinRow::builder()
-        .title(tr("Low Battery Level"))
+        .title(tr("Notify At"))
         .subtitle(tr("Percent"))
         .adjustment(&gtk::Adjustment::new(ctrl.state().settings.low_level as f64, 5.0, 50.0, 1.0, 5.0, 0.0))
         .build();

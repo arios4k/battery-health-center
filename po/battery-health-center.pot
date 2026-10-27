@@ -225,15 +225,15 @@ msgid_plural "{n} hours"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/main.rs:109
+#: src/main.rs:132
 msgid "Battery Health Center Is Updating"
 msgstr ""
 
-#: src/main.rs:110
+#: src/main.rs:133
 msgid "It closed so the update can install. Background recording starts again the next time you log in or open the app."
 msgstr ""
 
-#: src/main.rs:158
+#: src/main.rs:181
 msgid "Battery health, charge limits and energy usage in one place."
 msgstr ""
 
@@ -461,7 +461,7 @@ msgid "Charge Now"
 msgstr ""
 
 #: src/ui/charging.rs:226
-msgid "Charging Mode"
+msgid "Charging Behavior"
 msgstr ""
 
 #: src/ui/charging.rs:227
@@ -469,7 +469,7 @@ msgid "Temporarily pause charging, or run from the battery while still plugged i
 msgstr ""
 
 #: src/ui/charging.rs:230
-msgid "Mode"
+msgid "While Plugged In"
 msgstr ""
 
 #: src/ui/charging.rs:29
@@ -498,7 +498,7 @@ msgstr ""
 
 #: src/ui/charging.rs:373
 #, no-c-format
-msgid "Charging mode set to {0}"
+msgid "Charging behavior set to {0}"
 msgstr ""
 
 #: src/ui/charging.rs:38
@@ -1207,12 +1207,16 @@ msgstr ""
 msgid "Never"
 msgstr ""
 
-#: src/ui/power.rs:165 src/ui/power.rs:169
+#: src/ui/power.rs:165
 msgid "Power Mode"
 msgstr ""
 
 #: src/ui/power.rs:166
 msgid "Power Saver reduces performance to extend battery life. Performance is only offered on some laptops."
+msgstr ""
+
+#: src/ui/power.rs:169
+msgid "Current Mode"
 msgstr ""
 
 #: src/ui/power.rs:174
@@ -1239,7 +1243,7 @@ msgstr ""
 msgid "Overrides the mode above on battery"
 msgstr ""
 
-#: src/ui/power.rs:188 src/ui/preferences.rs:52
+#: src/ui/power.rs:188
 msgid "Low Battery Level"
 msgstr ""
 
@@ -1377,6 +1381,10 @@ msgstr ""
 
 #: src/ui/preferences.rs:49
 msgid "When the battery drops to the level below"
+msgstr ""
+
+#: src/ui/preferences.rs:52
+msgid "Notify At"
 msgstr ""
 
 #: src/ui/preferences.rs:67
@@ -1559,7 +1567,7 @@ msgstr ""
 msgid "{0}% CPU"
 msgstr ""
 
-#: src/ui/widgets.rs:261 src/ui/widgets.rs:285 src/ui/widgets.rs:357
+#: src/ui/widgets.rs:261 src/ui/widgets.rs:285 src/ui/widgets.rs:358
 msgid "Not enough history yet"
 msgstr ""
 
