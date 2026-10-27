@@ -223,11 +223,11 @@ impl ChargingPage {
         root.add(&full_group);
 
         let mode_group = adw::PreferencesGroup::builder()
-            .title(tr("Charging Mode"))
+            .title(tr("Charging Behavior"))
             .description(tr("Temporarily pause charging, or run from the battery while still plugged in."))
             .visible(false)
             .build();
-        let mode = adw::ComboRow::builder().title(tr("Mode")).build();
+        let mode = adw::ComboRow::builder().title(tr("While Plugged In")).build();
         mode_group.add(&mode);
         root.add(&mode_group);
 
@@ -370,7 +370,7 @@ impl ChargingPage {
             }
             let id = this.mode_ids.borrow().get(row.selected() as usize).cloned();
             if let Some(id) = id {
-                this.run_helper(vec![vec!["set-behaviour".into(), this.battery_name(), id.clone()]], trf("Charging mode set to {0}", &[("0", behaviour_label(&id).to_string())]));
+                this.run_helper(vec![vec!["set-behaviour".into(), this.battery_name(), id.clone()]], trf("Charging behavior set to {0}", &[("0", behaviour_label(&id).to_string())]));
             }
         });
     }

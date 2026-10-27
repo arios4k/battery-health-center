@@ -112,7 +112,7 @@ sudo snap connect battery-health-center:power-control
 
 The snap is strictly confined. A bundled root service (`bhc-helper serve`) applies charge limits
 through the `power-control` interface, which only allows the `charge_start_threshold` /
-`charge_stop_threshold` files. Charging Mode and Power Mode are hidden in the snap because no
+`charge_stop_threshold` files. Charging Behavior and Power Mode are hidden in the snap because no
 interface allows them. Calibration and Charge to 100% Now work in the snap. On the Power page, only
 **Show Battery Percentage** works in the snap: the sandbox blocks the power mode service and can't see
 GNOME's power settings, so the page says so and the rest is available in the regular (non-snap) version. To build it locally, run

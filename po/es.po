@@ -251,11 +251,11 @@ msgid_plural "{n} hours"
 msgstr[0] "{n} hora"
 msgstr[1] "{n} horas"
 
-#: src/main.rs:109
+#: src/main.rs:132
 msgid "Battery Health Center Is Updating"
 msgstr "Battery Health Center se está actualizando"
 
-#: src/main.rs:110
+#: src/main.rs:133
 msgid ""
 "It closed so the update can install. Background recording starts again the "
 "next time you log in or open the app."
@@ -263,7 +263,7 @@ msgstr ""
 "Se cerró para poder instalar la actualización. El registro en segundo plano "
 "se reanuda la próxima vez que inicies sesión o abras la aplicación."
 
-#: src/main.rs:158
+#: src/main.rs:181
 msgid "Battery health, charge limits and energy usage in one place."
 msgstr ""
 "Salud de la batería, límites de carga y consumo de energía en un solo lugar."
@@ -382,14 +382,16 @@ msgid ""
 "Average CPU use in each hour, in percent of one core. Only hours when "
 "Battery Health Center was running are shown."
 msgstr ""
-"Uso medio de la CPU en cada hora, en porcentaje de un núcleo. Solo se muestran las horas en que Battery Health Center estaba en ejecución."
+"Uso medio de la CPU en cada hora, en porcentaje de un núcleo. Solo se "
+"muestran las horas en que Battery Health Center estaba en ejecución."
 
 #: src/ui/app_trend.rs:91
 msgid ""
 "Estimated energy drawn from the battery in each hour. Linux doesn't measure "
 "power per app, so this is an estimate."
 msgstr ""
-"Energía estimada consumida de la batería en cada hora. Linux no mide la energía por aplicación, así que es una estimación."
+"Energía estimada consumida de la batería en cada hora. Linux no mide la "
+"energía por aplicación, así que es una estimación."
 
 #: src/ui/charging.rs:131 src/ui/charging.rs:208
 msgid "Charge Limit"
@@ -517,8 +519,8 @@ msgid "Charge Now"
 msgstr "Cargar ahora"
 
 #: src/ui/charging.rs:226
-msgid "Charging Mode"
-msgstr "Modo de carga"
+msgid "Charging Behavior"
+msgstr "Comportamiento de carga"
 
 #: src/ui/charging.rs:227
 msgid ""
@@ -528,8 +530,8 @@ msgstr ""
 "conectado."
 
 #: src/ui/charging.rs:230
-msgid "Mode"
-msgstr "Modo"
+msgid "While Plugged In"
+msgstr "Con el cargador conectado"
 
 #: src/ui/charging.rs:29
 msgid "Maximum Lifespan (60%)"
@@ -559,8 +561,8 @@ msgstr "Personalizado"
 
 #: src/ui/charging.rs:373
 #, no-c-format
-msgid "Charging mode set to {0}"
-msgstr "Modo de carga establecido en {0}"
+msgid "Charging behavior set to {0}"
+msgstr "Comportamiento de carga establecido en {0}"
 
 #: src/ui/charging.rs:38
 msgid "Stops at 60%. Best when you're plugged in most of the time."
@@ -1285,7 +1287,8 @@ msgid ""
 "The screen is usually the biggest power user. Lowering the brightness makes "
 "the battery last noticeably longer."
 msgstr ""
-"La pantalla suele ser lo que más energía gasta. Bajar el brillo hace que la batería dure notablemente más."
+"La pantalla suele ser lo que más energía gasta. Bajar el brillo hace que la "
+"batería dure notablemente más."
 
 #: src/ui/overview.rs:333
 msgid "Lower to 50%"
@@ -1310,7 +1313,8 @@ msgstr "El Bluetooth está activado pero no hay nada conectado"
 #: src/ui/overview.rs:348
 msgid "Turning Bluetooth off saves a little power until you need it again."
 msgstr ""
-"Apagar el Bluetooth ahorra un poco de energía hasta que lo necesites de nuevo."
+"Apagar el Bluetooth ahorra un poco de energía hasta que lo necesites de "
+"nuevo."
 
 #: src/ui/overview.rs:355
 msgid "Battery is low"
@@ -1339,7 +1343,7 @@ msgstr "Salud de la batería"
 msgid "Never"
 msgstr "Nunca"
 
-#: src/ui/power.rs:165 src/ui/power.rs:169
+#: src/ui/power.rs:165
 msgid "Power Mode"
 msgstr "Modo de energía"
 
@@ -1350,6 +1354,10 @@ msgid ""
 msgstr ""
 "El modo Ahorro de energía reduce el rendimiento para alargar la duración de "
 "la batería. El modo Rendimiento solo está disponible en algunos portátiles."
+
+#: src/ui/power.rs:169
+msgid "Current Mode"
+msgstr "Modo actual"
 
 #: src/ui/power.rs:174
 msgid "Automatic Power Mode"
@@ -1381,7 +1389,7 @@ msgstr "Usar Ahorro de energía con batería baja"
 msgid "Overrides the mode above on battery"
 msgstr "Sustituye el modo anterior al funcionar con batería"
 
-#: src/ui/power.rs:188 src/ui/preferences.rs:52
+#: src/ui/power.rs:188
 msgid "Low Battery Level"
 msgstr "Nivel de batería baja"
 
@@ -1547,6 +1555,10 @@ msgstr "Batería baja"
 #: src/ui/preferences.rs:49
 msgid "When the battery drops to the level below"
 msgstr "Cuando la batería baja del nivel indicado abajo"
+
+#: src/ui/preferences.rs:52
+msgid "Notify At"
+msgstr "Avisar al llegar a"
 
 #: src/ui/preferences.rs:67
 msgid "Apps Using Significant Energy"
@@ -1757,7 +1769,7 @@ msgstr "Sistema"
 msgid "{0}% CPU"
 msgstr "{0} % de CPU"
 
-#: src/ui/widgets.rs:261 src/ui/widgets.rs:285 src/ui/widgets.rs:357
+#: src/ui/widgets.rs:261 src/ui/widgets.rs:285 src/ui/widgets.rs:358
 msgid "Not enough history yet"
 msgstr "Aún no hay suficiente historial"
 

@@ -252,11 +252,11 @@ msgid_plural "{n} hours"
 msgstr[0] "{n} Stunde"
 msgstr[1] "{n} Stunden"
 
-#: src/main.rs:109
+#: src/main.rs:132
 msgid "Battery Health Center Is Updating"
 msgstr "Battery Health Center wird aktualisiert"
 
-#: src/main.rs:110
+#: src/main.rs:133
 msgid ""
 "It closed so the update can install. Background recording starts again the "
 "next time you log in or open the app."
@@ -265,7 +265,7 @@ msgstr ""
 "kann. Die Aufzeichnung im Hintergrund startet beim nächsten Anmelden oder "
 "Öffnen der Anwendung wieder."
 
-#: src/main.rs:158
+#: src/main.rs:181
 msgid "Battery health, charge limits and energy usage in one place."
 msgstr "Akkuzustand, Ladelimits und Energieverbrauch an einem Ort."
 
@@ -385,14 +385,16 @@ msgid ""
 "Average CPU use in each hour, in percent of one core. Only hours when "
 "Battery Health Center was running are shown."
 msgstr ""
-"Durchschnittliche CPU-Auslastung pro Stunde, in Prozent eines Kerns. Es werden nur Stunden angezeigt, in denen Battery Health Center lief."
+"Durchschnittliche CPU-Auslastung pro Stunde, in Prozent eines Kerns. Es "
+"werden nur Stunden angezeigt, in denen Battery Health Center lief."
 
 #: src/ui/app_trend.rs:91
 msgid ""
 "Estimated energy drawn from the battery in each hour. Linux doesn't measure "
 "power per app, so this is an estimate."
 msgstr ""
-"Geschätzte dem Akku entnommene Energie pro Stunde. Linux misst den Stromverbrauch nicht pro Anwendung, daher ist dies eine Schätzung."
+"Geschätzte dem Akku entnommene Energie pro Stunde. Linux misst den "
+"Stromverbrauch nicht pro Anwendung, daher ist dies eine Schätzung."
 
 #: src/ui/charging.rs:131 src/ui/charging.rs:208
 msgid "Charge Limit"
@@ -520,8 +522,8 @@ msgid "Charge Now"
 msgstr "Jetzt laden"
 
 #: src/ui/charging.rs:226
-msgid "Charging Mode"
-msgstr "Lademodus"
+msgid "Charging Behavior"
+msgstr "Ladeverhalten"
 
 #: src/ui/charging.rs:227
 msgid ""
@@ -531,8 +533,8 @@ msgstr ""
 "angeschlossen ist."
 
 #: src/ui/charging.rs:230
-msgid "Mode"
-msgstr "Modus"
+msgid "While Plugged In"
+msgstr "Am Netz angeschlossen"
 
 #: src/ui/charging.rs:29
 msgid "Maximum Lifespan (60%)"
@@ -562,8 +564,8 @@ msgstr "Benutzerdefiniert"
 
 #: src/ui/charging.rs:373
 #, no-c-format
-msgid "Charging mode set to {0}"
-msgstr "Lademodus auf {0} gesetzt"
+msgid "Charging behavior set to {0}"
+msgstr "Ladeverhalten auf {0} gesetzt"
 
 #: src/ui/charging.rs:38
 msgid "Stops at 60%. Best when you're plugged in most of the time."
@@ -1290,7 +1292,8 @@ msgid ""
 "The screen is usually the biggest power user. Lowering the brightness makes "
 "the battery last noticeably longer."
 msgstr ""
-"Der Bildschirm ist meist der größte Stromverbraucher. Eine geringere Helligkeit verlängert die Akkulaufzeit spürbar."
+"Der Bildschirm ist meist der größte Stromverbraucher. Eine geringere "
+"Helligkeit verlängert die Akkulaufzeit spürbar."
 
 #: src/ui/overview.rs:333
 msgid "Lower to 50%"
@@ -1344,7 +1347,7 @@ msgstr "Akkuzustand"
 msgid "Never"
 msgstr "Nie"
 
-#: src/ui/power.rs:165 src/ui/power.rs:169
+#: src/ui/power.rs:165
 msgid "Power Mode"
 msgstr "Energiemodus"
 
@@ -1355,6 +1358,10 @@ msgid ""
 msgstr ""
 "Der Energiesparmodus verringert die Leistung, um die Akkulaufzeit zu "
 "verlängern. Der Leistungsmodus wird nur bei einigen Laptops angeboten."
+
+#: src/ui/power.rs:169
+msgid "Current Mode"
+msgstr "Aktueller Modus"
 
 #: src/ui/power.rs:174
 msgid "Automatic Power Mode"
@@ -1386,7 +1393,7 @@ msgstr "Energiesparmodus bei schwachem Akku verwenden"
 msgid "Overrides the mode above on battery"
 msgstr "Überschreibt den obigen Modus im Akkubetrieb"
 
-#: src/ui/power.rs:188 src/ui/preferences.rs:52
+#: src/ui/power.rs:188
 msgid "Low Battery Level"
 msgstr "Schwellwert für schwachen Akku"
 
@@ -1552,6 +1559,10 @@ msgstr "Akku schwach"
 #: src/ui/preferences.rs:49
 msgid "When the battery drops to the level below"
 msgstr "Wenn der Akku unter den unten genannten Wert fällt"
+
+#: src/ui/preferences.rs:52
+msgid "Notify At"
+msgstr "Benachrichtigen bei"
 
 #: src/ui/preferences.rs:67
 msgid "Apps Using Significant Energy"
@@ -1763,7 +1774,7 @@ msgstr "System"
 msgid "{0}% CPU"
 msgstr "{0} % CPU"
 
-#: src/ui/widgets.rs:261 src/ui/widgets.rs:285 src/ui/widgets.rs:357
+#: src/ui/widgets.rs:261 src/ui/widgets.rs:285 src/ui/widgets.rs:358
 msgid "Not enough history yet"
 msgstr "Noch nicht genug Verlauf"
 

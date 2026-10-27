@@ -166,7 +166,7 @@ impl PowerPage {
             .description(tr("Power Saver reduces performance to extend battery life. Performance is only offered on some laptops."))
             .visible(false)
             .build();
-        let mode = profile_combo(tr("Power Mode"));
+        let mode = profile_combo(tr("Current Mode"));
         mode_group.add(&mode);
         root.add(&mode_group);
 
