@@ -17,11 +17,41 @@ fn behaviour_label(id: &str) -> &str {
     }
 }
 
+/// Charge limit presets: where charging stops and where it resumes. A stop point
+/// of 100 means no limit.
+const PROFILES: [(u8, u8); 3] = [(60, 55), (80, 75), (100, 0)];
+/// Index of the entry that stands for settings that match no preset.
+const CUSTOM_PROFILE: usize = PROFILES.len();
+
+fn profile_label(i: usize) -> &'static str {
+    match i {
+        0 => tr("Maximum Lifespan (60%)"),
+        1 => tr("Balanced (80%)"),
+        2 => tr("Full Capacity (100%)"),
+        _ => tr("Custom"),
+    }
+}
+
+fn profile_hint(i: usize) -> &'static str {
+    match i {
+        0 => tr("Stops at 60%. Best when you're plugged in most of the time."),
+        1 => tr("Stops at 80%. A good everyday balance."),
+        2 => tr("Charges to 100%. For the longest time away from the charger."),
+        _ => tr("Your own settings below."),
+    }
+}
+
+/// The entry that matches a battery's current stop point.
+fn profile_for(end: u8) -> usize {
+    PROFILES.iter().position(|(stop, _)| *stop == end).unwrap_or(CUSTOM_PROFILE)
+}
+
 pub struct ChargingPage {
     pub root: adw::PreferencesPage,
     limit_group: adw::PreferencesGroup,
     unsupported: adw::PreferencesGroup,
     status_row: adw::ActionRow,
+    profile: adw::ComboRow,
     enable: adw::SwitchRow,
     end: adw::SpinRow,
     start: adw::SpinRow,
@@ -34,6 +64,8 @@ pub struct ChargingPage {
     mode: adw::ComboRow,
     mode_ids: RefCell<Vec<String>>,
     initialized: Cell<bool>,
+    /// The stop point the profile was last matched against.
+    profile_end: Cell<Option<u8>>,
     /// Set while the UI is updated programmatically, to ignore change signals.
     updating: Cell<bool>,
     busy: Cell<bool>,
@@ -53,6 +85,13 @@ impl ChargingPage {
             .build();
         let status_row = adw::ActionRow::builder().title(tr("Current Setting")).build();
         status_row.add_prefix(&gtk::Image::from_icon_name("battery-level-80-charging-symbolic"));
+        let profile_labels: Vec<&str> = (0..=CUSTOM_PROFILE).map(profile_label).collect();
+        let profile = adw::ComboRow::builder()
+            .title(tr("Profile"))
+            .subtitle(profile_hint(CUSTOM_PROFILE))
+            .model(&gtk::StringList::new(&profile_labels))
+            .selected(CUSTOM_PROFILE as u32)
+            .build();
         let enable = adw::SwitchRow::builder().title(tr("Limit Maximum Charge")).build();
         let end = adw::SpinRow::builder()
             .title(tr("Stop Charging At"))
@@ -76,6 +115,7 @@ impl ChargingPage {
             .margin_top(12)
             .build();
         limit_group.add(&status_row);
+        limit_group.add(&profile);
         limit_group.add(&enable);
         limit_group.add(&end);
         limit_group.add(&start);
@@ -114,6 +154,7 @@ impl ChargingPage {
             limit_group,
             unsupported,
             status_row,
+            profile,
             enable,
             end,
             start,
@@ -126,6 +167,7 @@ impl ChargingPage {
             mode,
             mode_ids: RefCell::new(Vec::new()),
             initialized: Cell::new(false),
+            profile_end: Cell::new(None),
             updating: Cell::new(false),
             busy: Cell::new(false),
             ctrl: Rc::downgrade(ctrl),
@@ -140,15 +182,23 @@ impl ChargingPage {
         self.enable.connect_active_notify(move |_| {
             if let Some(this) = this.upgrade() {
                 this.sync_sensitivity();
+                this.mark_custom();
             }
         });
         let this = Rc::downgrade(self);
         self.end.connect_value_notify(move |end| {
             if let Some(this) = this.upgrade() {
+                this.mark_custom();
                 // Keep the resume point below the stop point.
                 if this.start.value() >= end.value() {
                     this.start.set_value(end.value() - 5.0);
                 }
+            }
+        });
+        let this = Rc::downgrade(self);
+        self.start.connect_value_notify(move |_| {
+            if let Some(this) = this.upgrade() {
+                this.mark_custom();
             }
         });
         let this = Rc::downgrade(self);
@@ -162,6 +212,27 @@ impl ChargingPage {
                 ctrl.start_full_charge();
                 this.toast(tr("Charging to 100% once; your limit comes back when full or unplugged"));
             }
+        });
+        let this = Rc::downgrade(self);
+        self.profile.connect_selected_notify(move |row| {
+            let Some(this) = this.upgrade() else { return };
+            let i = row.selected() as usize;
+            row.set_subtitle(profile_hint(i));
+            if this.updating.get() {
+                return;
+            }
+            // A preset fills in the settings below and applies them right away;
+            // "Custom" leaves them for you to edit.
+            let Some(&(stop, resume)) = PROFILES.get(i) else { return };
+            this.updating.set(true);
+            this.enable.set_active(stop < 100);
+            if stop < 100 {
+                this.end.set_value(stop as f64);
+                this.start.set_value(resume as f64);
+            }
+            this.updating.set(false);
+            this.sync_sensitivity();
+            this.apply_limit();
         });
         let this = Rc::downgrade(self);
         self.apply.connect_clicked(move |_| {
@@ -180,6 +251,15 @@ impl ChargingPage {
                 this.run_helper(vec![vec!["set-behaviour".into(), this.battery_name(), id.clone()]], trf("Charging mode set to {0}", &[("0", behaviour_label(&id).to_string())]));
             }
         });
+    }
+
+    /// Editing the settings by hand no longer matches a preset.
+    fn mark_custom(&self) {
+        if !self.updating.get() {
+            self.updating.set(true);
+            self.profile.set_selected(CUSTOM_PROFILE as u32);
+            self.updating.set(false);
+        }
     }
 
     fn sync_sensitivity(&self) {
@@ -275,6 +355,11 @@ impl ChargingPage {
             });
             self.full_button.set_label(tr("Charge Now"));
             self.full_button.set_sensitive(b.ac_online);
+        }
+        // Follow the saved limit, but leave the choice alone while you are
+        // editing the settings by hand.
+        if self.profile_end.replace(Some(end)) != Some(end) {
+            self.profile.set_selected(profile_for(end) as u32);
         }
         let status = match (end < 100, b.start_threshold.filter(|s| *s > 0)) {
             (true, Some(s)) => trf("Stops at {end}%, resumes below {s}%", &[("end", end.to_string()), ("s", s.to_string())]),

@@ -8,7 +8,8 @@ All your laptop battery information in one place, for GNOME. Written in Rust wit
 - **Health**: maximum capacity compared with design capacity, condition, cycle count, voltage,
   manufacturer, model, chemistry, capacity over time with a projected 80% date, and guided calibration.
   Laptops with two batteries are supported.
-- **Charging**: set a maximum charge (and where charging resumes), keep it after a restart or sleep,
+- **Charging**: pick a charge profile (Maximum Lifespan 60%, Balanced 80% or Full Capacity 100%) or set a
+  maximum charge (and where charging resumes), keep it after a restart or sleep,
   charge to 100% once ("Charge to 100% Now"), and pause charging or run on battery while plugged in.
 - **Power**: the power mode (Power Saver, Balanced, Performance); **automatic power mode**, which
   switches it when you plug in or unplug the charger or when the charge gets low; GNOME's power-saving
