@@ -22,34 +22,17 @@ All your laptop battery information in one place, for GNOME. Written in Rust wit
 - **Battery report**: export an HTML report from the menu, or run
   `battery-health-center --export-report report.html`.
 
-## Install from the Snap Store
+> **Recommended: install with apt.** It gives you the full app (real app icons, the whole Power page, nothing to connect by hand) and updates with your system. Jump to [Install with apt](#install-with-apt-recommended). The snap is a limited, sandboxed edition that needs manual permissions.
 
-```bash
-sudo snap install battery-health-center
-sudo snap connect battery-health-center:hardware-observe
-sudo snap connect battery-health-center:system-observe
-sudo snap connect battery-health-center:power-control
-```
+## Install with apt (recommended)
 
-The snap is strictly confined. A bundled root service (`bhc-helper serve`) applies charge limits
-through the `power-control` interface, which only allows the `charge_start_threshold` /
-`charge_stop_threshold` files. Charging Mode and Power Mode are hidden in the snap because no
-interface allows them. Calibration and Charge to 100% Now work in the snap. On the Power page, only
-**Show Battery Percentage** works in the snap: the sandbox blocks the power mode service and can't see
-GNOME's power settings, so the page says so and the rest is available in the regular (non-snap) version. To build it locally, run
-`snapcraft pack`.
-
-Store screenshots are in `screenshots/`. To retake them, run the app with
-`BHC_SCREENSHOTS=<folder>` (and optionally `BHC_SCREENSHOTS_STYLE=light` or `dark`). It saves one
-image per page and quits.
-
-## Install as a Debian/Ubuntu package
+**We recommend this way.** It is the best way to install Battery Health Center on Ubuntu, Debian, Zorin OS and Linux Mint (tested on Ubuntu 24.04, Zorin OS 18 and Linux Mint 22): four short commands, once, and then `apt` keeps it up to date. The snap is sandboxed, so it needs manual permissions and can't offer some features (see the [comparison](#apt-or-snap) below).
 
 The `.deb` is the full, unsandboxed version: real app icons, per-app energy use, the complete Power
 page, and charge limits through the normal PolicyKit password prompt. It needs libadwaita 1.5 or newer
 (Ubuntu 24.04+, Zorin OS 18, Linux Mint 22, Debian 13).
 
-### From the apt repository
+### From the apt repository (easiest)
 
 The package is published in a signed apt repository (amd64), so `apt` installs it and keeps it up to date:
 
@@ -94,7 +77,43 @@ back up its history first, because removing the snap deletes it: copy
 `~/snap/battery-health-center/current/.local/share/battery-health-center/*.csv` to
 `~/.local/share/battery-health-center/`.
 
-### Publishing a new version (maintainers)
+### apt or snap?
+
+| | apt / `.deb` (recommended) | Snap Store |
+| --- | --- | --- |
+| Permissions | Nothing to set up | Needs three `snap connect` commands after installing |
+| Power page (power modes, automatic mode, power-saving settings, lid and power button) | Everything | Only Show Battery Percentage |
+| Real app icons and per-app energy use | Yes | No icons; the sandbox limits it |
+| Charge limit | Normal password prompt | Works, through a bundled service |
+| Updates | With the rest of your system | Automatic, but a running app can delay them |
+| Sandboxed | No | Yes |
+
+## Install from the Snap Store (limited)
+
+**We recommend [apt](#install-with-apt-recommended) instead** if your system supports it. The snap is sandboxed, so you have to connect its permissions by hand and some features are unavailable. Choose it if you want the sandbox or your system can't use the apt package.
+
+```bash
+sudo snap install battery-health-center
+sudo snap connect battery-health-center:hardware-observe
+sudo snap connect battery-health-center:system-observe
+sudo snap connect battery-health-center:power-control
+```
+
+The snap is strictly confined. A bundled root service (`bhc-helper serve`) applies charge limits
+through the `power-control` interface, which only allows the `charge_start_threshold` /
+`charge_stop_threshold` files. Charging Mode and Power Mode are hidden in the snap because no
+interface allows them. Calibration and Charge to 100% Now work in the snap. On the Power page, only
+**Show Battery Percentage** works in the snap: the sandbox blocks the power mode service and can't see
+GNOME's power settings, so the page says so and the rest is available in the regular (non-snap) version. To build it locally, run
+`snapcraft pack`.
+
+Store screenshots are in `screenshots/`. To retake them, run the app with
+`BHC_SCREENSHOTS=<folder>` (and optionally `BHC_SCREENSHOTS_STYLE=light` or `dark`). It saves one
+image per page and quits.
+
+## Publishing new versions (maintainers)
+
+### apt repository and `.deb`
 
 Bump the version in `Cargo.toml`, add an entry to `data/deb/changelog`, then run
 `scripts/publish-apt.sh`. It builds the package, adds it to the repository, signs the index and pushes
@@ -102,7 +121,7 @@ the site. `DRY_RUN=1 scripts/publish-apt.sh` shows the steps without doing anyth
 `reprepro`, the signing key in your GPG keyring, and the repository's private files in `~/apt-repo`
 (configuration and database, never published) next to a clone of `arios4k/apt` in `~/apt-site`.
 
-### Publishing a new snap (maintainers)
+### Snap Store
 
 Bump the version in `Cargo.toml` and `snap/snapcraft.yaml` (they must match), then run
 `scripts/publish-snap.sh`. It checks the versions and the store's 4096-character description limit,
