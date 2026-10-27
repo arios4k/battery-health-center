@@ -5,6 +5,7 @@ edition = "2021"
 description = "All your laptop battery information in one place, for GNOME"
 license = "GPL-3.0-or-later"
 authors = ["Alexis Rios-Negron"]
+default-run = "battery-health-center"
 repository = "https://github.com/arios4k/battery-health-center"
 homepage = "https://github.com/arios4k/battery-health-center"
 

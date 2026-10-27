@@ -306,140 +306,176 @@ msgstr ""
 msgid "The change could not be applied"
 msgstr ""
 
-#: src/ui/charging.rs:104
-msgid "Charging Mode"
+#: src/ui/charging.rs:100
+msgid "Resume Charging Below"
+msgstr ""
+
+#: src/ui/charging.rs:101
+msgid "Avoids topping up after every small drop"
 msgstr ""
 
 #: src/ui/charging.rs:105
-msgid "Temporarily pause charging, or run from the battery while still plugged in."
+msgid "Keep After Restart"
 msgstr ""
 
-#: src/ui/charging.rs:108
-msgid "Mode"
+#: src/ui/charging.rs:106
+msgid "Re-apply the limit at startup and after waking from sleep"
+msgstr ""
+
+#: src/ui/charging.rs:110
+msgid "Apply"
+msgstr ""
+
+#: src/ui/charging.rs:126
+msgid "Not supported on this laptop"
+msgstr ""
+
+#: src/ui/charging.rs:127
+msgid "The battery driver does not expose charge thresholds (charge_control_end_threshold)."
+msgstr ""
+
+#: src/ui/charging.rs:134 src/ui/charging.rs:347
+msgid "Charge to 100% Now"
+msgstr ""
+
+#: src/ui/charging.rs:136 src/ui/charging.rs:353
+msgid "Charge Now"
 msgstr ""
 
 #: src/ui/charging.rs:14
 msgid "Pause Charging"
 msgstr ""
 
+#: src/ui/charging.rs:142
+msgid "Charging Mode"
+msgstr ""
+
+#: src/ui/charging.rs:143
+msgid "Temporarily pause charging, or run from the battery while still plugged in."
+msgstr ""
+
+#: src/ui/charging.rs:146
+msgid "Mode"
+msgstr ""
+
 #: src/ui/charging.rs:15
 msgid "Run on Battery"
 msgstr ""
 
-#: src/ui/charging.rs:160
+#: src/ui/charging.rs:207
 msgid "Back to your charge limit"
 msgstr ""
 
-#: src/ui/charging.rs:163
+#: src/ui/charging.rs:210
 msgid "Charging to 100% once; your limit comes back when full or unplugged"
 msgstr ""
 
-#: src/ui/charging.rs:180
+#: src/ui/charging.rs:248
 #, no-c-format
 msgid "Charging mode set to {0}"
 msgstr ""
 
-#: src/ui/charging.rs:215
+#: src/ui/charging.rs:28
+msgid "Maximum Lifespan (60%)"
+msgstr ""
+
+#: src/ui/charging.rs:29
+msgid "Balanced (80%)"
+msgstr ""
+
+#: src/ui/charging.rs:292
 #, no-c-format
 msgid "Charging will stop at {end}%"
 msgstr ""
 
-#: src/ui/charging.rs:215
+#: src/ui/charging.rs:292
 msgid "Charge limit removed"
 msgstr ""
 
-#: src/ui/charging.rs:264 src/ui/overview.rs:164
+#: src/ui/charging.rs:30
+msgid "Full Capacity (100%)"
+msgstr ""
+
+#: src/ui/charging.rs:31
+msgid "Custom"
+msgstr ""
+
+#: src/ui/charging.rs:341 src/ui/overview.rs:164
 msgid "Charging to 100%"
 msgstr ""
 
-#: src/ui/charging.rs:265
+#: src/ui/charging.rs:342
 msgid "Your limit comes back when the battery is full or you unplug."
 msgstr ""
 
-#: src/ui/charging.rs:266 src/ui/health.rs:191 src/ui/health.rs:228
+#: src/ui/charging.rs:343 src/ui/health.rs:191 src/ui/health.rs:228
 msgid "Cancel"
 msgstr ""
 
-#: src/ui/charging.rs:272
+#: src/ui/charging.rs:349
 msgid "Charge fully once, for a trip or a long day. Your limit comes back when full or unplugged."
 msgstr ""
 
-#: src/ui/charging.rs:274
+#: src/ui/charging.rs:351
 msgid "Connect the charger to charge fully once."
 msgstr ""
 
-#: src/ui/charging.rs:280
+#: src/ui/charging.rs:360
 #, no-c-format
 msgid "Stops at {end}%, resumes below {s}%"
 msgstr ""
 
-#: src/ui/charging.rs:281
+#: src/ui/charging.rs:361
 #, no-c-format
 msgid "Stops at {end}%"
 msgstr ""
 
-#: src/ui/charging.rs:282
+#: src/ui/charging.rs:362
 msgid "Charges to 100%"
 msgstr ""
 
-#: src/ui/charging.rs:49 src/ui/charging.rs:86
+#: src/ui/charging.rs:37
+msgid "Stops at 60%. Best when you're plugged in most of the time."
+msgstr ""
+
+#: src/ui/charging.rs:38
+msgid "Stops at 80%. A good everyday balance."
+msgstr ""
+
+#: src/ui/charging.rs:39
+msgid "Charges to 100%. For the longest time away from the charger."
+msgstr ""
+
+#: src/ui/charging.rs:40
+msgid "Your own settings below."
+msgstr ""
+
+#: src/ui/charging.rs:79 src/ui/charging.rs:124
 msgid "Charge Limit"
 msgstr ""
 
-#: src/ui/charging.rs:51
+#: src/ui/charging.rs:81
 msgid "Lithium batteries wear faster when kept at full charge. If your laptop is plugged in most of the time, limiting the charge to about 80% can noticeably extend the battery's lifespan."
 msgstr ""
 
-#: src/ui/charging.rs:54
+#: src/ui/charging.rs:84
 msgid "Current Setting"
 msgstr ""
 
-#: src/ui/charging.rs:56
+#: src/ui/charging.rs:88
+msgid "Profile"
+msgstr ""
+
+#: src/ui/charging.rs:93
 msgid "Limit Maximum Charge"
 msgstr ""
 
-#: src/ui/charging.rs:58
+#: src/ui/charging.rs:95
 msgid "Stop Charging At"
 msgstr ""
 
-#: src/ui/charging.rs:59 src/ui/power.rs:189 src/ui/preferences.rs:53
+#: src/ui/charging.rs:96 src/ui/power.rs:189 src/ui/preferences.rs:53
 msgid "Percent"
-msgstr ""
-
-#: src/ui/charging.rs:63
-msgid "Resume Charging Below"
-msgstr ""
-
-#: src/ui/charging.rs:64
-msgid "Avoids topping up after every small drop"
-msgstr ""
-
-#: src/ui/charging.rs:68
-msgid "Keep After Restart"
-msgstr ""
-
-#: src/ui/charging.rs:69
-msgid "Re-apply the limit at startup and after waking from sleep"
-msgstr ""
-
-#: src/ui/charging.rs:73
-msgid "Apply"
-msgstr ""
-
-#: src/ui/charging.rs:88
-msgid "Not supported on this laptop"
-msgstr ""
-
-#: src/ui/charging.rs:89
-msgid "The battery driver does not expose charge thresholds (charge_control_end_threshold)."
-msgstr ""
-
-#: src/ui/charging.rs:96 src/ui/charging.rs:270
-msgid "Charge to 100% Now"
-msgstr ""
-
-#: src/ui/charging.rs:98 src/ui/charging.rs:276
-msgid "Charge Now"
 msgstr ""
 
 #: src/ui/health.rs:100
