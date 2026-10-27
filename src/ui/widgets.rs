@@ -308,3 +308,53 @@ pub fn draw_health(cr: &cairo::Context, w: f64, h: f64, fg: &gdk::RGBA, entries:
         empty_text: tr("Recorded once a day; check back tomorrow"),
     });
 }
+
+/// Rounds up to 1, 2 or 5 times a power of ten, so small values get a sensible axis.
+pub fn nice_ceiling(v: f64) -> f64 {
+    if v <= 0.0 {
+        return 1.0;
+    }
+    let base = 10f64.powf(v.log10().floor());
+    [1.0, 2.0, 5.0, 10.0].into_iter().map(|m| m * base).find(|c| *c >= v).unwrap_or(10.0 * base)
+}
+
+/// What an app trend chart shows.
+#[derive(Clone, Copy, PartialEq, Eq)]
+pub enum TrendKind {
+    /// Energy impact, in percent of one core, averaged over each hour.
+    Impact,
+    /// Estimated energy drawn on battery, in watt-hours per hour.
+    Energy,
+}
+
+/// One app's use hour by hour.
+#[allow(clippy::too_many_arguments)]
+pub fn draw_app_trend(cr: &cairo::Context, w: f64, h: f64, fg: &gdk::RGBA, points: &[crate::app_history::HourPoint], now: i64, range: i64, kind: TrendKind) {
+    let value = |p: &crate::app_history::HourPoint| match kind {
+        TrendKind::Impact => p.impact(),
+        TrendKind::Energy => p.wh,
+    };
+    // Each point sits in the middle of its hour.
+    let pts: Vec<_> = points.iter().filter(|p| p.hour + 3600 > now - range).map(|p| (p.hour + 1800, value(p), BLUE)).collect();
+    let max = nice_ceiling(pts.iter().map(|p| p.1).fold(0.0, f64::max).max(match kind {
+        TrendKind::Impact => 10.0,
+        TrendKind::Energy => 0.1,
+    }));
+    draw_chart(cr, w, h, fg, &ChartSpec {
+        start: now - range,
+        end: now,
+        y_min: 0.0,
+        y_max: max,
+        y_ticks: vec![0.0, max / 2.0, max],
+        y_label: &|v| match kind {
+            TrendKind::Impact => format!("{v:.0}%"),
+            TrendKind::Energy => if max < 1.0 { format!("{v:.2} Wh") } else { format!("{v:.1} Wh") },
+        },
+        points: &pts,
+        gap: 2 * 3600 + 1,
+        fill: true,
+        dots: false,
+        hline: None,
+        empty_text: tr("Not enough history yet"),
+    });
+}

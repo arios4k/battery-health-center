@@ -7,6 +7,9 @@ battery-health-center \- battery health, charge limits and energy use in one pla
 .br
 .B battery-health-center \-\-export\-report
 .I FILE
+.br
+.B battery-health-center \-\-export\-csv
+.I FOLDER
 .SH DESCRIPTION
 A GNOME application showing the health of the laptop battery (maximum capacity,
 condition, cycle count), the charger, battery use during sleep and which
@@ -25,6 +28,11 @@ The Usage page can start the application this way at login.
 Write an HTML battery report to
 .I FILE
 and exit.
+.TP
+.BI \-\-export\-csv " FOLDER"
+Write the recorded history as four CSV files (battery level and power, capacity over time, sleep sessions, per\-app energy use) into
+.I FOLDER
+and exit.
 .SH FILES
 .TP
 .I ~/.local/share/battery-health-center/
@@ -35,6 +43,9 @@ Preferences.
 .TP
 .I /etc/battery-health-center.conf
 Saved charge limits, re-applied at boot and after sleep.
+.TP
+.I /etc/battery-health-center.schedule
+The charging schedule and optimized charging setting.
 .SH AUTHOR
 Alexis Rios-Negron.
 .SH SEE ALSO

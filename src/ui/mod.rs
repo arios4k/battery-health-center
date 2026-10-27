@@ -1,3 +1,4 @@
+mod app_trend;
 mod charging;
 mod health;
 mod overview;
@@ -13,7 +14,7 @@ use adw::prelude::*;
 use gtk::{gio, glib};
 
 use crate::controller::Controller;
-use crate::i18n::{tr, trc, trf};
+use crate::i18n::{tr, trc, trf, trnf};
 
 pub fn build_window(app: &adw::Application, ctrl: &Rc<Controller>) -> adw::ApplicationWindow {
     let stack = adw::ViewStack::new();
@@ -52,6 +53,7 @@ pub fn build_window(app: &adw::Application, ctrl: &Rc<Controller>) -> adw::Appli
     let section = gio::Menu::new();
     section.append(Some(tr("_Refresh")), Some("app.refresh"));
     section.append(Some(tr("_Export Battery Report…")), Some("win.export-report"));
+    section.append(Some(tr("Export _Data as CSV…")), Some("win.export-csv"));
     menu.append_section(None, &section);
     let section = gio::Menu::new();
     section.append(Some(tr("_Preferences")), Some("win.preferences"));
@@ -102,6 +104,15 @@ pub fn build_window(app: &adw::Application, ctrl: &Rc<Controller>) -> adw::Appli
         }
     });
     window.add_action(&export);
+
+    let export_csv = gio::SimpleAction::new("export-csv", None);
+    let (w, c, t) = (window.downgrade(), Rc::downgrade(ctrl), toasts.clone());
+    export_csv.connect_activate(move |_, _| {
+        if let (Some(w), Some(c)) = (w.upgrade(), c.upgrade()) {
+            export_csv_files(&w, &c, &t);
+        }
+    });
+    window.add_action(&export_csv);
 
     // On narrow windows, move the page switcher to the bottom.
     let breakpoint = adw::Breakpoint::new(adw::BreakpointCondition::parse("max-width: 600sp").unwrap());
@@ -187,6 +198,34 @@ fn export_report(window: &adw::ApplicationWindow, ctrl: &Rc<Controller>, toasts:
                 toast
             }
             Err(e) => adw::Toast::new(&trf("Could not save the report: {0}", &[("0", e.message().to_string())])),
+        };
+        toasts.add_toast(toast);
+    });
+}
+
+/// Asks for a folder, then writes the history as CSV files in it.
+fn export_csv_files(window: &adw::ApplicationWindow, ctrl: &Rc<Controller>, toasts: &adw::ToastOverlay) {
+    let dialog = gtk::FileDialog::builder().title(tr("Export Data as CSV")).accept_label(tr("Save Here")).build();
+    let (w, ctrl, toasts) = (window.downgrade(), ctrl.clone(), toasts.clone());
+    dialog.select_folder(Some(window), gio::Cancellable::NONE, move |result| {
+        let Ok(folder) = result else { return }; // cancelled
+        let Some(dir) = folder.path() else { return };
+        let iso = |ts: i64| {
+            glib::DateTime::from_unix_local(ts).and_then(|d| d.format("%Y-%m-%dT%H:%M:%S%:z")).map(|s| s.to_string()).unwrap_or_default()
+        };
+        let toast = match crate::export::write_all(&dir, &ctrl.state(), &iso) {
+            Ok(files) => {
+                let toast = adw::Toast::builder()
+                    .title(trnf("Saved {n} file", "Saved {n} files", files.len() as u64, &[("n", files.len().to_string())]))
+                    .button_label(tr("Open"))
+                    .build();
+                let w = w.clone();
+                toast.connect_button_clicked(move |_| {
+                    gtk::FileLauncher::new(Some(&folder)).launch(w.upgrade().as_ref(), gio::Cancellable::NONE, |_| {});
+                });
+                toast
+            }
+            Err(e) => adw::Toast::new(&trf("Could not save the files: {0}", &[("0", e.to_string())])),
         };
         toasts.add_toast(toast);
     });

@@ -113,9 +113,78 @@ impl AppHistory {
     }
 }
 
+/// One hour of one app's use, for the trend chart.
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub struct HourPoint {
+    pub hour: i64,
+    /// Seconds of that hour that have passed (less than an hour for the one in progress).
+    pub covered_secs: f64,
+    pub cpu_secs: f64,
+    pub wh: f64,
+}
+
+impl HourPoint {
+    /// Average energy impact over the hour, in percent of one core.
+    pub fn impact(&self) -> f64 {
+        self.cpu_secs / self.covered_secs.max(1.0) * 100.0
+    }
+}
+
+impl AppHistory {
+    /// An app's use hour by hour since `since`. Every hour in which anything was
+    /// recorded gets a point (zero if this app did nothing), so quiet hours show
+    /// as quiet instead of as gaps.
+    pub fn series(&self, key: &str, since: i64, now: i64) -> Vec<HourPoint> {
+        let mut hours: HashMap<i64, HourPoint> = HashMap::new();
+        let first = hour_of(since);
+        let done = self.buckets.iter().filter(|((h, _), _)| *h >= first).map(|((h, _), t)| (*h, t));
+        let current = self.current.values().map(|t| (self.current_hour, t));
+        for (hour, t) in done.chain(current) {
+            let covered = if hour == self.current_hour { (now - hour).clamp(1, 3600) as f64 } else { 3600.0 };
+            let p = hours.entry(hour).or_insert(HourPoint { hour, covered_secs: covered, cpu_secs: 0.0, wh: 0.0 });
+            if t.key == key {
+                p.cpu_secs += t.cpu_secs;
+                p.wh += t.wh;
+            }
+        }
+        let mut out: Vec<HourPoint> = hours.into_values().collect();
+        out.sort_by_key(|p| p.hour);
+        out
+    }
+
+    /// Every stored hour and app, oldest first, for exporting.
+    pub fn hourly(&self) -> Vec<(i64, AppTotal)> {
+        let mut rows: Vec<(i64, AppTotal)> = self.buckets.iter().map(|((h, _), t)| (*h, t.clone())).collect();
+        rows.sort_by(|a, b| (a.0, &a.1.name).cmp(&(b.0, &b.1.name)));
+        rows
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    fn usage(key: &str, impact: f64) -> AppUsage {
+        AppUsage { key: key.into(), name: key.into(), icon: None, system: false, processes: 1, impact, watts: Some(2.0) }
+    }
+
+    #[test]
+    fn series_has_a_point_for_every_recorded_hour() {
+        let mut h = AppHistory { path: PathBuf::new(), buckets: HashMap::new(), current_hour: 0, current: HashMap::new() };
+        // Hour 0: both apps, hour 1: only "b", hour 2 (in progress): only "a".
+        h.add(&[usage("a", 50.0), usage("b", 10.0)], 3600.0, 10, false);
+        h.add(&[usage("b", 10.0)], 3600.0, 3600 + 10, false);
+        h.add(&[usage("a", 20.0)], 1800.0, 7200 + 1800, false);
+        let a = h.series("a", 0, 7200 + 1800);
+        assert_eq!(a.iter().map(|p| p.hour).collect::<Vec<_>>(), vec![0, 3600, 7200]);
+        assert_eq!(a[0].impact().round(), 50.0);
+        assert_eq!(a[1].cpu_secs, 0.0, "a did nothing in hour 1");
+        // The hour in progress is judged over the part that has passed.
+        assert_eq!(a[2].covered_secs, 1800.0);
+        assert_eq!(a[2].impact().round(), 20.0);
+        assert!(h.series("a", 3600, 7200 + 1800).iter().all(|p| p.hour >= 3600));
+        assert_eq!(h.hourly().len(), 3, "completed hours only");
+    }
 
     #[test]
     fn line_roundtrip_with_comma_in_name() {

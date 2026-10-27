@@ -3,6 +3,7 @@ use std::rc::{Rc, Weak};
 
 use adw::prelude::*;
 
+use super::app_trend;
 use super::widgets::{draw_level, draw_power};
 use crate::app_history::AppTotal;
 use crate::apps::AppUsage;
@@ -72,7 +73,19 @@ fn suffix_labels(top: &str, top_class: &str, bottom: Option<String>) -> gtk::Box
     b
 }
 
-fn app_row(app: &AppUsage, show_processes: bool) -> adw::ActionRow {
+/// Makes a row open that app's trend window when clicked.
+fn make_openable(row: &adw::ActionRow, ctrl: &Weak<Controller>, key: &str, name: &str, icon: Option<gtk::gio::Icon>) {
+    row.set_activatable(true);
+    row.add_suffix(&gtk::Image::from_icon_name("go-next-symbolic"));
+    let (ctrl, key, name) = (ctrl.clone(), key.to_string(), name.to_string());
+    row.connect_activated(move |row| {
+        if let Some(ctrl) = ctrl.upgrade() {
+            app_trend::show(row, &ctrl, &key, &name, icon.clone());
+        }
+    });
+}
+
+fn app_row(app: &AppUsage, show_processes: bool, ctrl: &Weak<Controller>) -> adw::ActionRow {
     let mut subtitle = Vec::new();
     if show_processes && app.processes > 1 {
         subtitle.push(trnf("{n} process", "{n} processes", app.processes as u64, &[("n", app.processes.to_string())]));
@@ -93,6 +106,7 @@ fn app_row(app: &AppUsage, show_processes: bool) -> adw::ActionRow {
     };
     let watts = app.watts.filter(|w| *w >= 0.05).map(|w| format!("≈ {w:.1} W"));
     row.add_suffix(&suffix_labels(label, class, watts));
+    make_openable(&row, ctrl, &app.key, &app.name, app.icon.clone());
     row
 }
 
@@ -111,19 +125,20 @@ fn placeholder(list: &gtk::ListBox, icon: &str, title: &str, subtitle: Option<&s
     list.append(&row);
 }
 
-fn fill_now(list: &gtk::ListBox, apps: &[AppUsage]) {
+fn fill_now(list: &gtk::ListBox, apps: &[AppUsage], ctrl: &Weak<Controller>) {
     clear(list);
     let shown: Vec<&AppUsage> = apps.iter().filter(|a| a.impact >= 1.0).take(MAX_APPS).collect();
     if shown.is_empty() {
         placeholder(list, "emblem-ok-symbolic", tr("No apps are using significant energy"), None);
     }
     for app in shown {
-        list.append(&app_row(app, true));
+        list.append(&app_row(app, true, ctrl));
     }
 }
 
 /// Rows for stored totals: share of all app activity, and Wh on battery.
-fn fill_totals(list: &gtk::ListBox, totals: &[AppTotal], ctrl: &Controller) {
+fn fill_totals(list: &gtk::ListBox, totals: &[AppTotal], weak: &Weak<Controller>) {
+    let icon_of = |key: &str| weak.upgrade().and_then(|c| c.app_icon(key));
     clear(list);
     let all: f64 = totals.iter().map(|t| t.cpu_secs).sum();
     let shown: Vec<&AppTotal> = totals.iter().filter(|t| all > 0.0 && t.cpu_secs / all >= 0.01).take(MAX_APPS).collect();
@@ -137,9 +152,11 @@ fn fill_totals(list: &gtk::ListBox, totals: &[AppTotal], ctrl: &Controller) {
             .subtitle(trf("{0} of CPU time", &[("0", format_hours(t.cpu_secs / 3600.0).to_string())]))
             .use_markup(false)
             .build();
-        row.add_prefix(&app_icon(ctrl.app_icon(&t.key).as_ref()));
+        let icon = icon_of(&t.key);
+        row.add_prefix(&app_icon(icon.as_ref()));
         let wh = (t.wh >= 0.01).then(|| trf("≈ {0} Wh on battery", &[("0", format!("{:.1}", t.wh))]));
         row.add_suffix(&suffix_labels(&format!("{share:.0}%"), "numeric", wh));
+        make_openable(&row, weak, &t.key, &t.name, icon);
         list.append(&row);
     }
 }
@@ -325,7 +342,7 @@ impl UsagePage {
                 if let (true, Some(page)) = (b.is_active(), page.upgrade()) {
                     page.app_range.set(secs);
                     if let Some(ctrl) = page.ctrl.upgrade() {
-                        page.fill_energy(&ctrl.state(), &ctrl);
+                        page.fill_energy(&ctrl.state());
                     }
                 }
             });
@@ -342,7 +359,7 @@ impl UsagePage {
         self.legend.set_label(legend);
     }
 
-    fn fill_energy(&self, st: &State, ctrl: &Controller) {
+    fn fill_energy(&self, st: &State) {
         match self.app_range.get() {
             0 => {
                 self.energy_group.set_description(Some(tr("Average energy impact since Battery Health Center started.")));
@@ -352,12 +369,12 @@ impl UsagePage {
                     placeholder(&self.energy_list, "emblem-ok-symbolic", tr("No apps are using significant energy"), None);
                 }
                 for app in shown {
-                    self.energy_list.append(&app_row(app, false));
+                    self.energy_list.append(&app_row(app, false, &self.ctrl));
                 }
             }
             secs => {
                 self.energy_group.set_description(Some(tr("Share of app activity, with energy used while on battery.")));
-                fill_totals(&self.energy_list, &st.app_history.totals(now_unix() - secs), ctrl);
+                fill_totals(&self.energy_list, &st.app_history.totals(now_unix() - secs), &self.ctrl);
             }
         }
     }
@@ -425,9 +442,7 @@ impl UsagePage {
         if st.apps_now.is_empty() && st.apps_avg.is_empty() {
             return; // first sample is still being collected
         }
-        fill_now(&self.now_list, &st.apps_now);
-        if let Some(ctrl) = self.ctrl.upgrade() {
-            self.fill_energy(st, &ctrl);
-        }
+        fill_now(&self.now_list, &st.apps_now, &self.ctrl);
+        self.fill_energy(st);
     }
 }
