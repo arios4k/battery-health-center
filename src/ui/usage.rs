@@ -10,6 +10,7 @@ use crate::battery::format_hours;
 use crate::controller::{Controller, State, HIGH_SLEEP_DRAIN};
 use crate::history::{now_unix, SleepSession};
 use crate::system;
+use crate::i18n::{tr, trf, trnf};
 
 const MAX_APPS: usize = 8;
 const MAX_SLEEPS: usize = 5;
@@ -42,11 +43,11 @@ pub struct UsagePage {
 
 fn impact_label(impact: f64) -> &'static str {
     if impact >= 40.0 {
-        "High"
+        tr("High")
     } else if impact >= 10.0 {
-        "Medium"
+        tr("Medium")
     } else {
-        "Low"
+        tr("Low")
     }
 }
 
@@ -74,19 +75,21 @@ fn suffix_labels(top: &str, top_class: &str, bottom: Option<String>) -> gtk::Box
 fn app_row(app: &AppUsage, show_processes: bool) -> adw::ActionRow {
     let mut subtitle = Vec::new();
     if show_processes && app.processes > 1 {
-        subtitle.push(format!("{} processes", app.processes));
+        subtitle.push(trnf("{n} process", "{n} processes", app.processes as u64, &[("n", app.processes.to_string())]));
     }
     if app.system {
-        subtitle.push("System".to_string());
+        subtitle.push(tr("System").to_string());
     }
-    subtitle.push(format!("{:.0}% CPU", app.impact));
+    subtitle.push(trf("{0}% CPU", &[("0", format!("{:.0}", app.impact))]));
     let row = adw::ActionRow::builder().title(&app.name).subtitle(subtitle.join(" · ")).use_markup(false).build();
     row.add_prefix(&app_icon(app.icon.as_ref()));
     let label = impact_label(app.impact);
-    let class = match label {
-        "High" => "error",
-        "Medium" => "warning",
-        _ => "dim-label",
+    let class = if app.impact >= 40.0 {
+        "error"
+    } else if app.impact >= 10.0 {
+        "warning"
+    } else {
+        "dim-label"
     };
     let watts = app.watts.filter(|w| *w >= 0.05).map(|w| format!("≈ {w:.1} W"));
     row.add_suffix(&suffix_labels(label, class, watts));
@@ -112,7 +115,7 @@ fn fill_now(list: &gtk::ListBox, apps: &[AppUsage]) {
     clear(list);
     let shown: Vec<&AppUsage> = apps.iter().filter(|a| a.impact >= 1.0).take(MAX_APPS).collect();
     if shown.is_empty() {
-        placeholder(list, "emblem-ok-symbolic", "No apps are using significant energy", None);
+        placeholder(list, "emblem-ok-symbolic", tr("No apps are using significant energy"), None);
     }
     for app in shown {
         list.append(&app_row(app, true));
@@ -125,17 +128,17 @@ fn fill_totals(list: &gtk::ListBox, totals: &[AppTotal], ctrl: &Controller) {
     let all: f64 = totals.iter().map(|t| t.cpu_secs).sum();
     let shown: Vec<&AppTotal> = totals.iter().filter(|t| all > 0.0 && t.cpu_secs / all >= 0.01).take(MAX_APPS).collect();
     if shown.is_empty() {
-        placeholder(list, "dialog-information-symbolic", "No app activity recorded yet", Some("Usage is recorded while Battery Health Center is running."));
+        placeholder(list, "dialog-information-symbolic", tr("No app activity recorded yet"), Some(tr("Usage is recorded while Battery Health Center is running.")));
     }
     for t in shown {
         let share = t.cpu_secs / all * 100.0;
         let row = adw::ActionRow::builder()
             .title(&t.name)
-            .subtitle(format!("{} of CPU time", format_hours(t.cpu_secs / 3600.0)))
+            .subtitle(trf("{0} of CPU time", &[("0", format_hours(t.cpu_secs / 3600.0).to_string())]))
             .use_markup(false)
             .build();
         row.add_prefix(&app_icon(ctrl.app_icon(&t.key).as_ref()));
-        let wh = (t.wh >= 0.01).then(|| format!("≈ {:.1} Wh on battery", t.wh));
+        let wh = (t.wh >= 0.01).then(|| trf("≈ {0} Wh on battery", &[("0", format!("{:.1}", t.wh))]));
         row.add_suffix(&suffix_labels(&format!("{share:.0}%"), "numeric", wh));
         list.append(&row);
     }
@@ -149,11 +152,11 @@ fn sleep_row(s: &SleepSession) -> adw::ActionRow {
     let used = (s.from_percent - s.to_percent).max(0.0);
     let rate = s.percent_per_hour();
     let row = adw::ActionRow::builder()
-        .title(format!("{when} · {} asleep", format_hours(s.slept_secs as f64 / 3600.0)))
-        .subtitle(format!("Used {used:.0}% ({rate:.1}% per hour)"))
+        .title(trf("{when} · {0} asleep", &[("when", when.to_string()), ("0", format_hours(s.slept_secs as f64 / 3600.0).to_string())]))
+        .subtitle(trf("Used {used}% ({rate}% per hour)", &[("used", format!("{used:.0}")), ("rate", format!("{rate:.1}"))]))
         .build();
     row.add_prefix(&gtk::Image::from_icon_name("weather-clear-night-symbolic"));
-    let (label, class) = if rate >= HIGH_SLEEP_DRAIN { ("High", "error") } else if rate >= 1.0 { ("Moderate", "warning") } else { ("Normal", "success") };
+    let (label, class) = if rate >= HIGH_SLEEP_DRAIN { (tr("High"), "error") } else if rate >= 1.0 { (tr("Moderate"), "warning") } else { (tr("Normal"), "success") };
     row.add_suffix(&suffix_labels(label, class, None));
     row
 }
@@ -183,9 +186,9 @@ impl UsagePage {
         // Chart: battery level or power draw, over 24 hours or 7 days.
         let range = Rc::new(Cell::new(86_400i64));
         let kind = Rc::new(Cell::new(ChartKind::Level));
-        let chart_group = adw::PreferencesGroup::builder().title("Battery Level").build();
-        let (kind_box, kind_buttons) = toggle_group(&["Level", "Power"]);
-        let (range_box, range_buttons) = toggle_group(&["24 Hours", "7 Days"]);
+        let chart_group = adw::PreferencesGroup::builder().title(tr("Battery Level")).build();
+        let (kind_box, kind_buttons) = toggle_group(&[tr("Level"), tr("Power")]);
+        let (range_box, range_buttons) = toggle_group(&[tr("24 Hours"), tr("7 Days")]);
         // Controls go in their own row so the title isn't squeezed on narrow windows.
         let controls = gtk::Box::builder().spacing(6).margin_bottom(12).build();
         controls.append(&kind_box);
@@ -225,8 +228,8 @@ impl UsagePage {
 
         let bg_group = adw::PreferencesGroup::new();
         let background = adw::SwitchRow::builder()
-            .title("Record History in the Background")
-            .subtitle("History, sleep drain and notifications only work while Battery Health Center is running. This starts it hidden when you log in.")
+            .title(tr("Record History in the Background"))
+            .subtitle(tr("History, sleep drain and notifications only work while Battery Health Center is running. This starts it hidden when you log in."))
             .active(system::autostart_enabled())
             .build();
         background.connect_active_notify(|row| {
@@ -238,10 +241,10 @@ impl UsagePage {
         root.add(&bg_group);
 
         let sleep_group = adw::PreferencesGroup::builder()
-            .title("Battery Use During Sleep")
-            .description("How much charge your laptop used while suspended.")
+            .title(tr("Battery Use During Sleep"))
+            .description(tr("How much charge your laptop used while suspended."))
             .build();
-        let sleep_mode_row = adw::ActionRow::builder().title("Sleep Mode").build();
+        let sleep_mode_row = adw::ActionRow::builder().title(tr("Sleep Mode")).build();
         sleep_mode_row.add_prefix(&gtk::Image::from_icon_name("power-profile-power-saver-symbolic"));
         let sleep_list = list();
         sleep_group.add(&sleep_list);
@@ -251,14 +254,14 @@ impl UsagePage {
         sleep_group.add(&mode_list);
         root.add(&sleep_group);
 
-        let now_group = adw::PreferencesGroup::builder().title("Using Significant Energy").build();
+        let now_group = adw::PreferencesGroup::builder().title(tr("Using Significant Energy")).build();
         let now_list = list();
         now_group.add(&now_list);
         root.add(&now_group);
 
         let app_range = Rc::new(Cell::new(0));
-        let energy_group = adw::PreferencesGroup::builder().title("Energy Use by App").build();
-        let (energy_box, energy_buttons) = toggle_group(&["Since Opened", "24 Hours", "7 Days"]);
+        let energy_group = adw::PreferencesGroup::builder().title(tr("Energy Use by App")).build();
+        let (energy_box, energy_buttons) = toggle_group(&[tr("Since Opened"), tr("24 Hours"), tr("7 Days")]);
         energy_box.set_halign(gtk::Align::Start);
         energy_box.set_margin_bottom(12);
         energy_group.add(&energy_box);
@@ -270,8 +273,7 @@ impl UsagePage {
         note.add(
             &gtk::Label::builder()
                 .label(
-                    "Linux does not measure power per app. Energy impact is estimated from CPU time, and watts \
-                     are the measured battery drain above idle, shared between apps by CPU use. Treat them as a guide.",
+                    tr("Linux does not measure power per app. Energy impact is estimated from CPU time, and watts are the measured battery drain above idle, shared between apps by CPU use. Treat them as a guide."),
                 )
                 .css_classes(["caption", "dim-label"])
                 .wrap(true)
@@ -333,8 +335,8 @@ impl UsagePage {
 
     fn update_chart_labels(&self, kind: ChartKind) {
         let (title, legend) = match kind {
-            ChartKind::Level => ("Battery Level", "Green: plugged in · Blue: on battery · Dashed: charge limit"),
-            ChartKind::Power => ("Power Draw", "Blue: power used on battery · Green: charging power"),
+            ChartKind::Level => (tr("Battery Level"), tr("Green: plugged in · Blue: on battery · Dashed: charge limit")),
+            ChartKind::Power => (tr("Power Draw"), tr("Blue: power used on battery · Green: charging power")),
         };
         self.chart_group.set_title(title);
         self.legend.set_label(legend);
@@ -343,18 +345,18 @@ impl UsagePage {
     fn fill_energy(&self, st: &State, ctrl: &Controller) {
         match self.app_range.get() {
             0 => {
-                self.energy_group.set_description(Some("Average energy impact since Battery Health Center started."));
+                self.energy_group.set_description(Some(tr("Average energy impact since Battery Health Center started.")));
                 clear(&self.energy_list);
                 let shown: Vec<&AppUsage> = st.apps_avg.iter().filter(|a| a.impact >= 1.0).take(MAX_APPS).collect();
                 if shown.is_empty() {
-                    placeholder(&self.energy_list, "emblem-ok-symbolic", "No apps are using significant energy", None);
+                    placeholder(&self.energy_list, "emblem-ok-symbolic", tr("No apps are using significant energy"), None);
                 }
                 for app in shown {
                     self.energy_list.append(&app_row(app, false));
                 }
             }
             secs => {
-                self.energy_group.set_description(Some("Share of app activity, with energy used while on battery."));
+                self.energy_group.set_description(Some(tr("Share of app activity, with energy used while on battery.")));
                 fill_totals(&self.energy_list, &st.app_history.totals(now_unix() - secs), ctrl);
             }
         }
@@ -367,8 +369,8 @@ impl UsagePage {
             placeholder(
                 &self.sleep_list,
                 "weather-clear-night-symbolic",
-                "No sleep recorded yet",
-                Some("Measured when Battery Health Center is running before and after your laptop sleeps on battery."),
+                tr("No sleep recorded yet"),
+                Some(tr("Measured when Battery Health Center is running before and after your laptop sleeps on battery.")),
             );
         }
         for s in sessions.iter().take(MAX_SLEEPS) {
@@ -378,15 +380,15 @@ impl UsagePage {
         match &st.sleep_mode {
             Some((mode, modes)) => {
                 let (name, about) = match mode.as_str() {
-                    "s2idle" => ("Modern Standby (s2idle)", "Wakes quickly, but some laptops drain more while asleep"),
-                    "deep" => ("Deep Sleep (S3)", "The lowest-power sleep mode"),
-                    "shallow" => ("Shallow Sleep (S1)", "A light sleep mode"),
+                    "s2idle" => (tr("Modern Standby (s2idle)"), tr("Wakes quickly, but some laptops drain more while asleep")),
+                    "deep" => (tr("Deep Sleep (S3)"), tr("The lowest-power sleep mode")),
+                    "shallow" => (tr("Shallow Sleep (S1)"), tr("A light sleep mode")),
                     other => (other, ""),
                 };
-                self.sleep_mode_row.set_title(&format!("Sleep Mode: {name}"));
+                self.sleep_mode_row.set_title(&trf("Sleep Mode: {name}", &[("name", name.to_string())]));
                 let high = sessions.iter().take(MAX_SLEEPS).any(|s| s.percent_per_hour() >= HIGH_SLEEP_DRAIN);
                 let hint = if mode == "s2idle" && modes.iter().any(|m| m == "deep") && high {
-                    format!("{about}. Your laptop also supports deep sleep, which usually uses less battery; you can choose it with the kernel option mem_sleep_default=deep.")
+                    trf("{about}. Your laptop also supports deep sleep, which usually uses less battery; you can choose it with the kernel option mem_sleep_default=deep.", &[("about", about.to_string())])
                 } else {
                     about.to_string()
                 };
@@ -416,9 +418,9 @@ impl UsagePage {
         }
         let on_battery = st.battery.as_ref().is_some_and(|b| b.is_on_battery());
         self.now_group.set_description(Some(if on_battery {
-            "Apps ranked by their current energy impact, with estimated power draw."
+            tr("Apps ranked by their current energy impact, with estimated power draw.")
         } else {
-            "Apps ranked by their current energy impact. Power estimates appear when running on battery."
+            tr("Apps ranked by their current energy impact. Power estimates appear when running on battery.")
         }));
         if st.apps_now.is_empty() && st.apps_avg.is_empty() {
             return; // first sample is still being collected

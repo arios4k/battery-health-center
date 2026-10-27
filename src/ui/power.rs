@@ -7,6 +7,7 @@ use gtk::gio;
 use crate::controller::{Controller, State};
 use crate::desktop;
 use crate::system;
+use crate::i18n::tr;
 
 /// Suspend delays offered, in seconds.
 const SUSPEND_SECS: &[i64] = &[300, 600, 900, 1200, 1800, 2700, 3600, 7200];
@@ -103,7 +104,7 @@ fn timeout_row(
             updating.set(true);
             if list_changed {
                 let labels: Vec<String> =
-                    list.iter().map(|e| e.map_or_else(|| "Never".to_string(), desktop::duration_label)).collect();
+                    list.iter().map(|e| e.map_or_else(|| tr("Never").to_string(), desktop::duration_label)).collect();
                 let refs: Vec<&str> = labels.iter().map(String::as_str).collect();
                 row.set_model(Some(&gtk::StringList::new(&refs)));
             }
@@ -161,32 +162,31 @@ impl PowerPage {
 
         // Power mode: needs power-profiles-daemon.
         let mode_group = adw::PreferencesGroup::builder()
-            .title("Power Mode")
-            .description("Power Saver reduces performance to extend battery life. Performance is only offered on some laptops.")
+            .title(tr("Power Mode"))
+            .description(tr("Power Saver reduces performance to extend battery life. Performance is only offered on some laptops."))
             .visible(false)
             .build();
-        let mode = profile_combo("Power Mode");
+        let mode = profile_combo(tr("Power Mode"));
         mode_group.add(&mode);
         root.add(&mode_group);
 
         let auto_group = adw::PreferencesGroup::builder()
-            .title("Automatic Power Mode")
+            .title(tr("Automatic Power Mode"))
             .description(
-                "Switches the power mode by itself when you plug in or unplug the charger. You can still change \
-                 the mode by hand; it's only switched again the next time something changes.",
+                tr("Switches the power mode by itself when you plug in or unplug the charger. You can still change the mode by hand; it's only switched again the next time something changes."),
             )
             .visible(false)
             .build();
-        let auto_switch = adw::SwitchRow::builder().title("Switch Automatically").build();
-        let auto_ac = profile_combo("When Plugged In");
-        let auto_battery = profile_combo("On Battery");
+        let auto_switch = adw::SwitchRow::builder().title(tr("Switch Automatically")).build();
+        let auto_ac = profile_combo(tr("When Plugged In"));
+        let auto_battery = profile_combo(tr("On Battery"));
         let low_switch = adw::SwitchRow::builder()
-            .title("Use Power Saver When Battery Is Low")
-            .subtitle("Overrides the mode above on battery")
+            .title(tr("Use Power Saver When Battery Is Low"))
+            .subtitle(tr("Overrides the mode above on battery"))
             .build();
         let low_level = adw::SpinRow::builder()
-            .title("Low Battery Level")
-            .subtitle("Percent")
+            .title(tr("Low Battery Level"))
+            .subtitle(tr("Percent"))
             .adjustment(&gtk::Adjustment::new(20.0, 5.0, 60.0, 1.0, 5.0, 0.0))
             .build();
         for w in [auto_switch.upcast_ref::<gtk::Widget>(), auto_ac.upcast_ref(), auto_battery.upcast_ref(), low_switch.upcast_ref(), low_level.upcast_ref()] {
@@ -196,12 +196,11 @@ impl PowerPage {
 
         if ctrl.profiles.is_none() {
             root.add(&note(
-                "Power Mode and Automatic Power Mode Aren't Available",
+                tr("Power Mode and Automatic Power Mode Aren't Available"),
                 if in_snap {
-                    "The snap sandbox doesn't allow access to the power mode service. Use the regular version of the \
-                     app, or change the mode in Settings → Power."
+                    tr("The snap sandbox doesn't allow access to the power mode service. Use the regular version of the app, or change the mode in Settings → Power.")
                 } else {
-                    "Power Profiles Daemon isn't running, so the power mode can't be read or changed."
+                    tr("Power Profiles Daemon isn't running, so the power mode can't be read or changed.")
                 },
                 "dialog-information-symbolic",
             ));
@@ -214,35 +213,35 @@ impl PowerPage {
 
         if let Some(power) = &power {
             let saving = adw::PreferencesGroup::builder()
-                .title("Power Saving")
-                .description("GNOME's own settings that save the most battery. The same ones are in Settings → Power.")
+                .title(tr("Power Saving"))
+                .description(tr("GNOME's own settings that save the most battery. The same ones are in Settings → Power."))
                 .build();
             let rows: Vec<Option<gtk::Widget>> = vec![
                 ctrl.profiles.as_ref().and(
                     bool_row(
                         power,
                         "power-saver-profile-on-low-battery",
-                        "Power Saver When Battery Is Low",
-                        "GNOME switches to Power Saver mode when the battery gets low",
+                        tr("Power Saver When Battery Is Low"),
+                        tr("GNOME switches to Power Saver mode when the battery gets low"),
                     )
                     .map(|r| r.upcast()),
                 ),
                 bool_row(
                     power,
                     "idle-dim",
-                    "Dim Screen When Inactive",
-                    "The screen is usually the biggest power user, so dimming it saves a lot",
+                    tr("Dim Screen When Inactive"),
+                    tr("The screen is usually the biggest power user, so dimming it saves a lot"),
                 )
                 .map(|r| r.upcast()),
                 desktop::has_ambient_light()
-                    .then(|| bool_row(power, "ambient-enabled", "Automatic Screen Brightness", "Adjusts the brightness to the light around you"))
+                    .then(|| bool_row(power, "ambient-enabled", tr("Automatic Screen Brightness"), tr("Adjusts the brightness to the light around you")))
                     .flatten()
                     .map(|r| r.upcast()),
                 session.as_ref().filter(|s| desktop::has_key(s, "idle-delay")).map(|session| {
                     let (get, set) = (session.clone(), session.clone());
                     timeout_row(
-                        "Screen Blank",
-                        "Turns the screen off after you stop using the laptop",
+                        tr("Screen Blank"),
+                        tr("Turns the screen off after you stop using the laptop"),
                         BLANK_SECS,
                         Rc::new(move || Some(desktop::get_secs(&get, "idle-delay")).filter(|s| *s > 0)),
                         Rc::new(move |choice| {
@@ -252,9 +251,9 @@ impl PowerPage {
                     )
                     .upcast()
                 }),
-                suspend_row(power, "sleep-inactive-battery", "Automatic Suspend on Battery", "Sleeping uses far less power than staying on")
+                suspend_row(power, "sleep-inactive-battery", tr("Automatic Suspend on Battery"), tr("Sleeping uses far less power than staying on"))
                     .map(|r| r.upcast()),
-                suspend_row(power, "sleep-inactive-ac", "Automatic Suspend When Plugged In", "")
+                suspend_row(power, "sleep-inactive-ac", tr("Automatic Suspend When Plugged In"), "")
                     .map(|r| r.upcast()),
             ];
             for row in rows.into_iter().flatten() {
@@ -262,11 +261,11 @@ impl PowerPage {
             }
             root.add(&saving);
 
-            let buttons = adw::PreferencesGroup::builder().title("Power Button and Lid").build();
+            let buttons = adw::PreferencesGroup::builder().title(tr("Power Button and Lid")).build();
             for (key, title, subtitle) in [
-                ("power-button-action", "Power Button", ""),
-                ("lid-close-battery-action", "Close the Lid on Battery", ""),
-                ("lid-close-ac-action", "Close the Lid When Plugged In", ""),
+                ("power-button-action", tr("Power Button"), ""),
+                ("lid-close-battery-action", tr("Close the Lid on Battery"), ""),
+                ("lid-close-ac-action", tr("Close the Lid When Plugged In"), ""),
             ] {
                 if let Some(row) = enum_row(power, key, title, subtitle, hibernate_ok) {
                     buttons.add(&row);
@@ -275,12 +274,11 @@ impl PowerPage {
             root.add(&buttons);
         } else {
             root.add(&note(
-                "Power Saving and Power Button Settings Aren't Available",
+                tr("Power Saving and Power Button Settings Aren't Available"),
                 if in_snap {
-                    "The snap can't see GNOME's power settings. Use the regular version of the app, or change them in \
-                     Settings → Power."
+                    tr("The snap can't see GNOME's power settings. Use the regular version of the app, or change them in Settings → Power.")
                 } else {
-                    "GNOME's power settings weren't found. They need GNOME Settings Daemon."
+                    tr("GNOME's power settings weren't found. They need GNOME Settings Daemon.")
                 },
                 "dialog-information-symbolic",
             ));
@@ -288,9 +286,9 @@ impl PowerPage {
 
         // This one is readable and writable even inside the snap.
         if let Some(row) = desktop::settings(desktop::INTERFACE_SCHEMA).and_then(|s| {
-            bool_row(&s, "show-battery-percentage", "Show Battery Percentage", "Shows the percentage next to the battery icon in the top bar")
+            bool_row(&s, "show-battery-percentage", tr("Show Battery Percentage"), tr("Shows the percentage next to the battery icon in the top bar"))
         }) {
-            let top_bar = adw::PreferencesGroup::builder().title("Top Bar").build();
+            let top_bar = adw::PreferencesGroup::builder().title(tr("Top Bar")).build();
             top_bar.add(&row);
             root.add(&top_bar);
         }

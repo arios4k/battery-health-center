@@ -6,12 +6,13 @@ use gtk::glib;
 
 use crate::controller::{Controller, State};
 use crate::system;
+use crate::i18n::{tr, trf};
 
 fn behaviour_label(id: &str) -> &str {
     match id {
-        "auto" => "Normal",
-        "inhibit-charge" => "Pause Charging",
-        "force-discharge" => "Run on Battery",
+        "auto" => tr("Normal"),
+        "inhibit-charge" => tr("Pause Charging"),
+        "force-discharge" => tr("Run on Battery"),
         other => other,
     }
 }
@@ -45,32 +46,31 @@ impl ChargingPage {
         let root = adw::PreferencesPage::new();
 
         let limit_group = adw::PreferencesGroup::builder()
-            .title("Charge Limit")
+            .title(tr("Charge Limit"))
             .description(
-                "Lithium batteries wear faster when kept at full charge. If your laptop is plugged in most \
-                 of the time, limiting the charge to about 80% can noticeably extend the battery's lifespan.",
+                tr("Lithium batteries wear faster when kept at full charge. If your laptop is plugged in most of the time, limiting the charge to about 80% can noticeably extend the battery's lifespan."),
             )
             .build();
-        let status_row = adw::ActionRow::builder().title("Current Setting").build();
+        let status_row = adw::ActionRow::builder().title(tr("Current Setting")).build();
         status_row.add_prefix(&gtk::Image::from_icon_name("battery-level-80-charging-symbolic"));
-        let enable = adw::SwitchRow::builder().title("Limit Maximum Charge").build();
+        let enable = adw::SwitchRow::builder().title(tr("Limit Maximum Charge")).build();
         let end = adw::SpinRow::builder()
-            .title("Stop Charging At")
-            .subtitle("Percent")
+            .title(tr("Stop Charging At"))
+            .subtitle(tr("Percent"))
             .adjustment(&gtk::Adjustment::new(80.0, 50.0, 100.0, 1.0, 5.0, 0.0))
             .build();
         let start = adw::SpinRow::builder()
-            .title("Resume Charging Below")
-            .subtitle("Avoids topping up after every small drop")
+            .title(tr("Resume Charging Below"))
+            .subtitle(tr("Avoids topping up after every small drop"))
             .adjustment(&gtk::Adjustment::new(75.0, 0.0, 99.0, 1.0, 5.0, 0.0))
             .build();
         let persist = adw::SwitchRow::builder()
-            .title("Keep After Restart")
-            .subtitle("Re-apply the limit at startup and after waking from sleep")
+            .title(tr("Keep After Restart"))
+            .subtitle(tr("Re-apply the limit at startup and after waking from sleep"))
             .active(true)
             .build();
         let apply = gtk::Button::builder()
-            .label("Apply")
+            .label(tr("Apply"))
             .css_classes(["suggested-action", "pill"])
             .halign(gtk::Align::Center)
             .margin_top(12)
@@ -83,29 +83,29 @@ impl ChargingPage {
         limit_group.add(&apply);
         root.add(&limit_group);
 
-        let unsupported = adw::PreferencesGroup::builder().title("Charge Limit").visible(false).build();
+        let unsupported = adw::PreferencesGroup::builder().title(tr("Charge Limit")).visible(false).build();
         let row = adw::ActionRow::builder()
-            .title("Not supported on this laptop")
-            .subtitle("The battery driver does not expose charge thresholds (charge_control_end_threshold).")
+            .title(tr("Not supported on this laptop"))
+            .subtitle(tr("The battery driver does not expose charge thresholds (charge_control_end_threshold)."))
             .build();
         row.add_prefix(&gtk::Image::from_icon_name("dialog-information-symbolic"));
         unsupported.add(&row);
         root.add(&unsupported);
 
         let full_group = adw::PreferencesGroup::new();
-        let full_row = adw::ActionRow::builder().title("Charge to 100% Now").build();
+        let full_row = adw::ActionRow::builder().title(tr("Charge to 100% Now")).build();
         full_row.add_prefix(&gtk::Image::from_icon_name("battery-level-100-charged-symbolic"));
-        let full_button = gtk::Button::builder().label("Charge Now").valign(gtk::Align::Center).build();
+        let full_button = gtk::Button::builder().label(tr("Charge Now")).valign(gtk::Align::Center).build();
         full_row.add_suffix(&full_button);
         full_group.add(&full_row);
         root.add(&full_group);
 
         let mode_group = adw::PreferencesGroup::builder()
-            .title("Charging Mode")
-            .description("Temporarily pause charging, or run from the battery while still plugged in.")
+            .title(tr("Charging Mode"))
+            .description(tr("Temporarily pause charging, or run from the battery while still plugged in."))
             .visible(false)
             .build();
-        let mode = adw::ComboRow::builder().title("Mode").build();
+        let mode = adw::ComboRow::builder().title(tr("Mode")).build();
         mode_group.add(&mode);
         root.add(&mode_group);
 
@@ -157,10 +157,10 @@ impl ChargingPage {
             let Some(ctrl) = this.ctrl.upgrade() else { return };
             if ctrl.state().full_charge {
                 ctrl.finish_full_charge();
-                this.toast("Back to your charge limit");
+                this.toast(tr("Back to your charge limit"));
             } else {
                 ctrl.start_full_charge();
-                this.toast("Charging to 100% once; your limit comes back when full or unplugged");
+                this.toast(tr("Charging to 100% once; your limit comes back when full or unplugged"));
             }
         });
         let this = Rc::downgrade(self);
@@ -177,7 +177,7 @@ impl ChargingPage {
             }
             let id = this.mode_ids.borrow().get(row.selected() as usize).cloned();
             if let Some(id) = id {
-                this.run_helper(vec![vec!["set-behaviour".into(), this.battery_name(), id.clone()]], format!("Charging mode set to {}", behaviour_label(&id)));
+                this.run_helper(vec![vec!["set-behaviour".into(), this.battery_name(), id.clone()]], trf("Charging mode set to {0}", &[("0", behaviour_label(&id).to_string())]));
             }
         });
     }
@@ -212,7 +212,7 @@ impl ChargingPage {
             (true, false) => "0".to_string(),
         };
         let persist = if self.persist.is_active() && on { "--persist" } else { "--no-persist" };
-        let msg = if on { format!("Charging will stop at {end}%") } else { "Charge limit removed".to_string() };
+        let msg = if on { trf("Charging will stop at {end}%", &[("end", end.to_string())]) } else { tr("Charge limit removed").to_string() };
         // The same limit applies to every battery (some laptops have two).
         let requests = batteries
             .iter()
@@ -261,25 +261,25 @@ impl ChargingPage {
         // One-time full charge: only useful with a limit set, and while plugged in.
         self.full_group.set_visible(supported && (end < 100 || st.full_charge));
         if st.full_charge {
-            self.full_row.set_title("Charging to 100%");
-            self.full_row.set_subtitle("Your limit comes back when the battery is full or you unplug.");
-            self.full_button.set_label("Cancel");
+            self.full_row.set_title(tr("Charging to 100%"));
+            self.full_row.set_subtitle(tr("Your limit comes back when the battery is full or you unplug."));
+            self.full_button.set_label(tr("Cancel"));
             self.full_button.set_sensitive(true);
             self.full_button.remove_css_class("suggested-action");
         } else {
-            self.full_row.set_title("Charge to 100% Now");
+            self.full_row.set_title(tr("Charge to 100% Now"));
             self.full_row.set_subtitle(if b.ac_online {
-                "Charge fully once, for a trip or a long day. Your limit comes back when full or unplugged."
+                tr("Charge fully once, for a trip or a long day. Your limit comes back when full or unplugged.")
             } else {
-                "Connect the charger to charge fully once."
+                tr("Connect the charger to charge fully once.")
             });
-            self.full_button.set_label("Charge Now");
+            self.full_button.set_label(tr("Charge Now"));
             self.full_button.set_sensitive(b.ac_online);
         }
         let status = match (end < 100, b.start_threshold.filter(|s| *s > 0)) {
-            (true, Some(s)) => format!("Stops at {end}%, resumes below {s}%"),
-            (true, None) => format!("Stops at {end}%"),
-            (false, _) => "Charges to 100%".to_string(),
+            (true, Some(s)) => trf("Stops at {end}%, resumes below {s}%", &[("end", end.to_string()), ("s", s.to_string())]),
+            (true, None) => trf("Stops at {end}%", &[("end", end.to_string())]),
+            (false, _) => tr("Charges to 100%").to_string(),
         };
         self.status_row.set_subtitle(&status);
 

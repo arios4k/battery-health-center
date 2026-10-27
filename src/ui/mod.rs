@@ -13,6 +13,7 @@ use adw::prelude::*;
 use gtk::{gio, glib};
 
 use crate::controller::Controller;
+use crate::i18n::{tr, trc, trf};
 
 pub fn build_window(app: &adw::Application, ctrl: &Rc<Controller>) -> adw::ApplicationWindow {
     let stack = adw::ViewStack::new();
@@ -24,20 +25,19 @@ pub fn build_window(app: &adw::Application, ctrl: &Rc<Controller>) -> adw::Appli
     let power = power::PowerPage::new(ctrl);
     let usage = usage::UsagePage::new(ctrl);
 
-    stack.add_titled_with_icon(&overview.root, Some("overview"), "Overview", "battery-level-80-symbolic");
-    stack.add_titled_with_icon(&health.root, Some("health"), "Health", "security-high-symbolic");
-    stack.add_titled_with_icon(&charging.root, Some("charging"), "Charging", "battery-level-80-charging-symbolic");
-    stack.add_titled_with_icon(&power.root, Some("power"), "Power", "system-shutdown-symbolic");
-    stack.add_titled_with_icon(&usage.root, Some("usage"), "Usage", "power-profile-balanced-symbolic");
+    stack.add_titled_with_icon(&overview.root, Some("overview"), trc("page title", "Overview"), "battery-level-80-symbolic");
+    stack.add_titled_with_icon(&health.root, Some("health"), trc("page title", "Health"), "security-high-symbolic");
+    stack.add_titled_with_icon(&charging.root, Some("charging"), trc("page title", "Charging"), "battery-level-80-charging-symbolic");
+    stack.add_titled_with_icon(&power.root, Some("power"), trc("page title", "Power"), "system-shutdown-symbolic");
+    stack.add_titled_with_icon(&usage.root, Some("usage"), trc("page title", "Usage"), "power-profile-balanced-symbolic");
 
     let no_battery = adw::StatusPage::builder()
         .icon_name("battery-missing-symbolic")
-        .title("No Battery Found")
+        .title(tr("No Battery Found"))
         .description(if crate::system::in_snap() {
-            "Battery Health Center needs a laptop battery to show information. If this laptop has one, \
-             make sure the hardware-observe permission is connected."
+            tr("Battery Health Center needs a laptop battery to show information. If this laptop has one, make sure the hardware-observe permission is connected.")
         } else {
-            "Battery Health Center needs a laptop battery to show information."
+            tr("Battery Health Center needs a laptop battery to show information.")
         })
         .build();
     let content = gtk::Stack::new();
@@ -50,19 +50,19 @@ pub fn build_window(app: &adw::Application, ctrl: &Rc<Controller>) -> adw::Appli
 
     let menu = gio::Menu::new();
     let section = gio::Menu::new();
-    section.append(Some("_Refresh"), Some("app.refresh"));
-    section.append(Some("_Export Battery Report…"), Some("win.export-report"));
+    section.append(Some(tr("_Refresh")), Some("app.refresh"));
+    section.append(Some(tr("_Export Battery Report…")), Some("win.export-report"));
     menu.append_section(None, &section);
     let section = gio::Menu::new();
-    section.append(Some("_Preferences"), Some("win.preferences"));
-    section.append(Some("_About Battery Health Center"), Some("app.about"));
-    section.append(Some("_Quit"), Some("app.quit"));
+    section.append(Some(tr("_Preferences")), Some("win.preferences"));
+    section.append(Some(tr("_About Battery Health Center")), Some("app.about"));
+    section.append(Some(tr("_Quit")), Some("app.quit"));
     menu.append_section(None, &section);
     let menu_button = gtk::MenuButton::builder()
         .icon_name("open-menu-symbolic")
         .menu_model(&menu)
         .primary(true)
-        .tooltip_text("Main Menu")
+        .tooltip_text(tr("Main Menu"))
         .build();
     header.pack_end(&menu_button);
 
@@ -141,19 +141,19 @@ fn permissions_banner() -> Option<adw::Banner> {
         return None;
     }
     let banner = adw::Banner::builder()
-        .title("Some features need permissions that aren't connected yet")
-        .button_label("How to Fix")
+        .title(tr("Some features need permissions that aren't connected yet"))
+        .button_label(tr("How to Fix"))
         .revealed(true)
         .build();
     banner.connect_button_clicked(move |banner| {
-        let mut body = String::from("Run these commands in a terminal, then restart Battery Health Center:\n\n");
+        let mut body = String::from(tr("Run these commands in a terminal, then restart Battery Health Center:\n\n"));
         for plug in &missing {
-            let purpose = crate::system::SNAP_PLUGS.iter().find(|(p, _)| p == plug).map(|(_, d)| *d).unwrap_or("");
+            let purpose = crate::system::SNAP_PLUGS.iter().find(|(p, _)| p == plug).map(|(_, d)| tr(d)).unwrap_or("");
             body.push_str(&format!("sudo snap connect battery-health-center:{plug}\n    (to {purpose})\n"));
         }
-        let dialog = adw::AlertDialog::builder().heading("Connect Permissions").body(body.trim_end()).build();
+        let dialog = adw::AlertDialog::builder().heading(tr("Connect Permissions")).body(body.trim_end()).build();
         dialog.set_body_use_markup(false);
-        dialog.add_response("close", "Close");
+        dialog.add_response("close", tr("Close"));
         dialog.present(Some(banner));
     });
     Some(banner)
@@ -164,7 +164,7 @@ fn export_report(window: &adw::ApplicationWindow, ctrl: &Rc<Controller>, toasts:
     let html = crate::report::build_html(&ctrl.state());
     let today = glib::DateTime::now_local().and_then(|d| d.format("%Y-%m-%d")).map(|d| d.to_string()).unwrap_or_default();
     let dialog = gtk::FileDialog::builder()
-        .title("Export Battery Report")
+        .title(tr("Export Battery Report"))
         .initial_name(format!("battery-report-{today}.html"))
         .build();
     let (w, toasts) = (window.downgrade(), toasts.clone());
@@ -179,14 +179,14 @@ fn export_report(window: &adw::ApplicationWindow, ctrl: &Rc<Controller>, toasts:
         );
         let toast = match written {
             Ok(_) => {
-                let toast = adw::Toast::builder().title("Battery report saved").button_label("Open").build();
+                let toast = adw::Toast::builder().title(tr("Battery report saved")).button_label(tr("Open")).build();
                 let w = w.clone();
                 toast.connect_button_clicked(move |_| {
                     gtk::FileLauncher::new(Some(&file)).launch(w.upgrade().as_ref(), gio::Cancellable::NONE, |_| {});
                 });
                 toast
             }
-            Err(e) => adw::Toast::new(&format!("Could not save the report: {}", e.message())),
+            Err(e) => adw::Toast::new(&trf("Could not save the report: {0}", &[("0", e.message().to_string())])),
         };
         toasts.add_toast(toast);
     });

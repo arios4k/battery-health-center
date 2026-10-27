@@ -17,6 +17,7 @@ All your laptop battery information in one place, for GNOME. Written in Rust wit
   hardware supports is shown. ([Screenshot of the regular version](screenshots/regular/power-dark.png))
 - **Usage**: battery level and power draw (24 hours / 7 days), battery use during sleep, and the apps
   using the most energy now, since opening, or over 24 hours / 7 days.
+- **Languages**: English, Spanish and German (see [Translations](#translations)).
 - **Notifications** (Preferences): charge limit reached, fully charged without a limit, low battery,
   apps draining the battery, and high drain during sleep.
 - **Battery report**: export an HTML report from the menu, or run
@@ -58,10 +59,10 @@ served from [arios4k/apt](https://github.com/arios4k/apt) through GitHub Pages.
 ### Build it yourself
 
 Build it from a checkout (needs [`cargo-deb`](https://crates.io/crates/cargo-deb), installed with
-`cargo install cargo-deb`):
+`cargo install cargo-deb`, and `gettext` to compile the translations):
 
 ```bash
-cargo deb
+scripts/build-locale.sh && cargo deb
 ```
 
 Install it, which also pulls in the dependencies:
@@ -111,6 +112,35 @@ Store screenshots are in `screenshots/`. To retake them, run the app with
 `BHC_SCREENSHOTS=<folder>` (and optionally `BHC_SCREENSHOTS_STYLE=light` or `dark`). It saves one
 image per page and quits.
 
+## Translations
+
+The app is available in English, Spanish (`es`) and German (`de`). It uses your system language and
+falls back to English for anything that isn't translated. The exported HTML battery report is still
+English only.
+
+To add a language, for example French:
+
+```bash
+msginit --locale=fr --input=po/battery-health-center.pot --output=po/fr.po
+```
+
+Translate the strings in `po/fr.po` (a PO editor such as Poedit or GNOME's Gtranslator helps), then add
+`fr` to `po/LINGUAS` and a line for it next to the others in `[package.metadata.deb]` in `Cargo.toml`
+(the `.mo` assets), and check it with the command above. Pull requests with new languages are very
+welcome. `Comment[fr]` and `Keywords[fr]` in `data/io.github.BatteryHealthCenter.desktop` and a
+`<summary xml:lang="fr">` in the metainfo file translate how the app is listed.
+
+When the text in the app changes, update the template and the translations (strings that haven't been
+translated yet show up as empty and are shown in English):
+
+```bash
+python3 scripts/update-pot.py
+msgmerge --update --backup=none po/es.po po/battery-health-center.pot   # and the other languages
+```
+
+Strings in the code go through `tr("…")`, `trf("… {name}", &[("name", value)])` for text with values
+in it, and `trn`/`trnf` for plurals; see `src/i18n.rs`.
+
 ## Publishing new versions (maintainers)
 
 ### apt repository and `.deb`
@@ -139,7 +169,9 @@ include Battery Health Center in it. I would be honored. It is free software und
 GPL-3.0-or-later, so you don't need to ask for permission, and you can package it as it is.
 
 - **What to package:** the app, the root helper `bhc-helper` (installed in a libexec folder), the
-  PolicyKit policy and the restore service in [`data/`](data/), and the desktop file and icons. The
+  PolicyKit policy and the restore service in [`data/`](data/), the desktop file and icons, and the
+  translations (`scripts/build-locale.sh <dir>` compiles `po/*.po` into `<dir>/<lang>/LC_MESSAGES/`;
+  the app finds them in `share/locale` next to its `bin` folder, or in `$BHC_LOCALEDIR`). The
   [`.deb` packaging](data/deb/) (built with `cargo deb`) and [`install.sh`](install.sh) show where each
   file goes and which maintainer scripts are needed.
 - **Needs:** GTK 4.14 or newer, libadwaita 1.5 or newer, UPower and PolicyKit (`pkexec`). systemd
@@ -154,16 +186,22 @@ help. A short note when it is included is always welcome, and I'm happy to link 
 
 ## Requirements
 
-GTK ≥ 4.14, libadwaita ≥ 1.5, and Rust. On Ubuntu, Zorin OS or Debian:
+GTK ≥ 4.14, libadwaita ≥ 1.5, and Rust, plus `gettext` to build the translations. On Ubuntu, Zorin OS or Debian:
 
 ```bash
-sudo apt install libgtk-4-dev libadwaita-1-dev pkg-config
+sudo apt install libgtk-4-dev libadwaita-1-dev pkg-config gettext
 ```
 
 ## Run from the source tree
 
 ```bash
 cargo run --release
+```
+
+To try a translation, compile it first and point the app at it:
+
+```bash
+scripts/build-locale.sh && LANGUAGE=es BHC_LOCALEDIR=$PWD/locale cargo run --release
 ```
 
 Changing the charge limit uses `pkexec` to run `bhc-helper` from the build folder, so it asks for your

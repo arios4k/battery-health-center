@@ -20,6 +20,7 @@ use crate::health_log::HealthLog;
 use crate::history::{self, History};
 use crate::settings::{Calibration, Settings};
 use crate::system::{self, DeviceBattery, PowerProfiles};
+use crate::i18n::{tr, trf};
 
 const TICK_SECS: u32 = 2;
 const APPS_EVERY_TICKS: u64 = 2;
@@ -351,16 +352,16 @@ impl Controller {
         match step {
             Calibration::ChargeFull if full && b.ac_online => {
                 self.update_settings(|s| s.calibration = Calibration::Discharge);
-                self.send("calibration", "Calibration: Unplug Your Laptop", "The battery is full. Unplug the charger and use your laptop normally until the battery is nearly empty.");
+                self.send("calibration", tr("Calibration: Unplug Your Laptop"), tr("The battery is full. Unplug the charger and use your laptop normally until the battery is nearly empty."));
             }
             Calibration::Discharge if b.is_on_battery() && b.percent <= CALIBRATION_EMPTY => {
                 self.update_settings(|s| s.calibration = Calibration::Recharge);
                 self.start_full_charge();
-                self.send("calibration", "Calibration: Plug In Now", "The battery is nearly empty. Connect the charger and let it charge to 100%.");
+                self.send("calibration", tr("Calibration: Plug In Now"), tr("The battery is nearly empty. Connect the charger and let it charge to 100%."));
             }
             Calibration::Recharge if full && b.ac_online => {
                 self.update_settings(|s| s.calibration = Calibration::Off);
-                self.send("calibration", "Calibration Complete", "The battery's capacity reading has been recalibrated. Your charge limit is back on.");
+                self.send("calibration", tr("Calibration Complete"), tr("The battery's capacity reading has been recalibrated. Your charge limit is back on."));
             }
             _ => {}
         }
@@ -387,7 +388,7 @@ impl Controller {
             && !st.full_charge
             && limit.is_some_and(|l| b.status == Status::NotCharging || (b.status != Status::Charging && b.percent + 1.0 >= l as f64));
         if at_limit && !a.limit_reached && s.notify_limit_reached && !calibrating {
-            out.push(("limit", format!("Charged to {}%", limit.unwrap_or(100)), "Charging has stopped at your limit to protect the battery.".into()));
+            out.push(("limit", trf("Charged to {0}%", &[("0", limit.unwrap_or(100).to_string())]), tr("Charging has stopped at your limit to protect the battery.").into()));
         }
         a.limit_reached = at_limit || (a.limit_reached && b.ac_online);
 
@@ -398,14 +399,14 @@ impl Controller {
             && b.end_threshold.unwrap_or(100) >= 100
             && (b.status == Status::Full || b.percent >= 99.0);
         if full_no_limit && !a.full_no_limit && s.notify_full_no_limit {
-            out.push(("full", "Battery Fully Charged".into(), "Unplug the charger, or set a charge limit in Battery Health Center to slow battery wear.".into()));
+            out.push(("full", tr("Battery Fully Charged").into(), tr("Unplug the charger, or set a charge limit in Battery Health Center to slow battery wear.").into()));
         }
         a.full_no_limit = full_no_limit || (a.full_no_limit && b.ac_online);
 
         let low = b.is_on_battery() && b.percent <= s.low_level as f64;
         if low && !a.low && s.notify_low && !calibrating {
-            let remaining = b.hours_remaining().map(|h| format!(" About {} remaining.", battery::format_hours(h))).unwrap_or_default();
-            out.push(("low", format!("Battery at {:.0}%", b.percent), format!("Connect the charger soon.{remaining}")));
+            let remaining = b.hours_remaining().map(|h| format!(" {}", trf("About {0} remaining.", &[("0", battery::format_hours(h).to_string())]))).unwrap_or_default();
+            out.push(("low", trf("Battery at {0}%", &[("0", format!("{:.0}", b.percent))]), trf("Connect the charger soon.{remaining}", &[("remaining", remaining.to_string())])));
         }
         a.low = low || (a.low && b.is_on_battery());
 
@@ -417,7 +418,7 @@ impl Controller {
                 let recently = a.app_announced.get(&app.key).is_some_and(|t| now - t < 3600);
                 if now - since >= APP_DRAIN_SECS && !recently {
                     a.app_announced.insert(app.key.clone(), now);
-                    out.push(("app", format!("{} Is Using Significant Energy", app.name), "Quit it if you're not using it to make your battery last longer.".into()));
+                    out.push(("app", trf("{0} Is Using Significant Energy", &[("0", app.name.to_string())]), tr("Quit it if you're not using it to make your battery last longer.").into()));
                 }
             }
         } else {
@@ -431,12 +432,8 @@ impl Controller {
                 if rate >= HIGH_SLEEP_DRAIN && s.notify_sleep_drain {
                     out.push((
                         "sleep",
-                        "High Battery Drain During Sleep".into(),
-                        format!(
-                            "Your laptop used {:.0}% in {} asleep ({rate:.1}% per hour).",
-                            sleep.from_percent - sleep.to_percent,
-                            battery::format_hours(sleep.slept_secs as f64 / 3600.0)
-                        ),
+                        tr("High Battery Drain During Sleep").into(),
+                        trf("Your laptop used {0}% in {1} asleep ({rate}% per hour).", &[("0", format!("{:.0}", sleep.from_percent - sleep.to_percent)), ("1", battery::format_hours(sleep.slept_secs as f64 / 3600.0).to_string()), ("rate", format!("{rate:.1}"))]),
                     ));
                 }
             }

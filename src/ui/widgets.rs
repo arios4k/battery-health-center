@@ -11,6 +11,7 @@ use gtk::glib;
 
 use crate::health_log::HealthEntry;
 use crate::history::Sample;
+use crate::i18n::tr;
 
 pub const GREEN: (f64, f64, f64) = (0.18, 0.76, 0.49);
 pub const YELLOW: (f64, f64, f64) = (0.90, 0.65, 0.04);
@@ -257,7 +258,7 @@ pub fn draw_level(cr: &cairo::Context, w: f64, h: f64, fg: &gdk::RGBA, samples: 
         fill: true,
         dots: false,
         hline: limit.filter(|l| *l < 100).map(|l| (l as f64, GREEN)),
-        empty_text: "Not enough history yet",
+        empty_text: tr("Not enough history yet"),
     });
 }
 
@@ -281,7 +282,7 @@ pub fn draw_power(cr: &cairo::Context, w: f64, h: f64, fg: &gdk::RGBA, samples: 
         fill: true,
         dots: false,
         hline: None,
-        empty_text: "Not enough history yet",
+        empty_text: tr("Not enough history yet"),
     });
 }
 
@@ -304,6 +305,6 @@ pub fn draw_health(cr: &cairo::Context, w: f64, h: f64, fg: &gdk::RGBA, entries:
         fill: false,
         dots: true,
         hline: Some((80.0, YELLOW)),
-        empty_text: "Recorded once a day; check back tomorrow",
+        empty_text: tr("Recorded once a day; check back tomorrow"),
     });
 }

@@ -10,12 +10,13 @@ use gtk::glib::prelude::ToVariant;
 use gtk::glib;
 
 use crate::APP_ID;
+use crate::i18n::{tr, tr_noop, trf};
 
 /// Interfaces the snap needs, with what each one is for.
 pub const SNAP_PLUGS: &[(&str, &str)] = &[
-    ("hardware-observe", "read battery information"),
-    ("system-observe", "see which apps use energy"),
-    ("power-control", "change the charge limit"),
+    ("hardware-observe", tr_noop("read battery information")),
+    ("system-observe", tr_noop("see which apps use energy")),
+    ("power-control", tr_noop("change the charge limit")),
 ];
 
 pub fn in_snap() -> bool {
@@ -55,14 +56,14 @@ fn request_snap_service(args: &[String]) -> Result<(), String> {
     let dir = std::env::var_os("SNAP_COMMON").ok_or("SNAP_COMMON is not set")?;
     let socket = PathBuf::from(dir).join("helper.sock");
     let mut stream = std::os::unix::net::UnixStream::connect(&socket)
-        .map_err(|_| "The Battery Health Center service is not running".to_string())?;
+        .map_err(|_| tr("The Battery Health Center service is not running").to_string())?;
     stream.write_all(format!("{}\n", args.join(" ")).as_bytes()).map_err(|e| e.to_string())?;
     let mut reply = String::new();
     BufReader::new(stream).read_line(&mut reply).map_err(|e| e.to_string())?;
     match reply.trim() {
         "OK" => Ok(()),
         r if r.contains("Permission denied") => Err(
-            "Permission denied. Run: snap connect battery-health-center:power-control".to_string(),
+            tr("Permission denied. Run: snap connect battery-health-center:power-control").to_string(),
         ),
         r => Err(r.strip_prefix("ERR ").unwrap_or(r).to_string()),
     }
@@ -74,19 +75,19 @@ pub async fn run_helper(args: Vec<String>) -> Result<(), String> {
     if in_snap() {
         return gio::spawn_blocking(move || request_snap_service(&args))
             .await
-            .map_err(|_| "The helper crashed".to_string())?;
+            .map_err(|_| tr("The helper crashed").to_string())?;
     }
-    let helper = helper_path().ok_or("The bhc-helper program was not found. Is the app installed?")?;
+    let helper = helper_path().ok_or(tr("The bhc-helper program was not found. Is the app installed?"))?;
     let output = gio::spawn_blocking(move || Command::new("pkexec").arg(helper).args(args).output())
         .await
-        .map_err(|_| "The helper crashed".to_string())?
-        .map_err(|e| format!("Could not run pkexec: {e}"))?;
+        .map_err(|_| tr("The helper crashed").to_string())?
+        .map_err(|e| trf("Could not run pkexec: {e}", &[("e", e.to_string())]))?;
     match output.status.code() {
         Some(0) => Ok(()),
-        Some(126) | Some(127) => Err("Authorization was cancelled".into()),
+        Some(126) | Some(127) => Err(tr("Authorization was cancelled").into()),
         _ => {
             let msg = String::from_utf8_lossy(&output.stderr).trim().to_string();
-            Err(if msg.is_empty() { "The change could not be applied".into() } else { msg })
+            Err(if msg.is_empty() { tr("The change could not be applied").into() } else { msg })
         }
     }
 }
@@ -158,9 +159,9 @@ impl PowerProfiles {
 
 pub fn profile_label(profile: &str) -> &str {
     match profile {
-        "power-saver" => "Power Saver",
-        "balanced" => "Balanced",
-        "performance" => "Performance",
+        "power-saver" => tr("Power Saver"),
+        "balanced" => tr("Balanced"),
+        "performance" => tr("Performance"),
         other => other,
     }
 }
@@ -246,11 +247,11 @@ fn device_icon(kind: u32) -> &'static str {
 
 fn device_level(level: u32) -> Option<&'static str> {
     match level {
-        3 => Some("Low"),
-        4 => Some("Critical"),
-        6 => Some("Normal"),
-        7 => Some("High"),
-        8 => Some("Full"),
+        3 => Some(tr("Low")),
+        4 => Some(tr("Critical")),
+        6 => Some(tr("Normal")),
+        7 => Some(tr("High")),
+        8 => Some(tr("Full")),
         _ => None,
     }
 }
@@ -295,7 +296,7 @@ pub fn device_batteries() -> Vec<DeviceBattery> {
             let level = prop("BatteryLevel").and_then(|v| v.get::<u32>()).and_then(device_level);
             let percent = prop("Percentage").and_then(|v| v.get::<f64>()).filter(|p| *p > 0.0 && level.is_none());
             Some(DeviceBattery {
-                name: model.unwrap_or_else(|| "Wireless Device".into()),
+                name: model.unwrap_or_else(|| tr("Wireless Device").into()),
                 icon: device_icon(kind),
                 percent,
                 level,

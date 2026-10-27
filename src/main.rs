@@ -5,6 +5,7 @@ mod controller;
 mod desktop;
 mod health_log;
 mod history;
+mod i18n;
 mod report;
 mod settings;
 mod system;
@@ -15,10 +16,12 @@ use std::rc::Rc;
 
 use adw::prelude::*;
 use gtk::{gio, glib};
+use crate::i18n::tr;
 
 pub const APP_ID: &str = "io.github.BatteryHealthCenter";
 
 fn main() -> glib::ExitCode {
+    i18n::init();
     // `--background` (used by the login autostart entry) keeps the app running
     // without a window so battery history keeps being recorded.
     let args: Vec<String> = std::env::args().collect();
@@ -100,8 +103,8 @@ fn main() -> glib::ExitCode {
             glib::timeout_add_seconds_local(60, move || {
                 let Some(app) = weak_app.upgrade() else { return glib::ControlFlow::Break };
                 if system::refresh_pending() && app.windows().is_empty() {
-                    let n = gio::Notification::new("Battery Health Center Is Updating");
-                    n.set_body(Some("It closed so the update can install. Background recording starts again the next time you log in or open the app."));
+                    let n = gio::Notification::new(tr("Battery Health Center Is Updating"));
+                    n.set_body(Some(tr("It closed so the update can install. Background recording starts again the next time you log in or open the app.")));
                     n.set_icon(&gio::ThemedIcon::new(APP_ID));
                     app.send_notification(Some("updating"), &n);
                     // Give the notification a moment to be delivered.
@@ -149,7 +152,7 @@ fn setup_actions(app: &adw::Application, ctrl: &Rc<controller::Controller>) {
             .developer_name("Alexis Rios-Negron")
             .developers(["Alexis Rios-Negron"])
             .copyright("© 2026 Alexis Rios-Negron")
-            .comments("Battery health, charge limits and energy usage in one place.")
+            .comments(tr("Battery health, charge limits and energy usage in one place."))
             .license_type(gtk::License::Gpl30)
             .build();
         dialog.present(a.active_window().as_ref());

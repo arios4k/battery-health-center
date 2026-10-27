@@ -5,6 +5,7 @@
 
 use std::fs;
 use std::path::{Path, PathBuf};
+use crate::i18n::{tr, trf};
 
 pub const POWER_SUPPLY_ROOT: &str = "/sys/class/power_supply";
 
@@ -30,11 +31,11 @@ impl Status {
 
     pub fn label(self) -> &'static str {
         match self {
-            Status::Charging => "Charging",
-            Status::Discharging => "On Battery",
-            Status::NotCharging => "Plugged In, Not Charging",
-            Status::Full => "Fully Charged",
-            Status::Unknown => "Unknown",
+            Status::Charging => tr("Charging"),
+            Status::Discharging => tr("On Battery"),
+            Status::NotCharging => tr("Plugged In, Not Charging"),
+            Status::Full => tr("Fully Charged"),
+            Status::Unknown => tr("Unknown"),
         }
     }
 
@@ -42,10 +43,10 @@ impl Status {
     /// beside it.
     pub fn short_label(self) -> &'static str {
         match self {
-            Status::Charging => "Charging",
-            Status::Discharging => "On Battery",
-            Status::NotCharging => "Not Charging",
-            Status::Full => "Full",
+            Status::Charging => tr("Charging"),
+            Status::Discharging => tr("On Battery"),
+            Status::NotCharging => tr("Not Charging"),
+            Status::Full => tr("Full"),
             Status::Unknown => "",
         }
     }
@@ -106,9 +107,9 @@ pub enum Condition {
 impl Condition {
     pub fn label(self) -> &'static str {
         match self {
-            Condition::Normal => "Normal",
-            Condition::Worn => "Worn",
-            Condition::ServiceRecommended => "Service Recommended",
+            Condition::Normal => tr("Normal"),
+            Condition::Worn => tr("Worn"),
+            Condition::ServiceRecommended => tr("Service Recommended"),
         }
     }
 }
@@ -345,7 +346,7 @@ pub fn charger() -> Option<Charger> {
                 let usb_type = read_str(&p, "usb_type").unwrap_or_default();
                 // The active mode is in brackets, e.g. "C [PD] PD_PPS".
                 let active = usb_type.split_whitespace().find(|w| w.starts_with('[')).unwrap_or("");
-                let kind = if active.contains("PD") { "USB-C Power Delivery" } else { "USB-C" };
+                let kind = if active.contains("PD") { tr("USB-C Power Delivery") } else { "USB-C" };
                 let volts = read_num(&p, "voltage_max").or_else(|| read_num(&p, "voltage_now")).map(|v| v / 1e6).filter(|v| *v > 0.0);
                 let amps = read_num(&p, "current_max").map(|a| a / 1e6).filter(|a| *a > 0.0);
                 let c = Charger { kind: kind.into(), volts, amps };
@@ -356,7 +357,7 @@ pub fn charger() -> Option<Charger> {
             _ => {}
         }
     }
-    best.or_else(|| mains.then(|| Charger { kind: "AC adapter".into(), volts: None, amps: None }))
+    best.or_else(|| mains.then(|| Charger { kind: tr("AC adapter").into(), volts: None, amps: None }))
 }
 
 /// The selected and available system sleep modes from /sys/power/mem_sleep,
@@ -381,9 +382,9 @@ pub fn format_hours(hours: f64) -> String {
     let total_min = (hours * 60.0).round() as i64;
     let (h, m) = (total_min / 60, total_min % 60);
     match (h, m) {
-        (0, m) => format!("{m} min"),
-        (h, 0) => format!("{h} h"),
-        (h, m) => format!("{h} h {m} min"),
+        (0, m) => trf("{m} min", &[("m", m.to_string())]),
+        (h, 0) => trf("{h} h", &[("h", h.to_string())]),
+        (h, m) => trf("{h} h {m} min", &[("h", h.to_string()), ("m", m.to_string())]),
     }
 }
 

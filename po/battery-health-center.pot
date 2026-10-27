@@ -1,0 +1,1324 @@
+# Battery Health Center translations template.
+# Copyright (C) 2026 Alexis Rios-Negron
+# This file is distributed under the same license as the Battery Health Center package.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: battery-health-center\n"
+"Report-Msgid-Bugs-To: https://github.com/arios4k/battery-health-center/issues\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/apps.rs:137
+msgid "GNOME Shell"
+msgstr ""
+
+#: src/apps.rs:139
+msgid "Audio (PipeWire)"
+msgstr ""
+
+#: src/apps.rs:140
+msgid "File Indexer"
+msgstr ""
+
+#: src/apps.rs:141
+msgid "Software"
+msgstr ""
+
+#: src/apps.rs:142
+msgid "Software Updates"
+msgstr ""
+
+#: src/apps.rs:143
+msgid "Display Server (Xorg)"
+msgstr ""
+
+#: src/apps.rs:237
+msgid "Linux Kernel"
+msgstr ""
+
+#: src/battery.rs:110 src/system.rs:252 src/ui/charging.rs:13 src/ui/usage.rs:159
+msgid "Normal"
+msgstr ""
+
+#: src/battery.rs:111
+msgid "Worn"
+msgstr ""
+
+#: src/battery.rs:112
+msgid "Service Recommended"
+msgstr ""
+
+#: src/battery.rs:34 src/battery.rs:46 src/ui/overview.rs:170
+msgid "Charging"
+msgstr ""
+
+#: src/battery.rs:349
+msgid "USB-C Power Delivery"
+msgstr ""
+
+#: src/battery.rs:35 src/battery.rs:47 src/ui/overview.rs:172 src/ui/power.rs:182
+msgid "On Battery"
+msgstr ""
+
+#: src/battery.rs:36
+msgid "Plugged In, Not Charging"
+msgstr ""
+
+#: src/battery.rs:360
+msgid "AC adapter"
+msgstr ""
+
+#: src/battery.rs:37
+msgid "Fully Charged"
+msgstr ""
+
+#: src/battery.rs:38 src/ui/health.rs:48 src/ui/health.rs:272 src/ui/health.rs:280 src/ui/health.rs:307 src/ui/health.rs:308 src/ui/health.rs:309 src/ui/health.rs:310 src/ui/overview.rs:194 src/ui/overview.rs:197 src/ui/overview.rs:249
+msgid "Unknown"
+msgstr ""
+
+#: src/battery.rs:385
+#, no-c-format
+msgid "{m} min"
+msgstr ""
+
+#: src/battery.rs:386
+#, no-c-format
+msgid "{h} h"
+msgstr ""
+
+#: src/battery.rs:387
+#, no-c-format
+msgid "{h} h {m} min"
+msgstr ""
+
+#: src/battery.rs:48
+msgid "Not Charging"
+msgstr ""
+
+#: src/battery.rs:49 src/system.rs:254
+msgid "Full"
+msgstr ""
+
+#: src/controller.rs:355
+msgid "Calibration: Unplug Your Laptop"
+msgstr ""
+
+#: src/controller.rs:355
+msgid "The battery is full. Unplug the charger and use your laptop normally until the battery is nearly empty."
+msgstr ""
+
+#: src/controller.rs:360
+msgid "Calibration: Plug In Now"
+msgstr ""
+
+#: src/controller.rs:360
+msgid "The battery is nearly empty. Connect the charger and let it charge to 100%."
+msgstr ""
+
+#: src/controller.rs:364
+msgid "Calibration Complete"
+msgstr ""
+
+#: src/controller.rs:364
+msgid "The battery's capacity reading has been recalibrated. Your charge limit is back on."
+msgstr ""
+
+#: src/controller.rs:391
+#, no-c-format
+msgid "Charged to {0}%"
+msgstr ""
+
+#: src/controller.rs:391
+msgid "Charging has stopped at your limit to protect the battery."
+msgstr ""
+
+#: src/controller.rs:402
+msgid "Battery Fully Charged"
+msgstr ""
+
+#: src/controller.rs:402
+msgid "Unplug the charger, or set a charge limit in Battery Health Center to slow battery wear."
+msgstr ""
+
+#: src/controller.rs:408
+#, no-c-format
+msgid "About {0} remaining."
+msgstr ""
+
+#: src/controller.rs:409
+#, no-c-format
+msgid "Battery at {0}%"
+msgstr ""
+
+#: src/controller.rs:409
+#, no-c-format
+msgid "Connect the charger soon.{remaining}"
+msgstr ""
+
+#: src/controller.rs:421
+#, no-c-format
+msgid "{0} Is Using Significant Energy"
+msgstr ""
+
+#: src/controller.rs:421
+msgid "Quit it if you're not using it to make your battery last longer."
+msgstr ""
+
+#: src/controller.rs:435
+msgid "High Battery Drain During Sleep"
+msgstr ""
+
+#: src/controller.rs:436
+#, no-c-format
+msgid "Your laptop used {0}% in {1} asleep ({rate}% per hour)."
+msgstr ""
+
+#: src/desktop.rs:116
+msgid "Suspend"
+msgstr ""
+
+#: src/desktop.rs:117
+msgid "Hibernate"
+msgstr ""
+
+#: src/desktop.rs:118
+msgid "Do Nothing"
+msgstr ""
+
+#: src/desktop.rs:119
+msgid "Ask What to Do"
+msgstr ""
+
+#: src/desktop.rs:120
+msgid "Turn Off the Screen"
+msgstr ""
+
+#: src/desktop.rs:121
+msgid "Shut Down"
+msgstr ""
+
+#: src/desktop.rs:122
+msgid "Log Out"
+msgstr ""
+
+#: src/desktop.rs:134
+#, no-c-format
+msgid "{n} second"
+msgid_plural "{n} seconds"
+msgstr[0] ""
+msgstr[1] ""
+
+#: src/desktop.rs:135 src/desktop.rs:137
+#, no-c-format
+msgid "{n} minute"
+msgid_plural "{n} minutes"
+msgstr[0] ""
+msgstr[1] ""
+
+#: src/desktop.rs:136
+#, no-c-format
+msgid "{n} hour"
+msgid_plural "{n} hours"
+msgstr[0] ""
+msgstr[1] ""
+
+#: src/main.rs:106
+msgid "Battery Health Center Is Updating"
+msgstr ""
+
+#: src/main.rs:107
+msgid "It closed so the update can install. Background recording starts again the next time you log in or open the app."
+msgstr ""
+
+#: src/main.rs:155
+msgid "Battery health, charge limits and energy usage in one place."
+msgstr ""
+
+#: src/system.rs:162
+msgid "Power Saver"
+msgstr ""
+
+#: src/system.rs:163
+msgid "Balanced"
+msgstr ""
+
+#: src/system.rs:164
+msgid "Performance"
+msgstr ""
+
+#: src/system.rs:17
+msgid "read battery information"
+msgstr ""
+
+#: src/system.rs:18
+msgid "see which apps use energy"
+msgstr ""
+
+#: src/system.rs:19
+msgid "change the charge limit"
+msgstr ""
+
+#: src/system.rs:250 src/ui/usage.rs:50
+msgid "Low"
+msgstr ""
+
+#: src/system.rs:251
+msgid "Critical"
+msgstr ""
+
+#: src/system.rs:253 src/ui/usage.rs:46 src/ui/usage.rs:159
+msgid "High"
+msgstr ""
+
+#: src/system.rs:299
+msgid "Wireless Device"
+msgstr ""
+
+#: src/system.rs:59
+msgid "The Battery Health Center service is not running"
+msgstr ""
+
+#: src/system.rs:66
+msgid "Permission denied. Run: snap connect battery-health-center:power-control"
+msgstr ""
+
+#: src/system.rs:78 src/system.rs:83
+msgid "The helper crashed"
+msgstr ""
+
+#: src/system.rs:80
+msgid "The bhc-helper program was not found. Is the app installed?"
+msgstr ""
+
+#: src/system.rs:84
+#, no-c-format
+msgid "Could not run pkexec: {e}"
+msgstr ""
+
+#: src/system.rs:87
+msgid "Authorization was cancelled"
+msgstr ""
+
+#: src/system.rs:90
+msgid "The change could not be applied"
+msgstr ""
+
+#: src/ui/charging.rs:104
+msgid "Charging Mode"
+msgstr ""
+
+#: src/ui/charging.rs:105
+msgid "Temporarily pause charging, or run from the battery while still plugged in."
+msgstr ""
+
+#: src/ui/charging.rs:108
+msgid "Mode"
+msgstr ""
+
+#: src/ui/charging.rs:14
+msgid "Pause Charging"
+msgstr ""
+
+#: src/ui/charging.rs:15
+msgid "Run on Battery"
+msgstr ""
+
+#: src/ui/charging.rs:160
+msgid "Back to your charge limit"
+msgstr ""
+
+#: src/ui/charging.rs:163
+msgid "Charging to 100% once; your limit comes back when full or unplugged"
+msgstr ""
+
+#: src/ui/charging.rs:180
+#, no-c-format
+msgid "Charging mode set to {0}"
+msgstr ""
+
+#: src/ui/charging.rs:215
+#, no-c-format
+msgid "Charging will stop at {end}%"
+msgstr ""
+
+#: src/ui/charging.rs:215
+msgid "Charge limit removed"
+msgstr ""
+
+#: src/ui/charging.rs:264 src/ui/overview.rs:164
+msgid "Charging to 100%"
+msgstr ""
+
+#: src/ui/charging.rs:265
+msgid "Your limit comes back when the battery is full or you unplug."
+msgstr ""
+
+#: src/ui/charging.rs:266 src/ui/health.rs:191 src/ui/health.rs:228
+msgid "Cancel"
+msgstr ""
+
+#: src/ui/charging.rs:272
+msgid "Charge fully once, for a trip or a long day. Your limit comes back when full or unplugged."
+msgstr ""
+
+#: src/ui/charging.rs:274
+msgid "Connect the charger to charge fully once."
+msgstr ""
+
+#: src/ui/charging.rs:280
+#, no-c-format
+msgid "Stops at {end}%, resumes below {s}%"
+msgstr ""
+
+#: src/ui/charging.rs:281
+#, no-c-format
+msgid "Stops at {end}%"
+msgstr ""
+
+#: src/ui/charging.rs:282
+msgid "Charges to 100%"
+msgstr ""
+
+#: src/ui/charging.rs:49 src/ui/charging.rs:86
+msgid "Charge Limit"
+msgstr ""
+
+#: src/ui/charging.rs:51
+msgid "Lithium batteries wear faster when kept at full charge. If your laptop is plugged in most of the time, limiting the charge to about 80% can noticeably extend the battery's lifespan."
+msgstr ""
+
+#: src/ui/charging.rs:54
+msgid "Current Setting"
+msgstr ""
+
+#: src/ui/charging.rs:56
+msgid "Limit Maximum Charge"
+msgstr ""
+
+#: src/ui/charging.rs:58
+msgid "Stop Charging At"
+msgstr ""
+
+#: src/ui/charging.rs:59 src/ui/power.rs:189 src/ui/preferences.rs:53
+msgid "Percent"
+msgstr ""
+
+#: src/ui/charging.rs:63
+msgid "Resume Charging Below"
+msgstr ""
+
+#: src/ui/charging.rs:64
+msgid "Avoids topping up after every small drop"
+msgstr ""
+
+#: src/ui/charging.rs:68
+msgid "Keep After Restart"
+msgstr ""
+
+#: src/ui/charging.rs:69
+msgid "Re-apply the limit at startup and after waking from sleep"
+msgstr ""
+
+#: src/ui/charging.rs:73
+msgid "Apply"
+msgstr ""
+
+#: src/ui/charging.rs:88
+msgid "Not supported on this laptop"
+msgstr ""
+
+#: src/ui/charging.rs:89
+msgid "The battery driver does not expose charge thresholds (charge_control_end_threshold)."
+msgstr ""
+
+#: src/ui/charging.rs:96 src/ui/charging.rs:270
+msgid "Charge to 100% Now"
+msgstr ""
+
+#: src/ui/charging.rs:98 src/ui/charging.rs:276
+msgid "Charge Now"
+msgstr ""
+
+#: src/ui/health.rs:100
+msgid "When batteries are usually considered worn"
+msgstr ""
+
+#: src/ui/health.rs:105
+msgid "Usage"
+msgstr ""
+
+#: src/ui/health.rs:106 src/ui/overview.rs:104
+msgid "Cycle Count"
+msgstr ""
+
+#: src/ui/health.rs:107
+msgid "Most laptop batteries are rated for 300–1000 cycles"
+msgstr ""
+
+#: src/ui/health.rs:108
+msgid "Current Charge"
+msgstr ""
+
+#: src/ui/health.rs:109
+msgid "Average Draw on Battery (24 h)"
+msgstr ""
+
+#: src/ui/health.rs:110
+msgid "Voltage"
+msgstr ""
+
+#: src/ui/health.rs:111
+msgid "Minimum Design Voltage"
+msgstr ""
+
+#: src/ui/health.rs:114
+msgid "Battery Information"
+msgstr ""
+
+#: src/ui/health.rs:115
+msgid "Manufacturer"
+msgstr ""
+
+#: src/ui/health.rs:116
+msgid "Model"
+msgstr ""
+
+#: src/ui/health.rs:117
+msgid "Serial Number"
+msgstr ""
+
+#: src/ui/health.rs:118
+msgid "Chemistry"
+msgstr ""
+
+#: src/ui/health.rs:119
+msgid "Device"
+msgstr ""
+
+#: src/ui/health.rs:123
+msgid "Calibration"
+msgstr ""
+
+#: src/ui/health.rs:125
+msgid "If the percentage jumps or the laptop shuts down before reaching 0%, recalibrating helps the battery report its capacity accurately. It takes a full charge, a full discharge and another full charge, usually a few hours."
+msgstr ""
+
+#: src/ui/health.rs:128 src/ui/health.rs:209
+msgid "Not running"
+msgstr ""
+
+#: src/ui/health.rs:130 src/ui/health.rs:191 src/ui/health.rs:228
+msgid "Start"
+msgstr ""
+
+#: src/ui/health.rs:188
+msgid "Start Calibration?"
+msgstr ""
+
+#: src/ui/health.rs:189
+#, no-c-format
+msgid "Your laptop will charge to 100%. Then unplug it and use it normally until the battery reaches {CALIBRATION_EMPTY}%, and charge it to 100% again. You'll get a notification at each step, and your charge limit comes back at the end."
+msgstr ""
+
+#: src/ui/health.rs:209
+msgid "You'll get a notification at each step."
+msgstr ""
+
+#: src/ui/health.rs:212
+#, no-c-format
+msgid "Charging, now at {pct}%"
+msgstr ""
+
+#: src/ui/health.rs:212
+msgid "Connect the charger to continue"
+msgstr ""
+
+#: src/ui/health.rs:213
+#, no-c-format
+msgid "Step {n} of 3: Charge to 100%"
+msgstr ""
+
+#: src/ui/health.rs:217
+msgid "Unplug the charger to continue"
+msgstr ""
+
+#: src/ui/health.rs:219
+#, no-c-format
+msgid "Keep using your laptop until {CALIBRATION_EMPTY}%; now at {pct}%"
+msgstr ""
+
+#: src/ui/health.rs:221
+msgid "Step 2 of 3: Use the battery until nearly empty"
+msgstr ""
+
+#: src/ui/health.rs:243
+#, no-c-format
+msgid "{0}% per month"
+msgstr ""
+
+#: src/ui/health.rs:247
+#, no-c-format
+msgid "Around {w}"
+msgstr ""
+
+#: src/ui/health.rs:248
+msgid "Not declining"
+msgstr ""
+
+#: src/ui/health.rs:249
+msgid "Already below 80%"
+msgstr ""
+
+#: src/ui/health.rs:254
+#, no-c-format
+msgid "Collecting data ({days} of 14 days)"
+msgstr ""
+
+#: src/ui/health.rs:282
+msgid "The battery is functioning normally"
+msgstr ""
+
+#: src/ui/health.rs:283
+msgid "The battery holds less charge than when new but works normally"
+msgstr ""
+
+#: src/ui/health.rs:284
+msgid "The battery holds significantly less charge; consider replacing it"
+msgstr ""
+
+#: src/ui/health.rs:292
+msgid "None"
+msgstr ""
+
+#: src/ui/health.rs:297 src/ui/overview.rs:198
+msgid "Not reported"
+msgstr ""
+
+#: src/ui/health.rs:303
+msgid "No data yet"
+msgstr ""
+
+#: src/ui/health.rs:57
+msgid "Battery"
+msgstr ""
+
+#: src/ui/health.rs:62
+msgid "Capacity"
+msgstr ""
+
+#: src/ui/health.rs:63
+msgid "Batteries lose capacity as they age. Maximum capacity compares how much energy the battery holds now with how much it held when new."
+msgstr ""
+
+#: src/ui/health.rs:65 src/ui/overview.rs:93
+msgid "Maximum Capacity"
+msgstr ""
+
+#: src/ui/health.rs:75 src/ui/overview.rs:103
+msgid "Condition"
+msgstr ""
+
+#: src/ui/health.rs:76
+msgid "Full Charge Capacity"
+msgstr ""
+
+#: src/ui/health.rs:77
+msgid "Design Capacity"
+msgstr ""
+
+#: src/ui/health.rs:78
+msgid "Capacity Lost"
+msgstr ""
+
+#: src/ui/health.rs:82
+msgid "Capacity Over Time"
+msgstr ""
+
+#: src/ui/health.rs:83
+msgid "Recorded once a day. Readings vary a little from day to day; the trend shows the overall direction."
+msgstr ""
+
+#: src/ui/health.rs:98
+msgid "Trend"
+msgstr ""
+
+#: src/ui/health.rs:99
+msgid "Reaches 80%"
+msgstr ""
+
+#: src/ui/mod.rs:144
+msgid "Some features need permissions that aren't connected yet"
+msgstr ""
+
+#: src/ui/mod.rs:145
+msgid "How to Fix"
+msgstr ""
+
+#: src/ui/mod.rs:149
+msgid ""
+"Run these commands in a terminal, then restart Battery Health Center:\n"
+"\n"
+msgstr ""
+
+#: src/ui/mod.rs:154
+msgid "Connect Permissions"
+msgstr ""
+
+#: src/ui/mod.rs:156
+msgid "Close"
+msgstr ""
+
+#: src/ui/mod.rs:167
+msgid "Export Battery Report"
+msgstr ""
+
+#: src/ui/mod.rs:182
+msgid "Battery report saved"
+msgstr ""
+
+#: src/ui/mod.rs:182
+msgid "Open"
+msgstr ""
+
+#: src/ui/mod.rs:189
+#, no-c-format
+msgid "Could not save the report: {0}"
+msgstr ""
+
+#: src/ui/mod.rs:28
+msgctxt "page title"
+msgid "Overview"
+msgstr ""
+
+#: src/ui/mod.rs:29
+msgctxt "page title"
+msgid "Health"
+msgstr ""
+
+#: src/ui/mod.rs:30
+msgctxt "page title"
+msgid "Charging"
+msgstr ""
+
+#: src/ui/mod.rs:31
+msgctxt "page title"
+msgid "Power"
+msgstr ""
+
+#: src/ui/mod.rs:32
+msgctxt "page title"
+msgid "Usage"
+msgstr ""
+
+#: src/ui/mod.rs:36
+msgid "No Battery Found"
+msgstr ""
+
+#: src/ui/mod.rs:38
+msgid "Battery Health Center needs a laptop battery to show information. If this laptop has one, make sure the hardware-observe permission is connected."
+msgstr ""
+
+#: src/ui/mod.rs:40
+msgid "Battery Health Center needs a laptop battery to show information."
+msgstr ""
+
+#: src/ui/mod.rs:53
+msgid "_Refresh"
+msgstr ""
+
+#: src/ui/mod.rs:54
+msgid "_Export Battery Report…"
+msgstr ""
+
+#: src/ui/mod.rs:57
+msgid "_Preferences"
+msgstr ""
+
+#: src/ui/mod.rs:58
+msgid "_About Battery Health Center"
+msgstr ""
+
+#: src/ui/mod.rs:59
+msgid "_Quit"
+msgstr ""
+
+#: src/ui/mod.rs:65
+msgid "Main Menu"
+msgstr ""
+
+#: src/ui/overview.rs:108 src/ui/overview.rs:208
+msgid "Since Last Charge"
+msgstr ""
+
+#: src/ui/overview.rs:109
+msgid "Charger"
+msgstr ""
+
+#: src/ui/overview.rs:112 src/ui/overview.rs:230
+msgid "Unplugged"
+msgstr ""
+
+#: src/ui/overview.rs:113
+msgid "Battery Used"
+msgstr ""
+
+#: src/ui/overview.rs:114
+msgid "Average Draw"
+msgstr ""
+
+#: src/ui/overview.rs:117
+msgid "Other Devices"
+msgstr ""
+
+#: src/ui/overview.rs:122
+msgid "Recommendations"
+msgstr ""
+
+#: src/ui/overview.rs:164
+#, no-c-format
+msgid "{0} until 100%"
+msgstr ""
+
+#: src/ui/overview.rs:165
+msgid "One-time full charge; your limit comes back afterwards"
+msgstr ""
+
+#: src/ui/overview.rs:167
+#, no-c-format
+msgid "{0} remaining"
+msgstr ""
+
+#: src/ui/overview.rs:167
+msgid "Estimated at the current usage"
+msgstr ""
+
+#: src/ui/overview.rs:170
+#, no-c-format
+msgid "{0} until {target}%"
+msgstr ""
+
+#: src/ui/overview.rs:172
+msgid "Estimating time remaining…"
+msgstr ""
+
+#: src/ui/overview.rs:174
+msgid "Charging On Hold"
+msgstr ""
+
+#: src/ui/overview.rs:175
+#, no-c-format
+msgid "Charge limit of {0}% protects your battery"
+msgstr ""
+
+#: src/ui/overview.rs:177
+msgid "Connected to power"
+msgstr ""
+
+#: src/ui/overview.rs:183
+#, no-c-format
+msgid "Using {p} W"
+msgstr ""
+
+#: src/ui/overview.rs:184
+#, no-c-format
+msgid "Charging at {p} W"
+msgstr ""
+
+#: src/ui/overview.rs:208
+msgid "Power Source"
+msgstr ""
+
+#: src/ui/overview.rs:219
+msgid "This charger doesn't report its power rating"
+msgstr ""
+
+#: src/ui/overview.rs:230
+msgid "Last Seen Plugged In"
+msgstr ""
+
+#: src/ui/overview.rs:231
+#, no-c-format
+msgid "{ago} ago, at {0}%"
+msgstr ""
+
+#: src/ui/overview.rs:265
+#, no-c-format
+msgid "Battery capacity is down to {h}%"
+msgstr ""
+
+#: src/ui/overview.rs:266
+msgid "Your battery holds noticeably less charge than when it was new. Calibrating can correct a wrong reading; if it stays low, consider a replacement."
+msgstr ""
+
+#: src/ui/overview.rs:267
+msgid "Calibrate"
+msgstr ""
+
+#: src/ui/overview.rs:273
+msgid "Limit charging to 80%"
+msgstr ""
+
+#: src/ui/overview.rs:274
+msgid "Your laptop is plugged in. Keeping the battery below full charge slows down wear."
+msgstr ""
+
+#: src/ui/overview.rs:275
+msgid "Set Up"
+msgstr ""
+
+#: src/ui/overview.rs:283
+msgid "Draining while plugged in"
+msgstr ""
+
+#: src/ui/overview.rs:284
+#, no-c-format
+msgid "The {w} W charger can't keep up with your laptop's power use. Use a more powerful charger."
+msgstr ""
+
+#: src/ui/overview.rs:290
+#, no-c-format
+msgid "Low-power charger ({w} W)"
+msgstr ""
+
+#: src/ui/overview.rs:291
+msgid "Charging may be slow, especially while you're using the laptop."
+msgstr ""
+
+#: src/ui/overview.rs:300
+#, no-c-format
+msgid "High drain during sleep ({0}% per hour)"
+msgstr ""
+
+#: src/ui/overview.rs:301
+msgid "Your laptop used a lot of battery while asleep. See the sleep details for tips."
+msgstr ""
+
+#: src/ui/overview.rs:302 src/ui/overview.rs:311
+msgid "Details"
+msgstr ""
+
+#: src/ui/overview.rs:309
+#, no-c-format
+msgid "{0} is using significant energy"
+msgstr ""
+
+#: src/ui/overview.rs:310
+msgid "Quitting apps you are not using makes your battery last longer."
+msgstr ""
+
+#: src/ui/overview.rs:319
+msgid "Performance mode is on"
+msgstr ""
+
+#: src/ui/overview.rs:320
+msgid "Performance mode drains the battery faster. Balanced is usually enough on battery."
+msgstr ""
+
+#: src/ui/overview.rs:321
+msgid "Use Balanced"
+msgstr ""
+
+#: src/ui/overview.rs:327
+msgid "Battery is low"
+msgstr ""
+
+#: src/ui/overview.rs:328
+msgid "Connect to power soon. Regularly running the battery flat wears it faster."
+msgstr ""
+
+#: src/ui/overview.rs:336
+msgid "Everything looks good"
+msgstr ""
+
+#: src/ui/overview.rs:337
+msgid "No recommendations right now."
+msgstr ""
+
+#: src/ui/overview.rs:92
+msgid "Battery Health"
+msgstr ""
+
+#: src/ui/power.rs:107
+msgid "Never"
+msgstr ""
+
+#: src/ui/power.rs:165 src/ui/power.rs:169
+msgid "Power Mode"
+msgstr ""
+
+#: src/ui/power.rs:166
+msgid "Power Saver reduces performance to extend battery life. Performance is only offered on some laptops."
+msgstr ""
+
+#: src/ui/power.rs:174
+msgid "Automatic Power Mode"
+msgstr ""
+
+#: src/ui/power.rs:176
+msgid "Switches the power mode by itself when you plug in or unplug the charger. You can still change the mode by hand; it's only switched again the next time something changes."
+msgstr ""
+
+#: src/ui/power.rs:180
+msgid "Switch Automatically"
+msgstr ""
+
+#: src/ui/power.rs:181
+msgid "When Plugged In"
+msgstr ""
+
+#: src/ui/power.rs:184
+msgid "Use Power Saver When Battery Is Low"
+msgstr ""
+
+#: src/ui/power.rs:185
+msgid "Overrides the mode above on battery"
+msgstr ""
+
+#: src/ui/power.rs:188 src/ui/preferences.rs:52
+msgid "Low Battery Level"
+msgstr ""
+
+#: src/ui/power.rs:199
+msgid "Power Mode and Automatic Power Mode Aren't Available"
+msgstr ""
+
+#: src/ui/power.rs:201
+msgid "The snap sandbox doesn't allow access to the power mode service. Use the regular version of the app, or change the mode in Settings → Power."
+msgstr ""
+
+#: src/ui/power.rs:203
+msgid "Power Profiles Daemon isn't running, so the power mode can't be read or changed."
+msgstr ""
+
+#: src/ui/power.rs:216
+msgid "Power Saving"
+msgstr ""
+
+#: src/ui/power.rs:217
+msgid "GNOME's own settings that save the most battery. The same ones are in Settings → Power."
+msgstr ""
+
+#: src/ui/power.rs:224
+msgid "Power Saver When Battery Is Low"
+msgstr ""
+
+#: src/ui/power.rs:225
+msgid "GNOME switches to Power Saver mode when the battery gets low"
+msgstr ""
+
+#: src/ui/power.rs:232
+msgid "Dim Screen When Inactive"
+msgstr ""
+
+#: src/ui/power.rs:233
+msgid "The screen is usually the biggest power user, so dimming it saves a lot"
+msgstr ""
+
+#: src/ui/power.rs:237
+msgid "Automatic Screen Brightness"
+msgstr ""
+
+#: src/ui/power.rs:237
+msgid "Adjusts the brightness to the light around you"
+msgstr ""
+
+#: src/ui/power.rs:243
+msgid "Screen Blank"
+msgstr ""
+
+#: src/ui/power.rs:244
+msgid "Turns the screen off after you stop using the laptop"
+msgstr ""
+
+#: src/ui/power.rs:254
+msgid "Automatic Suspend on Battery"
+msgstr ""
+
+#: src/ui/power.rs:254
+msgid "Sleeping uses far less power than staying on"
+msgstr ""
+
+#: src/ui/power.rs:256
+msgid "Automatic Suspend When Plugged In"
+msgstr ""
+
+#: src/ui/power.rs:264
+msgid "Power Button and Lid"
+msgstr ""
+
+#: src/ui/power.rs:266
+msgid "Power Button"
+msgstr ""
+
+#: src/ui/power.rs:267
+msgid "Close the Lid on Battery"
+msgstr ""
+
+#: src/ui/power.rs:268
+msgid "Close the Lid When Plugged In"
+msgstr ""
+
+#: src/ui/power.rs:277
+msgid "Power Saving and Power Button Settings Aren't Available"
+msgstr ""
+
+#: src/ui/power.rs:279
+msgid "The snap can't see GNOME's power settings. Use the regular version of the app, or change them in Settings → Power."
+msgstr ""
+
+#: src/ui/power.rs:281
+msgid "GNOME's power settings weren't found. They need GNOME Settings Daemon."
+msgstr ""
+
+#: src/ui/power.rs:289
+msgid "Show Battery Percentage"
+msgstr ""
+
+#: src/ui/power.rs:289
+msgid "Shows the percentage next to the battery icon in the top bar"
+msgstr ""
+
+#: src/ui/power.rs:291
+msgid "Top Bar"
+msgstr ""
+
+#: src/ui/preferences.rs:30
+msgid "Notifications"
+msgstr ""
+
+#: src/ui/preferences.rs:32
+msgid "Sent while Battery Health Center is running. Turn on Record History in the Background (Usage page) to get them even when the window is closed."
+msgstr ""
+
+#: src/ui/preferences.rs:37
+msgid "Charge Limit Reached"
+msgstr ""
+
+#: src/ui/preferences.rs:38
+msgid "When charging stops at your limit"
+msgstr ""
+
+#: src/ui/preferences.rs:44
+msgid "Fully Charged Without a Limit"
+msgstr ""
+
+#: src/ui/preferences.rs:45
+msgid "A reminder to unplug, or to set a charge limit"
+msgstr ""
+
+#: src/ui/preferences.rs:49
+msgid "Low Battery"
+msgstr ""
+
+#: src/ui/preferences.rs:49
+msgid "When the battery drops to the level below"
+msgstr ""
+
+#: src/ui/preferences.rs:67
+msgid "Apps Using Significant Energy"
+msgstr ""
+
+#: src/ui/preferences.rs:68
+msgid "When an app keeps the CPU busy for a while on battery"
+msgstr ""
+
+#: src/ui/preferences.rs:74
+msgid "High Drain During Sleep"
+msgstr ""
+
+#: src/ui/preferences.rs:75
+msgid "When your laptop used a lot of battery while asleep"
+msgstr ""
+
+#: src/ui/usage.rs:118 src/ui/usage.rs:352
+msgid "No apps are using significant energy"
+msgstr ""
+
+#: src/ui/usage.rs:131
+msgid "No app activity recorded yet"
+msgstr ""
+
+#: src/ui/usage.rs:131
+msgid "Usage is recorded while Battery Health Center is running."
+msgstr ""
+
+#: src/ui/usage.rs:137
+#, no-c-format
+msgid "{0} of CPU time"
+msgstr ""
+
+#: src/ui/usage.rs:141
+#, no-c-format
+msgid "≈ {0} Wh on battery"
+msgstr ""
+
+#: src/ui/usage.rs:155
+#, no-c-format
+msgid "{when} · {0} asleep"
+msgstr ""
+
+#: src/ui/usage.rs:156
+#, no-c-format
+msgid "Used {used}% ({rate}% per hour)"
+msgstr ""
+
+#: src/ui/usage.rs:159
+msgid "Moderate"
+msgstr ""
+
+#: src/ui/usage.rs:189 src/ui/usage.rs:338
+msgid "Battery Level"
+msgstr ""
+
+#: src/ui/usage.rs:190
+msgid "Level"
+msgstr ""
+
+#: src/ui/usage.rs:190
+msgid "Power"
+msgstr ""
+
+#: src/ui/usage.rs:191 src/ui/usage.rs:264
+msgid "24 Hours"
+msgstr ""
+
+#: src/ui/usage.rs:191 src/ui/usage.rs:264
+msgid "7 Days"
+msgstr ""
+
+#: src/ui/usage.rs:231
+msgid "Record History in the Background"
+msgstr ""
+
+#: src/ui/usage.rs:232
+msgid "History, sleep drain and notifications only work while Battery Health Center is running. This starts it hidden when you log in."
+msgstr ""
+
+#: src/ui/usage.rs:244
+msgid "Battery Use During Sleep"
+msgstr ""
+
+#: src/ui/usage.rs:245
+msgid "How much charge your laptop used while suspended."
+msgstr ""
+
+#: src/ui/usage.rs:247
+msgid "Sleep Mode"
+msgstr ""
+
+#: src/ui/usage.rs:257
+msgid "Using Significant Energy"
+msgstr ""
+
+#: src/ui/usage.rs:263
+msgid "Energy Use by App"
+msgstr ""
+
+#: src/ui/usage.rs:264
+msgid "Since Opened"
+msgstr ""
+
+#: src/ui/usage.rs:276
+msgid "Linux does not measure power per app. Energy impact is estimated from CPU time, and watts are the measured battery drain above idle, shared between apps by CPU use. Treat them as a guide."
+msgstr ""
+
+#: src/ui/usage.rs:338
+msgid "Green: plugged in · Blue: on battery · Dashed: charge limit"
+msgstr ""
+
+#: src/ui/usage.rs:339
+msgid "Power Draw"
+msgstr ""
+
+#: src/ui/usage.rs:339
+msgid "Blue: power used on battery · Green: charging power"
+msgstr ""
+
+#: src/ui/usage.rs:348
+msgid "Average energy impact since Battery Health Center started."
+msgstr ""
+
+#: src/ui/usage.rs:359
+msgid "Share of app activity, with energy used while on battery."
+msgstr ""
+
+#: src/ui/usage.rs:372
+msgid "No sleep recorded yet"
+msgstr ""
+
+#: src/ui/usage.rs:373
+msgid "Measured when Battery Health Center is running before and after your laptop sleeps on battery."
+msgstr ""
+
+#: src/ui/usage.rs:383
+msgid "Modern Standby (s2idle)"
+msgstr ""
+
+#: src/ui/usage.rs:383
+msgid "Wakes quickly, but some laptops drain more while asleep"
+msgstr ""
+
+#: src/ui/usage.rs:384
+msgid "Deep Sleep (S3)"
+msgstr ""
+
+#: src/ui/usage.rs:384
+msgid "The lowest-power sleep mode"
+msgstr ""
+
+#: src/ui/usage.rs:385
+msgid "Shallow Sleep (S1)"
+msgstr ""
+
+#: src/ui/usage.rs:385
+msgid "A light sleep mode"
+msgstr ""
+
+#: src/ui/usage.rs:388
+#, no-c-format
+msgid "Sleep Mode: {name}"
+msgstr ""
+
+#: src/ui/usage.rs:391
+#, no-c-format
+msgid "{about}. Your laptop also supports deep sleep, which usually uses less battery; you can choose it with the kernel option mem_sleep_default=deep."
+msgstr ""
+
+#: src/ui/usage.rs:421
+msgid "Apps ranked by their current energy impact, with estimated power draw."
+msgstr ""
+
+#: src/ui/usage.rs:423
+msgid "Apps ranked by their current energy impact. Power estimates appear when running on battery."
+msgstr ""
+
+#: src/ui/usage.rs:48
+msgid "Medium"
+msgstr ""
+
+#: src/ui/usage.rs:78
+#, no-c-format
+msgid "{n} process"
+msgid_plural "{n} processes"
+msgstr[0] ""
+msgstr[1] ""
+
+#: src/ui/usage.rs:81
+msgid "System"
+msgstr ""
+
+#: src/ui/usage.rs:83
+#, no-c-format
+msgid "{0}% CPU"
+msgstr ""
+
+#: src/ui/widgets.rs:261 src/ui/widgets.rs:285
+msgid "Not enough history yet"
+msgstr ""
+
+#: src/ui/widgets.rs:308
+msgid "Recorded once a day; check back tomorrow"
+msgstr ""

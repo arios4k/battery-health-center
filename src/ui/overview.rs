@@ -7,6 +7,7 @@ use super::widgets::{value_row, Gauge};
 use crate::battery::{format_hours, Battery, Condition, Status};
 use crate::controller::{Controller, State, HIGH_SLEEP_DRAIN};
 use crate::history::now_unix;
+use crate::i18n::{tr, trf};
 
 /// Chargers below this can't keep up with a busy laptop.
 const WEAK_CHARGER_W: f64 = 45.0;
@@ -88,8 +89,8 @@ impl OverviewPage {
         hero_group.add(&hero);
         root.add(&hero_group);
 
-        let health_group = adw::PreferencesGroup::builder().title("Battery Health").build();
-        let (health_row, health) = value_row(&health_group, "Maximum Capacity");
+        let health_group = adw::PreferencesGroup::builder().title(tr("Battery Health")).build();
+        let (health_row, health) = value_row(&health_group, tr("Maximum Capacity"));
         let health_bar = gtk::LevelBar::builder()
             .min_value(0.0)
             .max_value(100.0)
@@ -99,26 +100,26 @@ impl OverviewPage {
         health_bar.add_offset_value(gtk::LEVEL_BAR_OFFSET_LOW, 60.0);
         health_bar.add_offset_value(gtk::LEVEL_BAR_OFFSET_HIGH, 80.0);
         health_row.add_suffix(&health_bar);
-        let (_, condition) = value_row(&health_group, "Condition");
-        let (_, cycles) = value_row(&health_group, "Cycle Count");
+        let (_, condition) = value_row(&health_group, tr("Condition"));
+        let (_, cycles) = value_row(&health_group, tr("Cycle Count"));
         root.add(&health_group);
 
         // Charger while plugged in; battery use since unplugging otherwise.
-        let power_group = adw::PreferencesGroup::builder().title("Since Last Charge").build();
-        let charger_row = adw::ActionRow::builder().title("Charger").build();
+        let power_group = adw::PreferencesGroup::builder().title(tr("Since Last Charge")).build();
+        let charger_row = adw::ActionRow::builder().title(tr("Charger")).build();
         charger_row.add_prefix(&gtk::Image::from_icon_name("ac-adapter-symbolic"));
         power_group.add(&charger_row);
-        let (unplugged_row, unplugged) = value_row(&power_group, "Unplugged");
-        let (used_row, used) = value_row(&power_group, "Battery Used");
-        let (avg_row, avg) = value_row(&power_group, "Average Draw");
+        let (unplugged_row, unplugged) = value_row(&power_group, tr("Unplugged"));
+        let (used_row, used) = value_row(&power_group, tr("Battery Used"));
+        let (avg_row, avg) = value_row(&power_group, tr("Average Draw"));
         root.add(&power_group);
 
-        let devices_group = adw::PreferencesGroup::builder().title("Other Devices").visible(false).build();
+        let devices_group = adw::PreferencesGroup::builder().title(tr("Other Devices")).visible(false).build();
         let devices_list = gtk::ListBox::builder().css_classes(["boxed-list"]).selection_mode(gtk::SelectionMode::None).build();
         devices_group.add(&devices_list);
         root.add(&devices_group);
 
-        let recs_group = adw::PreferencesGroup::builder().title("Recommendations").build();
+        let recs_group = adw::PreferencesGroup::builder().title(tr("Recommendations")).build();
         let recs_list = gtk::ListBox::builder().css_classes(["boxed-list"]).selection_mode(gtk::SelectionMode::None).build();
         recs_group.add(&recs_list);
         root.add(&recs_group);
@@ -160,27 +161,27 @@ impl OverviewPage {
 
         let (headline, detail) = match (b.status, b.hours_remaining()) {
             (Status::Charging, _) if st.full_charge => (
-                b.hours_remaining().map_or("Charging to 100%".into(), |h| format!("{} until 100%", format_hours(h))),
-                "One-time full charge; your limit comes back afterwards".into(),
+                b.hours_remaining().map_or(tr("Charging to 100%").into(), |h| trf("{0} until 100%", &[("0", format_hours(h).to_string())])),
+                tr("One-time full charge; your limit comes back afterwards").into(),
             ),
-            (Status::Discharging, Some(h)) => (format!("{} remaining", format_hours(h)), "Estimated at the current usage".to_string()),
+            (Status::Discharging, Some(h)) => (trf("{0} remaining", &[("0", format_hours(h).to_string())]), tr("Estimated at the current usage").to_string()),
             (Status::Charging, Some(h)) => {
                 let target = b.end_threshold.unwrap_or(100).min(100);
-                (format!("{} until {target}%", format_hours(h)), "Charging".to_string())
+                (trf("{0} until {target}%", &[("0", format_hours(h).to_string()), ("target", target.to_string())]), tr("Charging").to_string())
             }
-            (Status::Discharging, None) => ("On Battery".into(), "Estimating time remaining…".into()),
+            (Status::Discharging, None) => (tr("On Battery").into(), tr("Estimating time remaining…").into()),
             (Status::NotCharging, _) if b.end_threshold.is_some_and(|e| e < 100) => (
-                "Charging On Hold".into(),
-                format!("Charge limit of {}% protects your battery", b.end_threshold.unwrap_or(100)),
+                tr("Charging On Hold").into(),
+                trf("Charge limit of {0}% protects your battery", &[("0", b.end_threshold.unwrap_or(100).to_string())]),
             ),
-            (s, _) => (s.label().to_string(), if b.ac_online { "Connected to power".into() } else { String::new() }),
+            (s, _) => (s.label().to_string(), if b.ac_online { tr("Connected to power").into() } else { String::new() }),
         };
         self.headline.set_label(&headline);
         self.detail.set_label(&detail);
         self.detail.set_visible(!detail.is_empty());
         match b.power_w.filter(|p| *p > 0.05) {
-            Some(p) if b.status == Status::Discharging => self.power.set_label(&format!("Using {p:.1} W")),
-            Some(p) => self.power.set_label(&format!("Charging at {p:.1} W")),
+            Some(p) if b.status == Status::Discharging => self.power.set_label(&trf("Using {p} W", &[("p", format!("{p:.1}"))])),
+            Some(p) => self.power.set_label(&trf("Charging at {p} W", &[("p", format!("{p:.1}"))])),
             None => self.power.set_label(""),
         }
         self.power.set_visible(!self.power.label().is_empty());
@@ -190,11 +191,11 @@ impl OverviewPage {
                 self.health.set_label(&format!("{h:.0}%"));
                 self.health_bar.set_value(h);
             }
-            None => self.health.set_label("Unknown"),
+            None => self.health.set_label(tr("Unknown")),
         }
         self.health_bar.set_visible(b.health_percent().is_some());
-        self.condition.set_label(b.condition().map(Condition::label).unwrap_or("Unknown"));
-        self.cycles.set_label(&b.cycle_count.map(|c| c.to_string()).unwrap_or_else(|| "Not reported".into()));
+        self.condition.set_label(b.condition().map(Condition::label).unwrap_or(tr("Unknown")));
+        self.cycles.set_label(&b.cycle_count.map(|c| c.to_string()).unwrap_or_else(|| tr("Not reported").into()));
 
         self.update_power(b, st);
         self.update_devices(st);
@@ -204,7 +205,7 @@ impl OverviewPage {
     fn update_power(&self, b: &Battery, st: &State) {
         let since = st.history.since_last_charge().filter(|_| b.is_on_battery());
         let plugged = b.ac_online && st.charger.is_some();
-        self.power_group.set_title(if plugged { "Power Source" } else { "Since Last Charge" });
+        self.power_group.set_title(if plugged { tr("Power Source") } else { tr("Since Last Charge") });
         self.power_group.set_visible(plugged || since.is_some());
         self.charger_row.set_visible(plugged);
         if let Some(c) = st.charger.as_ref() {
@@ -215,7 +216,7 @@ impl OverviewPage {
             self.charger_row.set_title(&title);
             let subtitle = match (c.volts, c.amps) {
                 (Some(v), Some(a)) => format!("{v:.0} V × {a:.2} A"),
-                _ => "This charger doesn't report its power rating".into(),
+                _ => tr("This charger doesn't report its power rating").into(),
             };
             self.charger_row.set_subtitle(&subtitle);
         }
@@ -226,8 +227,8 @@ impl OverviewPage {
             let ago = format_hours((now_unix() - s.unplugged_ts).max(60) as f64 / 3600.0);
             // If the app wasn't running when the charger came out, all it knows is
             // when it last saw the laptop plugged in.
-            self.unplugged_row.set_title(if s.exact { "Unplugged" } else { "Last Seen Plugged In" });
-            self.unplugged.set_label(&format!("{ago} ago, at {:.0}%", s.start_percent));
+            self.unplugged_row.set_title(if s.exact { tr("Unplugged") } else { tr("Last Seen Plugged In") });
+            self.unplugged.set_label(&trf("{ago} ago, at {0}%", &[("ago", ago.to_string()), ("0", format!("{:.0}", s.start_percent))]));
             self.used.set_label(&format!("{:.0}%", s.used_percent));
             self.avg_row.set_visible(s.avg_w.is_some());
             self.avg.set_label(&s.avg_w.map(|w| format!("{w:.1} W")).unwrap_or_default());
@@ -245,7 +246,7 @@ impl OverviewPage {
         for d in &st.devices {
             let row = adw::ActionRow::builder().title(&d.name).use_markup(false).build();
             row.add_prefix(&gtk::Image::from_icon_name(d.icon));
-            let value = d.percent.map(|p| format!("{p:.0}%")).or(d.level.map(String::from)).unwrap_or_else(|| "Unknown".into());
+            let value = d.percent.map(|p| format!("{p:.0}%")).or(d.level.map(String::from)).unwrap_or_else(|| tr("Unknown").into());
             row.add_suffix(&gtk::Label::builder().label(value).css_classes(["dim-label", "numeric"]).build());
             if let Some(p) = d.percent {
                 let bar = gtk::LevelBar::builder().max_value(100.0).value(p).width_request(100).valign(gtk::Align::Center).build();
@@ -261,17 +262,17 @@ impl OverviewPage {
         if let Some(h) = b.health_percent().filter(|h| *h < 80.0) {
             recs.push(Recommendation {
                 icon: "dialog-warning-symbolic",
-                title: format!("Battery capacity is down to {h:.0}%"),
-                subtitle: "Your battery holds noticeably less charge than when it was new. Calibrating can correct a wrong reading; if it stays low, consider a replacement.".into(),
-                action: Some(("Calibrate", Action::OpenHealth)),
+                title: trf("Battery capacity is down to {h}%", &[("h", format!("{h:.0}"))]),
+                subtitle: tr("Your battery holds noticeably less charge than when it was new. Calibrating can correct a wrong reading; if it stays low, consider a replacement.").into(),
+                action: Some((tr("Calibrate"), Action::OpenHealth)),
             });
         }
         if b.supports_end_threshold() && b.end_threshold.unwrap_or(100) >= 100 && b.ac_online {
             recs.push(Recommendation {
                 icon: "battery-level-80-charging-symbolic",
-                title: "Limit charging to 80%".into(),
-                subtitle: "Your laptop is plugged in. Keeping the battery below full charge slows down wear.".into(),
-                action: Some(("Set Up", Action::OpenCharging)),
+                title: tr("Limit charging to 80%").into(),
+                subtitle: tr("Your laptop is plugged in. Keeping the battery below full charge slows down wear.").into(),
+                action: Some((tr("Set Up"), Action::OpenCharging)),
             });
         }
         if b.ac_online {
@@ -279,15 +280,15 @@ impl OverviewPage {
                 if b.status == Status::Discharging {
                     recs.push(Recommendation {
                         icon: "ac-adapter-symbolic",
-                        title: "Draining while plugged in".into(),
-                        subtitle: format!("The {w:.0} W charger can't keep up with your laptop's power use. Use a more powerful charger."),
+                        title: tr("Draining while plugged in").into(),
+                        subtitle: trf("The {w} W charger can't keep up with your laptop's power use. Use a more powerful charger.", &[("w", format!("{w:.0}"))]),
                         action: None,
                     });
                 } else if w < WEAK_CHARGER_W {
                     recs.push(Recommendation {
                         icon: "ac-adapter-symbolic",
-                        title: format!("Low-power charger ({w:.0} W)"),
-                        subtitle: "Charging may be slow, especially while you're using the laptop.".into(),
+                        title: trf("Low-power charger ({w} W)", &[("w", format!("{w:.0}"))]),
+                        subtitle: tr("Charging may be slow, especially while you're using the laptop.").into(),
                         action: None,
                     });
                 }
@@ -296,18 +297,18 @@ impl OverviewPage {
         if let Some(sleep) = st.history.sleep_sessions().first().filter(|s| s.percent_per_hour() >= HIGH_SLEEP_DRAIN) {
             recs.push(Recommendation {
                 icon: "weather-clear-night-symbolic",
-                title: format!("High drain during sleep ({:.1}% per hour)", sleep.percent_per_hour()),
-                subtitle: "Your laptop used a lot of battery while asleep. See the sleep details for tips.".into(),
-                action: Some(("Details", Action::OpenUsage)),
+                title: trf("High drain during sleep ({0}% per hour)", &[("0", format!("{:.1}", sleep.percent_per_hour()))]),
+                subtitle: tr("Your laptop used a lot of battery while asleep. See the sleep details for tips.").into(),
+                action: Some((tr("Details"), Action::OpenUsage)),
             });
         }
         if b.is_on_battery() {
             if let Some(app) = st.apps_now.iter().find(|a| !a.system && a.impact >= 40.0) {
                 recs.push(Recommendation {
                     icon: "power-profile-balanced-symbolic",
-                    title: format!("{} is using significant energy", app.name),
-                    subtitle: "Quitting apps you are not using makes your battery last longer.".into(),
-                    action: Some(("Details", Action::OpenUsage)),
+                    title: trf("{0} is using significant energy", &[("0", app.name.to_string())]),
+                    subtitle: tr("Quitting apps you are not using makes your battery last longer.").into(),
+                    action: Some((tr("Details"), Action::OpenUsage)),
                 });
             }
             let ctrl = self.ctrl.upgrade();
@@ -315,16 +316,16 @@ impl OverviewPage {
             if profile.as_deref() == Some("performance") {
                 recs.push(Recommendation {
                     icon: "power-profile-performance-symbolic",
-                    title: "Performance mode is on".into(),
-                    subtitle: "Performance mode drains the battery faster. Balanced is usually enough on battery.".into(),
-                    action: Some(("Use Balanced", Action::UseBalanced)),
+                    title: tr("Performance mode is on").into(),
+                    subtitle: tr("Performance mode drains the battery faster. Balanced is usually enough on battery.").into(),
+                    action: Some((tr("Use Balanced"), Action::UseBalanced)),
                 });
             }
             if b.percent <= 20.0 {
                 recs.push(Recommendation {
                     icon: "battery-level-20-symbolic",
-                    title: "Battery is low".into(),
-                    subtitle: "Connect to power soon. Regularly running the battery flat wears it faster.".into(),
+                    title: tr("Battery is low").into(),
+                    subtitle: tr("Connect to power soon. Regularly running the battery flat wears it faster.").into(),
                     action: None,
                 });
             }
@@ -332,8 +333,8 @@ impl OverviewPage {
         if recs.is_empty() {
             recs.push(Recommendation {
                 icon: "emblem-ok-symbolic",
-                title: "Everything looks good".into(),
-                subtitle: "No recommendations right now.".into(),
+                title: tr("Everything looks good").into(),
+                subtitle: tr("No recommendations right now.").into(),
                 action: None,
             });
         }
