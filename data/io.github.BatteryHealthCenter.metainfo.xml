@@ -51,6 +51,11 @@
   </supports>
   <content_rating type="oars-1.1"/>
   <releases>
+    <release version="0.4.2" date="2026-10-28">
+      <description>
+        <p>Maintenance release: removes the code that only existed for the snap package, which is no longer distributed. Install and update through the apt repository.</p>
+      </description>
+    </release>
     <release version="0.4.1" date="2026-10-27">
       <description>
         <p>Clearer labels: the Power page row is now "Current Mode", the low-battery notification level is "Notify At", and "Charging Mode" on the Charging page is now "Charging Behavior".</p>

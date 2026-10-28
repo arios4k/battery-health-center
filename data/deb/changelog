@@ -1,3 +1,11 @@
+battery-health-center (0.4.2-1) unstable; urgency=low
+
+  * Remove the code that only existed for the snap package, which is no longer
+    distributed: the helper's socket service and update marker, the permissions
+    banner, and the snap-specific messages. Nothing changes for this package.
+
+ -- Alexis Rios-Negron <182820807+arios4k@users.noreply.github.com>  Wed, 28 Oct 2026 00:46:22 -0700
+
 battery-health-center (0.4.1-1) unstable; urgency=low
 
   * Make the labels clearer: the Power page row under "Power Mode" is now
