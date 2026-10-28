@@ -51,6 +51,11 @@
   </supports>
   <content_rating type="oars-1.1"/>
   <releases>
+    <release version="0.4.3" date="2026-10-28">
+      <description>
+        <p>After an upgrade, the hidden background copy now restarts itself on the new version, so the app no longer opens as the old version until you log out and in.</p>
+      </description>
+    </release>
     <release version="0.4.2" date="2026-10-28">
       <description>
         <p>Maintenance release: removes the code that only existed for the snap package, which is no longer distributed. Install and update through the apt repository.</p>

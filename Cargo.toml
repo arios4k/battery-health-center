@@ -1,6 +1,6 @@
 [package]
 name = "battery-health-center"
-version = "0.4.2"
+version = "0.4.3"
 edition = "2021"
 description = "All your laptop battery information in one place, for GNOME"
 license = "GPL-3.0-or-later"
