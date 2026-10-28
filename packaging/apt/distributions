@@ -1,0 +1,8 @@
+Origin: Battery Health Center
+Label: Battery Health Center
+Codename: stable
+Suite: stable
+Architectures: amd64
+Components: main
+Description: Battery Health Center packages
+SignWith: @KEY@
