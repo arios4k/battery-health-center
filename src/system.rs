@@ -11,31 +11,7 @@ use gtk::glib;
 
 use crate::APP_ID;
 use crate::schedule::{self, Learned, Schedule};
-use crate::i18n::{tr, tr_noop, trf};
-
-/// Interfaces the snap needs, with what each one is for.
-pub const SNAP_PLUGS: &[(&str, &str)] = &[
-    ("hardware-observe", tr_noop("read battery information")),
-    ("system-observe", tr_noop("see which apps use energy")),
-    ("power-control", tr_noop("change the charge limit")),
-];
-
-pub fn in_snap() -> bool {
-    std::env::var_os("SNAP").is_some()
-}
-
-/// Snap interfaces that are not connected yet (empty outside the snap).
-pub fn missing_snap_plugs() -> Vec<&'static str> {
-    if !in_snap() {
-        return Vec::new();
-    }
-    SNAP_PLUGS
-        .iter()
-        .map(|(plug, _)| *plug)
-        .filter(|plug| !Command::new("snapctl").args(["is-connected", plug]).status().is_ok_and(|s| s.success()))
-        .collect()
-}
-
+use crate::i18n::{tr, trf};
 
 /// Locates bhc-helper: the installed copy (whose path the polkit policy
 /// names), or the one next to this binary when running from the build tree.
@@ -51,33 +27,8 @@ pub fn helper_path() -> Option<PathBuf> {
         .find(|p| p.is_file())
 }
 
-/// Sends a request to the snap's helper service (see bhc-helper `serve`).
-fn request_snap_service(args: &[String]) -> Result<(), String> {
-    use std::io::{BufRead, BufReader, Write};
-    let dir = std::env::var_os("SNAP_COMMON").ok_or("SNAP_COMMON is not set")?;
-    let socket = PathBuf::from(dir).join("helper.sock");
-    let mut stream = std::os::unix::net::UnixStream::connect(&socket)
-        .map_err(|_| tr("The Battery Health Center service is not running").to_string())?;
-    stream.write_all(format!("{}\n", args.join(" ")).as_bytes()).map_err(|e| e.to_string())?;
-    let mut reply = String::new();
-    BufReader::new(stream).read_line(&mut reply).map_err(|e| e.to_string())?;
-    match reply.trim() {
-        "OK" => Ok(()),
-        r if r.contains("Permission denied") => Err(
-            tr("Permission denied. Run: snap connect battery-health-center:power-control").to_string(),
-        ),
-        r => Err(r.strip_prefix("ERR ").unwrap_or(r).to_string()),
-    }
-}
-
-/// Runs the helper as root without blocking the UI: through the snap's
-/// service when sandboxed, otherwise through pkexec.
+/// Runs the helper as root through pkexec, without blocking the UI.
 pub async fn run_helper(args: Vec<String>) -> Result<(), String> {
-    if in_snap() {
-        return gio::spawn_blocking(move || request_snap_service(&args))
-            .await
-            .map_err(|_| tr("The helper crashed").to_string())?;
-    }
     let helper = helper_path().ok_or(tr("The bhc-helper program was not found. Is the app installed?"))?;
     let output = gio::spawn_blocking(move || Command::new("pkexec").arg(helper).args(args).output())
         .await
@@ -101,10 +52,6 @@ pub struct PowerProfiles {
 
 impl PowerProfiles {
     pub fn connect() -> Option<Self> {
-        // No snap interface grants access to power-profiles-daemon.
-        if in_snap() {
-            return None;
-        }
         let candidates = [
             ("org.freedesktop.UPower.PowerProfiles", "/org/freedesktop/UPower/PowerProfiles"),
             ("net.hadess.PowerProfiles", "/net/hadess/PowerProfiles"),
@@ -183,9 +130,7 @@ pub fn set_autostart(enabled: bool) -> std::io::Result<()> {
             _ => Ok(()),
         };
     }
-    // In the snap, snapd starts the app named by the `autostart` key and only
-    // takes the arguments from Exec.
-    let exe = if in_snap() { PathBuf::from("battery-health-center") } else { std::env::current_exe()? };
+    let exe = std::env::current_exe()?;
     if let Some(dir) = path.parent() {
         std::fs::create_dir_all(dir)?;
     }
@@ -201,33 +146,20 @@ pub fn set_autostart(enabled: bool) -> std::io::Result<()> {
     )
 }
 
-/// In the snap: whether snapd is holding back an update of this snap
-/// because the app is running (the helper service leaves this marker).
-pub fn refresh_pending() -> bool {
-    std::env::var_os("SNAP_COMMON").is_some_and(|d| PathBuf::from(d).join("refresh-pending").exists())
-}
-
 /// Whether a one-time "charge to 100%" is in progress for this battery (the
 /// helper keeps a marker file while it is).
 pub fn full_charge_active(battery: &str) -> bool {
-    let dir = match std::env::var_os("SNAP_COMMON") {
-        Some(d) => PathBuf::from(d),
-        None => PathBuf::from("/run/battery-health-center"),
-    };
-    dir.join(format!("full-charge-{battery}")).exists()
+    PathBuf::from("/run/battery-health-center").join(format!("full-charge-{battery}")).exists()
 }
 
-/// The helper's files for the saved limit and the schedule: in the snap's
-/// common folder, otherwise /etc and /var/lib. All world-readable.
-/// `BHC_HELPER_FILES=<folder>` reads them from a folder instead, to try the
-/// schedule screens without touching the real settings.
-fn helper_file(snap_name: &str, etc: &str) -> PathBuf {
-    if let Some(dir) = std::env::var_os("BHC_HELPER_FILES") {
-        return PathBuf::from(dir).join(snap_name);
-    }
-    match std::env::var_os("SNAP_COMMON") {
-        Some(d) => PathBuf::from(d).join(snap_name),
-        None => PathBuf::from(etc),
+/// The helper's files for the saved limit and the schedule, in /etc and
+/// /var/lib. All world-readable. `BHC_HELPER_FILES=<folder>` reads them from a
+/// folder instead (under their file names), to try the schedule screens
+/// without touching the real settings.
+fn helper_file(name: &str, system_path: &str) -> PathBuf {
+    match std::env::var_os("BHC_HELPER_FILES") {
+        Some(dir) => PathBuf::from(dir).join(name),
+        None => PathBuf::from(system_path),
     }
 }
 
@@ -254,11 +186,7 @@ pub fn read_learned() -> Learned {
 
 /// Whether the schedule has lifted the limit for a charge to 100% right now.
 pub fn scheduled_full_active(battery: &str) -> bool {
-    let dir = match std::env::var_os("SNAP_COMMON") {
-        Some(d) => PathBuf::from(d),
-        None => PathBuf::from("/run/battery-health-center"),
-    };
-    dir.join(format!("scheduled-full-{battery}")).exists()
+    PathBuf::from("/run/battery-health-center").join(format!("scheduled-full-{battery}")).exists()
 }
 
 /// A battery-powered peripheral reported by UPower (mouse, headphones, ...).

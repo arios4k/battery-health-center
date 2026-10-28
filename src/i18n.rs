@@ -18,7 +18,7 @@ extern "C" {
 
 /// Finds the folder holding `<lang>/LC_MESSAGES/battery-health-center.mo`:
 /// `BHC_LOCALEDIR`, the `share/locale` next to the install prefix (which also
-/// covers `/usr/local` and the snap), or the system one.
+/// covers `/usr/local`), or the system one.
 fn locale_dir() -> PathBuf {
     if let Some(dir) = std::env::var_os("BHC_LOCALEDIR") {
         return PathBuf::from(dir);
@@ -81,12 +81,6 @@ pub fn trc(context: &'static str, msgid: &'static str) -> &'static str {
             }
         })
     })
-}
-
-/// Marks a message for translation where it can't be translated yet, such as in a
-/// constant; pass it to [`tr`] where it is shown.
-pub const fn tr_noop(msgid: &'static str) -> &'static str {
-    msgid
 }
 
 /// Translates a message that depends on a count, for example "1 hour" / "2 hours".

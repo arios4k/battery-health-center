@@ -1,10 +1,8 @@
 //! Privileged helper for Battery Health Center.
 //!
-//! Runs as root, either through pkexec (see
-//! data/io.github.BatteryHealthCenter.policy) or, in the snap, as a service
-//! the app talks to over a Unix socket (pkexec can't be used inside a snap).
-//! It only writes the battery charge-control files in sysfs and its own config
-//! file, and validates every argument. It intentionally depends on little: std,
+//! Runs as root through pkexec (see data/io.github.BatteryHealthCenter.policy)
+//! or as a systemd service. It only writes the battery charge-control files in
+//! sysfs and its own config files, and validates every argument. It intentionally depends on little: std,
 //! and libc for the local time of day.
 //!
 //! Usage:
@@ -15,26 +13,16 @@
 //!   bhc-helper set-schedule <0|1> <LEAD-MINUTES> [<DAYS>@<HH:MM>]...   (see schedule.rs)
 //!   bhc-helper schedule-daemon   (runs the schedule while a schedule is set)
 //!   bhc-helper restore
-//!   bhc-helper serve        (snap service; accepts set-thresholds,
-//!                            charge-full, finish-full-charge and set-schedule
-//!                            requests, and runs the schedule)
 
 #[allow(dead_code)]
 #[path = "../schedule.rs"]
 mod schedule;
 
 use std::fs;
-use std::io::{BufRead, BufReader, Read, Write};
 use std::os::unix::fs::PermissionsExt;
-use std::os::unix::net::UnixListener;
 use std::path::{Path, PathBuf};
 use std::process::ExitCode;
-use std::sync::Mutex;
 use std::time::Duration;
-
-/// Serializes sysfs writes between the service's request handler and its
-/// background loop.
-static WRITE_LOCK: Mutex<()> = Mutex::new(());
 
 #[cfg(test)]
 use tests::{config_path, data_dir, schedule_path, state_dir, sysfs_root};
@@ -43,47 +31,29 @@ use tests::{config_path, data_dir, schedule_path, state_dir, sysfs_root};
 fn sysfs_root() -> PathBuf {
     PathBuf::from("/sys/class/power_supply")
 }
-pub const SOCKET_NAME: &str = "helper.sock";
-/// Present while snapd is holding back an update of this snap because the app
-/// is running; the app's background copy exits when it sees it.
-pub const REFRESH_PENDING_NAME: &str = "refresh-pending";
-/// How often the service asks snapd about pending updates (in 30 s rounds).
-const REFRESH_CHECK_ROUNDS: u32 = 10;
-
-/// $SNAP_COMMON when running inside the snap.
-fn snap_common() -> Option<PathBuf> {
-    std::env::var_os("SNAP_COMMON").map(PathBuf::from)
-}
-
 #[cfg(not(test))]
 fn config_path() -> PathBuf {
-    match snap_common() {
-        Some(dir) => dir.join("battery-health-center.conf"),
-        None => PathBuf::from("/etc/battery-health-center.conf"),
-    }
+    PathBuf::from("/etc/battery-health-center.conf")
 }
 
 /// The charging schedule (see schedule.rs); readable by the app.
 #[cfg(not(test))]
 fn schedule_path() -> PathBuf {
-    match snap_common() {
-        Some(dir) => dir.join("battery-health-center.schedule"),
-        None => PathBuf::from("/etc/battery-health-center.schedule"),
-    }
+    PathBuf::from("/etc/battery-health-center.schedule")
 }
 
 /// What optimized charging learns from (when you unplug); it has to survive
 /// reboots, unlike the markers in `state_dir`.
 #[cfg(not(test))]
 fn data_dir() -> PathBuf {
-    snap_common().unwrap_or_else(|| PathBuf::from("/var/lib/battery-health-center"))
+    PathBuf::from("/var/lib/battery-health-center")
 }
 
-/// Where "charge to 100%" markers live: $SNAP_COMMON in the snap (readable by
-/// the app), otherwise /run (cleared at boot, when the saved limit applies).
+/// Where "charge to 100%" markers live: /run, which is cleared at boot, when
+/// the saved limit applies again.
 #[cfg(not(test))]
 fn state_dir() -> PathBuf {
-    snap_common().unwrap_or_else(|| PathBuf::from("/run/battery-health-center"))
+    PathBuf::from("/run/battery-health-center")
 }
 
 /// Marker for a one-time full charge; holds the limit to put back
@@ -118,10 +88,7 @@ fn threshold_file(dir: &Path, which: &str) -> Option<PathBuf> {
         "start" => ("charge_control_start_threshold", "charge_start_threshold"),
         _ => ("charge_control_end_threshold", "charge_stop_threshold"),
     };
-    // Inside the snap, the power-control interface only allows writing the
-    // legacy names, so prefer those there.
-    let order = if snap_common().is_some() { [legacy, modern] } else { [modern, legacy] };
-    order.iter().map(|f| dir.join(f)).find(|p| p.exists())
+    [modern, legacy].iter().map(|f| dir.join(f)).find(|p| p.exists())
 }
 
 fn read_threshold(dir: &Path, which: &str) -> Option<u8> {
@@ -298,22 +265,6 @@ fn end_scheduled_full(name: &str) -> Result<(), String> {
     Ok(())
 }
 
-/// Finishes one-time full charges once the battery is full or unplugged.
-fn check_full_charges() {
-    let Ok(entries) = fs::read_dir(state_dir()) else { return };
-    let ac_online = ac_online();
-    for name in entries.flatten().filter_map(|e| e.file_name().to_str()?.strip_prefix("full-charge-").map(String::from)) {
-        let Ok(dir) = battery_dir(&name) else { continue };
-        let read = |f: &str| fs::read_to_string(dir.join(f)).unwrap_or_default().trim().to_string();
-        let full = read("status") == "Full" || read("capacity").parse::<u8>().is_ok_and(|c| c >= 99);
-        if full || !ac_online {
-            if let Err(e) = finish_full_charge(&name) {
-                eprintln!("bhc-helper: {e}");
-            }
-        }
-    }
-}
-
 /// Unplug times kept for learning.
 const MAX_UNPLUG_LOG: usize = 60;
 
@@ -481,7 +432,6 @@ fn run(args: &[String]) -> Result<(), String> {
         ["charge-full", name] => charge_full(name),
         ["finish-full-charge", name] => finish_full_charge(name),
         ["restore"] => restore(),
-        ["serve"] => serve(),
         _ => Err("usage: bhc-helper set-thresholds <BAT> <START|-> <END> [--persist|--no-persist]\n       \
                   bhc-helper set-behaviour <BAT> <auto|inhibit-charge|force-discharge>\n       \
                   bhc-helper charge-full <BAT>\n       \
@@ -490,89 +440,6 @@ fn run(args: &[String]) -> Result<(), String> {
                   bhc-helper restore"
             .into()),
     }
-}
-
-fn run_locked(args: &[String]) -> Result<(), String> {
-    let _guard = WRITE_LOCK.lock();
-    run(args)
-}
-
-/// Parses `snapctl refresh --pending` output ("pending: inhibited", ...).
-fn refresh_inhibited(output: &str) -> bool {
-    output.lines().any(|l| l.split_once(':').is_some_and(|(k, v)| k.trim() == "pending" && v.trim() == "inhibited"))
-}
-
-/// Only root may ask snapd whether an update is waiting for the app to
-/// close, so the service asks and leaves a marker the app can see.
-fn update_refresh_marker(marker: &Path) {
-    let Ok(out) = std::process::Command::new("snapctl").args(["refresh", "--pending"]).output() else {
-        return;
-    };
-    if refresh_inhibited(&String::from_utf8_lossy(&out.stdout)) {
-        let _ = fs::write(marker, "");
-        let _ = fs::set_permissions(marker, fs::Permissions::from_mode(0o644));
-    } else {
-        let _ = fs::remove_file(marker);
-    }
-}
-
-/// Snap service: restores saved limits, re-applies them if firmware resets
-/// them (e.g. after sleep), and accepts `set-thresholds` requests from the
-/// app over a Unix socket in $SNAP_COMMON. One request per connection; the
-/// reply is `OK` or `ERR <message>`.
-fn serve() -> Result<(), String> {
-    let dir = snap_common().ok_or("serve is only used inside the snap")?;
-    let path = dir.join(SOCKET_NAME);
-    let _ = fs::remove_file(&path);
-    let listener = UnixListener::bind(&path).map_err(|e| format!("binding {}: {e}", path.display()))?;
-    // Any local user may change the charge limit, as with GNOME's own setting.
-    fs::set_permissions(&path, fs::Permissions::from_mode(0o666)).map_err(|e| e.to_string())?;
-
-    // This instance runs the new revision, so any marker is stale.
-    let marker = dir.join(REFRESH_PENDING_NAME);
-    let _ = fs::remove_file(&marker);
-
-    std::thread::spawn(move || {
-        let mut round: u32 = 0;
-        let mut first_round = true;
-        loop {
-            {
-                let _guard = WRITE_LOCK.lock();
-                check_full_charges();
-                if let Err(e) = restore() {
-                    eprintln!("bhc-helper: {e}");
-                }
-                if let Err(e) = schedule_tick(first_round) {
-                    eprintln!("bhc-helper: {e}");
-                }
-                first_round = false;
-            }
-            if round.is_multiple_of(REFRESH_CHECK_ROUNDS) {
-                update_refresh_marker(&marker);
-            }
-            round = round.wrapping_add(1);
-            std::thread::sleep(Duration::from_secs(30));
-        }
-    });
-
-    for stream in listener.incoming() {
-        let Ok(mut stream) = stream else { continue };
-        let _ = stream.set_read_timeout(Some(Duration::from_secs(5)));
-        let mut line = String::new();
-        if BufReader::new((&stream).take(512)).read_line(&mut line).is_err() {
-            continue;
-        }
-        let args: Vec<String> = line.split_whitespace().map(String::from).collect();
-        let reply = match args.first().map(String::as_str) {
-            Some("set-thresholds" | "charge-full" | "finish-full-charge" | "set-schedule") => match run_locked(&args) {
-                Ok(()) => "OK\n".to_string(),
-                Err(e) => format!("ERR {}\n", e.replace('\n', " ")),
-            },
-            _ => "ERR unsupported request\n".to_string(),
-        };
-        let _ = stream.write_all(reply.as_bytes());
-    }
-    Ok(())
 }
 
 fn main() -> ExitCode {
@@ -654,28 +521,6 @@ mod tests {
         charge_full("BAT0").unwrap();
         assert_eq!(fs::read_to_string(full_charge_marker("BAT0")).unwrap().trim(), "75 80");
         finish_full_charge("BAT0").unwrap();
-        assert_eq!(limits(), ("75".into(), "80".into()));
-        assert!(!full_charge_marker("BAT0").exists());
-    }
-
-    #[test]
-    fn finishes_when_full() {
-        setup("full");
-        charge_full("BAT0").unwrap();
-        set("BAT0/capacity", "95\n");
-        check_full_charges();
-        assert_eq!(limits(), ("99".into(), "100".into()), "still charging at 95%");
-        set("BAT0/capacity", "100\n");
-        check_full_charges();
-        assert_eq!(limits(), ("75".into(), "80".into()));
-    }
-
-    #[test]
-    fn finishes_when_unplugged() {
-        setup("unplugged");
-        charge_full("BAT0").unwrap();
-        set("AC/online", "0\n");
-        check_full_charges();
         assert_eq!(limits(), ("75".into(), "80".into()));
         assert!(!full_charge_marker("BAT0").exists());
     }
@@ -772,14 +617,6 @@ mod tests {
         set("AC/online", "0\n");
         schedule_tick_at(40 * hour, clock(0, 0), true).unwrap();
         assert_eq!(read_unplug_log(), vec![25 * hour]);
-    }
-
-    #[test]
-    fn parses_pending_refresh() {
-        assert!(refresh_inhibited("pending: inhibited\nchannel: stable\nversion: 0.2.1\n"));
-        assert!(!refresh_inhibited("pending: ready\nchannel: stable\n"));
-        assert!(!refresh_inhibited("pending: none\n"));
-        assert!(!refresh_inhibited(""));
     }
 
     #[test]

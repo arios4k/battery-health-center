@@ -26,9 +26,8 @@ path = "src/bin/bhc-helper.rs"
 lto = true
 strip = true
 
-# Debian/Ubuntu package: `scripts/build-locale.sh && cargo deb` (see README). Unlike the snap, this is the
-# unsandboxed version: charge limits go through pkexec, and the restore service
-# re-applies a saved limit at boot and after sleep.
+# Debian/Ubuntu package: `scripts/build-locale.sh && cargo deb` (see README). Charge limits
+# go through pkexec, and the restore service re-applies a saved limit at boot and after sleep.
 [package.metadata.deb]
 name = "battery-health-center"
 maintainer = "Alexis Rios-Negron <182820807+arios4k@users.noreply.github.com>"

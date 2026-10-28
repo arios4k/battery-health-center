@@ -2,8 +2,8 @@
 //! the UI. Lives for the whole application, so history keeps being recorded
 //! when the app runs in the background without a window.
 //!
-//! In the snap each launch is its own process, so only the process that
-//! writes history (see `History::is_writer`) keeps the other logs, sends
+//! Each launch is its own process (the window and the hidden background copy),
+//! so only the process that writes history (see `History::is_writer`) keeps the other logs, sends
 //! notifications and advances calibration; the others just display.
 
 use std::cell::{Cell, Ref, RefCell};
@@ -252,7 +252,7 @@ impl Controller {
             }
         }
         if self.state.borrow().history.is_writer() {
-            self.finish_full_charge_outside_snap();
+            self.finish_full_charge_when_done();
             self.advance_calibration();
             self.apply_auto_profile();
             self.send_notifications(n == 0, now);
@@ -290,10 +290,10 @@ impl Controller {
         self.helper(names.into_iter().map(|n| vec!["finish-full-charge".into(), n]).collect());
     }
 
-    /// In the snap the helper service finishes a full charge by itself; a
-    /// regular install has no service, so the app asks the helper to.
-    fn finish_full_charge_outside_snap(self: &Rc<Self>) {
-        if system::in_snap() || self.helper_busy.get() {
+    /// The helper only runs when asked, so the app asks it to put the limit
+    /// back once a one-time full charge is done.
+    fn finish_full_charge_when_done(self: &Rc<Self>) {
+        if self.helper_busy.get() {
             return;
         }
         let done = {

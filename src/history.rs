@@ -37,8 +37,8 @@ impl Sample {
 pub struct History {
     path: PathBuf,
     pub samples: Vec<Sample>,
-    /// Held while this process is the one writing the file. In the snap each
-    /// launch is a separate process (see main.rs), so a window opened while the
+    /// Held while this process is the one writing the file. Each launch is a
+    /// separate process (see main.rs), so a window opened while the
     /// background copy runs must not write too, or every sample is doubled.
     writer_lock: Option<File>,
 }

@@ -7,8 +7,7 @@
 **Everything about your laptop battery, in one place.**
 Health, cycle count, charge limits and schedules, and which apps drain it, for GNOME.
 
-[![Snap Store](https://img.shields.io/snapcraft/v/battery-health-center/latest/stable?label=snap&color=26a269)](https://snapcraft.io/battery-health-center)
-[![Install with apt](https://img.shields.io/badge/install-apt-orange)](#install-ubuntu-debian-and-derivatives-recommended)
+[![Install with apt](https://img.shields.io/badge/install-apt-orange)](#install-ubuntu-debian-and-derivatives)
 [![License: GPL-3.0-or-later](https://img.shields.io/badge/license-GPL--3.0--or--later-blue)](LICENSE)
 [![Languages](https://img.shields.io/badge/languages-EN%20%C2%B7%20ES%20%C2%B7%20DE-lightgrey)](#translations)
 [![Made with Rust and GTK4](https://img.shields.io/badge/made%20with-Rust%20%2B%20GTK4-informational)](#build-from-source)
@@ -125,7 +124,7 @@ sessions and each app's energy use per hour as CSV files for a spreadsheet.
 - **Careful with root.** Only a small helper runs as root. It accepts nothing but validated values and
   writes only the battery's charge-limit files and its own config.
 - **Speaks your language.** English, Spanish and German, following your system language.
-- **Updates with your system.** Install it from a signed apt repository, or from the Snap Store.
+- **Updates with your system.** Install it from a signed apt repository and `apt upgrade` keeps it current.
 
 ## FAQ
 
@@ -140,10 +139,6 @@ It is developed and tested on GNOME: Ubuntu 24.04, Zorin OS 18 and Linux Mint 22
 GTK 4.14 and libadwaita 1.5 or newer, so Ubuntu 22.04, Debian 12 and Mint 21 are too old. The Power page
 uses GNOME's own settings, so it is the part most tied to GNOME.
 
-**Apt or snap?**
-Apt. The snap is sandboxed, so it needs three `snap connect` commands, can't change the power mode or
-GNOME's power settings, and shows generic app icons. See the [comparison](#apt-or-snap).
-
 **Is it safe to change the charge limit?**
 It sets the same firmware thresholds that other tools and BIOS options use, and **Full Capacity (100%)**
 removes the limit again. Changing it asks for your password.
@@ -155,9 +150,9 @@ Background** on the Usage page and it starts hidden when you log in.
 <sub>Screenshots taken on Zorin OS 18 with its ZorinBlue theme. Regenerate them with
 `docs/screenshots/capture.sh`.</sub>
 
-## Install (Ubuntu, Debian and derivatives, recommended)
+## Install (Ubuntu, Debian and derivatives)
 
-This is the full version, with nothing to connect by hand. For Ubuntu 24.04+, Debian 13+, Linux Mint 22,
+For Ubuntu 24.04+, Debian 13+, Linux Mint 22,
 Zorin OS 18 and other derivatives on 64-bit Intel/AMD:
 
 ```bash
@@ -171,34 +166,9 @@ Then open **Battery Health Center** from your applications. Updates arrive with 
 signing key's fingerprint is `F090 D01D 74F7 14C8 5A95 23CA 4773 367E BD97 6CF5`, and the repository
 (with troubleshooting tips) lives at [arios4k/apt](https://github.com/arios4k/apt).
 
-## Install from the Snap Store (limited)
-
-```bash
-sudo snap install battery-health-center
-sudo snap connect battery-health-center:hardware-observe
-sudo snap connect battery-health-center:system-observe
-sudo snap connect battery-health-center:power-control
-```
-
-The snap is strictly confined. A bundled root service applies charge limits through the `power-control`
-interface. Power mode and GNOME's power settings are hidden because the sandbox blocks them; everything
-else works, including calibration, the schedule and the report.
-
-### apt or snap?
-
-| | apt / `.deb` (recommended) | Snap Store |
-| --- | --- | --- |
-| Permissions | Nothing to set up | Needs three `snap connect` commands after installing |
-| Power page (power modes, automatic mode, power-saving settings, lid and power button) | Everything | Only Show Battery Percentage |
-| Real app icons and per-app energy use | Yes | No icons; the sandbox limits it |
-| Battery-saving tips | Yes | No |
-| Charge limit, profiles and schedule | Normal password prompt | Works, through a bundled service |
-| Updates | With the rest of your system | Automatic, but a running app can delay them |
-| Sandboxed | No | Yes |
-
-Don't install both on one laptop: they would both manage your charge limit. If you switch from the snap,
-copy `~/snap/battery-health-center/current/.local/share/battery-health-center/*.csv` to
-`~/.local/share/battery-health-center/` first, because removing the snap deletes its history.
+If you installed an older version as a snap, remove it first with `sudo snap remove battery-health-center`.
+That deletes its history, so copy `~/snap/battery-health-center/current/.local/share/battery-health-center/*.csv`
+to `~/.local/share/battery-health-center/` before you do.
 
 ## Build from source
 
