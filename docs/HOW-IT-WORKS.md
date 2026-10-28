@@ -27,3 +27,4 @@ The details behind the app, for the curious and for contributors. Back to the [R
 - **Power mode** uses the power-profiles-daemon D-Bus API, the same one GNOME's quick settings use.
 - **History** is saved to `~/.local/share/battery-health-center/history.csv` once a minute while the app
   runs. Turn on **Record History in the Background** to start it hidden at login.
+- **Upgrades and the hidden copy.** The background copy started at login would keep running the old version after an upgrade replaces the program file. It notices this (Linux marks the replaced file as deleted), and once no window is open it starts the new version and exits. It checks once a minute, so the new version is running within about a minute of the upgrade.
