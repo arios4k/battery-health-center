@@ -7,6 +7,7 @@
 **Everything about your laptop battery, in one place.**
 Health, cycle count, charge limits and schedules, and which apps drain it, for GNOME.
 
+[![Latest release](https://img.shields.io/github/v/release/arios4k/battery-health-center?label=release&color=26a269)](https://github.com/arios4k/battery-health-center/releases/latest)
 [![CI](https://github.com/arios4k/battery-health-center/actions/workflows/ci.yml/badge.svg)](https://github.com/arios4k/battery-health-center/actions/workflows/ci.yml)
 [![Install with apt](https://img.shields.io/badge/install-apt-orange)](#install-ubuntu-debian-and-derivatives)
 [![License: GPL-3.0-or-later](https://img.shields.io/badge/license-GPL--3.0--or--later-blue)](LICENSE)
