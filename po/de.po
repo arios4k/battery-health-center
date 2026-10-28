@@ -252,7 +252,7 @@ msgid_plural "{n} hours"
 msgstr[0] "{n} Stunde"
 msgstr[1] "{n} Stunden"
 
-#: src/main.rs:152
+#: src/main.rs:186
 msgid "Battery health, charge limits and energy usage in one place."
 msgstr "Akkuzustand, Ladelimits und Energieverbrauch an einem Ort."
 
