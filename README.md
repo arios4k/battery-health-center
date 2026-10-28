@@ -1,107 +1,177 @@
+<div align="center">
+
+<img src="docs/icon.svg" width="128" alt="Battery Health Center icon: a battery with a green charge level">
+
 # Battery Health Center
 
-All your laptop battery information in one place, for GNOME. Written in Rust with GTK 4 and libadwaita.
+**Everything about your laptop battery, in one place.**
+Health, cycle count, charge limits and schedules, and which apps drain it, for GNOME.
 
-- **Overview**: charge level, time remaining, power draw, charger type and wattage, battery use since
-  the last charge, wireless device batteries (mouse, keyboard, headphones), a health summary and
-  recommendations (for example, a weak charger, high drain during sleep, or an app draining the battery).
-- **Health**: maximum capacity compared with design capacity, condition, cycle count, voltage,
-  manufacturer, model, chemistry, capacity over time with a projected 80% date, and guided calibration.
-  Laptops with two batteries are supported.
-- **Charging**: pick a charge profile (Maximum Lifespan 60%, Balanced 80% or Full Capacity 100%) or set a
-  maximum charge (and where charging resumes), keep it after a restart or sleep,
-  charge to 100% once ("Charge to 100% Now"), and pause charging or run on battery while plugged in.
-  A **charging schedule** charges to 100% just before the time you pick (for example, weekdays at 07:30)
-  and keeps your limit the rest of the time; **optimized charging** learns those times from when you
-  usually unplug.
-- **Power**: the power mode (Power Saver, Balanced, Performance); **automatic power mode**, which
-  switches it when you plug in or unplug the charger or when the charge gets low; GNOME's power-saving
-  settings (dim screen, screen blank, automatic suspend and brightness, power saver on low battery);
-  the power button and lid actions; and the battery percentage in the top bar. Only what your
-  hardware supports is shown. ([Screenshot of the regular version](screenshots/regular/power-dark.png))
-- **Usage**: battery level and power draw (24 hours / 7 days), battery use during sleep, and the apps
-  using the most energy now, since opening, or over 24 hours / 7 days. Click an app to see its energy
-  impact and estimated energy hour by hour over the last day or week.
-- **Languages**: English, Spanish and German (see [Translations](#translations)).
-- **Saving tips**: while on battery, the Overview suggests turning down a bright screen, switching off the
-  keyboard backlight, or turning off Bluetooth when nothing is connected, with a button for each.
-- **Notifications** (Preferences): charge limit reached, fully charged without a limit, low battery,
-  apps draining the battery, and high drain during sleep.
-- **Battery report**: export an HTML report from the menu, or run
-  `battery-health-center --export-report report.html`.
-- **CSV export**: **Export Data as CSV** in the menu (or `battery-health-center --export-csv <folder>`)
-  writes the battery level and power history, capacity over time, sleep sessions and each app's energy
-  use per hour as four CSV files for a spreadsheet.
+[![Snap Store](https://img.shields.io/snapcraft/v/battery-health-center/latest/stable?label=snap&color=26a269)](https://snapcraft.io/battery-health-center)
+[![Install with apt](https://img.shields.io/badge/install-apt-orange)](#install-ubuntu-debian-and-derivatives-recommended)
+[![License: GPL-3.0-or-later](https://img.shields.io/badge/license-GPL--3.0--or--later-blue)](LICENSE)
+[![Languages](https://img.shields.io/badge/languages-EN%20%C2%B7%20ES%20%C2%B7%20DE-lightgrey)](#translations)
+[![Made with Rust and GTK4](https://img.shields.io/badge/made%20with-Rust%20%2B%20GTK4-informational)](#build-from-source)
 
-> **Recommended: install with apt.** It gives you the full app (real app icons, the whole Power page, nothing to connect by hand) and updates with your system. Jump to [Install with apt](#install-with-apt-recommended). The snap is a limited, sandboxed edition that needs manual permissions.
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/overview-dark.png">
+  <img src="docs/screenshots/overview-light.png" alt="Battery Health Center's Overview page: a charge ring at 77% with the time remaining, the battery health summary and what has happened since the last charge">
+</picture>
 
-## Install with apt (recommended)
+</div>
 
-**We recommend this way.** It is the best way to install Battery Health Center on Ubuntu, Debian, Zorin OS and Linux Mint (tested on Ubuntu 24.04, Zorin OS 18 and Linux Mint 22): four short commands, once, and then `apt` keeps it up to date. The snap is sandboxed, so it needs manual permissions and can't offer some features (see the [comparison](#apt-or-snap) below).
+## One app instead of a pile of scripts
 
-The `.deb` is the full, unsandboxed version: real app icons, per-app energy use, the complete Power
-page, and charge limits through the normal PolicyKit password prompt. It needs libadwaita 1.5 or newer
-(Ubuntu 24.04+, Zorin OS 18, Linux Mint 22, Debian 13).
+Linux gives you the battery numbers, but scattered: a terminal full of `upower` and `/sys` files, a
+shell extension for the charge limit, `powertop` for guesses about apps. Battery Health Center puts them
+in one native GNOME app, much like the Battery settings on macOS:
 
-### From the apt repository (easiest)
+| Instead of… | Battery Health Center gives you |
+|---|---|
+| reading `/sys/class/power_supply` and `upower -i` by hand | **Health**: maximum capacity against design capacity, cycle count, condition, and a trend with a projected 80% date |
+| a script or extension to set the charge limit | **Charging**: one-tap profiles, a custom limit, a charging schedule and optimized charging |
+| guessing which app drains the battery | **Usage**: apps ranked by energy, with estimated watts and an hour-by-hour view for each |
+| digging through Settings, Tweaks and extensions for power options | **Power**: power mode, automatic power mode and GNOME's power-saving settings on one page |
+| a spreadsheet of readings | **Reports**: an HTML battery report and CSV exports of your history |
 
-The package is published in a signed apt repository (amd64), so `apt` installs it and keeps it up to date:
+## Features
+
+### 🔋 Know how healthy your battery really is
+
+Maximum capacity compared with when the battery was new, its condition (Normal, Worn or Service
+Recommended), cycle count, voltage, manufacturer, model and chemistry. Capacity is logged once a day, so
+after about two weeks you get a trend and the date it is projected to reach 80%. If the percentage jumps
+or the laptop shuts down early, a guided calibration (charge, run nearly empty, charge again) fixes the
+reading. Laptops with two batteries are supported.
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/health-dark.png">
+  <img src="docs/screenshots/health-light.png" alt="The Health page: maximum capacity 85%, condition, full charge and design capacity, and capacity over time">
+</picture>
+
+### 🛡️ Make the battery last for years
+
+Lithium batteries wear faster when they sit at 100%. Pick a profile, **Maximum Lifespan (60%)**,
+**Balanced (80%)** or **Full Capacity (100%)**, or set exactly where charging stops and resumes. The limit
+is kept after restarts and sleep. Need a full battery for a trip? **Charge to 100% Now** charges fully
+once, then your limit comes back by itself.
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/charging-dark.png">
+  <img src="docs/screenshots/charging-light.png" alt="The Charging page with the profile dropdown set to Balanced (80%), the stop and resume points, and the Keep After Restart switch">
+</picture>
+
+### 🗓️ Full when you need it, protected the rest of the time
+
+Tell it when you need the laptop, for example **weekdays at 07:30**, and the limit is lifted shortly
+before so the battery is full on time, then put back. Or turn on **optimized charging** and it learns
+your routine from when you usually unplug. You enter your password once, when you save the schedule; a
+small service does the rest.
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/schedule-dark.png">
+  <img src="docs/screenshots/schedule-light.png" alt="The Charging Schedule section with optimized charging on, what it has learned so far, and two full-by times">
+</picture>
+
+### 📊 See what is draining it
+
+Battery level and power draw for the last day or week, battery use while the laptop slept (with a warning
+when it is unusually high), and the apps using the most energy right now, since you opened the app, or
+over 24 hours and 7 days. Click an app to see its energy impact and estimated use hour by hour. Linux
+doesn't measure power per app, so the numbers are estimates from CPU time and the measured draw above idle.
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/usage-dark.png">
+  <img src="docs/screenshots/usage-light.png" alt="The Usage page: battery level history with the charge limit, and battery use during sleep">
+</picture>
+
+<div align="center">
+<img src="docs/screenshots/app-trend-dark.png" width="360" alt="One app's energy use hour by hour, opened by clicking it on the Usage page">
+</div>
+
+### ⚡ Power modes without the hunt
+
+Power Saver, Balanced or Performance, with an **automatic power mode** that switches when you plug in or
+unplug the charger, plus GNOME's power-saving settings (dim screen, screen blank, automatic suspend,
+power button and lid) and the battery percentage in the top bar. Only what your hardware supports is
+shown.
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/power-dark.png">
+  <img src="docs/screenshots/power-light.png" alt="The Power page: current power mode, automatic power mode, and GNOME's power-saving settings">
+</picture>
+
+### 💡 Small nudges, not nagging
+
+While you are on battery, the Overview can suggest turning down a very bright screen, switching off the
+keyboard backlight, or turning off Bluetooth when nothing is connected, each with a button. Notifications
+tell you when the charge limit is reached, when you are fully charged without a limit, when the battery is
+low, when an app is draining it, and when the laptop used a lot of battery asleep. You can turn them
+off in Preferences (the calibration steps excepted).
+
+### 📤 Take your data with you
+
+Export an HTML battery report (for a warranty claim, or when you sell the laptop) from the menu, or run
+`battery-health-center --export-report report.html`. **Export Data as CSV** (or
+`battery-health-center --export-csv <folder>`) writes the battery history, capacity over time, sleep
+sessions and each app's energy use per hour as CSV files for a spreadsheet.
+
+## Why Battery Health Center
+
+- **Native and light.** Rust with GTK 4 and libadwaita: a 1.2 MB program (a 0.5 MB package), light and
+  dark mode, and it follows your GNOME theme.
+- **Private by design.** Everything stays on your computer: the app never connects to the internet and
+  has no telemetry. The history is a few CSV files in your home folder.
+- **Careful with root.** Only a small helper runs as root. It accepts nothing but validated values and
+  writes only the battery's charge-limit files and its own config.
+- **Speaks your language.** English, Spanish and German, following your system language.
+- **Updates with your system.** Install it from a signed apt repository, or from the Snap Store.
+
+## FAQ
+
+**Will the charge limit work on my laptop?**
+Battery information works on any laptop with a standard Linux battery driver. Charge limits need firmware
+support that the kernel exposes as `charge_control_end_threshold` (or `charge_stop_threshold`), as on
+ThinkPads and many ASUS, Dell, Huawei, LG, Samsung and System76 laptops. If yours doesn't have it, the
+Charging page says so and everything else still works.
+
+**Which desktops and distributions?**
+It is developed and tested on GNOME: Ubuntu 24.04, Zorin OS 18 and Linux Mint 22. The package needs
+GTK 4.14 and libadwaita 1.5 or newer, so Ubuntu 22.04, Debian 12 and Mint 21 are too old. The Power page
+uses GNOME's own settings, so it is the part most tied to GNOME.
+
+**Apt or snap?**
+Apt. The snap is sandboxed, so it needs three `snap connect` commands, can't change the power mode or
+GNOME's power settings, and shows generic app icons. See the [comparison](#apt-or-snap).
+
+**Is it safe to change the charge limit?**
+It sets the same firmware thresholds that other tools and BIOS options use, and **Full Capacity (100%)**
+removes the limit again. Changing it asks for your password.
+
+**Do I have to keep the app open?**
+History, sleep drain and notifications are recorded while the app runs. Turn on **Record History in the
+Background** on the Usage page and it starts hidden when you log in.
+
+<sub>Screenshots taken on Zorin OS 18 with its ZorinBlue theme. Regenerate them with
+`docs/screenshots/capture.sh`.</sub>
+
+## Install (Ubuntu, Debian and derivatives, recommended)
+
+This is the full version, with nothing to connect by hand. For Ubuntu 24.04+, Debian 13+, Linux Mint 22,
+Zorin OS 18 and other derivatives on 64-bit Intel/AMD:
 
 ```bash
 sudo install -d -m 0755 /etc/apt/keyrings
-```
-
-```bash
 curl -fsSL https://arios4k.github.io/apt/key.asc | sudo tee /etc/apt/keyrings/battery-health-center.asc > /dev/null
-```
-
-```bash
 echo "deb [signed-by=/etc/apt/keyrings/battery-health-center.asc] https://arios4k.github.io/apt stable main" | sudo tee /etc/apt/sources.list.d/battery-health-center.list
-```
-
-```bash
 sudo apt update && sudo apt install battery-health-center
 ```
 
-The signing key's fingerprint is `F090 D01D 74F7 14C8 5A95 23CA 4773 367E BD97 6CF5`. The repository is
-served from [arios4k/apt](https://github.com/arios4k/apt) through GitHub Pages.
-
-### Build it yourself
-
-Build it from a checkout (needs [`cargo-deb`](https://crates.io/crates/cargo-deb), installed with
-`cargo install cargo-deb`, and `gettext` to compile the translations):
-
-```bash
-scripts/build-locale.sh && cargo deb
-```
-
-Install it, which also pulls in the dependencies:
-
-```bash
-sudo apt install ./target/debian/battery-health-center_*_amd64.deb
-```
-
-The package installs the app, the root helper in `/usr/libexec/battery-health-center/`, the PolicyKit
-rule and a systemd service that re-applies a saved charge limit at boot and after sleep. Don't install
-it together with the snap, since both would manage the same charge limit. If you switch from the snap,
-back up its history first, because removing the snap deletes it: copy
-`~/snap/battery-health-center/current/.local/share/battery-health-center/*.csv` to
-`~/.local/share/battery-health-center/`.
-
-### apt or snap?
-
-| | apt / `.deb` (recommended) | Snap Store |
-| --- | --- | --- |
-| Permissions | Nothing to set up | Needs three `snap connect` commands after installing |
-| Power page (power modes, automatic mode, power-saving settings, lid and power button) | Everything | Only Show Battery Percentage |
-| Real app icons and per-app energy use | Yes | No icons; the sandbox limits it |
-| Charge limit | Normal password prompt | Works, through a bundled service |
-| Updates | With the rest of your system | Automatic, but a running app can delay them |
-| Sandboxed | No | Yes |
+Then open **Battery Health Center** from your applications. Updates arrive with `sudo apt upgrade`. The
+signing key's fingerprint is `F090 D01D 74F7 14C8 5A95 23CA 4773 367E BD97 6CF5`, and the repository
+(with troubleshooting tips) lives at [arios4k/apt](https://github.com/arios4k/apt).
 
 ## Install from the Snap Store (limited)
-
-**We recommend [apt](#install-with-apt-recommended) instead** if your system supports it. The snap is sandboxed, so you have to connect its permissions by hand and some features are unavailable. Choose it if you want the sandbox or your system can't use the apt package.
 
 ```bash
 sudo snap install battery-health-center
@@ -110,17 +180,53 @@ sudo snap connect battery-health-center:system-observe
 sudo snap connect battery-health-center:power-control
 ```
 
-The snap is strictly confined. A bundled root service (`bhc-helper serve`) applies charge limits
-through the `power-control` interface, which only allows the `charge_start_threshold` /
-`charge_stop_threshold` files. Charging Behavior and Power Mode are hidden in the snap because no
-interface allows them. Calibration and Charge to 100% Now work in the snap. On the Power page, only
-**Show Battery Percentage** works in the snap: the sandbox blocks the power mode service and can't see
-GNOME's power settings, so the page says so and the rest is available in the regular (non-snap) version. To build it locally, run
-`snapcraft pack`.
+The snap is strictly confined. A bundled root service applies charge limits through the `power-control`
+interface. Power mode and GNOME's power settings are hidden because the sandbox blocks them; everything
+else works, including calibration, the schedule and the report.
 
-Store screenshots are in `screenshots/`. To retake them, run the app with
-`BHC_SCREENSHOTS=<folder>` (and optionally `BHC_SCREENSHOTS_STYLE=light` or `dark`). It saves one
-image per page and quits.
+### apt or snap?
+
+| | apt / `.deb` (recommended) | Snap Store |
+| --- | --- | --- |
+| Permissions | Nothing to set up | Needs three `snap connect` commands after installing |
+| Power page (power modes, automatic mode, power-saving settings, lid and power button) | Everything | Only Show Battery Percentage |
+| Real app icons and per-app energy use | Yes | No icons; the sandbox limits it |
+| Battery-saving tips | Yes | No |
+| Charge limit, profiles and schedule | Normal password prompt | Works, through a bundled service |
+| Updates | With the rest of your system | Automatic, but a running app can delay them |
+| Sandboxed | No | Yes |
+
+Don't install both on one laptop: they would both manage your charge limit. If you switch from the snap,
+copy `~/snap/battery-health-center/current/.local/share/battery-health-center/*.csv` to
+`~/.local/share/battery-health-center/` first, because removing the snap deletes its history.
+
+## Build from source
+
+Requirements: Rust, GTK ≥ 4.14, libadwaita ≥ 1.5, and `gettext` for the translations.
+
+```bash
+sudo apt install libgtk-4-dev libadwaita-1-dev pkg-config gettext   # Debian/Ubuntu
+cargo run --release
+```
+
+Changing the charge limit uses `pkexec` to run `bhc-helper` from the build folder, so it asks for your
+password every time until the app is installed. To install it system-wide, run `./install.sh` (remove it
+with `./install.sh --uninstall`), or build a package with `scripts/build-locale.sh && cargo deb`.
+
+Handy while developing:
+
+```bash
+# try a translation
+scripts/build-locale.sh && LANGUAGE=es BHC_LOCALEDIR=$PWD/locale cargo run --release
+
+# try the Charging Schedule screens without touching your real settings: point the app at a folder with
+# a stand-in battery-health-center.conf (a line like "BAT0 75 80"), and optionally a
+# battery-health-center.schedule and an unplug-log
+BHC_HELPER_FILES=/path/to/folder cargo run --release
+
+# save a screenshot of every page
+BHC_SCREENSHOTS=/path/to/folder cargo run --release
+```
 
 ## Translations
 
@@ -151,123 +257,29 @@ msgmerge --update --backup=none po/es.po po/battery-health-center.pot   # and th
 Strings in the code go through `tr("…")`, `trf("… {name}", &[("name", value)])` for text with values
 in it, and `trn`/`trnf` for plurals; see `src/i18n.rs`.
 
-## Publishing new versions (maintainers)
+## More documentation
 
-### apt repository and `.deb`
+- [How it works](docs/HOW-IT-WORKS.md): where the numbers come from, how the charge limit, the schedule
+  and the app energy estimates work.
+- [Maintaining and packaging](docs/MAINTAINING.md): publishing a release, and notes for distributions that
+  want to include the app. You are welcome to, and I would be honored.
+- [The apt repository](https://github.com/arios4k/apt): install steps, troubleshooting and how it is built.
 
-Bump the version in `Cargo.toml`, add an entry to `data/deb/changelog`, then run
-`scripts/publish-apt.sh`. It builds the package, adds it to the repository, signs the index and pushes
-the site. `DRY_RUN=1 scripts/publish-apt.sh` shows the steps without doing anything. It needs
-`reprepro`, the signing key in your GPG keyring, and the repository's private files in `~/apt-repo`
-(configuration and database, never published) next to a clone of `arios4k/apt` in `~/apt-site`.
-
-### Snap Store
-
-Bump the version in `Cargo.toml` and `snap/snapcraft.yaml` (they must match), then run
-`scripts/publish-snap.sh`. It checks the versions and the store's 4096-character description limit,
-builds the snap with `snapcraft pack`, releases it to the stable channel, checks the listing kept its
-banner, and compares the store's description with `snap/snapcraft.yaml`. A new version does not change
-the listing's description or images, so when they differ the script writes `store-description.txt`
-for you to paste into the Description box on the store's listing page. `DRY_RUN=1 scripts/publish-snap.sh` shows the steps without doing anything. Don't use
-`snapcraft upload-metadata`: it rewrites the listing's images. If the build fails with "Timed out
-waiting for networking", a firewall is blocking LXD's bridge; the script prints the `ufw` commands.
-
-## For distribution maintainers and bundlers
-
-If you build or maintain a Linux distribution, a derivative or a package repository, you are welcome to
-include Battery Health Center in it. I would be honored. It is free software under the
-GPL-3.0-or-later, so you don't need to ask for permission, and you can package it as it is.
-
-- **What to package:** the app, the root helper `bhc-helper` (installed in a libexec folder), the
-  PolicyKit policy and the restore service in [`data/`](data/), the desktop file and icons, and the
-  translations (`scripts/build-locale.sh <dir>` compiles `po/*.po` into `<dir>/<lang>/LC_MESSAGES/`;
-  the app finds them in `share/locale` next to its `bin` folder, or in `$BHC_LOCALEDIR`). The
-  [`.deb` packaging](data/deb/) (built with `cargo deb`) and [`install.sh`](install.sh) show where each
-  file goes and which maintainer scripts are needed.
-- **Needs:** GTK 4.14 or newer, libadwaita 1.5 or newer, UPower and PolicyKit (`pkexec`). systemd
-  re-applies a saved charge limit at boot. Power modes need `power-profiles-daemon` (recommended), and
-  the Power page uses GNOME's settings schemas.
-- **Hardware support:** the charge limit works on laptops whose kernel exposes
-  `charge_control_*_threshold` (or `charge_start/stop_threshold`) in sysfs.
-
-If you need a change to make it fit your distribution (paths, branding, dependencies), open an
-[issue](https://github.com/arios4k/battery-health-center/issues) or a pull request and I will gladly
-help. A short note when it is included is always welcome, and I'm happy to link to your package.
-
-## Requirements
-
-GTK ≥ 4.14, libadwaita ≥ 1.5, and Rust, plus `gettext` to build the translations. On Ubuntu, Zorin OS or Debian:
+## Contributing
 
 ```bash
-sudo apt install libgtk-4-dev libadwaita-1-dev pkg-config gettext
+cargo test
+cargo clippy
 ```
 
-## Run from the source tree
+Bug reports, translations and testing on other laptops and distributions are especially welcome: please
+[open an issue](https://github.com/arios4k/battery-health-center/issues) with your laptop model and
+distribution.
 
-```bash
-cargo run --release
-```
+## Author
 
-To try a translation, compile it first and point the app at it:
+Created by **Alexis Rios-Negron**.
 
-```bash
-scripts/build-locale.sh && LANGUAGE=es BHC_LOCALEDIR=$PWD/locale cargo run --release
-```
+## License
 
-To try the Charging Schedule screens without touching your real settings, point the app at a folder
-that holds a stand-in `battery-health-center.conf` (a line like `BAT0 75 80`), and optionally a
-`battery-health-center.schedule` and an `unplug-log`:
-
-```bash
-BHC_HELPER_FILES=/path/to/folder cargo run --release
-```
-
-Changing the charge limit uses `pkexec` to run `bhc-helper` from the build folder, so it asks for your
-password every time until the app is installed.
-
-## Install
-
-```bash
-./install.sh
-```
-
-This installs:
-
-| File | Path |
-| --- | --- |
-| App | `/usr/local/bin/battery-health-center` |
-| Privileged helper | `/usr/local/libexec/battery-health-center/bhc-helper` |
-| Polkit policy | `/usr/share/polkit-1/actions/io.github.BatteryHealthCenter.policy` |
-| Restore service | `/etc/systemd/system/battery-health-center-restore.service` |
-| Schedule service | `/etc/systemd/system/battery-health-center-scheduler.service` and `.path` |
-| Launcher and icon | `/usr/local/share/applications`, `/usr/local/share/icons` |
-
-To remove it, run `./install.sh --uninstall`.
-
-## How it works
-
-- **Battery data** is read directly from `/sys/class/power_supply/BAT*`. Both energy-based (µWh) and
-  charge-based (µAh) drivers are supported.
-- **Charge limits** are written to `charge_control_start_threshold` and `charge_control_end_threshold`
-  by `bhc-helper`, the only part that runs as root. It uses only the Rust standard library (plus libc for
-  the local time), accepts only validated arguments, and writes only those sysfs files, its own config
-  files in `/etc` (the saved limit and the charging schedule) and, for optimized charging, a list of
-  unplug times in `/var/lib/battery-health-center`. If you
-  turn on **Keep After Restart**, the systemd service re-applies the limit at boot and after resume.
-  Supported by ThinkPads, many ASUS, Dell, Huawei, LG, Samsung and System76 laptops, and others with
-  a kernel driver for the thresholds.
-- **The charging schedule** needs a saved charge limit, because it lifts that limit to 100% from the
-  lead time (2 hours by default) before each time you set, until 30 minutes after it, and then puts it
-  back. A root systemd service (`battery-health-center-scheduler`, started by a `.path` unit only while
-  a schedule exists; in the snap, the helper service) does this without asking for a password each
-  time. **Optimized charging** also records when you unplug after the laptop has been plugged in for
-  at least 3 hours. Once it has seen at least 3 such unplugs in the last 28 days on weekdays (or on
-  weekends) that fall within an hour and a half of each other, it uses the earlier end of that range as
-  a ready-by time. Nothing leaves your computer.
-- **App energy usage** is an estimate, because Linux doesn't measure power per app. CPU time is sampled
-  from `/proc`. Processes are grouped into apps using the systemd scope GNOME launches each app in,
-  falling back to the parent process for apps that move their processes elsewhere (such as Chromium-based
-  browsers). On battery, the measured power above the idle level is shared between apps by CPU use.
-- **Power mode** uses the power-profiles-daemon D-Bus API, the same one GNOME's quick settings use.
-- **History** is saved to `~/.local/share/battery-health-center/history.csv` once a minute while the app
-  runs. Turn on **Record History in the Background** to start it hidden at login.
+GPL-3.0-or-later © Alexis Rios-Negron. See [LICENSE](LICENSE).
