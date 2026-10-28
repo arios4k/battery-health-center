@@ -1,3 +1,13 @@
+battery-health-center (0.4.3-1) unstable; urgency=low
+
+  * Restart the hidden background copy after an upgrade. The copy that "Record
+    History in the Background" starts at login kept running the old version
+    (and made the app open as the old version) until the next login. Once the
+    program file has been replaced and no window is open, it now starts the new
+    version and exits.
+
+ -- Alexis Rios-Negron <182820807+arios4k@users.noreply.github.com>  Wed, 28 Oct 2026 02:10:23 -0700
+
 battery-health-center (0.4.2-1) unstable; urgency=low
 
   * Remove the code that only existed for the snap package, which is no longer
