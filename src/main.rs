@@ -23,6 +23,39 @@ use crate::i18n::tr;
 
 pub const APP_ID: &str = "io.github.BatteryHealthCenter";
 
+/// An upgrade replaces the program file under the hidden background copy, which
+/// would keep running the old version (and make the app open as the old version)
+/// until the next login. Once the file has been replaced and no window is open,
+/// start the new version and step aside.
+fn restart_after_upgrade(app: &adw::Application) {
+    let weak = app.downgrade();
+    glib::timeout_add_seconds_local(60, move || {
+        let Some(app) = weak.upgrade() else { return glib::ControlFlow::Break };
+        if !app.windows().is_empty() {
+            return glib::ControlFlow::Continue;
+        }
+        // Linux marks the link of a replaced program file with " (deleted)".
+        let Ok(exe) = std::fs::read_link("/proc/self/exe") else { return glib::ControlFlow::Continue };
+        let exe = exe.to_string_lossy().into_owned();
+        let Some(path) = exe.strip_suffix(" (deleted)") else { return glib::ControlFlow::Continue };
+        if !std::path::Path::new(path).is_file() {
+            return glib::ControlFlow::Continue; // the new file isn't in place yet
+        }
+        // The new copy can only start after this one has given up the application ID.
+        let started = std::process::Command::new("sh")
+            .args(["-c", "sleep 3; exec \"$0\" --background", path])
+            .stdin(std::process::Stdio::null())
+            .stdout(std::process::Stdio::null())
+            .stderr(std::process::Stdio::null())
+            .spawn();
+        if started.is_ok() {
+            app.quit();
+            return glib::ControlFlow::Break;
+        }
+        glib::ControlFlow::Continue
+    });
+}
+
 fn main() -> glib::ExitCode {
     i18n::init();
     // `--background` (used by the login autostart entry) keeps the app running
@@ -110,6 +143,7 @@ fn main() -> glib::ExitCode {
         *c.borrow_mut() = Some(ctrl);
         if background {
             *hold.borrow_mut() = Some(app.hold());
+            restart_after_upgrade(app);
         }
     });
 
