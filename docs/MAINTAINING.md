@@ -39,7 +39,7 @@ up to date).
 2. Tag and push: `git tag v0.4.2 && git push origin v0.4.2`.
 
 The workflow stops with an error if the tag doesn't match `Cargo.toml` or the changelog has no entry for it.
-Running the workflow by hand from the Actions tab only builds the `.deb` and attaches it to the run.
+Running the workflow by hand from the Actions tab builds the `.deb`, attaches it to the run, and (once the secrets below exist) signs a copy of the apt repository to check them. It publishes nothing and pushes nothing.
 
 The apt step needs three repository secrets (*Settings → Secrets and variables → Actions*), and is skipped
 with a notice until they exist. The GitHub Release is published either way. Run these once on your laptop; each

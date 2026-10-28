@@ -10,8 +10,9 @@ name: Release
 #   APT_SIGNING_PASSPHRASE  its passphrase (leave out if the key has none)
 #   APT_REPO_TOKEN          a token that can push to arios4k/apt
 #
-# Running the workflow by hand only builds the .deb and attaches it to the run; it
-# publishes nothing.
+# Running the workflow by hand builds the .deb and attaches it to the run, and (when the
+# secrets exist) checks them by signing a copy of the apt repository without pushing.
+# It publishes nothing.
 on:
   push:
     tags: ["v*"]
@@ -62,7 +63,7 @@ jobs:
 
   apt:
     needs: build
-    if: github.ref_type == 'tag'
+    if: github.ref_type == 'tag' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-24.04
     steps:
       - name: Check that the apt secrets exist
@@ -101,9 +102,14 @@ jobs:
         run: |
           sudo apt-get update && sudo apt-get install -y reprepro
           packaging/apt/publish.sh debs/*.deb site
+          if [ "$GITHUB_REF_TYPE" != tag ]; then
+            echo "Dry run: the repository was signed and verified here, and nothing was pushed."
+            gpg --verify site/dists/stable/InRelease
+            ls -l site/dists/stable site/pool/main/b/battery-health-center
+          fi
 
       - name: Push to arios4k/apt
-        if: steps.secrets.outputs.present == 'true'
+        if: steps.secrets.outputs.present == 'true' && github.ref_type == 'tag'
         run: |
           cd site
           git config user.name "github-actions[bot]"
