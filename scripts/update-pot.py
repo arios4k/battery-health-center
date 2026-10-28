@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Rebuilds po/battery-health-center.pot from the strings passed to tr(), trf(),
-trn(), trnf(), trc() and tr_noop() in src/. (xgettext can't read Rust, so this does it.)
+trn(), trnf() and trc() in src/. (xgettext can't read Rust, so this does it.)
 
 Afterwards, update each translation with:
     msgmerge --update --backup=none po/<lang>.po po/battery-health-center.pot
@@ -10,7 +10,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-CALLS = {"tr": 1, "trf": 1, "tr_noop": 1, "trn": 2, "trnf": 2, "trc": 1}
+CALLS = {"tr": 1, "trf": 1, "trn": 2, "trnf": 2, "trc": 1}
 ESCAPES = {"n": "\n", "t": "\t", "r": "\r", "\\": "\\", '"': '"', "'": "'", "0": "\0"}
 
 
@@ -67,7 +67,7 @@ def extract():
         text = path.read_text(encoding="utf-8")
         cut = text.find("#[cfg(test)]")
         text = text if cut < 0 else text[:cut]
-        for m in re.finditer(r'(?<![\w.])(tr|trf|trn|trnf|tr_noop|trc)\(', text):
+        for m in re.finditer(r'(?<![\w.])(tr|trf|trn|trnf|trc)\(', text):
             first = literal_at(text, m.end())
             if not first:
                 continue

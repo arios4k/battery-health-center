@@ -375,8 +375,8 @@ mod tests {
         assert_eq!(app_id_candidates("app-gnome-google\\x2dchrome-999.scope"), vec!["google-chrome"]);
         assert_eq!(app_id_candidates("snap.firefox.firefox-abcd.scope")[0], "firefox_firefox-abcd");
         assert_eq!(
-            app_id_candidates("snap.battery-health-center.battery-health-center-0b6c1a2e-3f4d-4e5f-8a9b-0c1d2e3f4a5b.scope")[0],
-            "battery-health-center_battery-health-center"
+            app_id_candidates("snap.spotify.spotify-0b6c1a2e-3f4d-4e5f-8a9b-0c1d2e3f4a5b.scope")[0],
+            "spotify_spotify"
         );
         assert_eq!(
             app_id_candidates("snap.firefox.firefox-0b6c1a2e-3f4d-4e5f-8a9b-0c1d2e3f4a5b.scope")[0],

@@ -92,14 +92,8 @@
           <li>Automatic power mode: switches the power mode when you plug in or unplug, or when the charge gets low</li>
           <li>GNOME's power-saving settings in one place: dim screen, screen blank, automatic suspend and brightness</li>
           <li>Power button and lid actions, and the battery percentage in the top bar</li>
-          <li>Only the top bar setting works in the snap; the rest needs the regular version</li>
         </ul>
         <p>Fixed: Overview showed a wrong unplug time when the app wasn't running as the charger came out.</p>
-      </description>
-    </release>
-    <release version="0.2.1" date="2026-10-26">
-      <description>
-        <p>When "Record History in the Background" is on, the background copy now steps aside when an update is waiting, so updates install within minutes instead of being held back for up to two weeks.</p>
       </description>
     </release>
     <release version="0.2.0" date="2026-10-25">
@@ -113,16 +107,6 @@
           <li>Wireless device batteries, app energy use over 24 hours or 7 days</li>
           <li>Guided calibration, battery report export, and two-battery laptops</li>
         </ul>
-      </description>
-    </release>
-    <release version="0.1.3" date="2026-10-24">
-      <description>
-        <p>Fixes the snap closing straight away on launch without showing a window.</p>
-      </description>
-    </release>
-    <release version="0.1.2" date="2026-10-24">
-      <description>
-        <p>Fixes the snap closing straight away on launch without showing a window.</p>
       </description>
     </release>
     <release version="0.1.1" date="2026-10-24">

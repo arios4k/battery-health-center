@@ -72,10 +72,8 @@ fn main() -> glib::ExitCode {
     let args: Vec<String> = args.into_iter().filter(|a| a != "--background").collect();
 
     let mut flags = gio::ApplicationFlags::empty();
-    // Capture mode runs alongside an already-running copy. Inside the snap,
-    // AppArmor won't let the app own its ID on the session bus without a
-    // dbus slot, which needs a manual store review.
-    if std::env::var_os("BHC_SCREENSHOTS").is_some() || system::in_snap() {
+    // Capture mode runs alongside an already-running copy.
+    if std::env::var_os("BHC_SCREENSHOTS").is_some() {
         flags |= gio::ApplicationFlags::NON_UNIQUE;
     }
     let app = adw::Application::builder().application_id(APP_ID).flags(flags).build();
@@ -95,13 +93,6 @@ fn main() -> glib::ExitCode {
             // Lets the app icon show when running from the build tree.
             let icons = gtk::IconTheme::for_display(&display);
             icons.add_search_path(concat!(env!("CARGO_MANIFEST_DIR"), "/data/icons"));
-            // Inside a snap the desktop's icon theme may not exist, and GTK then
-            // only falls back to hicolor, which lacks symbolic icons.
-            if !icons.has_icon("battery-level-80-symbolic") {
-                if let Some(settings) = gtk::Settings::default() {
-                    settings.set_gtk_icon_theme_name(Some("Adwaita"));
-                }
-            }
         }
         let ctrl = controller::Controller::new();
         let weak_app = app.downgrade();
@@ -119,26 +110,6 @@ fn main() -> glib::ExitCode {
         *c.borrow_mut() = Some(ctrl);
         if background {
             *hold.borrow_mut() = Some(app.hold());
-        }
-        // A running app holds back snap updates (for up to about two weeks,
-        // after which snapd closes it anyway). When snapd is waiting and only
-        // the background copy is running, step aside so the update installs;
-        // background recording starts again at the next login.
-        if system::in_snap() {
-            let weak_app = app.downgrade();
-            glib::timeout_add_seconds_local(60, move || {
-                let Some(app) = weak_app.upgrade() else { return glib::ControlFlow::Break };
-                if system::refresh_pending() && app.windows().is_empty() {
-                    let n = gio::Notification::new(tr("Battery Health Center Is Updating"));
-                    n.set_body(Some(tr("It closed so the update can install. Background recording starts again the next time you log in or open the app.")));
-                    n.set_icon(&gio::ThemedIcon::new(APP_ID));
-                    app.send_notification(Some("updating"), &n);
-                    // Give the notification a moment to be delivered.
-                    glib::timeout_add_seconds_local_once(3, move || app.quit());
-                    return glib::ControlFlow::Break;
-                }
-                glib::ControlFlow::Continue
-            });
         }
     });
 

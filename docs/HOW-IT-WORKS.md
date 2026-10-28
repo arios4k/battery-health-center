@@ -15,7 +15,7 @@ The details behind the app, for the curious and for contributors. Back to the [R
 - **The charging schedule** needs a saved charge limit, because it lifts that limit to 100% from the
   lead time (2 hours by default) before each time you set, until 30 minutes after it, and then puts it
   back. A root systemd service (`battery-health-center-scheduler`, started by a `.path` unit only while
-  a schedule exists; in the snap, the helper service) does this without asking for a password each
+  a schedule exists) does this without asking for a password each
   time. **Optimized charging** also records when you unplug after the laptop has been plugged in for
   at least 3 hours. Once it has seen at least 3 such unplugs in the last 28 days on weekdays (or on
   weekends) that fall within an hour and a half of each other, it uses the earlier end of that range as
