@@ -1,6 +1,7 @@
 //! Renders each page to a PNG for store listings. Enabled by running the app
 //! with BHC_SCREENSHOTS=<folder> (and optionally BHC_SCREENSHOTS_STYLE=light or
-//! dark, and BHC_SCREENSHOTS_SIZE=<w>x<h>); it saves one image per page and quits.
+//! dark, BHC_SCREENSHOTS_SIZE=<w>x<h>, and BHC_SCREENSHOTS_SCROLL=<pixels> to scroll each
+//! page down first); it saves one image per page and quits.
 
 use std::path::PathBuf;
 use std::time::Duration;
@@ -44,6 +45,19 @@ fn capture_page(window: adw::ApplicationWindow, stack: adw::ViewStack, dir: Path
     stack.set_visible_child_name(name);
     if *name == "usage" {
         scroll_usage();
+    } else if let Some(pixels) = std::env::var("BHC_SCREENSHOTS_SCROLL").ok().and_then(|v| v.parse::<f64>().ok()) {
+        // Scroll once the page has been laid out, shortly before the capture.
+        let stack = stack.clone();
+        glib::timeout_add_local_once(Duration::from_millis(800), move || {
+            let scrolled = stack
+                .visible_child()
+                .and_then(|page| page.first_child())
+                .and_then(|sw| sw.downcast::<gtk::ScrolledWindow>().ok());
+            if let Some(sw) = scrolled {
+                let adj = sw.vadjustment();
+                adj.set_value(pixels.min(adj.upper() - adj.page_size()));
+            }
+        });
     }
     glib::timeout_add_local_once(Duration::from_millis(1200), move || {
         let path = dir.join(format!("{}-{name}.png", i + 1));
