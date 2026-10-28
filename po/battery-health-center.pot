@@ -225,7 +225,7 @@ msgid_plural "{n} hours"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/main.rs:152
+#: src/main.rs:186
 msgid "Battery health, charge limits and energy usage in one place."
 msgstr ""
 
