@@ -28,6 +28,7 @@ type AppRange = i64;
 pub struct UsagePage {
     pub root: adw::PreferencesPage,
     chart: gtk::DrawingArea,
+    background: adw::SwitchRow,
     chart_group: adw::PreferencesGroup,
     legend: gtk::Label,
     sleep_list: gtk::ListBox,
@@ -302,6 +303,7 @@ impl UsagePage {
         let page = Rc::new(UsagePage {
             root,
             chart,
+            background,
             chart_group,
             legend,
             sleep_list,
@@ -348,6 +350,11 @@ impl UsagePage {
             });
         }
         page
+    }
+
+    /// Shows whether recording in the background is on, after something else changed it.
+    pub fn sync_background(&self) {
+        self.background.set_active(system::autostart_enabled());
     }
 
     fn update_chart_labels(&self, kind: ChartKind) {

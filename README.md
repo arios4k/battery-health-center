@@ -146,8 +146,9 @@ It sets the same firmware thresholds that other tools and BIOS options use, and 
 removes the limit again. Changing it asks for your password.
 
 **Do I have to keep the app open?**
-History, sleep drain and notifications are recorded while the app runs. Turn on **Record History in the
-Background** on the Usage page and it starts hidden when you log in.
+History, sleep drain and notifications are recorded while the app runs. The first time you open it, it asks
+whether to **record history in the background**; say yes and it starts hidden when you log in. You can change
+your mind any time on the Usage page.
 
 <sub>Screenshots taken on Zorin OS 18 with its ZorinBlue theme. Regenerate them with
 `docs/screenshots/capture.sh`.</sub>
