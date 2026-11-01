@@ -39,7 +39,7 @@ msgstr ""
 msgid "Linux Kernel"
 msgstr ""
 
-#: src/battery.rs:110 src/system.rs:225 src/ui/charging.rs:14 src/ui/usage.rs:176
+#: src/battery.rs:110 src/system.rs:225 src/ui/charging.rs:14 src/ui/usage.rs:177
 msgid "Normal"
 msgstr ""
 
@@ -241,7 +241,7 @@ msgstr ""
 msgid "Performance"
 msgstr ""
 
-#: src/system.rs:223 src/ui/usage.rs:51
+#: src/system.rs:223 src/ui/usage.rs:52
 msgid "Low"
 msgstr ""
 
@@ -249,7 +249,7 @@ msgstr ""
 msgid "Critical"
 msgstr ""
 
-#: src/system.rs:226 src/ui/usage.rs:47 src/ui/usage.rs:176
+#: src/system.rs:226 src/ui/usage.rs:48 src/ui/usage.rs:177
 msgid "High"
 msgstr ""
 
@@ -282,12 +282,12 @@ msgstr ""
 msgid "No activity"
 msgstr ""
 
-#: src/ui/app_trend.rs:31 src/ui/usage.rs:152
+#: src/ui/app_trend.rs:31 src/ui/usage.rs:153
 #, no-c-format
 msgid "{0} of CPU time"
 msgstr ""
 
-#: src/ui/app_trend.rs:33 src/ui/usage.rs:157
+#: src/ui/app_trend.rs:33 src/ui/usage.rs:158
 #, no-c-format
 msgid "≈ {0} Wh on battery"
 msgstr ""
@@ -308,11 +308,11 @@ msgstr ""
 msgid "Energy Used"
 msgstr ""
 
-#: src/ui/app_trend.rs:72 src/ui/usage.rs:208 src/ui/usage.rs:281
+#: src/ui/app_trend.rs:72 src/ui/usage.rs:209 src/ui/usage.rs:282
 msgid "24 Hours"
 msgstr ""
 
-#: src/ui/app_trend.rs:72 src/ui/usage.rs:208 src/ui/usage.rs:281
+#: src/ui/app_trend.rs:72 src/ui/usage.rs:209 src/ui/usage.rs:282
 msgid "7 Days"
 msgstr ""
 
@@ -826,41 +826,57 @@ msgstr ""
 msgid "Reaches 80%"
 msgstr ""
 
-#: src/ui/mod.rs:146
+#: src/ui/mod.rs:156
 msgid "Export Battery Report"
 msgstr ""
 
-#: src/ui/mod.rs:161
+#: src/ui/mod.rs:171
 msgid "Battery report saved"
 msgstr ""
 
-#: src/ui/mod.rs:161 src/ui/mod.rs:188
+#: src/ui/mod.rs:171 src/ui/mod.rs:198
 msgid "Open"
 msgstr ""
 
-#: src/ui/mod.rs:168
+#: src/ui/mod.rs:178
 #, no-c-format
 msgid "Could not save the report: {0}"
 msgstr ""
 
-#: src/ui/mod.rs:176
+#: src/ui/mod.rs:186
 msgid "Export Data as CSV"
 msgstr ""
 
-#: src/ui/mod.rs:176
+#: src/ui/mod.rs:186
 msgid "Save Here"
 msgstr ""
 
-#: src/ui/mod.rs:187
+#: src/ui/mod.rs:197
 #, no-c-format
 msgid "Saved {n} file"
 msgid_plural "Saved {n} files"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/ui/mod.rs:196
+#: src/ui/mod.rs:206
 #, no-c-format
 msgid "Could not save the files: {0}"
+msgstr ""
+
+#: src/ui/mod.rs:223
+msgid "Record History in the Background?"
+msgstr ""
+
+#: src/ui/mod.rs:224
+msgid "Battery Health Center can start hidden when you log in, so battery history, sleep drain and notifications keep working with the window closed. You can change this any time on the Usage page."
+msgstr ""
+
+#: src/ui/mod.rs:226
+msgid "Not Now"
+msgstr ""
+
+#: src/ui/mod.rs:226
+msgid "Turn On"
 msgstr ""
 
 #: src/ui/mod.rs:29
@@ -1341,166 +1357,166 @@ msgstr ""
 msgid "When your laptop used a lot of battery while asleep"
 msgstr ""
 
-#: src/ui/usage.rs:132 src/ui/usage.rs:369
+#: src/ui/usage.rs:133 src/ui/usage.rs:376
 msgid "No apps are using significant energy"
 msgstr ""
 
-#: src/ui/usage.rs:146
+#: src/ui/usage.rs:147
 msgid "No app activity recorded yet"
 msgstr ""
 
-#: src/ui/usage.rs:146
+#: src/ui/usage.rs:147
 msgid "Usage is recorded while Battery Health Center is running."
-msgstr ""
-
-#: src/ui/usage.rs:172
-#, no-c-format
-msgid "{when} · {0} asleep"
 msgstr ""
 
 #: src/ui/usage.rs:173
 #, no-c-format
+msgid "{when} · {0} asleep"
+msgstr ""
+
+#: src/ui/usage.rs:174
+#, no-c-format
 msgid "Used {used}% ({rate}% per hour)"
 msgstr ""
 
-#: src/ui/usage.rs:176
+#: src/ui/usage.rs:177
 msgid "Moderate"
 msgstr ""
 
-#: src/ui/usage.rs:206 src/ui/usage.rs:355
+#: src/ui/usage.rs:207 src/ui/usage.rs:362
 msgid "Battery Level"
 msgstr ""
 
-#: src/ui/usage.rs:207
+#: src/ui/usage.rs:208
 msgid "Level"
 msgstr ""
 
-#: src/ui/usage.rs:207
+#: src/ui/usage.rs:208
 msgid "Power"
 msgstr ""
 
-#: src/ui/usage.rs:248
+#: src/ui/usage.rs:249
 msgid "Record History in the Background"
 msgstr ""
 
-#: src/ui/usage.rs:249
+#: src/ui/usage.rs:250
 msgid "History, sleep drain and notifications only work while Battery Health Center is running. This starts it hidden when you log in."
 msgstr ""
 
-#: src/ui/usage.rs:261
+#: src/ui/usage.rs:262
 msgid "Battery Use During Sleep"
 msgstr ""
 
-#: src/ui/usage.rs:262
+#: src/ui/usage.rs:263
 msgid "How much charge your laptop used while suspended."
 msgstr ""
 
-#: src/ui/usage.rs:264
+#: src/ui/usage.rs:265
 msgid "Sleep Mode"
 msgstr ""
 
-#: src/ui/usage.rs:274
+#: src/ui/usage.rs:275
 msgid "Using Significant Energy"
 msgstr ""
 
-#: src/ui/usage.rs:280
+#: src/ui/usage.rs:281
 msgid "Energy Use by App"
 msgstr ""
 
-#: src/ui/usage.rs:281
+#: src/ui/usage.rs:282
 msgid "Since Opened"
 msgstr ""
 
-#: src/ui/usage.rs:293
+#: src/ui/usage.rs:294
 msgid "Linux does not measure power per app. Energy impact is estimated from CPU time, and watts are the measured battery drain above idle, shared between apps by CPU use. Treat them as a guide."
 msgstr ""
 
-#: src/ui/usage.rs:355
+#: src/ui/usage.rs:362
 msgid "Green: plugged in · Blue: on battery · Dashed: charge limit"
 msgstr ""
 
-#: src/ui/usage.rs:356
+#: src/ui/usage.rs:363
 msgid "Power Draw"
 msgstr ""
 
-#: src/ui/usage.rs:356
+#: src/ui/usage.rs:363
 msgid "Blue: power used on battery · Green: charging power"
 msgstr ""
 
-#: src/ui/usage.rs:365
+#: src/ui/usage.rs:372
 msgid "Average energy impact since Battery Health Center started."
 msgstr ""
 
-#: src/ui/usage.rs:376
+#: src/ui/usage.rs:383
 msgid "Share of app activity, with energy used while on battery."
 msgstr ""
 
-#: src/ui/usage.rs:389
+#: src/ui/usage.rs:396
 msgid "No sleep recorded yet"
 msgstr ""
 
-#: src/ui/usage.rs:390
+#: src/ui/usage.rs:397
 msgid "Measured when Battery Health Center is running before and after your laptop sleeps on battery."
 msgstr ""
 
-#: src/ui/usage.rs:400
+#: src/ui/usage.rs:407
 msgid "Modern Standby (s2idle)"
 msgstr ""
 
-#: src/ui/usage.rs:400
+#: src/ui/usage.rs:407
 msgid "Wakes quickly, but some laptops drain more while asleep"
 msgstr ""
 
-#: src/ui/usage.rs:401
+#: src/ui/usage.rs:408
 msgid "Deep Sleep (S3)"
 msgstr ""
 
-#: src/ui/usage.rs:401
+#: src/ui/usage.rs:408
 msgid "The lowest-power sleep mode"
 msgstr ""
 
-#: src/ui/usage.rs:402
+#: src/ui/usage.rs:409
 msgid "Shallow Sleep (S1)"
 msgstr ""
 
-#: src/ui/usage.rs:402
+#: src/ui/usage.rs:409
 msgid "A light sleep mode"
 msgstr ""
 
-#: src/ui/usage.rs:405
+#: src/ui/usage.rs:412
 #, no-c-format
 msgid "Sleep Mode: {name}"
 msgstr ""
 
-#: src/ui/usage.rs:408
+#: src/ui/usage.rs:415
 #, no-c-format
 msgid "{about}. Your laptop also supports deep sleep, which usually uses less battery; you can choose it with the kernel option mem_sleep_default=deep."
 msgstr ""
 
-#: src/ui/usage.rs:438
+#: src/ui/usage.rs:445
 msgid "Apps ranked by their current energy impact, with estimated power draw."
 msgstr ""
 
-#: src/ui/usage.rs:440
+#: src/ui/usage.rs:447
 msgid "Apps ranked by their current energy impact. Power estimates appear when running on battery."
 msgstr ""
 
-#: src/ui/usage.rs:49
+#: src/ui/usage.rs:50
 msgid "Medium"
 msgstr ""
 
-#: src/ui/usage.rs:91
+#: src/ui/usage.rs:92
 #, no-c-format
 msgid "{n} process"
 msgid_plural "{n} processes"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/ui/usage.rs:94
+#: src/ui/usage.rs:95
 msgid "System"
 msgstr ""
 
-#: src/ui/usage.rs:96
+#: src/ui/usage.rs:97
 #, no-c-format
 msgid "{0}% CPU"
 msgstr ""

@@ -121,6 +121,16 @@ pub fn build_window(app: &adw::Application, ctrl: &Rc<Controller>) -> adw::Appli
         screenshots::capture(&window, &stack, dir.into(), move || usage.scroll_to_apps());
     }
 
+    // The first-launch question comes a moment after the window appears.
+    {
+        let (weak_window, ctrl, usage) = (window.downgrade(), ctrl.clone(), usage.clone());
+        glib::timeout_add_local_once(std::time::Duration::from_millis(700), move || {
+            if let Some(window) = weak_window.upgrade() {
+                ask_about_background(&window, &ctrl, &usage);
+            }
+        });
+    }
+
     let weak_window = window.downgrade();
     ctrl.subscribe(move |st| {
         if weak_window.upgrade().is_none() {
@@ -197,4 +207,35 @@ fn export_csv_files(window: &adw::ApplicationWindow, ctrl: &Rc<Controller>, toas
         };
         toasts.add_toast(toast);
     });
+}
+
+/// On the very first launch, asks whether to record history in the background, which
+/// starts the app hidden at login. Returning users and a "yes" already given are not asked.
+fn ask_about_background(window: &adw::ApplicationWindow, ctrl: &Rc<Controller>, usage: &Rc<usage::UsagePage>) {
+    if std::env::var_os("BHC_SCREENSHOTS").is_some() || ctrl.state().settings.background_asked {
+        return;
+    }
+    if crate::system::autostart_enabled() {
+        ctrl.update_settings(|s| s.background_asked = true);
+        return;
+    }
+    let dialog = adw::AlertDialog::builder()
+        .heading(tr("Record History in the Background?"))
+        .body(tr("Battery Health Center can start hidden when you log in, so battery history, sleep drain and notifications keep working with the window closed. You can change this any time on the Usage page."))
+        .build();
+    dialog.add_responses(&[("later", tr("Not Now")), ("enable", tr("Turn On"))]);
+    dialog.set_response_appearance("enable", adw::ResponseAppearance::Suggested);
+    dialog.set_default_response(Some("enable"));
+    dialog.set_close_response("later");
+    let (ctrl, usage) = (ctrl.clone(), usage.clone());
+    dialog.connect_response(None, move |_, response| {
+        if response == "enable" {
+            if let Err(e) = crate::system::set_autostart(true) {
+                eprintln!("could not update autostart: {e}");
+            }
+            usage.sync_background();
+        }
+        ctrl.update_settings(|s| s.background_asked = true);
+    });
+    dialog.present(Some(window));
 }

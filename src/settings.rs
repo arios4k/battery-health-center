@@ -56,6 +56,9 @@ pub struct Settings {
     /// On battery, switch to Power Saver once the charge falls to this level.
     pub low_profile: bool,
     pub low_profile_level: u8,
+    /// The first-launch question about recording history in the background has been
+    /// answered, or never applied (settings saved by an earlier version).
+    pub background_asked: bool,
 }
 
 impl Default for Settings {
@@ -73,6 +76,7 @@ impl Default for Settings {
             profile_battery: "balanced".into(),
             low_profile: true,
             low_profile_level: 20,
+            background_asked: false,
         }
     }
 }
@@ -115,6 +119,8 @@ impl Settings {
             profile_battery: profile("profile_battery", &d.profile_battery),
             low_profile: flag("low_profile", d.low_profile),
             low_profile_level: level("low_profile_level", d.low_profile_level, 5..=60),
+            // A settings file from before this question existed means a returning user.
+            background_asked: map.get("background_asked").map_or(!text.trim().is_empty(), |v| *v == "true"),
         }
     }
 
@@ -122,7 +128,7 @@ impl Settings {
         format!(
             "notify_limit_reached={}\nnotify_low={}\nlow_level={}\nnotify_full_no_limit={}\n\
              notify_app_drain={}\nnotify_sleep_drain={}\ncalibration={}\n\
-             auto_profile={}\nprofile_ac={}\nprofile_battery={}\nlow_profile={}\nlow_profile_level={}\n",
+             auto_profile={}\nprofile_ac={}\nprofile_battery={}\nlow_profile={}\nlow_profile_level={}\nbackground_asked={}\n",
             self.notify_limit_reached,
             self.notify_low,
             self.low_level,
@@ -134,7 +140,8 @@ impl Settings {
             self.profile_ac,
             self.profile_battery,
             self.low_profile,
-            self.low_profile_level
+            self.low_profile_level,
+            self.background_asked
         )
     }
 
@@ -196,7 +203,19 @@ mod tests {
     #[test]
     fn bad_values_fall_back_to_defaults() {
         let s = Settings::parse("profile_ac=turbo\nlow_profile_level=3\nlow_level=999\nauto_profile=maybe\n");
-        assert_eq!(s, Settings::default());
+        assert_eq!(s, Settings { background_asked: true, ..Settings::default() });
+    }
+
+    #[test]
+    fn the_background_question_is_only_for_new_users() {
+        // No settings file yet: a first launch, so ask.
+        assert!(!Settings::parse("").background_asked);
+        // Settings from an earlier version: don't ask a returning user.
+        assert!(Settings::parse("notify_low=true\n").background_asked);
+        // Once asked, the answer sticks either way.
+        let s = Settings { background_asked: true, ..Settings::default() };
+        assert!(Settings::parse(&s.to_text()).background_asked);
+        assert!(!Settings::parse("background_asked=false\nnotify_low=true\n").background_asked);
     }
 
     #[test]
