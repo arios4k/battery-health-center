@@ -185,6 +185,8 @@ fn setup_actions(app: &adw::Application, ctrl: &Rc<controller::Controller>) {
             .copyright("© 2026 Alexis Rios-Negron")
             .comments(tr("Battery health, charge limits and energy usage in one place."))
             .license_type(gtk::License::Gpl30)
+            .website(env!("CARGO_PKG_HOMEPAGE"))
+            .issue_url(concat!(env!("CARGO_PKG_REPOSITORY"), "/issues"))
             .build();
         dialog.present(a.active_window().as_ref());
     });

@@ -51,6 +51,11 @@
   </supports>
   <content_rating type="oars-1.1"/>
   <releases>
+    <release version="0.4.5" date="2026-11-01">
+      <description>
+        <p>The About dialog now links to the project website and the issue tracker.</p>
+      </description>
+    </release>
     <release version="0.4.4" date="2026-11-01">
       <description>
         <p>The first time you open the app, it now asks whether to record history in the background, so battery history, sleep drain and notifications keep working at login without hunting for the switch. You can change it any time on the Usage page.</p>
