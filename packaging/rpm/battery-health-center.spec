@@ -4,7 +4,7 @@
 %global debug_package %{nil}
 
 Name:           battery-health-center
-Version:        0.4.3
+Version:        0.4.4
 Release:        1%{?dist}
 Summary:        Laptop battery health, charge limits and energy usage in one place
 
@@ -110,5 +110,8 @@ fi
 %{_unitdir}/battery-health-center-scheduler.path
 
 %changelog
+* Sun Nov 01 2026 Alexis Rios-Negron <182820807+arios4k@users.noreply.github.com> - 0.4.4-1
+- Ask on the first launch whether to record history in the background
+
 * Sun Nov 01 2026 Alexis Rios-Negron <182820807+arios4k@users.noreply.github.com> - 0.4.3-1
 - Package for Fedora (COPR); see the project's changelog for the release notes
