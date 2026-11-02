@@ -28,34 +28,40 @@ help. A short note when it is included is always welcome, and I'm happy to link 
 
 `packaging/rpm/` builds an RPM for Fedora. It is published through [COPR](https://copr.fedorainfracloud.org),
 Fedora's build service for personal repositories, so people can install it with
-`sudo dnf copr enable arios4k/battery-health-center` and `sudo dnf install battery-health-center`.
+`sudo dnf copr enable arios/battery-health-center` and `sudo dnf install battery-health-center`
+(`arios` is the Fedora account that owns the COPR project; it is the same account as Voltkit's).
 
-- `battery-health-center.spec` is the recipe. The Rust crates are vendored into a second source archive, so the
-  build needs no network, which is how COPR builds.
-- `make-sources.sh` makes the two source archives for the current version (the project at its release tag, and
-  the vendored crates). `REF=HEAD` builds from the current commit instead of the tag.
-- `build-in-lxd.sh <sources folder>` builds and tests the RPM in a throwaway Fedora container (it needs LXD):
-  it builds the source and binary RPMs, runs the test suite and `rpmlint`, installs the package, and checks that
-  the services start by themselves. The source RPM (`*.src.rpm`) is the file to give COPR.
+- `battery-health-center.spec` is the recipe. It downloads the release tarball from GitHub and lets Cargo fetch
+  the crates during the build, so the COPR project needs "internet access during builds" switched on.
+- `.copr/Makefile` is what COPR runs to turn the spec into a source RPM (the `make_srpm` method).
+- `build-in-lxd.sh` builds and tests the RPM in a throwaway Fedora container (it needs LXD): it builds the
+  source and binary RPMs, runs the test suite and `rpmlint`, installs the package, and checks that the services
+  start by themselves.
 - As on Debian, a new install turns on the restore service and the schedule path unit, and starts the latter.
 
-To publish a release:
+### One-time setup
 
-1. Release the version first (tag `v<version>`), then set `Version:` and the changelog entry in the spec to match.
-2. Make the archives and the RPMs:
+1. Create a Fedora account at <https://accounts.fedoraproject.org>.
+2. Log in to <https://copr.fedorainfracloud.org> and choose **New Project**:
+   - **Project name:** `battery-health-center`
+   - **Chroots:** the current Fedora releases for `x86_64` (for example fedora-43, fedora-42 and rawhide)
+   - **Enable internet access during builds:** on
+   - **Instructions:** `sudo dnf copr enable arios/battery-health-center && sudo dnf install battery-health-center`
+3. In the project, open **Packages → New Package → SCM**:
+   - **Package name:** `battery-health-center`
+   - **Clone url:** `https://github.com/arios4k/battery-health-center`
+   - **Committish:** leave empty (the spec on `main` downloads the release it names)
+   - **Spec file:** `packaging/rpm/battery-health-center.spec`
+   - **How to build SRPM:** `make_srpm`
+4. Save, then **Rebuild** the package.
 
-```bash
-packaging/rpm/make-sources.sh /tmp/rpm-sources
-packaging/rpm/build-in-lxd.sh /tmp/rpm-sources /tmp/rpm-out
-```
+### Every release
 
-3. On COPR, in the `battery-health-center` project, choose **New Build → Upload** and select
-   `/tmp/rpm-out/SRPMS/battery-health-center-<version>-1.fc<N>.src.rpm`, with the Fedora releases you support
-   ticked (for example fedora-43, fedora-42 and rawhide, x86_64). Or from a terminal with `copr-cli` set up:
-   `copr-cli build battery-health-center /tmp/rpm-out/SRPMS/*.src.rpm`.
-
-Creating the COPR project needs a Fedora account (https://accounts.fedoraproject.org) and, for `copr-cli`, an API
-token from https://copr.fedorainfracloud.org/api/ . Keep that token private.
+1. Release the version first (tag `v<version>`; the spec downloads that tag from GitHub).
+2. Set `Version:` and the changelog entry in `packaging/rpm/battery-health-center.spec`, and commit it to `main`.
+3. Optionally test it locally: `packaging/rpm/build-in-lxd.sh /tmp/rpm-out`.
+4. On COPR, **Rebuild** the `battery-health-center` package (or `copr-cli build-package battery-health-center
+   --name battery-health-center`).
 
 ## Publishing new versions
 

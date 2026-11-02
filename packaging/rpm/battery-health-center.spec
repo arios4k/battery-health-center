@@ -1,5 +1,5 @@
-# RPM package for Fedora (built on COPR). The Rust crates are vendored into a second
-# source archive (see packaging/rpm/make-sources.sh), so the build needs no network.
+# RPM package for Fedora (built on COPR, see docs/MAINTAINING.md). Cargo downloads the Rust crates
+# during the build, so the COPR project needs "internet access during builds" switched on.
 # Debuginfo is skipped: the release profile strips the binaries.
 %global debug_package %{nil}
 
@@ -11,7 +11,6 @@ Summary:        Laptop battery health, charge limits and energy usage in one pla
 License:        GPL-3.0-or-later
 URL:            https://github.com/arios4k/battery-health-center
 Source0:        %{url}/archive/v%{version}/%{name}-%{version}.tar.gz
-Source1:        %{name}-%{version}-vendor.tar.xz
 
 BuildRequires:  cargo
 BuildRequires:  rust
@@ -42,19 +41,10 @@ service without asking again.
 
 %prep
 %autosetup -n %{name}-%{version}
-tar -xJf %{SOURCE1}
-mkdir -p .cargo
-cat > .cargo/config.toml <<'CARGO'
-[source.crates-io]
-replace-with = "vendored-sources"
-
-[source.vendored-sources]
-directory = "vendor"
-CARGO
 
 %build
 scripts/build-locale.sh
-cargo build --release --offline --locked
+cargo build --release --locked
 
 %install
 install -Dm755 target/release/battery-health-center %{buildroot}%{_bindir}/battery-health-center
@@ -76,7 +66,7 @@ done
 %check
 desktop-file-validate %{buildroot}%{_datadir}/applications/io.github.BatteryHealthCenter.desktop
 appstream-util validate-relax --nonet %{buildroot}%{_metainfodir}/io.github.BatteryHealthCenter.metainfo.xml
-cargo test --release --offline --locked
+cargo test --release --locked
 
 %post
 %systemd_post battery-health-center-restore.service battery-health-center-scheduler.path

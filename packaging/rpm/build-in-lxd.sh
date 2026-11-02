@@ -3,23 +3,29 @@
 # distribution. It builds the source RPM and the binary RPM, runs rpmlint, installs the package
 # the way a user would, and checks that the services come up by themselves.
 #
-# Usage: [FEDORA=43] packaging/rpm/build-in-lxd.sh <sources folder> [output folder]
-#   <sources folder> holds what packaging/rpm/make-sources.sh made. The .src.rpm (the file to
-#   upload to COPR) and the .rpm are written to the output folder (default: ./rpm-out).
+# Usage: [FEDORA=43] [REF=<git ref>] packaging/rpm/build-in-lxd.sh [output folder]
+#   The source archive is made from REF (default: the release tag v<version> when it exists,
+#   otherwise HEAD), like the one GitHub serves. The .src.rpm and the .rpm are written to the
+#   output folder (default: ./rpm-out). COPR itself builds from the GitHub repository (.copr/Makefile).
 set -euo pipefail
 # lxc waits for input that never comes when stdin is left open (for example under a CI runner or a
 # tool that spawns this script), so give every lxc command an empty stdin.
 exec </dev/null
 
 cd "$(dirname "$0")/../.."
-src=$(realpath "${1:?usage: build-in-lxd.sh <sources folder> [output folder]}")
-out=$(realpath -m "${2:-rpm-out}")
+out=$(realpath -m "${1:-rpm-out}")
+version=$(cargo pkgid | sed 's/.*[#@]//')
+ref=${REF:-HEAD}
+if [ -z "${REF:-}" ] && git rev-parse -q --verify "refs/tags/v$version" >/dev/null; then
+    ref="v$version"
+fi
+src=$(mktemp -d)
 release=${FEDORA:-43}
 box=bhc-rpm-build
 spec=packaging/rpm/battery-health-center.spec
 
 lxc delete -f "$box" >/dev/null 2>&1 || true
-trap 'lxc delete -f "$box" >/dev/null 2>&1 || true' EXIT
+trap 'lxc delete -f "$box" >/dev/null 2>&1 || true; rm -rf "$src"' EXIT
 echo "Starting a Fedora $release container..."
 # Launching straight from the remote image server can stall, so keep a local copy of the image.
 if ! lxc image info "local:fedora-$release" >/dev/null 2>&1; then
@@ -32,7 +38,8 @@ for _ in $(seq 1 60); do
 done
 
 lxc exec "$box" -- mkdir -p /root/rpmbuild/SOURCES /root/rpmbuild/SPECS
-lxc file push "$src"/*.tar.* "$box/root/rpmbuild/SOURCES/" >/dev/null
+git archive --format=tar.gz --prefix="battery-health-center-$version/" -o "$src/battery-health-center-$version.tar.gz" "$ref"
+lxc file push "$src"/*.tar.gz "$box/root/rpmbuild/SOURCES/" >/dev/null
 lxc file push "$spec" "$box/root/rpmbuild/SPECS/" >/dev/null
 
 echo "Installing the build tools..."
