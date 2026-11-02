@@ -51,6 +51,12 @@
   </supports>
   <content_rating type="oars-1.1"/>
   <releases>
+    <release version="0.4.4" date="2026-11-01">
+      <description>
+        <p>The first time you open the app, it now asks whether to record history in the background, so battery history, sleep drain and notifications keep working at login without hunting for the switch. You can change it any time on the Usage page.</p>
+        <p>Also packaged for Fedora.</p>
+      </description>
+    </release>
     <release version="0.4.3" date="2026-10-28">
       <description>
         <p>After an upgrade, the hidden background copy now restarts itself on the new version, so the app no longer opens as the old version until you log out and in.</p>
