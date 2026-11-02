@@ -24,6 +24,39 @@ If you need a change to make it fit your distribution (paths, branding, dependen
 [issue](https://github.com/arios4k/battery-health-center/issues) or a pull request and I will gladly
 help. A short note when it is included is always welcome, and I'm happy to link to your package.
 
+## Fedora (COPR)
+
+`packaging/rpm/` builds an RPM for Fedora. It is published through [COPR](https://copr.fedorainfracloud.org),
+Fedora's build service for personal repositories, so people can install it with
+`sudo dnf copr enable arios4k/battery-health-center` and `sudo dnf install battery-health-center`.
+
+- `battery-health-center.spec` is the recipe. The Rust crates are vendored into a second source archive, so the
+  build needs no network, which is how COPR builds.
+- `make-sources.sh` makes the two source archives for the current version (the project at its release tag, and
+  the vendored crates). `REF=HEAD` builds from the current commit instead of the tag.
+- `build-in-lxd.sh <sources folder>` builds and tests the RPM in a throwaway Fedora container (it needs LXD):
+  it builds the source and binary RPMs, runs the test suite and `rpmlint`, installs the package, and checks that
+  the services start by themselves. The source RPM (`*.src.rpm`) is the file to give COPR.
+- As on Debian, a new install turns on the restore service and the schedule path unit, and starts the latter.
+
+To publish a release:
+
+1. Release the version first (tag `v<version>`), then set `Version:` and the changelog entry in the spec to match.
+2. Make the archives and the RPMs:
+
+```bash
+packaging/rpm/make-sources.sh /tmp/rpm-sources
+packaging/rpm/build-in-lxd.sh /tmp/rpm-sources /tmp/rpm-out
+```
+
+3. On COPR, in the `battery-health-center` project, choose **New Build → Upload** and select
+   `/tmp/rpm-out/SRPMS/battery-health-center-<version>-1.fc<N>.src.rpm`, with the Fedora releases you support
+   ticked (for example fedora-43, fedora-42 and rawhide, x86_64). Or from a terminal with `copr-cli` set up:
+   `copr-cli build battery-health-center /tmp/rpm-out/SRPMS/*.src.rpm`.
+
+Creating the COPR project needs a Fedora account (https://accounts.fedoraproject.org) and, for `copr-cli`, an API
+token from https://copr.fedorainfracloud.org/api/ . Keep that token private.
+
 ## Publishing new versions
 
 There are two ways: push a tag and let GitHub Actions do it, or run the script on your laptop.
