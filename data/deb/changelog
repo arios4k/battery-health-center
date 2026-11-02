@@ -1,3 +1,9 @@
+battery-health-center (0.4.5-1) unstable; urgency=low
+
+  * The About dialog now links to the project website and the issue tracker.
+
+ -- Alexis Rios-Negron <182820807+arios4k@users.noreply.github.com>  Sun, 01 Nov 2026 20:50:00 -0800
+
 battery-health-center (0.4.4-1) unstable; urgency=low
 
   * Ask on the first launch whether to record history in the background. A new
