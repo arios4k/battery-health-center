@@ -10,6 +10,7 @@ Health, cycle count, charge limits and schedules, and which apps drain it, for G
 [![Latest release](https://img.shields.io/github/v/release/arios4k/battery-health-center?label=release&color=26a269)](https://github.com/arios4k/battery-health-center/releases/latest)
 [![CI](https://github.com/arios4k/battery-health-center/actions/workflows/ci.yml/badge.svg)](https://github.com/arios4k/battery-health-center/actions/workflows/ci.yml)
 [![Install with apt](https://img.shields.io/badge/install-apt-orange)](#install-ubuntu-debian-and-derivatives)
+[![Install on Fedora](https://img.shields.io/badge/install-Fedora%20COPR-51a2da)](#install-fedora)
 [![License: GPL-3.0-or-later](https://img.shields.io/badge/license-GPL--3.0--or--later-blue)](LICENSE)
 [![Languages](https://img.shields.io/badge/languages-EN%20%C2%B7%20ES%20%C2%B7%20DE-lightgrey)](#translations)
 [![Made with Rust and GTK4](https://img.shields.io/badge/made%20with-Rust%20%2B%20GTK4-informational)](#build-from-source)
@@ -126,7 +127,7 @@ sessions and each app's energy use per hour as CSV files for a spreadsheet.
 - **Careful with root.** Only a small helper runs as root. It accepts nothing but validated values and
   writes only the battery's charge-limit files and its own config.
 - **Speaks your language.** English, Spanish and German, following your system language.
-- **Updates with your system.** Install it from a signed apt repository and `apt upgrade` keeps it current.
+- **Updates with your system.** Install it from a signed apt repository (or Fedora's COPR) and your usual updates keep it current.
 
 ## FAQ
 
@@ -168,6 +169,20 @@ sudo apt update && sudo apt install battery-health-center
 Then open **Battery Health Center** from your applications. Updates arrive with `sudo apt upgrade`. The
 signing key's fingerprint is `F090 D01D 74F7 14C8 5A95 23CA 4773 367E BD97 6CF5`, and the repository
 (with troubleshooting tips) lives at [arios4k/apt](https://github.com/arios4k/apt).
+
+## Install (Fedora)
+
+For Fedora 43 and newer on 64-bit Intel/AMD, from the [COPR repository](https://copr.fedorainfracloud.org/coprs/arios/battery-health-center/):
+
+```bash
+sudo dnf copr enable arios/battery-health-center
+sudo dnf install battery-health-center
+```
+
+Then open **Battery Health Center** from your applications. Updates arrive with `sudo dnf upgrade`. The
+charge-limit and schedule services are turned on by the installation, so nothing else needs setting up.
+
+## Moving from the snap
 
 If you installed an older version as a snap, remove it first with `sudo snap remove battery-health-center`.
 That deletes its history, so copy `~/snap/battery-health-center/current/.local/share/battery-health-center/*.csv`
