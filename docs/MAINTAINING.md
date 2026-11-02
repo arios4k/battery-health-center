@@ -54,14 +54,20 @@ Fedora's build service for personal repositories, so people can install it with
    - **Spec file:** `packaging/rpm/battery-health-center.spec`
    - **How to build SRPM:** `make_srpm`
 4. Save, then **Rebuild** the package.
+5. To build automatically on each release: in the project open **Settings → Integrations**, copy the **Custom
+   webhook** URL for the `battery-health-center` package, and save it as the repository secret
+   `COPR_WEBHOOK_URL` (**Settings → Secrets and variables → Actions**). The URL contains a secret, so keep it
+   private.
 
 ### Every release
 
-1. Release the version first (tag `v<version>`; the spec downloads that tag from GitHub).
-2. Set `Version:` and the changelog entry in `packaging/rpm/battery-health-center.spec`, and commit it to `main`.
-3. Optionally test it locally: `packaging/rpm/build-in-lxd.sh /tmp/rpm-out`.
-4. On COPR, **Rebuild** the `battery-health-center` package (or `copr-cli build-package battery-health-center
-   --name battery-health-center`).
+1. Set `Version:` and add a changelog entry in `packaging/rpm/battery-health-center.spec` together with the
+   other version bumps, so the release commit on `main` already names the new version.
+2. Tag `v<version>`. The release workflow checks that the spec matches the tag, and its last job calls the COPR
+   webhook, which builds the package from `main` (the spec downloads the tag from GitHub).
+3. Without the secret, or to build again, press **Rebuild** on the COPR package (or
+   `copr-cli build-package battery-health-center --name battery-health-center`).
+4. Optionally test the spec locally first: `packaging/rpm/build-in-lxd.sh /tmp/rpm-out`.
 
 ## Publishing new versions
 
