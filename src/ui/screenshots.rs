@@ -1,9 +1,11 @@
 //! Renders each page to a PNG for store listings. Enabled by running the app
 //! with BHC_SCREENSHOTS=<folder> (and optionally BHC_SCREENSHOTS_STYLE=light or
 //! dark, BHC_SCREENSHOTS_SIZE=<w>x<h>, and BHC_SCREENSHOTS_SCROLL=<pixels> to scroll each
-//! page down first, or BHC_SCREENSHOTS_ABOUT=1 for the About dialog); it saves one image per page and quits.
+//! page down first, BHC_SCREENSHOTS_PAGE=<name> for one page, BHC_SCREENSHOTS_TREND=1
+//! for app detail, or BHC_SCREENSHOTS_ABOUT=1 for the About dialog); it saves one image per page and quits.
 
 use std::path::PathBuf;
+use std::rc::Rc;
 use std::time::Duration;
 
 use adw::prelude::*;
@@ -11,7 +13,7 @@ use gtk::{glib, gsk};
 
 const PAGES: &[&str] = &["overview", "health", "charging", "power", "usage"];
 
-pub fn capture(window: &adw::ApplicationWindow, stack: &adw::ViewStack, split: &adw::NavigationSplitView, dir: PathBuf, scroll_usage: impl Fn() + 'static) {
+pub fn capture(window: &adw::ApplicationWindow, stack: &adw::ViewStack, split: &adw::NavigationSplitView, ctrl: &Rc<crate::controller::Controller>, dir: PathBuf, scroll_usage: impl Fn() + 'static) {
     let _ = std::fs::create_dir_all(&dir);
     // BHC_SCREENSHOTS_SIZE=<width>x<height> overrides the window size.
     if let Some((w, h)) = std::env::var("BHC_SCREENSHOTS_SIZE").ok().and_then(|v| {
@@ -27,22 +29,19 @@ pub fn capture(window: &adw::ApplicationWindow, stack: &adw::ViewStack, split: &
         _ => adw::ColorScheme::Default,
     };
     adw::StyleManager::default().set_color_scheme(scheme);
-    // Capture the branded About dialog separately from the main pages.
+    // Capture the current app-detail dialog through the same UI users open.
+    if std::env::var_os("BHC_SCREENSHOTS_TREND").is_some() {
+        let (window, ctrl) = (window.clone(), ctrl.clone());
+        glib::timeout_add_local_once(Duration::from_secs(6), move || {
+            let total = ctrl.state().app_history.totals(crate::history::now_unix() - 7 * 86_400).into_iter().next();
+            let (key, name) = total.map(|t| (t.key, t.name)).unwrap_or_else(|| ("proc:battery-health-center".into(), "Battery Health Center".into()));
+            let dialog = super::app_trend::show(&window, &ctrl, &key, &name, ctrl.app_icon(&key));
+            capture_dialog(&window, dialog, dir, "app-trend.png");
+        });
+        return;
+    }
     if std::env::var_os("BHC_SCREENSHOTS_ABOUT").is_some() {
-        let dialog = super::about_dialog();
-        let parent = window.clone();
-        let shown = dialog.clone();
-        glib::timeout_add_local_once(Duration::from_millis(500), move || {
-            shown.present(Some(&parent));
-        });
-        let app = window.application();
-        glib::timeout_add_local_once(Duration::from_secs(3), move || {
-            match dialog.child().ok_or_else(|| "About content is missing".to_string()).and_then(|child| render(&child)).and_then(|t| t.save_to_png(dir.join("about.png")).map_err(|e| e.to_string())) {
-                Ok(()) => eprintln!("saved About preview"),
-                Err(e) => eprintln!("could not render About: {e}"),
-            }
-            if let Some(app) = app { app.quit(); }
-        });
+        capture_dialog(window, super::about_dialog(), dir, "about.png");
         return;
     }
     let window = window.clone();
@@ -50,7 +49,24 @@ pub fn capture(window: &adw::ApplicationWindow, stack: &adw::ViewStack, split: &
     let split = split.clone();
     // Wait for app usage to be sampled before the first capture.
     glib::timeout_add_local_once(Duration::from_secs(6), move || {
-        capture_page(window, stack, split, dir, Box::new(scroll_usage), 0);
+        let first = std::env::var("BHC_SCREENSHOTS_PAGE").ok().and_then(|name| PAGES.iter().position(|p| *p == name)).unwrap_or(0);
+        capture_page(window, stack, split, dir, Box::new(scroll_usage), first);
+    });
+}
+
+fn capture_dialog(window: &adw::ApplicationWindow, dialog: adw::Dialog, dir: PathBuf, filename: &'static str) {
+    let parent = window.clone();
+    let shown = dialog.clone();
+    glib::timeout_add_local_once(Duration::from_millis(500), move || shown.present(Some(&parent)));
+    let app = window.application();
+    glib::timeout_add_local_once(Duration::from_secs(3), move || {
+        match dialog.child().ok_or_else(|| "Dialog content is missing".to_string())
+            .and_then(|child| render(&child))
+            .and_then(|t| t.save_to_png(dir.join(filename)).map_err(|e| e.to_string())) {
+            Ok(()) => eprintln!("saved {filename}"),
+            Err(e) => eprintln!("could not render {filename}: {e}"),
+        }
+        if let Some(app) = app { app.quit(); }
     });
 }
 
@@ -113,7 +129,11 @@ fn capture_page(window: adw::ApplicationWindow, stack: adw::ViewStack, split: ad
                 }
             }
         }
-        capture_page(window, stack, split, dir, scroll_usage, i + 1);
+        if std::env::var_os("BHC_SCREENSHOTS_PAGE").is_some() {
+            if let Some(app) = window.application() { app.quit(); }
+        } else {
+            capture_page(window, stack, split, dir, scroll_usage, i + 1);
+        }
     });
 }
 
@@ -123,8 +143,12 @@ fn render(widget: &impl IsA<gtk::Widget>) -> Result<gtk::gdk::Texture, String> {
     let snapshot = gtk::Snapshot::new();
     // Page content has no background of its own; use the window's.
     if !widget.is::<gtk::Window>() {
-        let v = if adw::StyleManager::default().is_dark() { 0.14 } else { 0.98 };
-        snapshot.append_color(&gtk::gdk::RGBA::new(v, v, v, 1.0), &gtk::graphene::Rect::new(0.0, 0.0, w as f32, h as f32));
+        #[allow(deprecated)]
+        let background = widget.style_context().lookup_color("window_bg_color").unwrap_or_else(|| {
+            let v = if adw::StyleManager::default().is_dark() { 0.14 } else { 0.98 };
+            gtk::gdk::RGBA::new(v, v, v, 1.0)
+        });
+        snapshot.append_color(&background, &gtk::graphene::Rect::new(0.0, 0.0, w as f32, h as f32));
     }
     gtk::WidgetPaintable::new(Some(widget)).snapshot(&snapshot, w, h);
     let node = snapshot.to_node().ok_or("nothing to render")?;
