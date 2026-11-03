@@ -51,6 +51,9 @@
   </supports>
   <content_rating type="oars-1.1"/>
   <releases>
+    <release version="0.5.1" date="2026-11-03">
+      <description><p>Remove the duplicate sidebar branding row.</p></description>
+    </release>
     <release version="0.5.0" date="2026-11-03">
       <description>
         <p>A refreshed interface with sidebar navigation, adaptive dashboards, focused settings pages, a new battery icon and a branded About dialog.</p>
