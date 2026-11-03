@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="docs/icon.svg" width="128" alt="Battery Health Center icon: a battery with a green charge level">
+<img src="docs/icon.svg" width="128" alt="Battery Health Center icon: a blue battery with a turquoise cell and white health pulse">
 
 # Battery Health Center
 

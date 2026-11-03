@@ -11,6 +11,7 @@ mod i18n;
 mod schedule;
 mod report;
 mod settings;
+mod storage;
 mod system;
 mod ui;
 
@@ -19,9 +20,16 @@ use std::rc::Rc;
 
 use adw::prelude::*;
 use gtk::{gio, glib};
-use crate::i18n::tr;
 
 pub const APP_ID: &str = "io.github.BatteryHealthCenter";
+
+/// Source builds use their own artwork even when an older copy is installed.
+pub fn app_icon() -> gio::Icon {
+    let source = std::path::Path::new(concat!(env!("CARGO_MANIFEST_DIR"), "/data/icons/hicolor/scalable/apps/io.github.BatteryHealthCenter.svg"));
+    if source.is_file() {
+        gio::FileIcon::new(&gio::File::for_path(source)).upcast()
+    } else { gio::ThemedIcon::new(APP_ID).upcast() }
+}
 
 /// An upgrade replaces the program file under the hidden background copy, which
 /// would keep running the old version (and make the app open as the old version)
@@ -133,7 +141,7 @@ fn main() -> glib::ExitCode {
             if let Some(app) = weak_app.upgrade() {
                 let n = gio::Notification::new(title);
                 n.set_body(Some(body));
-                n.set_icon(&gio::ThemedIcon::new(APP_ID));
+                n.set_icon(&app_icon());
                 n.set_default_action("app.activate-window");
                 app.send_notification(Some(id), &n);
             }
@@ -176,18 +184,7 @@ fn setup_actions(app: &adw::Application, ctrl: &Rc<controller::Controller>) {
     let about = gio::SimpleAction::new("about", None);
     let a = app.clone();
     about.connect_activate(move |_, _| {
-        let dialog = adw::AboutDialog::builder()
-            .application_name("Battery Health Center")
-            .application_icon(APP_ID)
-            .version(env!("CARGO_PKG_VERSION"))
-            .developer_name("Alexis Rios-Negron")
-            .developers(["Alexis Rios-Negron"])
-            .copyright("© 2026 Alexis Rios-Negron")
-            .comments(tr("Battery health, charge limits and energy usage in one place."))
-            .license_type(gtk::License::Gpl30)
-            .website(env!("CARGO_PKG_HOMEPAGE"))
-            .issue_url(concat!(env!("CARGO_PKG_REPOSITORY"), "/issues"))
-            .build();
+        let dialog = ui::about_dialog();
         dialog.present(a.active_window().as_ref());
     });
 

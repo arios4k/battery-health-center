@@ -194,12 +194,58 @@ pub fn full_charge_wanted(schedule: &Schedule, learned: &Learned, now: Clock) ->
     })
 }
 
+/// Next ready-by time on the local calendar, including learned rules and DST changes.
+pub fn next_ready(schedule: &Schedule, learned: &Learned, now: i64) -> Option<i64> {
+    let mut rules = schedule.rules.clone();
+    if schedule.optimized { rules.extend(learned.rules()); }
+    let t = now as libc::time_t;
+    // SAFETY: localtime_r initializes the provided tm; mktime normalizes a copy.
+    let local = unsafe {
+        let mut local: libc::tm = std::mem::zeroed();
+        if libc::localtime_r(&t, &mut local).is_null() { return None; }
+        local
+    };
+    let weekday = (local.tm_wday + 6) % 7;
+    (0..=7).flat_map(|days| {
+        let rules = &rules;
+        rules.iter().filter_map(move |rule| {
+            if rule.days >> ((weekday + days) % 7) & 1 == 0 { return None; }
+            let mut ready = local;
+            ready.tm_mday += days;
+            ready.tm_hour = i32::from(rule.ready / 60);
+            ready.tm_min = i32::from(rule.ready % 60);
+            ready.tm_sec = 0;
+            ready.tm_isdst = -1;
+            // SAFETY: ready is an initialized local calendar time.
+            let ts = unsafe { libc::mktime(&mut ready) } as i64;
+            (ts > now).then_some(ts)
+        })
+    }).min()
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
 
     fn at(weekday: u8, h: u16, m: u16) -> Clock {
         Clock { weekday, minute: h * 60 + m }
+    }
+
+    #[test]
+    fn next_ready_is_future_and_respects_enabled_learned_rules() {
+        let now = 1_800_000_000;
+        let clock = clock_at(now).unwrap();
+        let next_minute = (clock.minute + 1) % 1440;
+        let plan = Schedule { rules: vec![Rule { days: EVERY_DAY, ready: next_minute }], ..Schedule::default() };
+        let ts = next_ready(&plan, &Learned::default(), now).unwrap();
+        assert!(ts > now && ts - now <= 60);
+        assert_eq!(clock_at(ts).unwrap().minute, next_minute);
+        assert!(next_ready(&Schedule::default(), &Learned { weekdays: Some(next_minute), weekend: Some(next_minute), ..Learned::default() }, now).is_none());
+        let learned = Learned { weekdays: Some(next_minute), weekend: Some(next_minute), ..Learned::default() };
+        assert_eq!(next_ready(&Schedule { optimized: true, ..Schedule::default() }, &learned, now), Some(ts));
+        let week = Schedule { rules: vec![Rule { days: 1 << clock.weekday, ready: clock.minute }], ..Schedule::default() };
+        let upcoming = next_ready(&week, &Learned::default(), now).unwrap();
+        assert!(upcoming - now > 6 * 86_400);
     }
 
     #[test]

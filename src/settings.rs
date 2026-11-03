@@ -145,12 +145,8 @@ impl Settings {
         )
     }
 
-    pub fn save(&self) {
-        let p = path();
-        if let Some(dir) = p.parent() {
-            let _ = fs::create_dir_all(dir);
-        }
-        let _ = fs::write(p, self.to_text());
+    pub fn save(&self) -> Result<(), String> {
+        crate::storage::replace(&path(), &self.to_text())
     }
 
     /// The power mode to use right now under "automatic power mode", or None

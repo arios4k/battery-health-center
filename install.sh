@@ -52,7 +52,7 @@ sudo install -Dm644 "data/$SCHEDULE.path" "/etc/systemd/system/$SCHEDULE.path"
 sudo systemctl daemon-reload
 sudo systemctl enable "$UNIT"
 sudo systemctl enable --now "$SCHEDULE.path"
-sudo gtk-update-icon-cache -q -t "$PREFIX/share/icons/hicolor" 2>/dev/null || true
+sudo gtk-update-icon-cache -q -t -f "$PREFIX/share/icons/hicolor" 2>/dev/null || true
 sudo update-desktop-database -q "$PREFIX/share/applications" 2>/dev/null || true
 
 echo "Installed. Launch \"Battery Health Center\" from Activities."

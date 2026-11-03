@@ -4,7 +4,7 @@
 %global debug_package %{nil}
 
 Name:           battery-health-center
-Version:        0.4.5
+Version:        0.5.0
 Release:        1%{?dist}
 Summary:        Laptop battery health, charge limits and energy usage in one place
 
@@ -100,6 +100,12 @@ fi
 %{_unitdir}/battery-health-center-scheduler.path
 
 %changelog
+* Tue Nov 03 2026 Alexis Rios-Negron <182820807+arios4k@users.noreply.github.com> - 0.5.0-1
+- Refresh navigation, adaptive layouts, app icon and About dialog
+- Add charging status, energy-estimate help and clearer history states
+- Report save failures and retry health and app-usage writes
+- Update Spanish and German translations and screenshots
+
 * Sun Nov 01 2026 Alexis Rios-Negron <182820807+arios4k@users.noreply.github.com> - 0.4.5-1
 - The About dialog links to the project website and the issue tracker
 
