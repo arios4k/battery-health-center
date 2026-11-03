@@ -96,15 +96,8 @@ pub fn build_window(app: &adw::Application, ctrl: &Rc<Controller>) -> adw::Appli
         list.append(&row);
     }
     let sidebar_view = adw::ToolbarView::new();
-    let brand = gtk::Box::builder().spacing(10).margin_start(16).margin_end(16).margin_top(8).margin_bottom(18).build();
-    brand.append(&gtk::Image::builder().gicon(&crate::app_icon()).pixel_size(36).build());
-    let brand_text = gtk::Box::builder().orientation(gtk::Orientation::Vertical).spacing(2).build();
-    brand_text.append(&gtk::Label::builder().label("Battery Health Center").xalign(0.0).css_classes(["heading"]).build());
-    brand_text.append(&gtk::Label::builder().label(format!("v{}", env!("CARGO_PKG_VERSION"))).xalign(0.0).css_classes(["caption", "dim-label"]).build());
-    brand.append(&brand_text);
     sidebar_view.add_css_class("tool-sidebar");
     sidebar_view.add_top_bar(&sidebar_header);
-    sidebar_view.add_top_bar(&brand);
     sidebar_view.set_content(Some(&gtk::ScrolledWindow::builder().hscrollbar_policy(gtk::PolicyType::Never).child(&list).build()));
     let sidebar = adw::NavigationPage::new(&sidebar_view, "Battery Health Center");
     let toolbar = adw::ToolbarView::new();
