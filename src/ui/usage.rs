@@ -26,8 +26,12 @@ enum ChartKind {
 type AppRange = i64;
 
 pub struct UsagePage {
-    pub root: adw::PreferencesPage,
+    pub root: adw::BreakpointBin,
     chart: gtk::DrawingArea,
+    chart_frame: gtk::Frame,
+    chart_empty: gtk::Label,
+    chart_range: Rc<Cell<i64>>,
+    chart_kind: Rc<Cell<ChartKind>>,
     background: adw::SwitchRow,
     chart_group: adw::PreferencesGroup,
     legend: gtk::Label,
@@ -107,6 +111,7 @@ fn app_row(app: &AppUsage, show_processes: bool, ctrl: &Weak<Controller>) -> adw
     };
     let watts = app.watts.filter(|w| *w >= 0.05).map(|w| format!("≈ {w:.1} W"));
     row.add_suffix(&suffix_labels(label, class, watts));
+    row.set_tooltip_text(Some(super::widgets::energy_explanation()));
     make_openable(&row, ctrl, &app.key, &app.name, app.icon.clone());
     row
 }
@@ -157,6 +162,7 @@ fn fill_totals(list: &gtk::ListBox, totals: &[AppTotal], weak: &Weak<Controller>
         row.add_prefix(&app_icon(icon.as_ref()));
         let wh = (t.wh >= 0.01).then(|| trf("≈ {0} Wh on battery", &[("0", format!("{:.1}", t.wh))]));
         row.add_suffix(&suffix_labels(&format!("{share:.0}%"), "numeric", wh));
+        row.set_tooltip_text(Some(super::widgets::energy_explanation()));
         make_openable(&row, weak, &t.key, &t.name, icon);
         list.append(&row);
     }
@@ -199,7 +205,7 @@ fn list() -> gtk::ListBox {
 
 impl UsagePage {
     pub fn new(ctrl: &Rc<Controller>) -> Rc<Self> {
-        let root = adw::PreferencesPage::new();
+        let root = super::workspace::Workspace::new();
 
         // Chart: battery level or power draw, over 24 hours or 7 days.
         let range = Rc::new(Cell::new(86_400i64));
@@ -208,10 +214,10 @@ impl UsagePage {
         let (kind_box, kind_buttons) = toggle_group(&[tr("Level"), tr("Power")]);
         let (range_box, range_buttons) = toggle_group(&[tr("24 Hours"), tr("7 Days")]);
         // Controls go in their own row so the title isn't squeezed on narrow windows.
-        let controls = gtk::Box::builder().spacing(6).margin_bottom(12).build();
-        controls.append(&kind_box);
-        controls.append(&gtk::Box::builder().hexpand(true).build());
-        controls.append(&range_box);
+        let controls = gtk::FlowBox::builder().selection_mode(gtk::SelectionMode::None)
+            .min_children_per_line(1).max_children_per_line(2).column_spacing(6).row_spacing(6).margin_bottom(12).build();
+        controls.insert(&kind_box, -1);
+        controls.insert(&range_box, -1);
         chart_group.add(&controls);
 
         let chart = gtk::DrawingArea::builder().content_height(200).hexpand(true).build();
@@ -235,6 +241,9 @@ impl UsagePage {
         chart.set_margin_start(6);
         chart.set_margin_end(12);
         chart_group.add(&frame);
+        let chart_empty = gtk::Label::builder().wrap(true).xalign(0.0).css_classes(["dim-label"])
+            .margin_top(18).margin_bottom(18).build();
+        chart_group.add(&chart_empty);
         let legend = gtk::Label::builder()
             .css_classes(["caption", "dim-label"])
             .margin_top(6)
@@ -242,6 +251,7 @@ impl UsagePage {
             .wrap(true)
             .build();
         chart_group.add(&legend);
+        chart_group.add_css_class("workspace-card");
         root.add(&chart_group);
 
         let bg_group = adw::PreferencesGroup::new();
@@ -250,12 +260,15 @@ impl UsagePage {
             .subtitle(tr("History, sleep drain and notifications only work while Battery Health Center is running. This starts it hidden when you log in."))
             .active(system::autostart_enabled())
             .build();
-        background.connect_active_notify(|row| {
+        let weak_ctrl = Rc::downgrade(ctrl);
+        background.connect_active_notify(move |row| {
             if let Err(e) = system::set_autostart(row.is_active()) {
-                eprintln!("could not update autostart: {e}");
+                row.set_active(system::autostart_enabled());
+                if let Some(ctrl) = weak_ctrl.upgrade() { ctrl.report_settings_error(e.to_string()); }
             }
         });
         bg_group.add(&background);
+        bg_group.add_css_class("workspace-card");
         root.add(&bg_group);
 
         let sleep_group = adw::PreferencesGroup::builder()
@@ -270,22 +283,27 @@ impl UsagePage {
         mode_list.set_margin_top(12);
         mode_list.append(&sleep_mode_row);
         sleep_group.add(&mode_list);
+        sleep_group.add_css_class("workspace-card");
         root.add(&sleep_group);
 
         let now_group = adw::PreferencesGroup::builder().title(tr("Using Significant Energy")).build();
+        now_group.set_header_suffix(Some(&super::widgets::energy_info()));
         let now_list = list();
         now_group.add(&now_list);
-        root.add(&now_group);
+        now_group.add_css_class("workspace-card");
+        root.aside(&now_group);
 
         let app_range = Rc::new(Cell::new(0));
         let energy_group = adw::PreferencesGroup::builder().title(tr("Energy Use by App")).build();
+        energy_group.set_header_suffix(Some(&super::widgets::energy_info()));
         let (energy_box, energy_buttons) = toggle_group(&[tr("Since Opened"), tr("24 Hours"), tr("7 Days")]);
         energy_box.set_halign(gtk::Align::Start);
         energy_box.set_margin_bottom(12);
         energy_group.add(&energy_box);
         let energy_list = list();
         energy_group.add(&energy_list);
-        root.add(&energy_group);
+        energy_group.add_css_class("workspace-card");
+        root.aside(&energy_group);
 
         let note = adw::PreferencesGroup::new();
         note.add(
@@ -298,11 +316,16 @@ impl UsagePage {
                 .xalign(0.0)
                 .build(),
         );
-        root.add(&note);
+        note.add_css_class("workspace-card");
+        root.aside(&note);
 
         let page = Rc::new(UsagePage {
-            root,
+            root: root.root,
             chart,
+            chart_frame: frame,
+            chart_empty,
+            chart_range: range.clone(),
+            chart_kind: kind.clone(),
             background,
             chart_group,
             legend,
@@ -318,6 +341,8 @@ impl UsagePage {
             ctrl: Rc::downgrade(ctrl),
         });
         page.update_chart_labels(ChartKind::Level);
+        placeholder(&page.now_list, "content-loading-symbolic", tr("Collecting the first app samples"), Some(tr("App activity appears after a few seconds. Keep the app open to start recording.")));
+        placeholder(&page.energy_list, "content-loading-symbolic", tr("Collecting the first app samples"), None);
 
         for (button, value) in kind_buttons.iter().zip([ChartKind::Level, ChartKind::Power]) {
             let (k, page) = (kind.clone(), Rc::downgrade(&page));
@@ -325,16 +350,18 @@ impl UsagePage {
                 if let (true, Some(page)) = (b.is_active(), page.upgrade()) {
                     k.set(value);
                     page.update_chart_labels(value);
+                    if let Some(ctrl) = page.ctrl.upgrade() { page.update_chart_empty(&ctrl.state()); }
                     page.chart.queue_draw();
                 }
             });
         }
         for (button, secs) in range_buttons.iter().zip([86_400i64, 7 * 86_400]) {
-            let (r, chart) = (range.clone(), page.chart.clone());
+            let (r, page) = (range.clone(), Rc::downgrade(&page));
             button.connect_toggled(move |b| {
-                if b.is_active() {
+                if let (true, Some(page)) = (b.is_active(), page.upgrade()) {
                     r.set(secs);
-                    chart.queue_draw();
+                    page.chart.queue_draw();
+                    if let Some(ctrl) = page.ctrl.upgrade() { page.update_chart_empty(&ctrl.state()); }
                 }
             });
         }
@@ -425,14 +452,27 @@ impl UsagePage {
 
     /// Scrolls so the app lists are at the top (used for screenshots).
     pub fn scroll_to_apps(&self) {
-        let Some(scrolled) = self.root.first_child().and_downcast::<gtk::ScrolledWindow>() else { return };
+        let Some(scrolled) = self.root.child().and_downcast::<gtk::ScrolledWindow>() else { return };
         let Some(viewport) = scrolled.child() else { return };
         if let Some(p) = self.now_group.compute_point(&viewport, &gtk::graphene::Point::zero()) {
             scrolled.vadjustment().set_value(p.y() as f64 - 12.0);
         }
     }
 
+    fn update_chart_empty(&self, st: &State) {
+        let since = now_unix() - self.chart_range.get();
+        let count = st.history.samples.iter().filter(|s| s.ts >= since && (self.chart_kind.get() == ChartKind::Level || s.power_w.is_some())).count();
+        self.chart_frame.set_visible(count >= 2);
+        self.chart_empty.set_visible(count < 2);
+        self.chart_empty.set_label(if st.history.samples.is_empty() {
+            tr("Your history starts here. Keep the app running; a battery sample is recorded every minute. Enable background recording below to keep collecting after login.")
+        } else if count < 2 {
+            tr("Not enough samples in this view yet. New readings arrive every minute while the app runs. Try a longer range, or switch to Level if power readings are unavailable.")
+        } else { "" });
+    }
+
     pub fn update(&self, st: &State) {
+        self.update_chart_empty(st);
         if self.last_history_gen.replace(st.history_generation) != st.history_generation {
             self.chart.queue_draw();
             self.fill_sleep(st);

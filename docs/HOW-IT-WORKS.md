@@ -28,3 +28,16 @@ The details behind the app, for the curious and for contributors. Back to the [R
 - **History** is saved to `~/.local/share/battery-health-center/history.csv` once a minute while the app
   runs. Turn on **Record History in the Background** to start it hidden at login.
 - **Upgrades and the hidden copy.** The background copy started at login would keep running the old version after an upgrade replaces the program file. It notices this (Linux marks the replaced file as deleted), and once no window is open it starts the new version and exits. It checks once a minute, so the new version is running within about a minute of the upgrade.
+
+- **Adaptive workspaces** use two columns for Overview, Health and Usage on larger windows.
+  Charging and Power use a centered single column to keep settings in reading order. Below 820
+  logical pixels of workspace width, dashboard columns stack; the sidebar
+  becomes back navigation below 600 logical pixels of window width.
+- **Save failures** appear in a persistent banner with the affected path and error. Preferences are
+  replaced atomically and restored in memory if saving fails. Health entries and completed app-usage
+  hours retry after storage recovers. Battery samples remain available in memory if their write fails.
+- **The app icon** is shipped from `data/icons/hicolor/scalable/apps/io.github.BatteryHealthCenter.svg`;
+  `docs/icon.svg` is the matching documentation copy. The desktop entry, PolicyKit prompts,
+  notifications and About dialog use the same application ID. Source builds load the source
+  icon directly in the About dialog, notifications and app-usage list, so an older installed
+  icon does not override it.

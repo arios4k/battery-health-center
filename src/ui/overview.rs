@@ -32,10 +32,10 @@ struct Recommendation {
 }
 
 pub struct OverviewPage {
-    pub root: adw::PreferencesPage,
+    pub root: adw::BreakpointBin,
     /// Gauge and status text; vertical on narrow windows.
-    pub hero: gtk::Box,
-    pub hero_text: gtk::Box,
+
+
     gauge: Gauge,
     headline: gtk::Label,
     detail: gtk::Label,
@@ -63,20 +63,23 @@ pub struct OverviewPage {
 
 impl OverviewPage {
     pub fn new(ctrl: &Rc<Controller>, stack: &adw::ViewStack) -> Rc<Self> {
-        let root = adw::PreferencesPage::new();
+        let root = super::workspace::Workspace::new();
 
-        // Hero: ring gauge with status text beside it.
+        // A stacked gauge keeps the primary column comfortable at desktop widths.
         let hero_group = adw::PreferencesGroup::new();
         let gauge = Gauge::new();
-        // A minimum width keeps the wrapping labels from shrinking to their
-        // longest word; narrow windows stack the text under the gauge instead
-        // (see the breakpoint in ui::build_window).
+        // Keep wrapping labels readable without widening the column.
         let label = |classes: &[&str], chars: i32| {
             gtk::Label::builder().css_classes(classes).xalign(0.0).wrap(true).width_chars(chars).max_width_chars(28).build()
         };
         let headline = label(&["title-2"], 14);
+        headline.set_justify(gtk::Justification::Center);
+        headline.set_xalign(0.5);
         let detail = label(&["dim-label"], 20);
+        detail.set_justify(gtk::Justification::Center);
+        detail.set_xalign(0.5);
         let power = label(&["dim-label", "numeric"], 20);
+        power.set_xalign(0.5);
         let text = gtk::Box::builder()
             .orientation(gtk::Orientation::Vertical)
             .spacing(6)
@@ -85,11 +88,12 @@ impl OverviewPage {
         text.append(&headline);
         text.append(&detail);
         text.append(&power);
-        let hero = gtk::Box::builder().spacing(24).halign(gtk::Align::Center).margin_bottom(12).build();
-        let text_ref = text.clone();
+        let hero = gtk::Box::builder().orientation(gtk::Orientation::Vertical).spacing(24).halign(gtk::Align::Center).margin_bottom(12).build();
         hero.append(&gauge.root);
         hero.append(&text);
         hero_group.add(&hero);
+        hero_group.add_css_class("workspace-card");
+        hero_group.add_css_class("battery-hero");
         root.add(&hero_group);
 
         let health_group = adw::PreferencesGroup::builder().title(tr("Battery Health")).build();
@@ -105,7 +109,8 @@ impl OverviewPage {
         health_row.add_suffix(&health_bar);
         let (_, condition) = value_row(&health_group, tr("Condition"));
         let (_, cycles) = value_row(&health_group, tr("Cycle Count"));
-        root.add(&health_group);
+        health_group.add_css_class("workspace-card");
+        root.aside(&health_group);
 
         // Charger while plugged in; battery use since unplugging otherwise.
         let power_group = adw::PreferencesGroup::builder().title(tr("Since Last Charge")).build();
@@ -115,22 +120,24 @@ impl OverviewPage {
         let (unplugged_row, unplugged) = value_row(&power_group, tr("Unplugged"));
         let (used_row, used) = value_row(&power_group, tr("Battery Used"));
         let (avg_row, avg) = value_row(&power_group, tr("Average Draw"));
+        power_group.add_css_class("workspace-card");
         root.add(&power_group);
 
         let devices_group = adw::PreferencesGroup::builder().title(tr("Other Devices")).visible(false).build();
         let devices_list = gtk::ListBox::builder().css_classes(["boxed-list"]).selection_mode(gtk::SelectionMode::None).build();
         devices_group.add(&devices_list);
-        root.add(&devices_group);
+        devices_group.add_css_class("workspace-card");
+        root.aside(&devices_group);
 
         let recs_group = adw::PreferencesGroup::builder().title(tr("Recommendations")).build();
         let recs_list = gtk::ListBox::builder().css_classes(["boxed-list"]).selection_mode(gtk::SelectionMode::None).build();
         recs_group.add(&recs_list);
-        root.add(&recs_group);
+        recs_group.add_css_class("workspace-card");
+        root.aside(&recs_group);
 
         Rc::new(OverviewPage {
-            root,
-            hero,
-            hero_text: text_ref,
+            root: root.root,
+
             gauge,
             headline,
             detail,

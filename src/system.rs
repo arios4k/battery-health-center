@@ -170,6 +170,26 @@ pub fn has_saved_limit() -> bool {
     config.lines().filter(|l| !l.starts_with('#')).any(|l| l.split_whitespace().nth(2).and_then(|e| e.parse::<u8>().ok()).is_some_and(|e| e < 100))
 }
 
+/// The persisted charge limit that a scheduled override will restore.
+pub fn saved_limit(name: &str) -> Option<u8> {
+    let text = std::fs::read_to_string(helper_file("battery-health-center.conf", "/etc/battery-health-center.conf")).ok()?;
+    text.lines().find_map(|line| {
+        let f: Vec<&str> = line.split_whitespace().collect();
+        match f.as_slice() {
+            [battery, _, end] if *battery == name => end.parse::<u8>().ok().filter(|e| *e <= 100),
+            _ => None,
+        }
+    })
+}
+
+/// The actual threshold to restore after a manual or scheduled override.
+pub fn override_restore_limit(name: &str) -> Option<u8> {
+    if full_charge_active(name) {
+        let text = std::fs::read_to_string(PathBuf::from("/run/battery-health-center").join(format!("full-charge-{name}"))).ok()?;
+        text.split_whitespace().nth(1)?.parse::<u8>().ok().filter(|e| *e <= 100)
+    } else { saved_limit(name) }
+}
+
 /// The saved charging schedule (empty when there is none).
 pub fn read_schedule() -> Schedule {
     let text = std::fs::read_to_string(helper_file("battery-health-center.schedule", "/etc/battery-health-center.schedule")).unwrap_or_default();

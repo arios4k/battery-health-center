@@ -168,18 +168,21 @@ pub struct AppSampler {
 
 impl AppSampler {
     pub fn new() -> Self {
+        let mut desktop_apps: HashMap<String, (String, Option<gio::Icon>)> = gio::AppInfo::all()
+            .into_iter()
+            .filter_map(|info| {
+                let id = info.id()?.trim_end_matches(".desktop").to_lowercase();
+                Some((id, (info.display_name().to_string(), info.icon())))
+            }).collect();
+        let own = ("Battery Health Center".to_string(), Some(crate::app_icon()));
+        desktop_apps.insert(crate::APP_ID.to_lowercase(), own.clone());
+        desktop_apps.insert("battery-health-center".into(), own);
         AppSampler {
             ncpu: std::thread::available_parallelism().map(|n| n.get() as f64).unwrap_or(1.0),
             prev_total: None,
             prev_procs: HashMap::new(),
             groups: HashMap::new(),
-            desktop_apps: gio::AppInfo::all()
-                .into_iter()
-                .filter_map(|info| {
-                    let id = info.id()?.trim_end_matches(".desktop").to_lowercase();
-                    Some((id, (info.display_name().to_string(), info.icon())))
-                })
-                .collect(),
+            desktop_apps,
             smoothed: HashMap::new(),
             cumulative: HashMap::new(),
             samples: 0,

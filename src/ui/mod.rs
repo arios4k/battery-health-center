@@ -1,4 +1,6 @@
+mod about;
 mod app_trend;
+mod appearance;
 mod charging;
 mod health;
 mod overview;
@@ -7,6 +9,7 @@ mod preferences;
 mod screenshots;
 mod usage;
 mod widgets;
+mod workspace;
 
 use std::rc::Rc;
 
@@ -16,7 +19,12 @@ use gtk::{gio, glib};
 use crate::controller::Controller;
 use crate::i18n::{tr, trc, trf, trnf};
 
+pub fn about_dialog() -> adw::Dialog {
+    about::dialog()
+}
+
 pub fn build_window(app: &adw::Application, ctrl: &Rc<Controller>) -> adw::ApplicationWindow {
+    appearance::install();
     let stack = adw::ViewStack::new();
     let toasts = adw::ToastOverlay::new();
 
@@ -42,8 +50,15 @@ pub fn build_window(app: &adw::Application, ctrl: &Rc<Controller>) -> adw::Appli
     content.add_named(&no_battery, Some("empty"));
     toasts.set_child(Some(&content));
 
-    let switcher = adw::ViewSwitcher::builder().stack(&stack).policy(adw::ViewSwitcherPolicy::Wide).build();
-    let header = adw::HeaderBar::builder().title_widget(&switcher).build();
+    let heading = gtk::Label::builder().xalign(0.0).wrap(true).css_classes(["title-1"]).build();
+    let summary = gtk::Label::builder().xalign(0.0).wrap(true).css_classes(["dim-label"]).build();
+    let icon = gtk::Image::builder().pixel_size(32).valign(gtk::Align::Start).css_classes(["tool-icon"]).build();
+    let titles = gtk::Box::new(gtk::Orientation::Vertical, 6);
+    titles.append(&heading);
+    titles.append(&summary);
+    let hero = gtk::Box::builder().css_classes(["workspace-heading"]).spacing(18).margin_start(24).margin_end(24).margin_top(12).margin_bottom(20).build();
+    hero.append(&icon);
+    hero.append(&titles);
 
     let menu = gio::Menu::new();
     let section = gio::Menu::new();
@@ -62,22 +77,97 @@ pub fn build_window(app: &adw::Application, ctrl: &Rc<Controller>) -> adw::Appli
         .primary(true)
         .tooltip_text(tr("Main Menu"))
         .build();
-    header.pack_end(&menu_button);
-
-    let switcher_bar = adw::ViewSwitcherBar::builder().stack(&stack).build();
+    let sidebar_header = adw::HeaderBar::new();
+    sidebar_header.pack_end(&menu_button);
+    let list = gtk::ListBox::builder().selection_mode(gtk::SelectionMode::None).css_classes(["navigation-sidebar"]).build();
+    let pages = [
+        ("overview", trc("page title", "Overview"), tr("Your battery, charger and recommendations at a glance."), "battery-level-80-symbolic"),
+        ("health", trc("page title", "Health"), tr("Understand battery capacity, wear and long-term health."), "security-high-symbolic"),
+        ("charging", trc("page title", "Charging"), tr("Protect your battery with charge limits and schedules."), "battery-level-80-charging-symbolic"),
+        ("power", trc("page title", "Power"), tr("Choose a power mode and adjust energy-saving settings."), "system-shutdown-symbolic"),
+        ("usage", trc("page title", "Usage"), tr("Explore battery history, sleep drain and app energy use."), "power-profile-balanced-symbolic"),
+    ];
+    for (id, title, description, icon_name) in pages {
+        let row_content = gtk::Box::builder().spacing(12).margin_top(2).margin_bottom(2).margin_start(4).build();
+        row_content.append(&gtk::Image::from_icon_name(icon_name));
+        row_content.append(&gtk::Label::builder().label(title).xalign(0.0).ellipsize(gtk::pango::EllipsizeMode::End).build());
+        let row = gtk::ListBoxRow::builder().child(&row_content).tooltip_text(description).build();
+        row.set_widget_name(id);
+        list.append(&row);
+    }
+    let sidebar_view = adw::ToolbarView::new();
+    let brand = gtk::Box::builder().spacing(10).margin_start(16).margin_end(16).margin_top(8).margin_bottom(18).build();
+    brand.append(&gtk::Image::builder().gicon(&crate::app_icon()).pixel_size(36).build());
+    let brand_text = gtk::Box::builder().orientation(gtk::Orientation::Vertical).spacing(2).build();
+    brand_text.append(&gtk::Label::builder().label("Battery Health Center").xalign(0.0).css_classes(["heading"]).build());
+    brand_text.append(&gtk::Label::builder().label(format!("v{}", env!("CARGO_PKG_VERSION"))).xalign(0.0).css_classes(["caption", "dim-label"]).build());
+    brand.append(&brand_text);
+    sidebar_view.add_css_class("tool-sidebar");
+    sidebar_view.add_top_bar(&sidebar_header);
+    sidebar_view.add_top_bar(&brand);
+    sidebar_view.set_content(Some(&gtk::ScrolledWindow::builder().hscrollbar_policy(gtk::PolicyType::Never).child(&list).build()));
+    let sidebar = adw::NavigationPage::new(&sidebar_view, "Battery Health Center");
     let toolbar = adw::ToolbarView::new();
-    toolbar.add_top_bar(&header);
-    toolbar.add_bottom_bar(&switcher_bar);
+    toolbar.add_css_class("tool-workspace");
+    toolbar.add_top_bar(&adw::HeaderBar::new());
+    toolbar.add_top_bar(&hero);
+    let save_banner = adw::Banner::builder().title(tr("Some changes could not be saved")).button_label(tr("Details")).build();
+    let save_details = Rc::new(std::cell::RefCell::new(String::new()));
+    let details = save_details.clone();
+    save_banner.connect_button_clicked(move |banner| {
+        let dialog = adw::AlertDialog::builder().heading(tr("Could Not Save Data"))
+            .body(format!("{}\n\n{}", tr("Check available disk space and folder permissions. Failed preferences were not applied; unsaved history may be lost when the app closes."), details.borrow()))
+            .build();
+        dialog.add_response("close", tr("Close"));
+        dialog.present(Some(banner));
+    });
+    toolbar.add_top_bar(&save_banner);
     toolbar.set_content(Some(&toasts));
+    let workspace = adw::NavigationPage::new(&toolbar, trc("page title", "Overview"));
+    let split = adw::NavigationSplitView::builder().sidebar(&sidebar).content(&workspace).build();
+    {
+        let (stack, split) = (stack.downgrade(), split.downgrade());
+        list.connect_row_activated(move |_, row| {
+            if let (Some(stack), Some(split)) = (stack.upgrade(), split.upgrade()) {
+                stack.set_visible_child_name(&row.widget_name());
+                split.set_show_content(true);
+            }
+        });
+    }
+    // Keep the heading and sidebar in sync with overview links and screenshot capture too.
+    let sync_page = {
+        let (list, workspace, split) = (list.clone(), workspace.clone(), split.downgrade());
+        move |stack: &adw::ViewStack| {
+            let Some(id) = stack.visible_child_name() else { return };
+            if let Some((_, title, description, icon_name)) = pages.iter().find(|p| p.0 == id) {
+                heading.set_label(title);
+                summary.set_label(description);
+                icon.set_icon_name(Some(icon_name));
+                workspace.set_title(title);
+                if let Some(split) = split.upgrade() { split.set_show_content(true); }
+                let mut child = list.first_child();
+                while let Some(row) = child {
+                    if row.widget_name() == id {
+                        row.add_css_class("current-page");
+                    } else {
+                        row.remove_css_class("current-page");
+                    }
+                    child = row.next_sibling();
+                }
+            }
+        }
+    };
+    sync_page(&stack);
+    stack.connect_visible_child_name_notify(sync_page);
 
     let window = adw::ApplicationWindow::builder()
         .application(app)
         .title("Battery Health Center")
-        .default_width(820)
-        .default_height(760)
+        .default_width(1240)
+        .default_height(840)
         .width_request(360)
         .height_request(400)
-        .content(&toolbar)
+        .content(&split)
         .build();
 
     let prefs = gio::SimpleAction::new("preferences", None);
@@ -107,18 +197,13 @@ pub fn build_window(app: &adw::Application, ctrl: &Rc<Controller>) -> adw::Appli
     });
     window.add_action(&export_csv);
 
-    // On narrow windows, move the page switcher to the bottom.
+    // Narrow windows use libadwaita's sidebar/back navigation.
     let breakpoint = adw::Breakpoint::new(adw::BreakpointCondition::parse("max-width: 600sp").unwrap());
-    breakpoint.add_setter(&switcher_bar, "reveal", Some(&true.to_value()));
-    breakpoint.add_setter(&switcher, "visible", Some(&false.to_value()));
-    // ...and stack the overview's status text under the gauge.
-    breakpoint.add_setter(&overview.hero, "orientation", Some(&gtk::Orientation::Vertical.to_value()));
-    breakpoint.add_setter(&overview.hero_text, "halign", Some(&gtk::Align::Center.to_value()));
+    breakpoint.add_setter(&split, "collapsed", Some(&true.to_value()));
     window.add_breakpoint(breakpoint);
-
     if let Some(dir) = std::env::var_os("BHC_SCREENSHOTS") {
         let usage = usage.clone();
-        screenshots::capture(&window, &stack, dir.into(), move || usage.scroll_to_apps());
+        screenshots::capture(&window, &stack, &split, dir.into(), move || usage.scroll_to_apps());
     }
 
     // The first-launch question comes a moment after the window appears.
@@ -137,6 +222,9 @@ pub fn build_window(app: &adw::Application, ctrl: &Rc<Controller>) -> adw::Appli
             return glib::ControlFlow::Break;
         }
         content.set_visible_child_name(if st.battery.is_some() { "main" } else { "empty" });
+        let errors: Vec<&str> = [st.settings_error.as_deref(), st.history.write_error.as_deref(), st.health_log.write_error.as_deref(), st.app_history.write_error.as_deref()].into_iter().flatten().collect();
+        *save_details.borrow_mut() = errors.join("\n\n");
+        save_banner.set_revealed(!errors.is_empty());
         overview.update(st);
         health.update(st);
         charging.update(st);
@@ -229,13 +317,13 @@ fn ask_about_background(window: &adw::ApplicationWindow, ctrl: &Rc<Controller>, 
     dialog.set_close_response("later");
     let (ctrl, usage) = (ctrl.clone(), usage.clone());
     dialog.connect_response(None, move |_, response| {
-        if response == "enable" {
-            if let Err(e) = crate::system::set_autostart(true) {
-                eprintln!("could not update autostart: {e}");
-            }
+        let error = if response == "enable" {
+            let error = crate::system::set_autostart(true).err();
             usage.sync_background();
-        }
+            error
+        } else { None };
         ctrl.update_settings(|s| s.background_asked = true);
+        if let Some(error) = error { ctrl.report_settings_error(error.to_string()); }
     });
     dialog.present(Some(window));
 }

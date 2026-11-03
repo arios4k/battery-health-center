@@ -52,6 +52,7 @@ pub struct State {
     pub apps_now: Vec<AppUsage>,
     pub apps_avg: Vec<AppUsage>,
     pub settings: Settings,
+    pub settings_error: Option<String>,
     /// Incremented whenever the app lists change.
     pub apps_generation: u64,
     /// Incremented whenever a history sample is added.
@@ -116,6 +117,7 @@ impl Controller {
                 apps_now: Vec::new(),
                 apps_avg: Vec::new(),
                 settings: Settings::load(),
+                settings_error: None,
                 apps_generation: 0,
                 history_generation: 0,
             }),
@@ -170,9 +172,15 @@ impl Controller {
             if st.settings == before {
                 return;
             }
-            st.settings.save();
+            st.settings_error = st.settings.save().err();
+            if st.settings_error.is_some() { st.settings = before; }
         }
         self.settings_mtime.set(settings_mtime());
+        self.notify();
+    }
+
+    pub fn report_settings_error(&self, error: String) {
+        self.state.borrow_mut().settings_error = Some(error);
         self.notify();
     }
 

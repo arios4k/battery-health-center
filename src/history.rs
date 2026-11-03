@@ -5,7 +5,6 @@
 //! measured exactly (see `sleep_sessions`).
 
 use std::fs::{self, File, OpenOptions};
-use std::io::Write;
 use std::path::PathBuf;
 use std::time::{SystemTime, UNIX_EPOCH};
 
@@ -41,6 +40,7 @@ pub struct History {
     /// separate process (see main.rs), so a window opened while the
     /// background copy runs must not write too, or every sample is doubled.
     writer_lock: Option<File>,
+    pub write_error: Option<String>,
 }
 
 pub fn now_unix() -> i64 {
@@ -136,7 +136,7 @@ impl History {
             .filter_map(parse_line)
             .filter(|s| s.ts >= cutoff)
             .collect();
-        let mut history = History { path, samples, writer_lock: None };
+        let mut history = History { path, samples, writer_lock: None, write_error: None };
         if history.try_become_writer() {
             history.rewrite();
         }
@@ -147,26 +147,28 @@ impl History {
     /// when the holder exits, so a later call can take over.
     fn try_become_writer(&mut self) -> bool {
         if self.writer_lock.is_none() {
-            if let Some(dir) = self.path.parent() {
-                let _ = fs::create_dir_all(dir);
-            }
-            let lock_path = self.path.with_extension("lock");
-            if let Ok(file) = OpenOptions::new().create(true).truncate(false).write(true).open(lock_path) {
-                if file.try_lock().is_ok() {
-                    self.writer_lock = Some(file);
+            let result = (|| -> std::io::Result<Option<File>> {
+                if let Some(dir) = self.path.parent() { fs::create_dir_all(dir)?; }
+                let file = OpenOptions::new().create(true).truncate(false).write(true).open(self.path.with_extension("lock"))?;
+                match file.try_lock() {
+                    Ok(()) => Ok(Some(file)),
+                    Err(std::fs::TryLockError::WouldBlock) => Ok(None),
+                    Err(std::fs::TryLockError::Error(e)) => Err(e),
                 }
+            })();
+            match result {
+                Ok(Some(file)) => { self.writer_lock = Some(file); self.write_error = None; }
+                Ok(None) => { self.write_error = None; }
+                Err(e) => { self.write_error = Some(format!("{}: {e}", self.path.display())); }
             }
         }
         self.writer_lock.is_some()
     }
 
     /// Rewrites the file with only retained samples (prunes old entries).
-    fn rewrite(&self) {
-        if let Some(dir) = self.path.parent() {
-            let _ = fs::create_dir_all(dir);
-        }
+    fn rewrite(&mut self) {
         let data: String = self.samples.iter().map(format_line).collect();
-        let _ = fs::write(&self.path, data);
+        self.write_error = crate::storage::replace(&self.path, &data).err();
     }
 
     /// Whether this process writes history (and so also sends notifications
@@ -192,9 +194,7 @@ impl History {
         // Another process records to the file; keep the sample in memory only
         // so this window's charts stay current.
         if self.try_become_writer() {
-            if let Ok(mut f) = OpenOptions::new().create(true).append(true).open(&self.path) {
-                let _ = f.write_all(format_line(&sample).as_bytes());
-            }
+            self.write_error = crate::storage::append(&self.path, &format_line(&sample)).err();
         }
         self.samples.push(sample);
     }
@@ -268,6 +268,22 @@ fn sleep_sessions(samples: &[Sample]) -> Vec<SleepSession> {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn unwritable_history_is_reported_and_can_recover() {
+        let dir = std::env::temp_dir().join(format!("bhc-history-errors-{}", std::process::id()));
+        fs::create_dir_all(&dir).unwrap();
+        let blocker = dir.join("blocker");
+        fs::write(&blocker, "file").unwrap();
+        let mut history = History { path: blocker.join("history.csv"), samples: Vec::new(), writer_lock: None, write_error: None };
+        assert!(!history.try_become_writer());
+        assert!(history.write_error.is_some());
+        history.path = dir.join("history.csv");
+        assert!(history.try_become_writer());
+        assert!(history.write_error.is_none());
+        drop(history);
+        fs::remove_dir_all(dir).unwrap();
+    }
 
     #[test]
     fn roundtrip() {

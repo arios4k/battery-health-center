@@ -16,6 +16,7 @@ const BLANK_SECS: &[i64] = &[60, 120, 180, 240, 300, 480, 600, 720, 900];
 
 fn note(title: &str, why: &str, icon: &str) -> adw::PreferencesGroup {
     let group = adw::PreferencesGroup::new();
+    group.add_css_class("workspace-card");
     let row = adw::ActionRow::builder().title(title).subtitle(why).build();
     row.add_prefix(&gtk::Image::from_icon_name(icon));
     group.add(&row);
@@ -139,7 +140,7 @@ fn profile_combo(title: &str) -> adw::ComboRow {
 }
 
 pub struct PowerPage {
-    pub root: adw::PreferencesPage,
+    pub root: adw::BreakpointBin,
     mode_group: adw::PreferencesGroup,
     mode: adw::ComboRow,
     auto_group: adw::PreferencesGroup,
@@ -157,7 +158,7 @@ pub struct PowerPage {
 
 impl PowerPage {
     pub fn new(ctrl: &Rc<Controller>) -> Rc<Self> {
-        let root = adw::PreferencesPage::new();
+        let root = super::workspace::Workspace::single_column();
 
         // Power mode: needs power-profiles-daemon.
         let mode_group = adw::PreferencesGroup::builder()
@@ -167,6 +168,7 @@ impl PowerPage {
             .build();
         let mode = profile_combo(tr("Current Mode"));
         mode_group.add(&mode);
+        mode_group.add_css_class("workspace-card");
         root.add(&mode_group);
 
         let auto_group = adw::PreferencesGroup::builder()
@@ -191,6 +193,7 @@ impl PowerPage {
         for w in [auto_switch.upcast_ref::<gtk::Widget>(), auto_ac.upcast_ref(), auto_battery.upcast_ref(), low_switch.upcast_ref(), low_level.upcast_ref()] {
             auto_group.add(w);
         }
+        auto_group.add_css_class("workspace-card");
         root.add(&auto_group);
 
         if ctrl.profiles.is_none() {
@@ -254,6 +257,7 @@ impl PowerPage {
             for row in rows.into_iter().flatten() {
                 saving.add(&row);
             }
+            saving.add_css_class("workspace-card");
             root.add(&saving);
 
             let buttons = adw::PreferencesGroup::builder().title(tr("Power Button and Lid")).build();
@@ -266,6 +270,7 @@ impl PowerPage {
                     buttons.add(&row);
                 }
             }
+            buttons.add_css_class("workspace-card");
             root.add(&buttons);
         } else {
             root.add(&note(
@@ -280,11 +285,12 @@ impl PowerPage {
         }) {
             let top_bar = adw::PreferencesGroup::builder().title(tr("Top Bar")).build();
             top_bar.add(&row);
+            top_bar.add_css_class("workspace-card");
             root.add(&top_bar);
         }
 
         let page = Rc::new(PowerPage {
-            root,
+            root: root.root,
             mode_group,
             mode,
             auto_group,

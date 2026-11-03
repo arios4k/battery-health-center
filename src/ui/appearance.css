@@ -1,0 +1,70 @@
+/* Theme-relative colors preserve light mode and high-contrast system palettes. */
+window { background-color: @window_bg_color; }
+.tool-workspace { background-color: mix(@window_bg_color, @view_bg_color, 0.4); }
+.tool-sidebar { background-color: @window_bg_color; }
+.navigation-sidebar { padding: 8px 10px; }
+.navigation-sidebar > row { min-height: 32px; border-radius: 10px; margin-bottom: 4px; padding: 6px 10px; }
+.navigation-sidebar > row.current-page {
+  background-image: none;
+  color: @window_fg_color;
+  background-color: alpha(@accent_bg_color, 0.14);
+  box-shadow: inset 3px 0 0 @accent_bg_color;
+}
+.tool-icon { color: @accent_color; padding: 12px; border-radius: 12px; background: alpha(@accent_bg_color, 0.12); }
+preferencesgroup { margin-bottom: 8px; }
+.boxed-list, .card { border-radius: 12px; }
+.boxed-list { border: 1px solid alpha(@window_fg_color, 0.12); box-shadow: none; }
+.boxed-list > row { padding-top: 5px; padding-bottom: 5px; }
+button:not(.flat):not(.circular):not(.pill) { border-radius: 8px; }
+entry, searchentry { border-radius: 8px; min-height: 36px; }
+button.suggested-action { background-image: none; background-color: @accent_bg_color; color: @accent_fg_color; }
+
+entry, searchentry { color: @view_fg_color; background-color: @view_bg_color; }
+entry placeholder, searchentry placeholder, searchentry image { color: alpha(@view_fg_color, 0.65); }
+
+/* Keep inactive windows readable under distribution themes with their own backdrop rules. */
+window label:backdrop { color: @window_fg_color; }
+window label.dim-label:backdrop { color: alpha(@window_fg_color, 0.65); }
+window label.warning:backdrop, window label.status-chip:backdrop { color: @warning_color; }
+window label.success:backdrop { color: @success_color; }
+window label.error:backdrop { color: @error_color; }
+list.boxed-list, list.boxed-list:backdrop { background-color: @card_bg_color; color: @card_fg_color; }
+list.boxed-list > row, list.boxed-list > row:backdrop { color: @card_fg_color; }
+
+/* Match the spacing and card treatment of Voltkit workspaces. */
+.workspace-body { padding: 12px 20px 28px; }
+.workspace-card {
+  padding: 18px;
+  border-radius: 16px;
+  border: 1px solid alpha(@window_fg_color, 0.10);
+  box-shadow: 0 2px 5px alpha(@window_fg_color, 0.025);
+  background-color: @card_bg_color;
+  color: @card_fg_color;
+}
+preferencesgroup.workspace-card { margin: 0; }
+.workspace-card > box > box.header { margin-bottom: 12px; }
+.workspace-card list.boxed-list { box-shadow: none; }
+.workspace-card textview, .workspace-card textview text {
+  background-color: @view_bg_color;
+  color: @view_fg_color;
+}
+.workspace-card frame { border-radius: 8px; }
+.workspace-card .title-2 { font-weight: 700; }
+
+/* About is a compact companion to the main workspaces. */
+.about-body { padding: 8px 24px 24px; }
+.about-hero { padding: 14px 12px 12px; border-radius: 16px; background: linear-gradient(180deg, alpha(@accent_bg_color, 0.14), alpha(@accent_bg_color, 0.02)); }
+.about-title { font-size: 32px; font-weight: 800; letter-spacing: -1px; }
+.about-version { border-radius: 20px; background: alpha(@accent_bg_color, 0.12); color: @accent_color; }
+.about-chip { padding: 8px; border-radius: 8px; background-color: alpha(@window_fg_color, 0.05); font-size: 12px; }
+.battery-about .boxed-list > row { padding-top: 3px; padding-bottom: 3px; }
+
+/* Subtle hierarchy keeps the dashboard distinct from settings pages. */
+.navigation-sidebar > row:hover { background-color: alpha(@window_fg_color, 0.05); }
+.navigation-sidebar > row.current-page:hover { background-color: alpha(@accent_bg_color, 0.20); }
+.workspace-heading .title-1 { font-weight: 800; letter-spacing: -0.5px; }
+.battery-hero { background-image: linear-gradient(160deg, alpha(@accent_bg_color, 0.07), transparent 70%); }
+.status-tile { background-color: alpha(@accent_bg_color, 0.045); }
+.status-tile > row { padding: 10px 4px; }
+.status-tile .title { font-size: 12px; font-weight: 600; }
+.status-tile .subtitle { margin-top: 4px; }

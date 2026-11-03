@@ -1,7 +1,6 @@
 #!/bin/sh
 # Retakes the README screenshots (light and dark) with the app's built-in
-# screenshot mode. It runs the app once per page and style (using the ZorinBlue
-# theme, so run it on a system that has it, or change the theme names below), so
+# screenshot mode. It runs the app once per page and style using the app palette, so
 # it takes a couple of minutes and opens windows briefly on your desktop.
 #
 # The Charging page shows the schedule only when a charge limit is saved, so the
@@ -43,14 +42,12 @@ PAGES="1 overview 0
 5 usage 0"
 
 for style in light dark; do
-    # The same theme in both styles, so the pair matches.
-    case $style in light) theme=ZorinBlue-Light ;; *) theme=ZorinBlue-Dark ;; esac
     echo "$PAGES" | while read -r n name scroll; do
         # A page occasionally fails to render; try again.
         for try in 1 2 3; do
             rm -rf "$WORK/shots"
             mkdir "$WORK/shots"
-            GTK_THEME=$theme BHC_HELPER_FILES="$WORK/files" BHC_SCREENSHOTS="$WORK/shots" \
+            BHC_SCREENSHOTS_SIZE=1240x840 BHC_HELPER_FILES="$WORK/files" BHC_SCREENSHOTS="$WORK/shots" \
                 BHC_SCREENSHOTS_STYLE=$style BHC_SCREENSHOTS_SCROLL=$scroll timeout 90 "$APP" >/dev/null 2>&1 || true
             f=$(ls "$WORK/shots/$n-"*.png 2>/dev/null | grep -v -- '-full' | head -1 || true)
             [ -n "$f" ] && break

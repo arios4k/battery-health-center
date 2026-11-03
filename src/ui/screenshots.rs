@@ -1,7 +1,7 @@
 //! Renders each page to a PNG for store listings. Enabled by running the app
 //! with BHC_SCREENSHOTS=<folder> (and optionally BHC_SCREENSHOTS_STYLE=light or
 //! dark, BHC_SCREENSHOTS_SIZE=<w>x<h>, and BHC_SCREENSHOTS_SCROLL=<pixels> to scroll each
-//! page down first); it saves one image per page and quits.
+//! page down first, or BHC_SCREENSHOTS_ABOUT=1 for the About dialog); it saves one image per page and quits.
 
 use std::path::PathBuf;
 use std::time::Duration;
@@ -11,7 +11,7 @@ use gtk::{glib, gsk};
 
 const PAGES: &[&str] = &["overview", "health", "charging", "power", "usage"];
 
-pub fn capture(window: &adw::ApplicationWindow, stack: &adw::ViewStack, dir: PathBuf, scroll_usage: impl Fn() + 'static) {
+pub fn capture(window: &adw::ApplicationWindow, stack: &adw::ViewStack, split: &adw::NavigationSplitView, dir: PathBuf, scroll_usage: impl Fn() + 'static) {
     let _ = std::fs::create_dir_all(&dir);
     // BHC_SCREENSHOTS_SIZE=<width>x<height> overrides the window size.
     if let Some((w, h)) = std::env::var("BHC_SCREENSHOTS_SIZE").ok().and_then(|v| {
@@ -27,15 +27,34 @@ pub fn capture(window: &adw::ApplicationWindow, stack: &adw::ViewStack, dir: Pat
         _ => adw::ColorScheme::Default,
     };
     adw::StyleManager::default().set_color_scheme(scheme);
+    // Capture the branded About dialog separately from the main pages.
+    if std::env::var_os("BHC_SCREENSHOTS_ABOUT").is_some() {
+        let dialog = super::about_dialog();
+        let parent = window.clone();
+        let shown = dialog.clone();
+        glib::timeout_add_local_once(Duration::from_millis(500), move || {
+            shown.present(Some(&parent));
+        });
+        let app = window.application();
+        glib::timeout_add_local_once(Duration::from_secs(3), move || {
+            match dialog.child().ok_or_else(|| "About content is missing".to_string()).and_then(|child| render(&child)).and_then(|t| t.save_to_png(dir.join("about.png")).map_err(|e| e.to_string())) {
+                Ok(()) => eprintln!("saved About preview"),
+                Err(e) => eprintln!("could not render About: {e}"),
+            }
+            if let Some(app) = app { app.quit(); }
+        });
+        return;
+    }
     let window = window.clone();
     let stack = stack.clone();
+    let split = split.clone();
     // Wait for app usage to be sampled before the first capture.
     glib::timeout_add_local_once(Duration::from_secs(6), move || {
-        capture_page(window, stack, dir, Box::new(scroll_usage), 0);
+        capture_page(window, stack, split, dir, Box::new(scroll_usage), 0);
     });
 }
 
-fn capture_page(window: adw::ApplicationWindow, stack: adw::ViewStack, dir: PathBuf, scroll_usage: Box<dyn Fn()>, i: usize) {
+fn capture_page(window: adw::ApplicationWindow, stack: adw::ViewStack, split: adw::NavigationSplitView, dir: PathBuf, scroll_usage: Box<dyn Fn()>, i: usize) {
     let Some(name) = PAGES.get(i) else {
         if let Some(app) = window.application() {
             app.quit();
@@ -43,6 +62,11 @@ fn capture_page(window: adw::ApplicationWindow, stack: adw::ViewStack, dir: Path
         return;
     };
     stack.set_visible_child_name(name);
+    split.set_show_content(true);
+    let show = split.downgrade();
+    glib::timeout_add_local_once(Duration::from_millis(800), move || {
+        if let Some(split) = show.upgrade() { split.set_show_content(true); }
+    });
     if *name == "usage" {
         scroll_usage();
     } else if let Some(pixels) = std::env::var("BHC_SCREENSHOTS_SCROLL").ok().and_then(|v| v.parse::<f64>().ok()) {
@@ -89,7 +113,7 @@ fn capture_page(window: adw::ApplicationWindow, stack: adw::ViewStack, dir: Path
                 }
             }
         }
-        capture_page(window, stack, dir, scroll_usage, i + 1);
+        capture_page(window, stack, split, dir, scroll_usage, i + 1);
     });
 }
 
