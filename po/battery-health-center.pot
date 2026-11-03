@@ -975,80 +975,80 @@ msgstr ""
 msgid "Recorded once a day. Readings vary a little from day to day; the trend shows the overall direction."
 msgstr ""
 
-#: src/ui/mod.rs:114
+#: src/ui/mod.rs:107
 msgid "Some changes could not be saved"
 msgstr ""
 
-#: src/ui/mod.rs:114 src/ui/overview.rs:312 src/ui/overview.rs:321
+#: src/ui/mod.rs:107 src/ui/overview.rs:312 src/ui/overview.rs:321
 msgid "Details"
 msgstr ""
 
-#: src/ui/mod.rs:118
+#: src/ui/mod.rs:111
 msgid "Could Not Save Data"
 msgstr ""
 
-#: src/ui/mod.rs:119
+#: src/ui/mod.rs:112
 msgid "Check available disk space and folder permissions. Failed preferences were not applied; unsaved history may be lost when the app closes."
 msgstr ""
 
-#: src/ui/mod.rs:121
+#: src/ui/mod.rs:114
 msgid "Close"
 msgstr ""
 
-#: src/ui/mod.rs:244
+#: src/ui/mod.rs:237
 msgid "Export Battery Report"
 msgstr ""
 
-#: src/ui/mod.rs:259
+#: src/ui/mod.rs:252
 msgid "Battery report saved"
 msgstr ""
 
-#: src/ui/mod.rs:259 src/ui/mod.rs:286
+#: src/ui/mod.rs:252 src/ui/mod.rs:279
 msgid "Open"
 msgstr ""
 
-#: src/ui/mod.rs:266
+#: src/ui/mod.rs:259
 #, no-c-format
 msgid "Could not save the report: {0}"
 msgstr ""
 
-#: src/ui/mod.rs:274
+#: src/ui/mod.rs:267
 msgid "Export Data as CSV"
 msgstr ""
 
-#: src/ui/mod.rs:274
+#: src/ui/mod.rs:267
 msgid "Save Here"
 msgstr ""
 
-#: src/ui/mod.rs:285
+#: src/ui/mod.rs:278
 #, no-c-format
 msgid "Saved {n} file"
 msgid_plural "Saved {n} files"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/ui/mod.rs:294
+#: src/ui/mod.rs:287
 #, no-c-format
 msgid "Could not save the files: {0}"
 msgstr ""
 
-#: src/ui/mod.rs:311
+#: src/ui/mod.rs:304
 msgid "Record History in the Background?"
 msgstr ""
 
-#: src/ui/mod.rs:312
+#: src/ui/mod.rs:305
 msgid "Battery Health Center can start hidden when you log in, so battery history, sleep drain and notifications keep working with the window closed. You can change this any time on the Usage page."
 msgstr ""
 
-#: src/ui/mod.rs:314
+#: src/ui/mod.rs:307
 msgid "Not Now"
 msgstr ""
 
-#: src/ui/mod.rs:314
+#: src/ui/mod.rs:307
 msgid "Turn On"
 msgstr ""
 
-#: src/ui/mod.rs:37 src/ui/mod.rs:84 src/ui/mod.rs:126
+#: src/ui/mod.rs:37 src/ui/mod.rs:84 src/ui/mod.rs:119
 msgctxt "page title"
 msgid "Overview"
 msgstr ""
