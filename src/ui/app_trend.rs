@@ -36,7 +36,7 @@ fn summary(cpu_secs: f64, wh: f64) -> String {
     }
 }
 
-pub fn show(parent: &impl IsA<gtk::Widget>, ctrl: &Rc<Controller>, key: &str, name: &str, icon: Option<gio::Icon>) {
+pub fn show(parent: &impl IsA<gtk::Widget>, ctrl: &Rc<Controller>, key: &str, name: &str, icon: Option<gio::Icon>) -> adw::Dialog {
     let now = now_unix();
     let st = ctrl.state();
     // The week's points; shorter ranges are cut from it when drawing.
@@ -123,4 +123,5 @@ pub fn show(parent: &impl IsA<gtk::Widget>, ctrl: &Rc<Controller>, key: &str, na
     toolbar.set_content(Some(&gtk::ScrolledWindow::builder().child(&content).hscrollbar_policy(gtk::PolicyType::Never).vexpand(true).build()));
     let dialog = adw::Dialog::builder().title(name).content_width(520).content_height(620).child(&toolbar).build();
     dialog.present(Some(parent));
+    dialog
 }

@@ -16,8 +16,8 @@ Health, cycle count, charge limits and schedules, and which apps drain it, for G
 [![Made with Rust and GTK4](https://img.shields.io/badge/made%20with-Rust%20%2B%20GTK4-informational)](#build-from-source)
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/overview-dark.png">
-  <img src="docs/screenshots/overview-light.png" alt="Battery Health Center's Overview page: a charge ring at 77% with the time remaining, the battery health summary and what has happened since the last charge">
+  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/v0.5.0/overview-dark.png">
+  <img src="docs/screenshots/v0.5.0/overview-light.png" alt="Battery Health Center 0.5.0: sidebar navigation, battery status and health in an adaptive dashboard">
 </picture>
 
 </div>
@@ -47,8 +47,8 @@ or the laptop shuts down early, a guided calibration (charge, run nearly empty, 
 reading. Laptops with two batteries are supported.
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/health-dark.png">
-  <img src="docs/screenshots/health-light.png" alt="The Health page: maximum capacity 85%, condition, full charge and design capacity, and capacity over time">
+  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/v0.5.0/health-dark.png">
+  <img src="docs/screenshots/v0.5.0/health-light.png" alt="The Health dashboard with battery capacity, condition, usage details and long-term trend guidance">
 </picture>
 
 ### 🛡️ Make the battery last for years
@@ -59,8 +59,8 @@ is kept after restarts and sleep. Need a full battery for a trip? **Charge to 10
 once, then your limit comes back by itself.
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/charging-dark.png">
-  <img src="docs/screenshots/charging-light.png" alt="The Charging page with the profile dropdown set to Balanced (80%), the stop and resume points, and the Keep After Restart switch">
+  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/v0.5.0/charging-dark.png">
+  <img src="docs/screenshots/v0.5.0/charging-light.png" alt="The centered Charging workspace with active limits, scheduled full charges, temporary overrides and charge controls">
 </picture>
 
 ### 🗓️ Full when you need it, protected the rest of the time
@@ -71,8 +71,8 @@ your routine from when you usually unplug. You enter your password once, when yo
 small service does the rest.
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/schedule-dark.png">
-  <img src="docs/screenshots/schedule-light.png" alt="The Charging Schedule section with optimized charging on, what it has learned so far, and two full-by times">
+  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/v0.5.0/schedule-dark.png">
+  <img src="docs/screenshots/v0.5.0/schedule-light.png" alt="Charging Schedule with optimized charging, learned unplug times and ready-by rules">
 </picture>
 
 ### 📊 See what is draining it
@@ -83,12 +83,12 @@ over 24 hours and 7 days. Click an app to see its energy impact and estimated us
 doesn't measure power per app, so the numbers are estimates from CPU time and the measured draw above idle.
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/usage-dark.png">
-  <img src="docs/screenshots/usage-light.png" alt="The Usage page: battery level history with the charge limit, and battery use during sleep">
+  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/v0.5.0/usage-dark.png">
+  <img src="docs/screenshots/v0.5.0/usage-light.png" alt="The Usage dashboard with battery history, app energy estimates and background recording controls">
 </picture>
 
 <div align="center">
-<img src="docs/screenshots/app-trend-dark.png" width="360" alt="One app's energy use hour by hour, opened by clicking it on the Usage page">
+<img src="docs/screenshots/v0.5.0/app-trend-dark.png" width="360" alt="The current app-detail dialog with energy impact and hourly history">
 </div>
 
 ### ⚡ Power modes without the hunt
@@ -99,8 +99,8 @@ power button and lid) and the battery percentage in the top bar. Only what your 
 shown.
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/power-dark.png">
-  <img src="docs/screenshots/power-light.png" alt="The Power page: current power mode, automatic power mode, and GNOME's power-saving settings">
+  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/v0.5.0/power-dark.png">
+  <img src="docs/screenshots/v0.5.0/power-light.png" alt="The Power page: current power mode, automatic power mode, and GNOME's power-saving settings">
 </picture>
 
 ### 💡 Small nudges, not nagging

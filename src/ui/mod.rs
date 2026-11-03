@@ -203,7 +203,7 @@ pub fn build_window(app: &adw::Application, ctrl: &Rc<Controller>) -> adw::Appli
     window.add_breakpoint(breakpoint);
     if let Some(dir) = std::env::var_os("BHC_SCREENSHOTS") {
         let usage = usage.clone();
-        screenshots::capture(&window, &stack, &split, dir.into(), move || usage.scroll_to_apps());
+        screenshots::capture(&window, &stack, &split, ctrl, dir.into(), move || usage.scroll_to_apps());
     }
 
     // The first-launch question comes a moment after the window appears.
