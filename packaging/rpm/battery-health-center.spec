@@ -32,7 +32,7 @@ health and cycle count, charge limits and profiles to reduce wear, a charging
 schedule and optimized charging, battery use during sleep, power modes and
 power-saving settings, battery-saving tips, and which apps use the most energy
 (with an hour-by-hour view for each app). History can be exported as CSV. It is
-available in English, Spanish and German.
+available in English, Spanish, German and French.
 
 Charge limits need a laptop whose firmware exposes charge thresholds to the
 kernel (as on ThinkPads and many others). Changing them asks for a password

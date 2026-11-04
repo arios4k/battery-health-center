@@ -7,6 +7,7 @@
   <summary>Battery health, charge limits and app energy usage in one place</summary>
   <summary xml:lang="de">Akkuzustand, Ladelimits und Energieverbrauch der Anwendungen an einem Ort</summary>
   <summary xml:lang="es">Salud de la batería, límites de carga y consumo de energía de las aplicaciones en un solo lugar</summary>
+  <summary xml:lang="fr">Santé de la batterie, limites de charge et consommation d’énergie des applications au même endroit</summary>
   <developer id="io.github.arios4k">
     <name>Alexis Rios-Negron</name>
   </developer>
@@ -24,7 +25,7 @@
       <li>Apps using the most energy, now and over the last 7 days, with an hour-by-hour view for each app</li>
       <li>Wireless device batteries, notifications, guided calibration, a battery report and CSV export of your history</li>
       <li>Power mode, automatic power mode and GNOME's power-saving settings in one place, plus battery-saving tips</li>
-      <li>Available in English, Spanish and German</li>
+      <li>Available in English, Spanish, German and French</li>
     </ul>
   </description>
   <url type="homepage">https://github.com/arios4k/battery-health-center</url>

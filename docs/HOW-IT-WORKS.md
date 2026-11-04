@@ -1,6 +1,6 @@
 # How Battery Health Center works
 
-The details behind the app, for the curious and for contributors. Back to the [README](../README.md).
+The details behind the app, for the curious and for contributors. Back to the [README](../README.md). Also in [Español](HOW-IT-WORKS.es.md), [Deutsch](HOW-IT-WORKS.de.md) and [Français](HOW-IT-WORKS.fr.md).
 
 - **Battery data** is read directly from `/sys/class/power_supply/BAT*`. Both energy-based (µWh) and
   charge-based (µAh) drivers are supported.
