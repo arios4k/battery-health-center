@@ -11,12 +11,14 @@ use crate::settings::Calibration;
 use crate::i18n::{tr, trf};
 
 pub struct HealthPage {
-    pub root: adw::PreferencesPage,
+    pub root: adw::BreakpointBin,
     battery_group: adw::PreferencesGroup,
     battery_select: adw::ComboRow,
     battery_names: RefCell<Vec<String>>,
     selected: Rc<Cell<usize>>,
     chart: gtk::DrawingArea,
+    chart_frame: gtk::Frame,
+    trend_hint: gtk::Label,
     trend_month: gtk::Label,
     projection_row: adw::ActionRow,
     projection: gtk::Label,
@@ -50,13 +52,14 @@ fn wh(v: Option<f64>) -> String {
 
 impl HealthPage {
     pub fn new(ctrl: &Rc<Controller>) -> Rc<Self> {
-        let root = adw::PreferencesPage::new();
+        let root = super::workspace::Workspace::new();
 
         // Only shown on laptops with more than one battery.
         let battery_group = adw::PreferencesGroup::builder().visible(false).build();
         let battery_select = adw::ComboRow::builder().title(tr("Battery")).build();
         battery_group.add(&battery_select);
-        root.add(&battery_group);
+        battery_group.add_css_class("workspace-card");
+        root.banner(&battery_group);
 
         let cap = adw::PreferencesGroup::builder()
             .title(tr("Capacity"))
@@ -76,6 +79,7 @@ impl HealthPage {
         let (_, full) = value_row(&cap, tr("Full Charge Capacity"));
         let (_, design) = value_row(&cap, tr("Design Capacity"));
         let (_, lost) = value_row(&cap, tr("Capacity Lost"));
+        cap.add_css_class("workspace-card");
         root.add(&cap);
 
         let over_time = adw::PreferencesGroup::builder()
@@ -93,14 +97,19 @@ impl HealthPage {
         chart.set_margin_bottom(6);
         chart.set_margin_start(6);
         chart.set_margin_end(12);
-        over_time.add(&gtk::Frame::builder().child(&chart).css_classes(["card"]).build());
+        let chart_frame = gtk::Frame::builder().child(&chart).css_classes(["card"]).build();
+        over_time.add(&chart_frame);
+        let trend_hint = gtk::Label::builder().wrap(true).xalign(0.0).css_classes(["dim-label"])
+            .margin_top(12).margin_bottom(12).build();
+        over_time.add(&trend_hint);
         let rows = adw::PreferencesGroup::new();
         let (_, trend_month) = value_row(&rows, tr("Trend"));
         let (projection_row, projection) = value_row(&rows, tr("Reaches 80%"));
         projection_row.set_subtitle(tr("When batteries are usually considered worn"));
         rows.set_margin_top(12);
         over_time.add(&rows);
-        root.add(&over_time);
+        over_time.add_css_class("workspace-card");
+        root.aside(&over_time);
 
         let usage = adw::PreferencesGroup::builder().title(tr("Usage")).build();
         let (cycles_row, cycles) = value_row(&usage, tr("Cycle Count"));
@@ -109,6 +118,7 @@ impl HealthPage {
         let (_, avg_draw) = value_row(&usage, tr("Average Draw on Battery (24 h)"));
         let (_, voltage) = value_row(&usage, tr("Voltage"));
         let (_, voltage_design) = value_row(&usage, tr("Minimum Design Voltage"));
+        usage.add_css_class("workspace-card");
         root.add(&usage);
 
         let info = adw::PreferencesGroup::builder().title(tr("Battery Information")).build();
@@ -117,7 +127,8 @@ impl HealthPage {
         let (_, serial) = value_row(&info, tr("Serial Number"));
         let (_, technology) = value_row(&info, tr("Chemistry"));
         let (_, device) = value_row(&info, tr("Device"));
-        root.add(&info);
+        info.add_css_class("workspace-card");
+        root.aside(&info);
 
         let calib = adw::PreferencesGroup::builder()
             .title(tr("Calibration"))
@@ -130,15 +141,18 @@ impl HealthPage {
         let calib_button = gtk::Button::builder().label(tr("Start")).valign(gtk::Align::Center).build();
         calib_row.add_suffix(&calib_button);
         calib.add(&calib_row);
+        calib.add_css_class("workspace-card");
         root.add(&calib);
 
         let page = Rc::new(HealthPage {
-            root,
+            root: root.root,
             battery_group,
             battery_select,
             battery_names: RefCell::new(Vec::new()),
             selected: Rc::new(Cell::new(0)),
             chart,
+            chart_frame,
+            trend_hint,
             trend_month,
             projection_row,
             projection,
@@ -235,6 +249,14 @@ impl HealthPage {
     }
 
     fn update_trend(&self, st: &State) {
+        let count = st.health_log.entries.len();
+        self.chart_frame.set_visible(count >= 2);
+        self.trend_hint.set_visible(st.health_log.trend().is_none());
+        self.trend_hint.set_label(if st.batteries.first().and_then(|b| b.health_percent()).is_none() {
+            tr("This battery does not report capacity data, so a health trend cannot be calculated.")
+        } else {
+            tr("A trend needs at least 5 daily readings spanning 14 days. Open the app on different days, or enable background recording on the Usage page.")
+        });
         if self.last_log_len.replace(st.health_log.entries.len()) != st.health_log.entries.len() {
             self.chart.queue_draw();
         }
@@ -250,8 +272,8 @@ impl HealthPage {
                 });
             }
             None => {
-                let days = st.health_log.entries.first().map_or(0, |e| (now_unix() - e.ts) / 86_400);
-                self.trend_month.set_label(&trf("Collecting data ({days} of 14 days)", &[("days", days.to_string())]));
+                let days = st.health_log.entries.first().zip(st.health_log.entries.last()).map_or(0, |(a, b)| (b.ts - a.ts).max(0) / 86_400);
+                self.trend_month.set_label(&trf("{readings}/5 readings · {days}/14 days", &[("readings", count.to_string()), ("days", days.to_string())]));
                 self.projection_row.set_visible(false);
             }
         }

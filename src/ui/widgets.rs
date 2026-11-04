@@ -358,3 +358,18 @@ pub fn draw_app_trend(cr: &cairo::Context, w: f64, h: f64, fg: &gdk::RGBA, point
         empty_text: tr("Not enough history yet"),
     });
 }
+
+/// Keyboard-accessible explanation beside app-energy headings.
+pub fn energy_info() -> gtk::MenuButton {
+    let text = energy_explanation();
+    let label = gtk::Label::builder().label(text).wrap(true).max_width_chars(42)
+        .margin_top(12).margin_bottom(12).margin_start(12).margin_end(12).build();
+    let popover = gtk::Popover::builder().child(&label).build();
+    gtk::MenuButton::builder().icon_name("dialog-information-symbolic")
+        .tooltip_text(tr("How energy estimates work")).popover(&popover)
+        .css_classes(["flat"]).valign(gtk::Align::Center).build()
+}
+
+pub fn energy_explanation() -> &'static str {
+    tr("Energy impact is based on CPU activity. Estimated watts share battery draw above idle between apps by CPU use. GPU, display and device activity are not measured per app. Use these values as a guide, not an exact measurement.")
+}

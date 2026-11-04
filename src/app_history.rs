@@ -5,8 +5,7 @@
 //! impact) and estimated watt-hours drawn on battery.
 
 use std::collections::HashMap;
-use std::fs::{self, OpenOptions};
-use std::io::Write;
+use std::fs;
 use std::path::PathBuf;
 
 use crate::apps::AppUsage;
@@ -24,6 +23,8 @@ pub struct AppTotal {
 
 pub struct AppHistory {
     path: PathBuf,
+    pub write_error: Option<String>,
+    pending: String,
     /// Completed hours, keyed by (hour start, app key).
     buckets: HashMap<(i64, String), AppTotal>,
     /// The hour currently being accumulated.
@@ -55,12 +56,13 @@ impl AppHistory {
                 buckets.insert((hour, total.key.clone()), total);
             }
         }
-        AppHistory { path, buckets, current_hour: hour_of(now), current: HashMap::new() }
+        AppHistory { path, write_error: None, pending: String::new(), buckets, current_hour: hour_of(now), current: HashMap::new() }
     }
 
     /// Adds `secs` seconds of the given usage. When an hour ends, its totals
     /// are written to disk if `write` is set (only the history writer does).
     pub fn add(&mut self, apps: &[AppUsage], secs: f64, now: i64, write: bool) {
+        if write && !self.pending.is_empty() { self.flush_pending(); }
         if hour_of(now) != self.current_hour {
             self.close_hour(write, now);
         }
@@ -79,15 +81,9 @@ impl AppHistory {
         let hour = self.current_hour;
         let finished: Vec<AppTotal> = self.current.drain().map(|(_, t)| t).collect();
         if write && !finished.is_empty() {
-            if let Some(dir) = self.path.parent() {
-                let _ = fs::create_dir_all(dir);
-            }
-            if let Ok(mut f) = OpenOptions::new().create(true).append(true).open(&self.path) {
-                for t in &finished {
-                    // The name goes last so commas in it don't break parsing.
-                    let _ = writeln!(f, "{hour},{},{:.1},{:.4},{}", t.key, t.cpu_secs, t.wh, t.name.replace('\n', " "));
-                }
-            }
+            let text: String = finished.iter().map(|t| format!("{hour},{},{:.1},{:.4},{}\n", t.key, t.cpu_secs, t.wh, t.name.replace('\n', " "))).collect();
+            self.pending.push_str(&text);
+            self.flush_pending();
         }
         for t in finished {
             self.buckets.insert((hour, t.key.clone()), t);
@@ -95,6 +91,11 @@ impl AppHistory {
         self.current_hour = hour_of(now);
         let cutoff = now - RETENTION_SECS;
         self.buckets.retain(|(h, _), _| *h >= cutoff);
+    }
+
+    fn flush_pending(&mut self) {
+        self.write_error = crate::storage::append(&self.path, &self.pending).err();
+        if self.write_error.is_none() { self.pending.clear(); }
     }
 
     /// Totals per app since `since`, including the hour in progress, sorted
@@ -169,8 +170,27 @@ mod tests {
     }
 
     #[test]
+    fn failed_hour_remains_pending_and_retries_without_new_hour() {
+        let dir = std::env::temp_dir().join(format!("bhc-app-errors-{}", std::process::id()));
+        fs::create_dir_all(&dir).unwrap();
+        let blocker = dir.join("blocker");
+        fs::write(&blocker, "file").unwrap();
+        let mut h = AppHistory { path: blocker.join("apps.csv"), write_error: None, pending: String::new(), buckets: HashMap::new(), current_hour: 0, current: HashMap::new() };
+        h.add(&[usage("a", 50.0)], 10.0, 0, true);
+        h.add(&[], 1.0, 3600, true);
+        assert!(h.write_error.is_some());
+        assert!(!h.pending.is_empty());
+        h.path = dir.join("apps.csv");
+        h.add(&[], 1.0, 3601, true);
+        assert!(h.write_error.is_none());
+        assert!(h.pending.is_empty());
+        assert_eq!(fs::read_to_string(&h.path).unwrap().lines().count(), 1);
+        fs::remove_dir_all(dir).unwrap();
+    }
+
+    #[test]
     fn series_has_a_point_for_every_recorded_hour() {
-        let mut h = AppHistory { path: PathBuf::new(), buckets: HashMap::new(), current_hour: 0, current: HashMap::new() };
+        let mut h = AppHistory { path: PathBuf::new(), write_error: None, pending: String::new(), buckets: HashMap::new(), current_hour: 0, current: HashMap::new() };
         // Hour 0: both apps, hour 1: only "b", hour 2 (in progress): only "a".
         h.add(&[usage("a", 50.0), usage("b", 10.0)], 3600.0, 10, false);
         h.add(&[usage("b", 10.0)], 3600.0, 3600 + 10, false);

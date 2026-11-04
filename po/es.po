@@ -1714,3 +1714,159 @@ msgstr "Aún no hay suficiente historial"
 #: src/ui/widgets.rs:308
 msgid "Recorded once a day; check back tomorrow"
 msgstr "Se registra una vez al día; vuelve mañana"
+
+msgid "Your battery, charger and recommendations at a glance."
+msgstr "Tu batería, cargador y recomendaciones de un vistazo."
+
+msgid "Understand battery capacity, wear and long-term health."
+msgstr "Consulta la capacidad, el desgaste y la salud de la batería a largo plazo."
+
+msgid "Protect your battery with charge limits and schedules."
+msgstr "Protege tu batería con límites y horarios de carga."
+
+msgid "Choose a power mode and adjust energy-saving settings."
+msgstr "Elige un modo de energía y ajusta las opciones de ahorro."
+
+msgid "Explore battery history, sleep drain and app energy use."
+msgstr "Consulta el historial, el consumo en suspensión y el uso de energía por aplicación."
+
+msgid "Copy version information"
+msgstr "Copiar información de la versión"
+
+msgid "Version information copied"
+msgstr "Información de la versión copiada"
+
+msgid "Version {version}"
+msgstr "Versión {version}"
+
+msgid "Battery care"
+msgstr "Cuidado de la batería"
+
+msgid "Native Linux app"
+msgstr "Aplicación nativa de Linux"
+
+msgid "Open source"
+msgstr "Código abierto"
+
+msgid "Explore Battery Health Center"
+msgstr "Explora Battery Health Center"
+
+msgid "Project & source code"
+msgstr "Proyecto y código fuente"
+
+msgid "Documentation, releases, and the code behind Battery Health Center"
+msgstr "Documentación, versiones y código de Battery Health Center"
+
+msgid "Report an issue"
+msgstr "Informar de un problema"
+
+msgid "Share a bug or suggest an improvement"
+msgstr "Informa de un error o sugiere una mejora"
+
+msgid "Credits and license"
+msgstr "Créditos y licencia"
+
+msgid "Created by"
+msgstr "Creado por"
+
+msgid "GNU General Public License v3 or later"
+msgstr "Licencia Pública General de GNU v3 o posterior"
+
+msgid "Free to use, modify, and share"
+msgstr "Libre para usar, modificar y compartir"
+
+msgid "About Battery Health Center"
+msgstr "Acerca de Battery Health Center"
+
+msgid "Open in browser"
+msgstr "Abrir en el navegador"
+
+msgid "Could not open link: {error}"
+msgstr "No se pudo abrir el enlace: {error}"
+
+msgid "Charging Status"
+msgstr "Estado de carga"
+
+msgid "Active Charge Limit"
+msgstr "Límite de carga activo"
+
+msgid "Next Scheduled Full Charge"
+msgstr "Próxima carga completa programada"
+
+msgid "Temporary Override"
+msgstr "Anulación temporal"
+
+msgid "Not supported"
+msgstr "No compatible"
+
+msgid "{battery}: returns to {limit}%"
+msgstr "{battery}: volverá al {limit}%"
+
+msgid "{battery}: previous limit will return"
+msgstr "{battery}: se restaurará el límite anterior"
+
+msgid "One-time full charge"
+msgstr "Carga completa por una vez"
+
+msgid "Scheduled full charge"
+msgstr "Carga completa programada"
+
+msgid "None — your charge limit is active"
+msgstr "Ninguna — tu límite de carga está activo"
+
+msgid "None — charging is unrestricted"
+msgstr "Ninguna — carga sin límite"
+
+msgid "Save a charge limit below 100% to use scheduled charging."
+msgstr "Guarda un límite de carga inferior al 100% para usar la carga programada."
+
+msgid "Full by {ready} · starts {start}"
+msgstr "Carga completa para {ready} · comienza {start}"
+
+msgid "Learning your routine. Add a time to schedule a full charge now."
+msgstr "Aprendiendo tu rutina. Añade una hora para programar una carga completa ahora."
+
+msgid "No schedule set. Add a ready-by time below."
+msgstr "No hay un horario definido. Añade abajo una hora para tener la batería lista."
+
+msgid "This battery does not report capacity data, so a health trend cannot be calculated."
+msgstr "Esta batería no proporciona datos de capacidad, por lo que no se puede calcular una tendencia de salud."
+
+msgid "A trend needs at least 5 daily readings spanning 14 days. Open the app on different days, or enable background recording on the Usage page."
+msgstr "Una tendencia necesita al menos 5 lecturas diarias a lo largo de 14 días. Abre la aplicación en días distintos o activa el registro en segundo plano en la página Uso."
+
+msgid "{readings}/5 readings · {days}/14 days"
+msgstr "{readings}/5 lecturas · {days}/14 días"
+
+msgid "Some changes could not be saved"
+msgstr "No se pudieron guardar algunos cambios"
+
+msgid "Could Not Save Data"
+msgstr "No se pudieron guardar los datos"
+
+msgid "Check available disk space and folder permissions. Failed preferences were not applied; unsaved history may be lost when the app closes."
+msgstr "Comprueba el espacio disponible y los permisos de la carpeta. Las preferencias que fallaron no se aplicaron; el historial sin guardar puede perderse al cerrar la aplicación."
+
+msgid "Close"
+msgstr "Cerrar"
+
+msgid "Collecting the first app samples"
+msgstr "Recopilando las primeras muestras de aplicaciones"
+
+msgid "App activity appears after a few seconds. Keep the app open to start recording."
+msgstr "La actividad de las aplicaciones aparece tras unos segundos. Mantén la aplicación abierta para empezar a registrar."
+
+msgid "Your history starts here. Keep the app running; a battery sample is recorded every minute. Enable background recording below to keep collecting after login."
+msgstr "Tu historial comienza aquí. Mantén la aplicación en ejecución; se registra una muestra de batería cada minuto. Activa abajo el registro en segundo plano para seguir recopilando al iniciar sesión."
+
+msgid "Not enough samples in this view yet. New readings arrive every minute while the app runs. Try a longer range, or switch to Level if power readings are unavailable."
+msgstr "Aún no hay suficientes muestras en esta vista. Llegan lecturas nuevas cada minuto mientras la aplicación está en ejecución. Prueba un intervalo más largo o cambia a Nivel si no hay lecturas de potencia."
+
+msgid "No hourly history yet. Keep the app running to collect activity. Completed hours are saved for the last 7 days."
+msgstr "Aún no hay historial por hora. Mantén la aplicación en ejecución para registrar actividad. Las horas completas se guardan durante los últimos 7 días."
+
+msgid "How energy estimates work"
+msgstr "Cómo funcionan las estimaciones de energía"
+
+msgid "Energy impact is based on CPU activity. Estimated watts share battery draw above idle between apps by CPU use. GPU, display and device activity are not measured per app. Use these values as a guide, not an exact measurement."
+msgstr "El impacto energético se basa en la actividad de la CPU. Los vatios estimados reparten el consumo de batería por encima del reposo entre las aplicaciones según su uso de CPU. La actividad de GPU, pantalla y dispositivos no se mide por aplicación. Usa estos valores como orientación, no como una medición exacta."

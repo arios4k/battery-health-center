@@ -36,7 +36,7 @@ fn summary(cpu_secs: f64, wh: f64) -> String {
     }
 }
 
-pub fn show(parent: &impl IsA<gtk::Widget>, ctrl: &Rc<Controller>, key: &str, name: &str, icon: Option<gio::Icon>) {
+pub fn show(parent: &impl IsA<gtk::Widget>, ctrl: &Rc<Controller>, key: &str, name: &str, icon: Option<gio::Icon>) -> adw::Dialog {
     let now = now_unix();
     let st = ctrl.state();
     // The week's points; shorter ranges are cut from it when drawing.
@@ -70,10 +70,10 @@ pub fn show(parent: &impl IsA<gtk::Widget>, ctrl: &Rc<Controller>, key: &str, na
     let kind = Rc::new(Cell::new(TrendKind::Impact));
     let (kind_box, kind_buttons) = toggle_group(&[tr("Energy Impact"), tr("Energy Used")]);
     let (range_box, range_buttons) = toggle_group(&[tr("24 Hours"), tr("7 Days")]);
-    let controls = gtk::Box::builder().spacing(6).build();
-    controls.append(&kind_box);
-    controls.append(&gtk::Box::builder().hexpand(true).build());
-    controls.append(&range_box);
+    let controls = gtk::FlowBox::builder().selection_mode(gtk::SelectionMode::None)
+        .min_children_per_line(1).max_children_per_line(2).column_spacing(6).row_spacing(6).build();
+    controls.insert(&kind_box, -1);
+    controls.insert(&range_box, -1);
     content.append(&controls);
 
     let chart = gtk::DrawingArea::builder().content_height(200).hexpand(true).build();
@@ -83,7 +83,12 @@ pub fn show(parent: &impl IsA<gtk::Widget>, ctrl: &Rc<Controller>, key: &str, na
     chart.set_margin_bottom(6);
     chart.set_margin_start(6);
     chart.set_margin_end(12);
-    content.append(&gtk::Frame::builder().child(&chart).css_classes(["card"]).build());
+    let frame = gtk::Frame::builder().child(&chart).css_classes(["card"]).visible(!points.is_empty()).build();
+    content.append(&frame);
+    if points.is_empty() {
+        content.append(&gtk::Label::builder().label(tr("No hourly history yet. Keep the app running to collect activity. Completed hours are saved for the last 7 days."))
+            .wrap(true).xalign(0.0).css_classes(["dim-label"]).build());
+    }
 
     let legend = gtk::Label::builder().css_classes(["caption", "dim-label"]).xalign(0.0).wrap(true).build();
     let describe = |k: TrendKind| match k {
@@ -118,4 +123,5 @@ pub fn show(parent: &impl IsA<gtk::Widget>, ctrl: &Rc<Controller>, key: &str, na
     toolbar.set_content(Some(&gtk::ScrolledWindow::builder().child(&content).hscrollbar_policy(gtk::PolicyType::Never).vexpand(true).build()));
     let dialog = adw::Dialog::builder().title(name).content_width(520).content_height(620).child(&toolbar).build();
     dialog.present(Some(parent));
+    dialog
 }

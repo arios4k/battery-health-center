@@ -1,3 +1,23 @@
+battery-health-center (0.5.1-1) unstable; urgency=low
+
+  * Remove the duplicate sidebar branding row.
+
+ -- Alexis Rios-Negron <182820807+arios4k@users.noreply.github.com>  Tue, 03 Nov 2026 11:00:00 -0800
+
+battery-health-center (0.5.0-1) unstable; urgency=low
+
+  * Refresh the app with Voltkit-style navigation, adaptive workspaces, a
+    modern battery icon and a branded About dialog.
+  * Use dashboard columns for Overview, Health and Usage, with centered
+    single-column settings on Charging and Power.
+  * Show active charge limits, upcoming full charges and temporary overrides.
+  * Explain app energy estimates and provide clearer history empty states.
+  * Report failed saves, preserve preferences on failure, and retry health
+    and app-usage history writes after storage recovers.
+  * Update Spanish and German translations and documentation screenshots.
+
+ -- Alexis Rios-Negron <182820807+arios4k@users.noreply.github.com>  Tue, 03 Nov 2026 00:00:00 -0800
+
 battery-health-center (0.4.5-1) unstable; urgency=low
 
   * The About dialog now links to the project website and the issue tracker.

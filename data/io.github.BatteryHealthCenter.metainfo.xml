@@ -52,6 +52,16 @@
   </supports>
   <content_rating type="oars-1.1"/>
   <releases>
+    <release version="0.5.1" date="2026-11-03">
+      <description><p>Remove the duplicate sidebar branding row.</p></description>
+    </release>
+    <release version="0.5.0" date="2026-11-03">
+      <description>
+        <p>A refreshed interface with sidebar navigation, adaptive dashboards, focused settings pages, a new battery icon and a branded About dialog.</p>
+        <p>Charging status brings together active limits, upcoming full charges and temporary overrides. Energy estimates and history collection now have clearer explanations.</p>
+        <p>Failed saves are reported, preferences are preserved on failure, and health and app-usage history writes retry after storage recovers. Includes updated Spanish and German translations.</p>
+      </description>
+    </release>
     <release version="0.4.5" date="2026-11-01">
       <description>
         <p>The About dialog now links to the project website and the issue tracker.</p>

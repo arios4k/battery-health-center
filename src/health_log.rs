@@ -1,8 +1,7 @@
 //! One battery health entry per day, kept indefinitely, for long-term trends
 //! (the main history only keeps 30 days). Stored as CSV next to the history.
 
-use std::fs::{self, OpenOptions};
-use std::io::Write;
+use std::fs;
 use std::path::PathBuf;
 
 use crate::battery::Battery;
@@ -32,6 +31,7 @@ const MIN_TREND_POINTS: usize = 5;
 pub struct HealthLog {
     path: PathBuf,
     pub entries: Vec<HealthEntry>,
+    pub write_error: Option<String>,
 }
 
 fn parse_line(line: &str) -> Option<HealthEntry> {
@@ -47,7 +47,7 @@ impl HealthLog {
     pub fn load() -> Self {
         let path = data_dir().join("health.csv");
         let entries = fs::read_to_string(&path).unwrap_or_default().lines().filter_map(parse_line).collect();
-        HealthLog { path, entries }
+        HealthLog { path, entries, write_error: None }
     }
 
     /// Adds today's entry if there isn't one yet. Only the process that writes
@@ -59,13 +59,9 @@ impl HealthLog {
             return false;
         }
         let entry = HealthEntry { ts: now, health, cycles: battery.cycle_count };
-        if let Some(dir) = self.path.parent() {
-            let _ = fs::create_dir_all(dir);
-        }
-        if let Ok(mut f) = OpenOptions::new().create(true).append(true).open(&self.path) {
-            let cycles = entry.cycles.map(|c| c.to_string()).unwrap_or_default();
-            let _ = writeln!(f, "{},{:.2},{}", entry.ts, entry.health, cycles);
-        }
+        let cycles = entry.cycles.map(|c| c.to_string()).unwrap_or_default();
+        self.write_error = crate::storage::append(&self.path, &format!("{},{:.2},{}\n", entry.ts, entry.health, cycles)).err();
+        if self.write_error.is_some() { return false; } // retry on the next tick
         self.entries.push(entry);
         true
     }
@@ -100,6 +96,27 @@ fn trend(entries: &[HealthEntry]) -> Option<Trend> {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn failed_daily_entry_is_retried_after_storage_recovers() {
+        let dir = std::env::temp_dir().join(format!("bhc-health-errors-{}", std::process::id()));
+        fs::create_dir_all(&dir).unwrap();
+        fs::write(dir.join("energy_full"), "40000000").unwrap();
+        fs::write(dir.join("energy_full_design"), "50000000").unwrap();
+        let battery = crate::battery::read_battery(&dir).unwrap();
+        let blocker = dir.join("blocker");
+        fs::write(&blocker, "file").unwrap();
+        let mut log = HealthLog { path: blocker.join("health.csv"), entries: Vec::new(), write_error: None };
+        assert!(!log.record(&battery, 100));
+        assert!(log.entries.is_empty());
+        assert!(log.write_error.is_some());
+        log.path = dir.join("health.csv");
+        assert!(log.record(&battery, 100));
+        assert!(log.write_error.is_none());
+        assert!(!log.record(&battery, 101));
+        assert_eq!(fs::read_to_string(&log.path).unwrap().lines().count(), 1);
+        fs::remove_dir_all(dir).unwrap();
+    }
 
     #[test]
     fn declining_trend() {

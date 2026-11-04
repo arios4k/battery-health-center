@@ -86,8 +86,12 @@ fn learned_text(l: &Learned) -> String {
 }
 
 pub struct ChargingPage {
-    pub root: adw::PreferencesPage,
+    pub root: adw::BreakpointBin,
     limit_group: adw::PreferencesGroup,
+    active_limit: adw::ActionRow,
+    next_charge: adw::ActionRow,
+    override_status: adw::ActionRow,
+    summary_minute: Cell<i64>,
     unsupported: adw::PreferencesGroup,
     status_row: adw::ActionRow,
     profile: adw::ComboRow,
@@ -125,7 +129,25 @@ pub struct ChargingPage {
 
 impl ChargingPage {
     pub fn new(ctrl: &Rc<Controller>, toasts: &adw::ToastOverlay) -> Rc<Self> {
-        let root = adw::PreferencesPage::new();
+        let root = super::workspace::Workspace::single_column();
+
+        let summary = adw::PreferencesGroup::builder().title(tr("Charging Status")).css_classes(["workspace-card"]).build();
+        let active_limit = adw::ActionRow::builder().title(tr("Active Charge Limit")).build();
+        let next_charge = adw::ActionRow::builder().title(tr("Next Scheduled Full Charge")).build();
+        let override_status = adw::ActionRow::builder().title(tr("Temporary Override")).build();
+        let tiles = gtk::FlowBox::builder().selection_mode(gtk::SelectionMode::None)
+            .homogeneous(true).min_children_per_line(1).max_children_per_line(3)
+            .column_spacing(10).row_spacing(10).build();
+        for row in [&active_limit, &next_charge, &override_status] {
+            row.set_title_lines(2);
+            row.set_subtitle_lines(2);
+            let tile = gtk::ListBox::builder().selection_mode(gtk::SelectionMode::None)
+                .width_request(180).css_classes(["boxed-list", "status-tile"]).build();
+            tile.append(row);
+            tiles.insert(&tile, -1);
+        }
+        summary.add(&tiles);
+        root.banner(&summary);
 
         let limit_group = adw::PreferencesGroup::builder()
             .title(tr("Charge Limit"))
@@ -138,7 +160,8 @@ impl ChargingPage {
         let profile_labels: Vec<&str> = (0..=CUSTOM_PROFILE).map(profile_label).collect();
         let profile = adw::ComboRow::builder()
             .title(tr("Profile"))
-            .subtitle(profile_hint(CUSTOM_PROFILE))
+            .use_subtitle(true)
+            .tooltip_text(profile_hint(CUSTOM_PROFILE))
             .model(&gtk::StringList::new(&profile_labels))
             .selected(CUSTOM_PROFILE as u32)
             .build();
@@ -171,6 +194,7 @@ impl ChargingPage {
         limit_group.add(&start);
         limit_group.add(&persist);
         limit_group.add(&apply);
+        limit_group.add_css_class("workspace-card");
         root.add(&limit_group);
 
         let schedule_group = adw::PreferencesGroup::builder()
@@ -203,6 +227,7 @@ impl ChargingPage {
         schedule_group.add(&lead);
         schedule_group.add(&add_row);
         schedule_group.add(&save_schedule);
+        schedule_group.add_css_class("workspace-card");
         root.add(&schedule_group);
 
         let unsupported = adw::PreferencesGroup::builder().title(tr("Charge Limit")).visible(false).build();
@@ -212,6 +237,7 @@ impl ChargingPage {
             .build();
         row.add_prefix(&gtk::Image::from_icon_name("dialog-information-symbolic"));
         unsupported.add(&row);
+        unsupported.add_css_class("workspace-card");
         root.add(&unsupported);
 
         let full_group = adw::PreferencesGroup::new();
@@ -220,6 +246,7 @@ impl ChargingPage {
         let full_button = gtk::Button::builder().label(tr("Charge Now")).valign(gtk::Align::Center).build();
         full_row.add_suffix(&full_button);
         full_group.add(&full_row);
+        full_group.add_css_class("workspace-card");
         root.add(&full_group);
 
         let mode_group = adw::PreferencesGroup::builder()
@@ -229,11 +256,16 @@ impl ChargingPage {
             .build();
         let mode = adw::ComboRow::builder().title(tr("While Plugged In")).build();
         mode_group.add(&mode);
+        mode_group.add_css_class("workspace-card");
         root.add(&mode_group);
 
         let page = Rc::new(ChargingPage {
-            root,
+            root: root.root,
             limit_group,
+            active_limit,
+            next_charge,
+            override_status,
+            summary_minute: Cell::new(-1),
             unsupported,
             status_row,
             profile,
@@ -309,7 +341,7 @@ impl ChargingPage {
         self.profile.connect_selected_notify(move |row| {
             let Some(this) = this.upgrade() else { return };
             let i = row.selected() as usize;
-            row.set_subtitle(profile_hint(i));
+            row.set_tooltip_text(Some(profile_hint(i)));
             if this.updating.get() {
                 return;
             }
@@ -562,13 +594,53 @@ impl ChargingPage {
                 Ok(()) => this.toast(&success),
                 Err(e) => this.toast(&e),
             }
+            this.summary_minute.set(-1);
             if let Some(ctrl) = this.ctrl.upgrade() {
                 ctrl.refresh();
             }
         });
     }
 
+    fn update_summary(&self, st: &State) {
+        let limits: Vec<String> = st.batteries.iter().map(|b| match b.end_threshold {
+            Some(end) => format!("{}: {end}%", b.name),
+            None => format!("{}: {}", b.name, tr("Not supported")),
+        }).collect();
+        self.active_limit.set_subtitle(&limits.join(" · "));
+        let manual = st.batteries.iter().any(|b| system::full_charge_active(&b.name));
+        let scheduled = st.batteries.iter().any(|b| system::scheduled_full_active(&b.name));
+        let overrides: Vec<String> = st.batteries.iter().filter(|b| system::full_charge_active(&b.name) || system::scheduled_full_active(&b.name)).map(|b| {
+            let limit = system::override_restore_limit(&b.name);
+            match limit {
+                Some(end) => trf("{battery}: returns to {limit}%", &[("battery", b.name.clone()), ("limit", end.to_string())]),
+                None => trf("{battery}: previous limit will return", &[("battery", b.name.clone())]),
+            }
+        }).collect();
+        self.override_status.set_subtitle(&if manual || scheduled {
+            format!("{} · {}", if manual { tr("One-time full charge") } else { tr("Scheduled full charge") }, overrides.join(" · "))
+        } else if st.batteries.iter().any(|b| b.end_threshold.is_some_and(|e| e < 100)) {
+            tr("None — your charge limit is active").into()
+        } else { tr("None — charging is unrestricted").into() });
+        let now = crate::history::now_unix();
+        let minute = now / 60;
+        if self.summary_minute.replace(minute) != minute {
+            let plan = system::read_schedule();
+            let learned = system::read_learned();
+            let next = schedule::next_ready(&plan, &learned, now);
+            let text = if !system::has_saved_limit() {
+                tr("Save a charge limit below 100% to use scheduled charging.").into()
+            } else if let Some(ready) = next {
+                let date = |ts| glib::DateTime::from_unix_local(ts).and_then(|d| d.format("%a %H:%M")).map(|d| d.to_string()).unwrap_or_default();
+                trf("Full by {ready} · starts {start}", &[("ready", date(ready)), ("start", date(ready - i64::from(plan.lead_min) * 60))])
+            } else if plan.optimized {
+                tr("Learning your routine. Add a time to schedule a full charge now.").into()
+            } else { tr("No schedule set. Add a ready-by time below.").into() };
+            self.next_charge.set_subtitle(&text);
+        }
+    }
+
     pub fn update(self: &Rc<Self>, st: &State) {
+        self.update_summary(st);
         let Some(b) = &st.battery else { return };
         self.updating.set(true);
 
