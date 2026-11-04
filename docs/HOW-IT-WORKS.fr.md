@@ -36,3 +36,16 @@ Les détails derrière l’application, pour les curieux et les contributeurs. R
   (Linux marque le fichier remplacé comme supprimé) et, dès qu’aucune fenêtre n’est ouverte, elle démarre la
   nouvelle version puis se termine. Elle vérifie une fois par minute : la nouvelle version tourne donc environ
   une minute après la mise à jour.
+- **Espaces de travail adaptatifs** : Vue d’ensemble, Santé et Utilisation s’affichent sur deux colonnes dans les
+  grandes fenêtres. Charge et Énergie utilisent une seule colonne centrée pour garder les réglages dans l’ordre de
+  lecture. En dessous de 820 pixels logiques de largeur d’espace de travail, les colonnes du tableau de bord
+  s’empilent ; sous 600 pixels logiques de largeur de fenêtre, la barre latérale devient une navigation de retour.
+- **Échecs d’enregistrement** : ils apparaissent dans une bannière persistante avec le chemin concerné et l’erreur.
+  Les préférences sont remplacées de façon atomique et restaurées en mémoire si l’enregistrement échoue. Les
+  entrées de santé et les heures d’utilisation des applications terminées sont réessayées une fois le stockage
+  rétabli. Les échantillons de batterie restent disponibles en mémoire si leur écriture échoue.
+- **L’icône de l’application** est livrée depuis `data/icons/hicolor/scalable/apps/io.github.BatteryHealthCenter.svg` ;
+  `docs/icon.svg` en est la copie pour la documentation. L’entrée de bureau, les invites PolicyKit, les
+  notifications et la boîte « À propos » utilisent le même identifiant d’application. Les compilations depuis les
+  sources chargent directement l’icône des sources dans la boîte « À propos », les notifications et la liste
+  d’utilisation des applications, afin qu’une ancienne icône installée ne la remplace pas.

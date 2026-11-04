@@ -34,3 +34,16 @@ Die Details hinter der App, für Neugierige und Mitwirkende. Zurück zur [README
   die Programmdatei ersetzt, weiter die alte Version ausführen. Sie bemerkt das (Linux markiert die ersetzte Datei
   als gelöscht) und startet, sobald kein Fenster geöffnet ist, die neue Version und beendet sich. Sie prüft einmal
   pro Minute, sodass die neue Version etwa eine Minute nach dem Update läuft.
+- **Adaptive Arbeitsbereiche**: Übersicht, Zustand und Nutzung verwenden in größeren Fenstern zwei Spalten. Laden
+  und Energie verwenden eine zentrierte einzelne Spalte, damit die Einstellungen in Leserichtung bleiben. Unterhalb
+  von 820 logischen Pixeln Arbeitsbereichsbreite werden die Dashboard-Spalten gestapelt; unterhalb von 600
+  logischen Pixeln Fensterbreite wird die Seitenleiste zur Zurück-Navigation.
+- **Speicherfehler** erscheinen in einem dauerhaften Banner mit dem betroffenen Pfad und der Fehlermeldung. Die
+  Einstellungen werden atomar ersetzt und im Speicher wiederhergestellt, wenn das Speichern fehlschlägt.
+  Zustandseinträge und abgeschlossene App-Nutzungsstunden werden erneut versucht, sobald der Speicher wieder
+  verfügbar ist. Akkumessungen bleiben im Speicher erhalten, wenn ihr Schreiben fehlschlägt.
+- **Das App-Symbol** wird aus `data/icons/hicolor/scalable/apps/io.github.BatteryHealthCenter.svg` ausgeliefert;
+  `docs/icon.svg` ist die passende Kopie für die Dokumentation. Desktop-Eintrag, PolicyKit-Abfragen,
+  Benachrichtigungen und der Info-Dialog verwenden dieselbe Anwendungs-ID. Aus dem Quellcode gebaute Versionen
+  laden das Quellsymbol direkt im Info-Dialog, in Benachrichtigungen und in der App-Nutzungsliste, damit ein
+  älteres installiertes Symbol es nicht überschreibt.

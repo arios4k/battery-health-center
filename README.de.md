@@ -2,7 +2,7 @@
 
 [English](README.md) · [Español](README.es.md) · **Deutsch** · [Français](README.fr.md)
 
-<img src="docs/icon.svg" width="128" alt="Symbol von Battery Health Center: ein Akku mit grünem Ladestand">
+<img src="docs/icon.svg" width="128" alt="Symbol von Battery Health Center: ein blauer Akku mit türkisfarbener Zelle und weißem Gesundheitspuls">
 
 # Battery Health Center
 
@@ -18,8 +18,8 @@ Zustand, Ladezyklen, Ladelimits und Ladepläne und welche Apps ihn leeren, für 
 [![Gemacht mit Rust und GTK4](https://img.shields.io/badge/made%20with-Rust%20%2B%20GTK4-informational)](#aus-dem-quellcode-bauen)
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/overview-dark.png">
-  <img src="docs/screenshots/overview-light.png" alt="Die Seite Übersicht von Battery Health Center: ein Ladering bei 77 % mit der Restzeit, die Zusammenfassung des Akkuzustands und was seit der letzten Ladung passiert ist">
+  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/v0.5.0/overview-dark.png">
+  <img src="docs/screenshots/v0.5.0/overview-light.png" alt="Battery Health Center 0.5.0: Seitenleisten-Navigation, Akkustatus und Zustand in einem anpassbaren Dashboard">
 </picture>
 
 </div>
@@ -49,8 +49,8 @@ Springt die Prozentanzeige oder schaltet sich der Laptop zu früh ab, behebt ein
 fast leer laufen lassen, wieder laden) die Anzeige. Laptops mit zwei Akkus werden unterstützt.
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/health-dark.png">
-  <img src="docs/screenshots/health-light.png" alt="Die Seite Zustand: maximale Kapazität 85 %, Zustand, Vollladekapazität und Nennkapazität sowie die Kapazität im Zeitverlauf">
+  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/v0.5.0/health-dark.png">
+  <img src="docs/screenshots/v0.5.0/health-light.png" alt="Das Dashboard Zustand mit Akkukapazität, Zustand, Nutzungsdetails und Hinweisen zum langfristigen Trend">
 </picture>
 
 ### 🛡️ Den Akku jahrelang schonen
@@ -62,8 +62,8 @@ einen vollen Akku nötig? **Jetzt auf 100 % laden** lädt einmal vollständig, d
 zurück.
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/charging-dark.png">
-  <img src="docs/screenshots/charging-light.png" alt="Die Seite Laden mit dem Profil Ausgeglichen (80 %), den Stopp- und Fortsetzungspunkten und dem Schalter Nach Neustart beibehalten">
+  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/v0.5.0/charging-dark.png">
+  <img src="docs/screenshots/v0.5.0/charging-light.png" alt="Der zentrierte Bereich Laden mit aktiven Limits, geplanten Volladungen, temporären Ausnahmen und Ladesteuerung">
 </picture>
 
 ### 🗓️ Voll, wenn Sie es brauchen, geschützt in der übrigen Zeit
@@ -74,8 +74,8 @@ Laden** ein, das Ihre Gewohnheiten daran lernt, wann Sie normalerweise den Steck
 Sie nur einmal ein, beim Speichern des Plans; ein kleiner Dienst erledigt den Rest.
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/schedule-dark.png">
-  <img src="docs/screenshots/schedule-light.png" alt="Der Abschnitt Ladeplan mit eingeschaltetem optimiertem Laden, dem bisher Gelernten und zwei Voll-bis-Zeiten">
+  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/v0.5.0/schedule-dark.png">
+  <img src="docs/screenshots/v0.5.0/schedule-light.png" alt="Ladeplan mit optimiertem Laden, gelernten Abziehzeiten und Bereit-bis-Regeln">
 </picture>
 
 ### 📊 Sehen, was ihn leert
@@ -87,12 +87,12 @@ und die geschätzte Nutzung Stunde für Stunde zu sehen. Linux misst die Leistun
 Schätzungen aus der CPU-Zeit und der gemessenen Leistungsaufnahme über dem Leerlauf.
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/usage-dark.png">
-  <img src="docs/screenshots/usage-light.png" alt="Die Seite Nutzung: Akkustandsverlauf mit dem Ladelimit und Akkuverbrauch im Ruhezustand">
+  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/v0.5.0/usage-dark.png">
+  <img src="docs/screenshots/v0.5.0/usage-light.png" alt="Das Dashboard Nutzung mit Akkuverlauf, Energieschätzungen der Apps und Steuerung der Hintergrundaufzeichnung">
 </picture>
 
 <div align="center">
-<img src="docs/screenshots/app-trend-dark.png" width="360" alt="Der Energieverbrauch einer App Stunde für Stunde, geöffnet durch Anklicken auf der Seite Nutzung">
+<img src="docs/screenshots/v0.5.0/app-trend-dark.png" width="360" alt="Der aktuelle Detaildialog einer App mit Energieauswirkung und Stundenverlauf">
 </div>
 
 ### ⚡ Energiemodi ohne Suchen
@@ -103,8 +103,8 @@ Bildschirm ausschalten, automatische Bereitschaft, Ein-/Aus-Taste und Deckel) un
 der oberen Leiste. Angezeigt wird nur, was Ihre Hardware unterstützt.
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/power-dark.png">
-  <img src="docs/screenshots/power-light.png" alt="Die Seite Energie: aktueller Energiemodus, automatischer Energiemodus und die Energiespareinstellungen von GNOME">
+  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/v0.5.0/power-dark.png">
+  <img src="docs/screenshots/v0.5.0/power-light.png" alt="Die Seite Energie: aktueller Energiemodus, automatischer Energiemodus und die Energiespareinstellungen von GNOME">
 </picture>
 
 ### 💡 Kleine Hinweise, kein Dauergemecker

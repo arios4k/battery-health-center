@@ -2,7 +2,7 @@
 
 [English](README.md) · [Español](README.es.md) · [Deutsch](README.de.md) · **Français**
 
-<img src="docs/icon.svg" width="128" alt="Icône de Battery Health Center : une batterie avec un niveau de charge vert">
+<img src="docs/icon.svg" width="128" alt="Icône de Battery Health Center : une batterie bleue avec une cellule turquoise et une pulsation blanche de santé">
 
 # Battery Health Center
 
@@ -18,8 +18,8 @@ Santé, nombre de cycles, limites et programmation de la charge, et applications
 [![Fait avec Rust et GTK4](https://img.shields.io/badge/made%20with-Rust%20%2B%20GTK4-informational)](#compiler-depuis-les-sources)
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/overview-dark.png">
-  <img src="docs/screenshots/overview-light.png" alt="La page Vue d’ensemble de Battery Health Center : un anneau de charge à 77 % avec le temps restant, le résumé de la santé de la batterie et ce qui s’est passé depuis la dernière charge">
+  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/v0.5.0/overview-dark.png">
+  <img src="docs/screenshots/v0.5.0/overview-light.png" alt="Battery Health Center 0.5.0 : navigation latérale, état et santé de la batterie dans un tableau de bord adaptatif">
 </picture>
 
 </div>
@@ -50,8 +50,8 @@ pourcentage fait des sauts ou si l’ordinateur s’éteint trop tôt, un calibr
 complètement, recharger) corrige la mesure. Les ordinateurs à deux batteries sont pris en charge.
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/health-dark.png">
-  <img src="docs/screenshots/health-light.png" alt="La page Santé : capacité maximale 85 %, état, capacité à pleine charge et capacité d’origine, et capacité au fil du temps">
+  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/v0.5.0/health-dark.png">
+  <img src="docs/screenshots/v0.5.0/health-light.png" alt="Le tableau de bord Santé avec la capacité de la batterie, son état, les détails d’utilisation et des conseils sur la tendance à long terme">
 </picture>
 
 ### 🛡️ Faites durer la batterie des années
@@ -63,8 +63,8 @@ pleine pour un voyage ? **Charger à 100 % maintenant** charge complètement une
 revient toute seule.
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/charging-dark.png">
-  <img src="docs/screenshots/charging-light.png" alt="La page Charge avec le menu de profil réglé sur Équilibré (80 %), les points d’arrêt et de reprise, et l’interrupteur Conserver après un redémarrage">
+  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/v0.5.0/charging-dark.png">
+  <img src="docs/screenshots/v0.5.0/charging-light.png" alt="L’espace Charge centré avec les limites actives, les charges complètes programmées, les dérogations temporaires et les commandes de charge">
 </picture>
 
 ### 🗓️ Pleine quand il le faut, protégée le reste du temps
@@ -75,8 +75,8 @@ apprend votre routine d’après les moments où vous débranchez d’habitude. 
 seule fois, à l’enregistrement de la programmation ; un petit service fait le reste.
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/schedule-dark.png">
-  <img src="docs/screenshots/schedule-light.png" alt="La section Programmation de la charge avec la charge optimisée activée, ce qu’elle a appris jusqu’ici et deux heures de pleine charge">
+  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/v0.5.0/schedule-dark.png">
+  <img src="docs/screenshots/v0.5.0/schedule-light.png" alt="Programmation de la charge avec charge optimisée, heures de débranchement apprises et règles d’heure de disponibilité">
 </picture>
 
 ### 📊 Voyez ce qui la vide
@@ -89,12 +89,12 @@ heure. Linux ne mesure pas la puissance par application : les chiffres sont des 
 temps processeur et de la consommation mesurée au-dessus du repos.
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/usage-dark.png">
-  <img src="docs/screenshots/usage-light.png" alt="La page Utilisation : historique du niveau de batterie avec la limite de charge, et consommation de la batterie pendant la veille">
+  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/v0.5.0/usage-dark.png">
+  <img src="docs/screenshots/v0.5.0/usage-light.png" alt="Le tableau de bord Utilisation avec l’historique de la batterie, les estimations d’énergie des applications et les commandes d’enregistrement en arrière-plan">
 </picture>
 
 <div align="center">
-<img src="docs/screenshots/app-trend-dark.png" width="360" alt="La consommation d’énergie d’une application heure par heure, ouverte en cliquant dessus sur la page Utilisation">
+<img src="docs/screenshots/v0.5.0/app-trend-dark.png" width="360" alt="La boîte de dialogue actuelle de détail d’une application avec l’impact énergétique et l’historique heure par heure">
 </div>
 
 ### ⚡ Les modes d’alimentation sans les chercher
@@ -105,8 +105,8 @@ extinction de l’écran, mise en veille automatique, bouton d’alimentation et
 dans la barre supérieure. Seul ce que votre matériel prend en charge est affiché.
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/power-dark.png">
-  <img src="docs/screenshots/power-light.png" alt="La page Énergie : mode d’alimentation actuel, mode d’alimentation automatique et réglages d’économie d’énergie de GNOME">
+  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/v0.5.0/power-dark.png">
+  <img src="docs/screenshots/v0.5.0/power-light.png" alt="La page Énergie : mode d’alimentation actuel, mode d’alimentation automatique et réglages d’économie d’énergie de GNOME">
 </picture>
 
 ### 💡 De petits coups de pouce, sans harcèlement

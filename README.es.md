@@ -2,7 +2,7 @@
 
 [English](README.md) · **Español** · [Deutsch](README.de.md) · [Français](README.fr.md)
 
-<img src="docs/icon.svg" width="128" alt="Icono de Battery Health Center: una batería con el nivel de carga en verde">
+<img src="docs/icon.svg" width="128" alt="Icono de Battery Health Center: una batería azul con una celda turquesa y un pulso de salud blanco">
 
 # Battery Health Center
 
@@ -18,8 +18,8 @@ Salud, ciclos, límites y programación de la carga, y qué aplicaciones la gast
 [![Hecho con Rust y GTK4](https://img.shields.io/badge/made%20with-Rust%20%2B%20GTK4-informational)](#compilar-desde-el-código-fuente)
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/overview-dark.png">
-  <img src="docs/screenshots/overview-light.png" alt="La página Resumen de Battery Health Center: un anillo de carga al 77 % con el tiempo restante, el resumen de la salud de la batería y lo ocurrido desde la última carga">
+  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/v0.5.0/overview-dark.png">
+  <img src="docs/screenshots/v0.5.0/overview-light.png" alt="Battery Health Center 0.5.0: navegación lateral, estado y salud de la batería en un panel adaptable">
 </picture>
 
 </div>
@@ -49,8 +49,8 @@ porcentaje da saltos o el portátil se apaga antes de tiempo, una calibración g
 completo, cargar de nuevo) corrige la lectura. Se admiten portátiles con dos baterías.
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/health-dark.png">
-  <img src="docs/screenshots/health-light.png" alt="La página Salud: capacidad máxima 85 %, estado, capacidad a carga completa y capacidad de diseño, y capacidad a lo largo del tiempo">
+  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/v0.5.0/health-dark.png">
+  <img src="docs/screenshots/v0.5.0/health-light.png" alt="El panel Salud con la capacidad de la batería, su estado, detalles de uso y orientación sobre la tendencia a largo plazo">
 </picture>
 
 ### 🛡️ Haz que la batería dure años
@@ -61,8 +61,8 @@ reanuda la carga. El límite se mantiene tras reiniciar y tras suspender. ¿Nece
 viaje? **Cargar al 100 % ahora** carga por completo una sola vez y luego tu límite vuelve solo.
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/charging-dark.png">
-  <img src="docs/screenshots/charging-light.png" alt="La página Carga con el perfil Equilibrado (80 %), los puntos de parada y reanudación, y el interruptor Mantener tras reiniciar">
+  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/v0.5.0/charging-dark.png">
+  <img src="docs/screenshots/v0.5.0/charging-light.png" alt="El espacio Carga centrado con límites activos, cargas completas programadas, anulaciones temporales y controles de carga">
 </picture>
 
 ### 🗓️ Llena cuando la necesitas, protegida el resto del tiempo
@@ -73,8 +73,8 @@ tu rutina según cuándo sueles desenchufar. Introduces tu contraseña una sola 
 un pequeño servicio hace el resto.
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/schedule-dark.png">
-  <img src="docs/screenshots/schedule-light.png" alt="La sección Programación de carga con la carga optimizada activada, lo que ha aprendido hasta ahora y dos horas de carga completa">
+  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/v0.5.0/schedule-dark.png">
+  <img src="docs/screenshots/v0.5.0/schedule-light.png" alt="Programación de carga con carga optimizada, horas de desconexión aprendidas y reglas de hora de disponibilidad">
 </picture>
 
 ### 📊 Mira qué la está gastando
@@ -86,12 +86,12 @@ uso estimado hora a hora. Linux no mide la potencia por aplicación, así que la
 en el tiempo de CPU y el consumo medido por encima del reposo.
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/usage-dark.png">
-  <img src="docs/screenshots/usage-light.png" alt="La página Uso: historial del nivel de batería con el límite de carga, y uso de la batería durante la suspensión">
+  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/v0.5.0/usage-dark.png">
+  <img src="docs/screenshots/v0.5.0/usage-light.png" alt="El panel Uso con el historial de la batería, estimaciones de energía de las aplicaciones y controles de registro en segundo plano">
 </picture>
 
 <div align="center">
-<img src="docs/screenshots/app-trend-dark.png" width="360" alt="El uso de energía de una aplicación hora a hora, que se abre al hacer clic en ella en la página Uso">
+<img src="docs/screenshots/v0.5.0/app-trend-dark.png" width="360" alt="El diálogo actual de detalle de una aplicación con el impacto energético y el historial por horas">
 </div>
 
 ### ⚡ Modos de energía sin buscarlos
@@ -102,8 +102,8 @@ pantalla, suspensión automática, botón de encendido y tapa) y el porcentaje d
 se muestra lo que admite tu hardware.
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/power-dark.png">
-  <img src="docs/screenshots/power-light.png" alt="La página Energía: modo de energía actual, modo de energía automático y ajustes de ahorro de energía de GNOME">
+  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/v0.5.0/power-dark.png">
+  <img src="docs/screenshots/v0.5.0/power-light.png" alt="La página Energía: modo de energía actual, modo de energía automático y ajustes de ahorro de energía de GNOME">
 </picture>
 
 ### 💡 Pequeños empujones, sin agobiar
