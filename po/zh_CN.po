@@ -1,0 +1,1738 @@
+# Simplified Chinese translation of Battery Health Center.
+# Copyright (C) 2026 Alexis Rios-Negron
+# This file is distributed under the same license as the Battery Health Center package.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: battery-health-center\n"
+"Report-Msgid-Bugs-To: https://github.com/arios4k/battery-health-center/issues\n"
+"PO-Revision-Date: 2026-11-04 12:00+0000\n"
+"Last-Translator: Alexis Rios-Negron <182820807+arios4k@users.noreply.github.com>\n"
+"Language-Team: Chinese (Simplified)\n"
+"Language: zh_CN\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#: src/apps.rs:137
+msgid "GNOME Shell"
+msgstr "GNOME Shell"
+
+#: src/apps.rs:139
+msgid "Audio (PipeWire)"
+msgstr "音频（PipeWire）"
+
+#: src/apps.rs:140
+msgid "File Indexer"
+msgstr "文件索引器"
+
+#: src/apps.rs:141
+msgid "Software"
+msgstr "软件"
+
+#: src/apps.rs:142
+msgid "Software Updates"
+msgstr "软件更新"
+
+#: src/apps.rs:143
+msgid "Display Server (Xorg)"
+msgstr "显示服务器（Xorg）"
+
+#: src/apps.rs:240
+msgid "Linux Kernel"
+msgstr "Linux 内核"
+
+#: src/battery.rs:110 src/system.rs:245 src/ui/charging.rs:14 src/ui/usage.rs:183
+msgid "Normal"
+msgstr "正常"
+
+#: src/battery.rs:111
+msgid "Worn"
+msgstr "已损耗"
+
+#: src/battery.rs:112
+msgid "Service Recommended"
+msgstr "建议维修"
+
+#: src/battery.rs:34 src/battery.rs:46 src/ui/overview.rs:180
+msgid "Charging"
+msgstr "正在充电"
+
+#: src/battery.rs:349
+msgid "USB-C Power Delivery"
+msgstr "USB-C Power Delivery"
+
+#: src/battery.rs:35 src/battery.rs:47 src/ui/overview.rs:182 src/ui/power.rs:183
+msgid "On Battery"
+msgstr "使用电池"
+
+#: src/battery.rs:36
+msgid "Plugged In, Not Charging"
+msgstr "已接通电源，未充电"
+
+#: src/battery.rs:360
+msgid "AC adapter"
+msgstr "交流电源适配器"
+
+#: src/battery.rs:37
+msgid "Fully Charged"
+msgstr "已充满"
+
+#: src/battery.rs:38 src/ui/health.rs:50 src/ui/health.rs:294 src/ui/health.rs:302 src/ui/health.rs:329 src/ui/health.rs:330 src/ui/health.rs:331 src/ui/health.rs:332 src/ui/overview.rs:204 src/ui/overview.rs:207 src/ui/overview.rs:259
+msgid "Unknown"
+msgstr "未知"
+
+#: src/battery.rs:385
+#, no-c-format
+msgid "{m} min"
+msgstr "{m} 分钟"
+
+#: src/battery.rs:386
+#, no-c-format
+msgid "{h} h"
+msgstr "{h} 小时"
+
+#: src/battery.rs:387
+#, no-c-format
+msgid "{h} h {m} min"
+msgstr "{h} 小时 {m} 分钟"
+
+#: src/battery.rs:48
+msgid "Not Charging"
+msgstr "未充电"
+
+#: src/battery.rs:49 src/system.rs:247
+msgid "Full"
+msgstr "已满"
+
+#: src/controller.rs:363
+msgid "Calibration: Unplug Your Laptop"
+msgstr "校准：请拔下笔记本电脑的电源"
+
+#: src/controller.rs:363
+msgid "The battery is full. Unplug the charger and use your laptop normally until the battery is nearly empty."
+msgstr "电池已充满。请拔下充电器，正常使用笔记本电脑，直到电量几乎耗尽。"
+
+#: src/controller.rs:368
+msgid "Calibration: Plug In Now"
+msgstr "校准：请立即接通电源"
+
+#: src/controller.rs:368
+msgid "The battery is nearly empty. Connect the charger and let it charge to 100%."
+msgstr "电池电量几乎耗尽。请连接充电器并充电至 100%。"
+
+#: src/controller.rs:372
+msgid "Calibration Complete"
+msgstr "校准完成"
+
+#: src/controller.rs:372
+msgid "The battery's capacity reading has been recalibrated. Your charge limit is back on."
+msgstr "电池容量读数已重新校准，您的充电上限已恢复。"
+
+#: src/controller.rs:399
+#, no-c-format
+msgid "Charged to {0}%"
+msgstr "已充电至 {0}%"
+
+#: src/controller.rs:399
+msgid "Charging has stopped at your limit to protect the battery."
+msgstr "为保护电池，充电已在您设定的上限处停止。"
+
+#: src/controller.rs:410
+msgid "Battery Fully Charged"
+msgstr "电池已充满"
+
+#: src/controller.rs:410
+msgid "Unplug the charger, or set a charge limit in Battery Health Center to slow battery wear."
+msgstr "请拔下充电器，或在 Battery Health Center 中设置充电上限以减缓电池损耗。"
+
+#: src/controller.rs:416
+#, no-c-format
+msgid "About {0} remaining."
+msgstr "大约还剩 {0}。"
+
+#: src/controller.rs:417
+#, no-c-format
+msgid "Battery at {0}%"
+msgstr "电量 {0}%"
+
+#: src/controller.rs:417
+#, no-c-format
+msgid "Connect the charger soon.{remaining}"
+msgstr "请尽快连接充电器。{remaining}"
+
+#: src/controller.rs:429
+#, no-c-format
+msgid "{0} Is Using Significant Energy"
+msgstr "{0} 正在大量耗电"
+
+#: src/controller.rs:429
+msgid "Quit it if you're not using it to make your battery last longer."
+msgstr "如果不使用，请退出它以延长电池续航。"
+
+#: src/controller.rs:443
+msgid "High Battery Drain During Sleep"
+msgstr "睡眠期间耗电较多"
+
+#: src/controller.rs:444
+#, no-c-format
+msgid "Your laptop used {0}% in {1} asleep ({rate}% per hour)."
+msgstr "您的笔记本电脑在睡眠的 {1} 内消耗了 {0}% 的电量（每小时 {rate}%）。"
+
+#: src/desktop.rs:250
+msgid "Suspend"
+msgstr "挂起"
+
+#: src/desktop.rs:251
+msgid "Hibernate"
+msgstr "休眠"
+
+#: src/desktop.rs:252
+msgid "Do Nothing"
+msgstr "不执行任何操作"
+
+#: src/desktop.rs:253
+msgid "Ask What to Do"
+msgstr "询问如何操作"
+
+#: src/desktop.rs:254
+msgid "Turn Off the Screen"
+msgstr "关闭屏幕"
+
+#: src/desktop.rs:255
+msgid "Shut Down"
+msgstr "关机"
+
+#: src/desktop.rs:256
+msgid "Log Out"
+msgstr "注销"
+
+#: src/desktop.rs:268
+#, no-c-format
+msgid "{n} second"
+msgid_plural "{n} seconds"
+msgstr[0] "{n} 秒"
+
+#: src/desktop.rs:269 src/desktop.rs:271
+#, no-c-format
+msgid "{n} minute"
+msgid_plural "{n} minutes"
+msgstr[0] "{n} 分钟"
+
+#: src/desktop.rs:270
+#, no-c-format
+msgid "{n} hour"
+msgid_plural "{n} hours"
+msgstr[0] "{n} 小时"
+
+#: src/system.rs:110
+msgid "Power Saver"
+msgstr "节能"
+
+#: src/system.rs:111
+msgid "Balanced"
+msgstr "平衡"
+
+#: src/system.rs:112
+msgid "Performance"
+msgstr "性能"
+
+#: src/system.rs:243 src/ui/usage.rs:56
+msgid "Low"
+msgstr "低"
+
+#: src/system.rs:244
+msgid "Critical"
+msgstr "严重不足"
+
+#: src/system.rs:246 src/ui/usage.rs:52 src/ui/usage.rs:183
+msgid "High"
+msgstr "高"
+
+#: src/system.rs:292
+msgid "Wireless Device"
+msgstr "无线设备"
+
+#: src/system.rs:32
+msgid "The bhc-helper program was not found. Is the app installed?"
+msgstr "找不到 bhc-helper 程序。应用是否已安装？"
+
+#: src/system.rs:35
+msgid "The helper crashed"
+msgstr "辅助程序已崩溃"
+
+#: src/system.rs:36
+#, no-c-format
+msgid "Could not run pkexec: {e}"
+msgstr "无法运行 pkexec：{e}"
+
+#: src/system.rs:39
+msgid "Authorization was cancelled"
+msgstr "授权已取消"
+
+#: src/system.rs:42
+msgid "The change could not be applied"
+msgstr "无法应用更改"
+
+#: src/ui/about.rs:15
+msgid "Battery health, charge limits and energy usage in one place."
+msgstr "在一个地方查看电池健康、充电上限和能耗。"
+
+#: src/ui/about.rs:18
+msgid "Copy version information"
+msgstr "复制版本信息"
+
+#: src/ui/about.rs:20
+#, no-c-format
+msgid "Version {version}"
+msgstr "版本 {version}"
+
+#: src/ui/about.rs:25
+msgid "Version information copied"
+msgstr "版本信息已复制"
+
+#: src/ui/about.rs:33
+msgid "Battery care"
+msgstr "电池养护"
+
+#: src/ui/about.rs:34
+msgid "Native Linux app"
+msgstr "原生 Linux 应用"
+
+#: src/ui/about.rs:34
+msgid "Open source"
+msgstr "开源"
+
+#: src/ui/about.rs:42
+msgid "Explore Battery Health Center"
+msgstr "了解 Battery Health Center"
+
+#: src/ui/about.rs:43
+msgid "Project & source code"
+msgstr "项目与源代码"
+
+#: src/ui/about.rs:43
+msgid "Documentation, releases, and the code behind Battery Health Center"
+msgstr "Battery Health Center 的文档、发行版和源代码"
+
+#: src/ui/about.rs:45
+msgid "Report an issue"
+msgstr "报告问题"
+
+#: src/ui/about.rs:45
+msgid "Share a bug or suggest an improvement"
+msgstr "反馈错误或提出改进建议"
+
+#: src/ui/about.rs:49
+msgid "Credits and license"
+msgstr "致谢与许可证"
+
+#: src/ui/about.rs:50
+msgid "Created by"
+msgstr "作者"
+
+#: src/ui/about.rs:52 src/ui/about.rs:96
+msgid "GNU General Public License v3 or later"
+msgstr "GNU 通用公共许可证第 3 版或更高版本"
+
+#: src/ui/about.rs:52
+msgid "Free to use, modify, and share"
+msgstr "可自由使用、修改和分享"
+
+#: src/ui/about.rs:67
+msgid "About Battery Health Center"
+msgstr "关于 Battery Health Center"
+
+#: src/ui/about.rs:74
+msgid "Open in browser"
+msgstr "在浏览器中打开"
+
+#: src/ui/about.rs:81
+#, no-c-format
+msgid "Could not open link: {error}"
+msgstr "无法打开链接：{error}"
+
+#: src/ui/app_trend.rs:31
+msgid "No activity"
+msgstr "无活动"
+
+#: src/ui/app_trend.rs:31 src/ui/usage.rs:158
+#, no-c-format
+msgid "{0} of CPU time"
+msgstr "CPU 时间 {0}"
+
+#: src/ui/app_trend.rs:33 src/ui/usage.rs:163
+#, no-c-format
+msgid "≈ {0} Wh on battery"
+msgstr "使用电池约 {0} Wh"
+
+#: src/ui/app_trend.rs:62
+msgid "Last 24 Hours"
+msgstr "过去 24 小时"
+
+#: src/ui/app_trend.rs:62
+msgid "Last 7 Days"
+msgstr "过去 7 天"
+
+#: src/ui/app_trend.rs:71
+msgid "Energy Impact"
+msgstr "能耗影响"
+
+#: src/ui/app_trend.rs:71
+msgid "Energy Used"
+msgstr "已用能量"
+
+#: src/ui/app_trend.rs:72 src/ui/usage.rs:215 src/ui/usage.rs:299
+msgid "24 Hours"
+msgstr "24 小时"
+
+#: src/ui/app_trend.rs:72 src/ui/usage.rs:215 src/ui/usage.rs:299
+msgid "7 Days"
+msgstr "7 天"
+
+#: src/ui/app_trend.rs:89
+msgid "No hourly history yet. Keep the app running to collect activity. Completed hours are saved for the last 7 days."
+msgstr "暂无每小时历史记录。请保持应用运行以收集活动数据。已完成的小时会保存最近 7 天。"
+
+#: src/ui/app_trend.rs:95
+msgid "Average CPU use in each hour, in percent of one core. Only hours when Battery Health Center was running are shown."
+msgstr "每小时的平均 CPU 使用率，以单个核心的百分比表示。仅显示 Battery Health Center 运行期间的小时。"
+
+#: src/ui/app_trend.rs:96
+msgid "Estimated energy drawn from the battery in each hour. Linux doesn't measure power per app, so this is an estimate."
+msgstr "每小时从电池中消耗的估算能量。Linux 不会按应用测量功率，因此这只是估算值。"
+
+#: src/ui/charging.rs:134
+msgid "Charging Status"
+msgstr "充电状态"
+
+#: src/ui/charging.rs:135
+msgid "Active Charge Limit"
+msgstr "当前生效的充电上限"
+
+#: src/ui/charging.rs:136
+msgid "Next Scheduled Full Charge"
+msgstr "下一次计划充满"
+
+#: src/ui/charging.rs:137
+msgid "Temporary Override"
+msgstr "临时覆盖"
+
+#: src/ui/charging.rs:15
+msgid "Pause Charging"
+msgstr "暂停充电"
+
+#: src/ui/charging.rs:153 src/ui/charging.rs:233
+msgid "Charge Limit"
+msgstr "充电上限"
+
+#: src/ui/charging.rs:155
+msgid "Lithium batteries wear faster when kept at full charge. If your laptop is plugged in most of the time, limiting the charge to about 80% can noticeably extend the battery's lifespan."
+msgstr "锂电池长期保持满电会损耗得更快。如果您的笔记本电脑大部分时间都接着电源，将充电上限设为约 80% 可以明显延长电池寿命。"
+
+#: src/ui/charging.rs:158
+msgid "Current Setting"
+msgstr "当前设置"
+
+#: src/ui/charging.rs:16
+msgid "Run on Battery"
+msgstr "使用电池供电"
+
+#: src/ui/charging.rs:162
+msgid "Profile"
+msgstr "配置"
+
+#: src/ui/charging.rs:168
+msgid "Limit Maximum Charge"
+msgstr "限制最大电量"
+
+#: src/ui/charging.rs:170
+msgid "Stop Charging At"
+msgstr "停止充电的电量"
+
+#: src/ui/charging.rs:171 src/ui/power.rs:190 src/ui/preferences.rs:53
+msgid "Percent"
+msgstr "百分比"
+
+#: src/ui/charging.rs:175
+msgid "Resume Charging Below"
+msgstr "低于此电量时恢复充电"
+
+#: src/ui/charging.rs:176
+msgid "Avoids topping up after every small drop"
+msgstr "避免电量稍有下降就补充充电"
+
+#: src/ui/charging.rs:180
+msgid "Keep After Restart"
+msgstr "重启后保留"
+
+#: src/ui/charging.rs:181
+msgid "Re-apply the limit at startup and after waking from sleep"
+msgstr "在开机和从睡眠中唤醒后重新应用上限"
+
+#: src/ui/charging.rs:185
+msgid "Apply"
+msgstr "应用"
+
+#: src/ui/charging.rs:201
+msgid "Charging Schedule"
+msgstr "充电计划"
+
+#: src/ui/charging.rs:202
+msgid "Charge to 100% just before you need the laptop, and keep your limit the rest of the time. This needs a saved charge limit: turn on Limit Maximum Charge and Keep After Restart, then Apply."
+msgstr "在您需要使用笔记本电脑之前充电至 100%，其余时间保持您设定的上限。这需要已保存的充电上限：请开启“限制最大电量”和“重启后保留”，然后点击“应用”。"
+
+#: src/ui/charging.rs:205
+msgid "Optimized Charging"
+msgstr "优化充电"
+
+#: src/ui/charging.rs:206
+msgid "Learns when you usually unplug and charges to 100% just before"
+msgstr "学习您通常拔下电源的时间，并在此之前充电至 100%"
+
+#: src/ui/charging.rs:208
+msgid "Learned So Far"
+msgstr "目前已学习到"
+
+#: src/ui/charging.rs:211
+msgid "Start Charging Before"
+msgstr "提前开始充电"
+
+#: src/ui/charging.rs:212
+msgid "Hours before the time, to have it full by then"
+msgstr "在该时间之前的小时数，以便届时充满"
+
+#: src/ui/charging.rs:216
+msgid "Add a Time…"
+msgstr "添加时间…"
+
+#: src/ui/charging.rs:219
+msgid "Save Schedule"
+msgstr "保存计划"
+
+#: src/ui/charging.rs:235
+msgid "Not supported on this laptop"
+msgstr "此笔记本电脑不支持"
+
+#: src/ui/charging.rs:236
+msgid "The battery driver does not expose charge thresholds (charge_control_end_threshold)."
+msgstr "电池驱动程序未提供充电阈值（charge_control_end_threshold）。"
+
+#: src/ui/charging.rs:244 src/ui/charging.rs:662
+msgid "Charge to 100% Now"
+msgstr "立即充电至 100%"
+
+#: src/ui/charging.rs:246 src/ui/charging.rs:668
+msgid "Charge Now"
+msgstr "立即充电"
+
+#: src/ui/charging.rs:253
+msgid "Charging Behavior"
+msgstr "充电行为"
+
+#: src/ui/charging.rs:254
+msgid "Temporarily pause charging, or run from the battery while still plugged in."
+msgstr "暂时暂停充电，或在接通电源时仍使用电池供电。"
+
+#: src/ui/charging.rs:257
+msgid "While Plugged In"
+msgstr "接通电源时"
+
+#: src/ui/charging.rs:29
+msgid "Maximum Lifespan (60%)"
+msgstr "最长寿命（60%）"
+
+#: src/ui/charging.rs:30
+msgid "Balanced (80%)"
+msgstr "平衡（80%）"
+
+#: src/ui/charging.rs:31
+msgid "Full Capacity (100%)"
+msgstr "完整容量（100%）"
+
+#: src/ui/charging.rs:32
+msgid "Custom"
+msgstr "自定义"
+
+#: src/ui/charging.rs:334
+msgid "Back to your charge limit"
+msgstr "恢复为您的充电上限"
+
+#: src/ui/charging.rs:337
+msgid "Charging to 100% once; your limit comes back when full or unplugged"
+msgstr "仅充电至 100% 一次；充满或拔下电源后将恢复您的上限"
+
+#: src/ui/charging.rs:38
+msgid "Stops at 60%. Best when you're plugged in most of the time."
+msgstr "在 60% 时停止。适合大部分时间接着电源的情况。"
+
+#: src/ui/charging.rs:39
+msgid "Stops at 80%. A good everyday balance."
+msgstr "在 80% 时停止。日常使用的良好平衡。"
+
+#: src/ui/charging.rs:40
+msgid "Charges to 100%. For the longest time away from the charger."
+msgstr "充电至 100%。适合需要长时间离开充电器的情况。"
+
+#: src/ui/charging.rs:405
+#, no-c-format
+msgid "Charging behavior set to {0}"
+msgstr "充电行为已设为 {0}"
+
+#: src/ui/charging.rs:41
+msgid "Your own settings below."
+msgstr "使用下方您自己的设置。"
+
+#: src/ui/charging.rs:426
+#, no-c-format
+msgid "Full by {time}"
+msgstr "{time}前充满"
+
+#: src/ui/charging.rs:432
+msgid "Remove"
+msgstr "移除"
+
+#: src/ui/charging.rs:486
+msgid "Add a Time"
+msgstr "添加时间"
+
+#: src/ui/charging.rs:487
+msgid "Choose the days, and the time you want the battery to be full by."
+msgstr "选择日期，以及您希望电池充满的时间。"
+
+#: src/ui/charging.rs:490 src/ui/charging.rs:658 src/ui/health.rs:205 src/ui/health.rs:242
+msgid "Cancel"
+msgstr "取消"
+
+#: src/ui/charging.rs:490
+msgid "Add"
+msgstr "添加"
+
+#: src/ui/charging.rs:501
+msgid "Choose at least one day"
+msgstr "请至少选择一天"
+
+#: src/ui/charging.rs:52
+msgid "Mon"
+msgstr "周一"
+
+#: src/ui/charging.rs:522
+msgid "Schedule removed"
+msgstr "计划已移除"
+
+#: src/ui/charging.rs:522
+msgid "Schedule saved"
+msgstr "计划已保存"
+
+#: src/ui/charging.rs:53
+msgid "Tue"
+msgstr "周二"
+
+#: src/ui/charging.rs:54
+msgid "Wed"
+msgstr "周三"
+
+#: src/ui/charging.rs:55
+msgid "Thu"
+msgstr "周四"
+
+#: src/ui/charging.rs:56
+msgid "Fri"
+msgstr "周五"
+
+#: src/ui/charging.rs:565
+#, no-c-format
+msgid "Charging will stop at {end}%"
+msgstr "将在 {end}% 时停止充电"
+
+#: src/ui/charging.rs:565
+msgid "Charge limit removed"
+msgstr "充电上限已移除"
+
+#: src/ui/charging.rs:57
+msgid "Sat"
+msgstr "周六"
+
+#: src/ui/charging.rs:58
+msgid "Sun"
+msgstr "周日"
+
+#: src/ui/charging.rs:607
+msgid "Not supported"
+msgstr "不支持"
+
+#: src/ui/charging.rs:615
+#, no-c-format
+msgid "{battery}: returns to {limit}%"
+msgstr "{battery}：将恢复为 {limit}%"
+
+#: src/ui/charging.rs:616
+#, no-c-format
+msgid "{battery}: previous limit will return"
+msgstr "{battery}：将恢复之前的上限"
+
+#: src/ui/charging.rs:620
+msgid "One-time full charge"
+msgstr "一次性充满"
+
+#: src/ui/charging.rs:620
+msgid "Scheduled full charge"
+msgstr "计划充满"
+
+#: src/ui/charging.rs:622
+msgid "None — your charge limit is active"
+msgstr "无——您的充电上限已生效"
+
+#: src/ui/charging.rs:623
+msgid "None — charging is unrestricted"
+msgstr "无——充电不受限制"
+
+#: src/ui/charging.rs:631
+msgid "Save a charge limit below 100% to use scheduled charging."
+msgstr "请保存低于 100% 的充电上限以使用计划充电。"
+
+#: src/ui/charging.rs:634
+#, no-c-format
+msgid "Full by {ready} · starts {start}"
+msgstr "{ready}前充满 · {start}开始"
+
+#: src/ui/charging.rs:636
+msgid "Learning your routine. Add a time to schedule a full charge now."
+msgstr "正在学习您的使用习惯。现在可以添加一个时间来安排充满。"
+
+#: src/ui/charging.rs:637
+msgid "No schedule set. Add a ready-by time below."
+msgstr "尚未设置计划。请在下方添加一个充满时间。"
+
+#: src/ui/charging.rs:65
+msgid "Every day"
+msgstr "每天"
+
+#: src/ui/charging.rs:656 src/ui/overview.rs:174
+msgid "Charging to 100%"
+msgstr "正在充电至 100%"
+
+#: src/ui/charging.rs:657
+msgid "Your limit comes back when the battery is full or you unplug."
+msgstr "电池充满或您拔下电源后，将恢复您的上限。"
+
+#: src/ui/charging.rs:66 src/ui/charging.rs:83
+msgid "Weekdays"
+msgstr "工作日"
+
+#: src/ui/charging.rs:664
+msgid "Charge fully once, for a trip or a long day. Your limit comes back when full or unplugged."
+msgstr "充满一次，用于出行或漫长的一天。充满或拔下电源后将恢复您的上限。"
+
+#: src/ui/charging.rs:666
+msgid "Connect the charger to charge fully once."
+msgstr "连接充电器以充满一次。"
+
+#: src/ui/charging.rs:67 src/ui/charging.rs:84
+msgid "Weekends"
+msgstr "周末"
+
+#: src/ui/charging.rs:677
+#, no-c-format
+msgid "Stops at {end}%, resumes below {s}%"
+msgstr "在 {end}% 时停止，低于 {s}% 时恢复"
+
+#: src/ui/charging.rs:678
+#, no-c-format
+msgid "Stops at {end}%"
+msgstr "在 {end}% 时停止"
+
+#: src/ui/charging.rs:679
+msgid "Charges to 100%"
+msgstr "充电至 100%"
+
+#: src/ui/charging.rs:719
+msgid "Charging to 100% for your schedule; your limit comes back afterwards"
+msgstr "按您的计划充电至 100%；之后将恢复您的上限"
+
+#: src/ui/charging.rs:75
+#, no-c-format
+msgid "{days}: charged by about {time}"
+msgstr "{days}：约在 {time} 前充满"
+
+#: src/ui/charging.rs:76
+#, no-c-format
+msgid "{days}: still learning ({n} of {min} unplugs)"
+msgstr "{days}：仍在学习（已记录 {n}/{min} 次拔下电源）"
+
+#: src/ui/health.rs:106
+msgid "Trend"
+msgstr "趋势"
+
+#: src/ui/health.rs:107
+msgid "Reaches 80%"
+msgstr "降至 80%"
+
+#: src/ui/health.rs:108
+msgid "When batteries are usually considered worn"
+msgstr "电池通常被视为已损耗的临界值"
+
+#: src/ui/health.rs:114
+msgid "Usage"
+msgstr "使用情况"
+
+#: src/ui/health.rs:115 src/ui/overview.rs:111
+msgid "Cycle Count"
+msgstr "循环次数"
+
+#: src/ui/health.rs:116
+msgid "Most laptop batteries are rated for 300–1000 cycles"
+msgstr "大多数笔记本电脑电池的额定循环次数为 300–1000 次"
+
+#: src/ui/health.rs:117
+msgid "Current Charge"
+msgstr "当前电量"
+
+#: src/ui/health.rs:118
+msgid "Average Draw on Battery (24 h)"
+msgstr "电池平均功耗（24 小时）"
+
+#: src/ui/health.rs:119
+msgid "Voltage"
+msgstr "电压"
+
+#: src/ui/health.rs:120
+msgid "Minimum Design Voltage"
+msgstr "最低设计电压"
+
+#: src/ui/health.rs:124
+msgid "Battery Information"
+msgstr "电池信息"
+
+#: src/ui/health.rs:125
+msgid "Manufacturer"
+msgstr "制造商"
+
+#: src/ui/health.rs:126
+msgid "Model"
+msgstr "型号"
+
+#: src/ui/health.rs:127
+msgid "Serial Number"
+msgstr "序列号"
+
+#: src/ui/health.rs:128
+msgid "Chemistry"
+msgstr "化学类型"
+
+#: src/ui/health.rs:129
+msgid "Device"
+msgstr "设备"
+
+#: src/ui/health.rs:134
+msgid "Calibration"
+msgstr "校准"
+
+#: src/ui/health.rs:136
+msgid "If the percentage jumps or the laptop shuts down before reaching 0%, recalibrating helps the battery report its capacity accurately. It takes a full charge, a full discharge and another full charge, usually a few hours."
+msgstr "如果电量百分比跳变，或笔记本电脑在电量降到 0% 之前关机，重新校准可以帮助电池准确报告其容量。校准需要一次充满、一次完全放电，再充满一次，通常需要几个小时。"
+
+#: src/ui/health.rs:139 src/ui/health.rs:223
+msgid "Not running"
+msgstr "未运行"
+
+#: src/ui/health.rs:141 src/ui/health.rs:205 src/ui/health.rs:242
+msgid "Start"
+msgstr "开始"
+
+#: src/ui/health.rs:202
+msgid "Start Calibration?"
+msgstr "开始校准？"
+
+#: src/ui/health.rs:203
+#, no-c-format
+msgid "Your laptop will charge to 100%. Then unplug it and use it normally until the battery reaches {CALIBRATION_EMPTY}%, and charge it to 100% again. You'll get a notification at each step, and your charge limit comes back at the end."
+msgstr "您的笔记本电脑将先充电至 100%。然后拔下电源并正常使用，直到电量降至 {CALIBRATION_EMPTY}%，再重新充电至 100%。每一步都会收到通知，结束后将恢复您的充电上限。"
+
+#: src/ui/health.rs:223
+msgid "You'll get a notification at each step."
+msgstr "每一步都会收到通知。"
+
+#: src/ui/health.rs:226
+#, no-c-format
+msgid "Charging, now at {pct}%"
+msgstr "正在充电，当前 {pct}%"
+
+#: src/ui/health.rs:226
+msgid "Connect the charger to continue"
+msgstr "连接充电器以继续"
+
+#: src/ui/health.rs:227
+#, no-c-format
+msgid "Step {n} of 3: Charge to 100%"
+msgstr "第 {n} 步，共 3 步：充电至 100%"
+
+#: src/ui/health.rs:231
+msgid "Unplug the charger to continue"
+msgstr "拔下充电器以继续"
+
+#: src/ui/health.rs:233
+#, no-c-format
+msgid "Keep using your laptop until {CALIBRATION_EMPTY}%; now at {pct}%"
+msgstr "请继续使用笔记本电脑，直到电量降至 {CALIBRATION_EMPTY}%；当前 {pct}%"
+
+#: src/ui/health.rs:235
+msgid "Step 2 of 3: Use the battery until nearly empty"
+msgstr "第 2 步，共 3 步：使用电池直到几乎耗尽"
+
+#: src/ui/health.rs:256
+msgid "This battery does not report capacity data, so a health trend cannot be calculated."
+msgstr "此电池未报告容量数据，因此无法计算健康趋势。"
+
+#: src/ui/health.rs:258
+msgid "A trend needs at least 5 daily readings spanning 14 days. Open the app on different days, or enable background recording on the Usage page."
+msgstr "趋势至少需要跨越 14 天的 5 个每日读数。请在不同的日子打开应用，或在“使用情况”页面启用后台记录。"
+
+#: src/ui/health.rs:265
+#, no-c-format
+msgid "{0}% per month"
+msgstr "每月 {0}%"
+
+#: src/ui/health.rs:269
+#, no-c-format
+msgid "Around {w}"
+msgstr "大约 {w}"
+
+#: src/ui/health.rs:270
+msgid "Not declining"
+msgstr "未下降"
+
+#: src/ui/health.rs:271
+msgid "Already below 80%"
+msgstr "已低于 80%"
+
+#: src/ui/health.rs:276
+#, no-c-format
+msgid "{readings}/5 readings · {days}/14 days"
+msgstr "{readings}/5 个读数 · {days}/14 天"
+
+#: src/ui/health.rs:304
+msgid "The battery is functioning normally"
+msgstr "电池运行正常"
+
+#: src/ui/health.rs:305
+msgid "The battery holds less charge than when new but works normally"
+msgstr "电池容量比新品时有所下降，但仍可正常使用"
+
+#: src/ui/health.rs:306
+msgid "The battery holds significantly less charge; consider replacing it"
+msgstr "电池容量已明显下降，建议更换"
+
+#: src/ui/health.rs:314
+msgid "None"
+msgstr "无"
+
+#: src/ui/health.rs:319 src/ui/overview.rs:208
+msgid "Not reported"
+msgstr "未报告"
+
+#: src/ui/health.rs:325
+msgid "No data yet"
+msgstr "暂无数据"
+
+#: src/ui/health.rs:59
+msgid "Battery"
+msgstr "电池"
+
+#: src/ui/health.rs:65
+msgid "Capacity"
+msgstr "容量"
+
+#: src/ui/health.rs:66
+msgid "Batteries lose capacity as they age. Maximum capacity compares how much energy the battery holds now with how much it held when new."
+msgstr "电池会随着使用时间增长而损失容量。最大容量比较的是电池当前所能存储的能量与新品时的能量。"
+
+#: src/ui/health.rs:68 src/ui/overview.rs:100
+msgid "Maximum Capacity"
+msgstr "最大容量"
+
+#: src/ui/health.rs:78 src/ui/overview.rs:110
+msgid "Condition"
+msgstr "状态"
+
+#: src/ui/health.rs:79
+msgid "Full Charge Capacity"
+msgstr "满充容量"
+
+#: src/ui/health.rs:80
+msgid "Design Capacity"
+msgstr "设计容量"
+
+#: src/ui/health.rs:81
+msgid "Capacity Lost"
+msgstr "已损失容量"
+
+#: src/ui/health.rs:86
+msgid "Capacity Over Time"
+msgstr "容量变化"
+
+#: src/ui/health.rs:87
+msgid "Recorded once a day. Readings vary a little from day to day; the trend shows the overall direction."
+msgstr "每天记录一次。读数每天会略有波动；趋势线显示总体走向。"
+
+#: src/ui/mod.rs:107
+msgid "Some changes could not be saved"
+msgstr "部分更改无法保存"
+
+#: src/ui/mod.rs:107 src/ui/overview.rs:312 src/ui/overview.rs:321
+msgid "Details"
+msgstr "详情"
+
+#: src/ui/mod.rs:111
+msgid "Could Not Save Data"
+msgstr "无法保存数据"
+
+#: src/ui/mod.rs:112
+msgid "Check available disk space and folder permissions. Failed preferences were not applied; unsaved history may be lost when the app closes."
+msgstr "请检查可用磁盘空间和文件夹权限。保存失败的首选项未被应用；应用关闭时，未保存的历史记录可能丢失。"
+
+#: src/ui/mod.rs:114
+msgid "Close"
+msgstr "关闭"
+
+#: src/ui/mod.rs:237
+msgid "Export Battery Report"
+msgstr "导出电池报告"
+
+#: src/ui/mod.rs:252
+msgid "Battery report saved"
+msgstr "电池报告已保存"
+
+#: src/ui/mod.rs:252 src/ui/mod.rs:279
+msgid "Open"
+msgstr "打开"
+
+#: src/ui/mod.rs:259
+#, no-c-format
+msgid "Could not save the report: {0}"
+msgstr "无法保存报告：{0}"
+
+#: src/ui/mod.rs:267
+msgid "Export Data as CSV"
+msgstr "将数据导出为 CSV"
+
+#: src/ui/mod.rs:267
+msgid "Save Here"
+msgstr "保存到此处"
+
+#: src/ui/mod.rs:278
+#, no-c-format
+msgid "Saved {n} file"
+msgid_plural "Saved {n} files"
+msgstr[0] "已保存 {n} 个文件"
+
+#: src/ui/mod.rs:287
+#, no-c-format
+msgid "Could not save the files: {0}"
+msgstr "无法保存文件：{0}"
+
+#: src/ui/mod.rs:304
+msgid "Record History in the Background?"
+msgstr "在后台记录历史？"
+
+#: src/ui/mod.rs:305
+msgid "Battery Health Center can start hidden when you log in, so battery history, sleep drain and notifications keep working with the window closed. You can change this any time on the Usage page."
+msgstr "Battery Health Center 可以在您登录时隐藏启动，这样即使关闭窗口，电池历史、睡眠耗电和通知也能继续工作。您可以随时在“使用情况”页面更改此设置。"
+
+#: src/ui/mod.rs:307
+msgid "Not Now"
+msgstr "暂不"
+
+#: src/ui/mod.rs:307
+msgid "Turn On"
+msgstr "开启"
+
+#: src/ui/mod.rs:37 src/ui/mod.rs:84 src/ui/mod.rs:119
+msgctxt "page title"
+msgid "Overview"
+msgstr "概览"
+
+#: src/ui/mod.rs:38 src/ui/mod.rs:85
+msgctxt "page title"
+msgid "Health"
+msgstr "健康"
+
+#: src/ui/mod.rs:39 src/ui/mod.rs:86
+msgctxt "page title"
+msgid "Charging"
+msgstr "充电"
+
+#: src/ui/mod.rs:40 src/ui/mod.rs:87
+msgctxt "page title"
+msgid "Power"
+msgstr "电源"
+
+#: src/ui/mod.rs:41 src/ui/mod.rs:88
+msgctxt "page title"
+msgid "Usage"
+msgstr "使用情况"
+
+#: src/ui/mod.rs:45
+msgid "No Battery Found"
+msgstr "未找到电池"
+
+#: src/ui/mod.rs:46
+msgid "Battery Health Center needs a laptop battery to show information."
+msgstr "Battery Health Center 需要笔记本电脑电池才能显示信息。"
+
+#: src/ui/mod.rs:65
+msgid "_Refresh"
+msgstr "刷新(_R)"
+
+#: src/ui/mod.rs:66
+msgid "_Export Battery Report…"
+msgstr "导出电池报告(_E)…"
+
+#: src/ui/mod.rs:67
+msgid "Export _Data as CSV…"
+msgstr "将数据导出为 CSV(_D)…"
+
+#: src/ui/mod.rs:70
+msgid "_Preferences"
+msgstr "首选项(_P)"
+
+#: src/ui/mod.rs:71
+msgid "_About Battery Health Center"
+msgstr "关于 Battery Health Center(_A)"
+
+#: src/ui/mod.rs:72
+msgid "_Quit"
+msgstr "退出(_Q)"
+
+#: src/ui/mod.rs:78
+msgid "Main Menu"
+msgstr "主菜单"
+
+#: src/ui/mod.rs:84
+msgid "Your battery, charger and recommendations at a glance."
+msgstr "电池、充电器和建议，一目了然。"
+
+#: src/ui/mod.rs:85
+msgid "Understand battery capacity, wear and long-term health."
+msgstr "了解电池容量、损耗和长期健康状况。"
+
+#: src/ui/mod.rs:86
+msgid "Protect your battery with charge limits and schedules."
+msgstr "通过充电上限和计划保护您的电池。"
+
+#: src/ui/mod.rs:87
+msgid "Choose a power mode and adjust energy-saving settings."
+msgstr "选择电源模式并调整节能设置。"
+
+#: src/ui/mod.rs:88
+msgid "Explore battery history, sleep drain and app energy use."
+msgstr "查看电池历史、睡眠耗电和各应用的能耗。"
+
+#: src/ui/overview.rs:116 src/ui/overview.rs:218
+msgid "Since Last Charge"
+msgstr "自上次充电以来"
+
+#: src/ui/overview.rs:117
+msgid "Charger"
+msgstr "充电器"
+
+#: src/ui/overview.rs:120 src/ui/overview.rs:240
+msgid "Unplugged"
+msgstr "已拔下"
+
+#: src/ui/overview.rs:121
+msgid "Battery Used"
+msgstr "已用电量"
+
+#: src/ui/overview.rs:122
+msgid "Average Draw"
+msgstr "平均功耗"
+
+#: src/ui/overview.rs:126
+msgid "Other Devices"
+msgstr "其他设备"
+
+#: src/ui/overview.rs:132
+msgid "Recommendations"
+msgstr "建议"
+
+#: src/ui/overview.rs:174
+#, no-c-format
+msgid "{0} until 100%"
+msgstr "距 100% 还需 {0}"
+
+#: src/ui/overview.rs:175
+msgid "One-time full charge; your limit comes back afterwards"
+msgstr "一次性充满；之后将恢复您的上限"
+
+#: src/ui/overview.rs:177
+#, no-c-format
+msgid "{0} remaining"
+msgstr "剩余 {0}"
+
+#: src/ui/overview.rs:177
+msgid "Estimated at the current usage"
+msgstr "按当前使用情况估算"
+
+#: src/ui/overview.rs:180
+#, no-c-format
+msgid "{0} until {target}%"
+msgstr "距 {target}% 还需 {0}"
+
+#: src/ui/overview.rs:182
+msgid "Estimating time remaining…"
+msgstr "正在估算剩余时间…"
+
+#: src/ui/overview.rs:184
+msgid "Charging On Hold"
+msgstr "充电已暂停"
+
+#: src/ui/overview.rs:185
+#, no-c-format
+msgid "Charge limit of {0}% protects your battery"
+msgstr "{0}% 的充电上限可保护您的电池"
+
+#: src/ui/overview.rs:187
+msgid "Connected to power"
+msgstr "已连接电源"
+
+#: src/ui/overview.rs:193
+#, no-c-format
+msgid "Using {p} W"
+msgstr "正在使用 {p} W"
+
+#: src/ui/overview.rs:194
+#, no-c-format
+msgid "Charging at {p} W"
+msgstr "正在以 {p} W 充电"
+
+#: src/ui/overview.rs:218
+msgid "Power Source"
+msgstr "电源"
+
+#: src/ui/overview.rs:229
+msgid "This charger doesn't report its power rating"
+msgstr "此充电器未报告其额定功率"
+
+#: src/ui/overview.rs:240
+msgid "Last Seen Plugged In"
+msgstr "上次接通电源"
+
+#: src/ui/overview.rs:241
+#, no-c-format
+msgid "{ago} ago, at {0}%"
+msgstr "{ago}前，电量 {0}%"
+
+#: src/ui/overview.rs:275
+#, no-c-format
+msgid "Battery capacity is down to {h}%"
+msgstr "电池容量已降至 {h}%"
+
+#: src/ui/overview.rs:276
+msgid "Your battery holds noticeably less charge than when it was new. Calibrating can correct a wrong reading; if it stays low, consider a replacement."
+msgstr "您的电池容量明显低于新品时。校准可以纠正错误的读数；如果容量仍然很低，请考虑更换。"
+
+#: src/ui/overview.rs:277
+msgid "Calibrate"
+msgstr "校准"
+
+#: src/ui/overview.rs:283
+msgid "Limit charging to 80%"
+msgstr "将充电限制在 80%"
+
+#: src/ui/overview.rs:284
+msgid "Your laptop is plugged in. Keeping the battery below full charge slows down wear."
+msgstr "您的笔记本电脑已接通电源。让电池保持在满电以下可以减缓损耗。"
+
+#: src/ui/overview.rs:285
+msgid "Set Up"
+msgstr "设置"
+
+#: src/ui/overview.rs:293
+msgid "Draining while plugged in"
+msgstr "接通电源时仍在耗电"
+
+#: src/ui/overview.rs:294
+#, no-c-format
+msgid "The {w} W charger can't keep up with your laptop's power use. Use a more powerful charger."
+msgstr "{w} W 的充电器无法满足笔记本电脑的用电需求。请使用功率更大的充电器。"
+
+#: src/ui/overview.rs:300
+#, no-c-format
+msgid "Low-power charger ({w} W)"
+msgstr "低功率充电器（{w} W）"
+
+#: src/ui/overview.rs:301
+msgid "Charging may be slow, especially while you're using the laptop."
+msgstr "充电可能较慢，尤其是在您使用笔记本电脑时。"
+
+#: src/ui/overview.rs:310
+#, no-c-format
+msgid "High drain during sleep ({0}% per hour)"
+msgstr "睡眠期间耗电较多（每小时 {0}%）"
+
+#: src/ui/overview.rs:311
+msgid "Your laptop used a lot of battery while asleep. See the sleep details for tips."
+msgstr "您的笔记本电脑在睡眠期间消耗了大量电量。请查看睡眠详情了解建议。"
+
+#: src/ui/overview.rs:319
+#, no-c-format
+msgid "{0} is using significant energy"
+msgstr "{0} 正在大量耗电"
+
+#: src/ui/overview.rs:320
+msgid "Quitting apps you are not using makes your battery last longer."
+msgstr "退出不使用的应用可以延长电池续航。"
+
+#: src/ui/overview.rs:329
+msgid "Performance mode is on"
+msgstr "性能模式已开启"
+
+#: src/ui/overview.rs:330
+msgid "Performance mode drains the battery faster. Balanced is usually enough on battery."
+msgstr "性能模式会更快地消耗电池。使用电池时，平衡模式通常就足够了。"
+
+#: src/ui/overview.rs:331
+msgid "Use Balanced"
+msgstr "使用平衡模式"
+
+#: src/ui/overview.rs:338
+#, no-c-format
+msgid "Screen brightness is at {percent}%"
+msgstr "屏幕亮度为 {percent}%"
+
+#: src/ui/overview.rs:339
+msgid "The screen is usually the biggest power user. Lowering the brightness makes the battery last noticeably longer."
+msgstr "屏幕通常是最耗电的部件。降低亮度可以明显延长电池续航。"
+
+#: src/ui/overview.rs:340
+msgid "Lower to 50%"
+msgstr "降低到 50%"
+
+#: src/ui/overview.rs:346
+msgid "Keyboard backlight is on"
+msgstr "键盘背光已开启"
+
+#: src/ui/overview.rs:347
+msgid "Turning it off while you don't need it saves a little power."
+msgstr "在不需要时关闭它可以节省少量电量。"
+
+#: src/ui/overview.rs:348 src/ui/overview.rs:356
+msgid "Turn Off"
+msgstr "关闭"
+
+#: src/ui/overview.rs:354
+msgid "Bluetooth is on but nothing is connected"
+msgstr "蓝牙已开启，但没有连接任何设备"
+
+#: src/ui/overview.rs:355
+msgid "Turning Bluetooth off saves a little power until you need it again."
+msgstr "关闭蓝牙可以节省少量电量，直到您再次需要它。"
+
+#: src/ui/overview.rs:362
+msgid "Battery is low"
+msgstr "电量不足"
+
+#: src/ui/overview.rs:363
+msgid "Connect to power soon. Regularly running the battery flat wears it faster."
+msgstr "请尽快连接电源。经常将电池用到耗尽会加速其损耗。"
+
+#: src/ui/overview.rs:371
+msgid "Everything looks good"
+msgstr "一切正常"
+
+#: src/ui/overview.rs:372
+msgid "No recommendations right now."
+msgstr "目前没有建议。"
+
+#: src/ui/overview.rs:99
+msgid "Battery Health"
+msgstr "电池健康"
+
+#: src/ui/power.rs:108
+msgid "Never"
+msgstr "从不"
+
+#: src/ui/power.rs:165
+msgid "Power Mode"
+msgstr "电源模式"
+
+#: src/ui/power.rs:166
+msgid "Power Saver reduces performance to extend battery life. Performance is only offered on some laptops."
+msgstr "节能模式会降低性能以延长电池续航。性能模式仅在部分笔记本电脑上提供。"
+
+#: src/ui/power.rs:169
+msgid "Current Mode"
+msgstr "当前模式"
+
+#: src/ui/power.rs:175
+msgid "Automatic Power Mode"
+msgstr "自动电源模式"
+
+#: src/ui/power.rs:177
+msgid "Switches the power mode by itself when you plug in or unplug the charger. You can still change the mode by hand; it's only switched again the next time something changes."
+msgstr "在您接通或拔下充电器时自动切换电源模式。您仍可以手动更改模式；只有在下次状态变化时才会再次自动切换。"
+
+#: src/ui/power.rs:181
+msgid "Switch Automatically"
+msgstr "自动切换"
+
+#: src/ui/power.rs:182
+msgid "When Plugged In"
+msgstr "接通电源时"
+
+#: src/ui/power.rs:185
+msgid "Use Power Saver When Battery Is Low"
+msgstr "电量不足时使用节能模式"
+
+#: src/ui/power.rs:186
+msgid "Overrides the mode above on battery"
+msgstr "使用电池时覆盖上面的模式"
+
+#: src/ui/power.rs:189
+msgid "Low Battery Level"
+msgstr "低电量阈值"
+
+#: src/ui/power.rs:201
+msgid "Power Mode and Automatic Power Mode Aren't Available"
+msgstr "电源模式和自动电源模式不可用"
+
+#: src/ui/power.rs:202
+msgid "Power Profiles Daemon isn't running, so the power mode can't be read or changed."
+msgstr "Power Profiles Daemon 未运行，因此无法读取或更改电源模式。"
+
+#: src/ui/power.rs:214
+msgid "Power Saving"
+msgstr "节能"
+
+#: src/ui/power.rs:215
+msgid "GNOME's own settings that save the most battery. The same ones are in Settings → Power."
+msgstr "GNOME 自带的最能省电的设置。它们同样位于“设置”→“电源”中。"
+
+#: src/ui/power.rs:222
+msgid "Power Saver When Battery Is Low"
+msgstr "电量不足时启用节能模式"
+
+#: src/ui/power.rs:223
+msgid "GNOME switches to Power Saver mode when the battery gets low"
+msgstr "电量不足时 GNOME 会切换到节能模式"
+
+#: src/ui/power.rs:230
+msgid "Dim Screen When Inactive"
+msgstr "无操作时调暗屏幕"
+
+#: src/ui/power.rs:231
+msgid "The screen is usually the biggest power user, so dimming it saves a lot"
+msgstr "屏幕通常是最耗电的部件，调暗它可以节省大量电量"
+
+#: src/ui/power.rs:235
+msgid "Automatic Screen Brightness"
+msgstr "自动屏幕亮度"
+
+#: src/ui/power.rs:235
+msgid "Adjusts the brightness to the light around you"
+msgstr "根据周围光线调整亮度"
+
+#: src/ui/power.rs:241
+msgid "Screen Blank"
+msgstr "屏幕空白"
+
+#: src/ui/power.rs:242
+msgid "Turns the screen off after you stop using the laptop"
+msgstr "在您停止使用笔记本电脑后关闭屏幕"
+
+#: src/ui/power.rs:252
+msgid "Automatic Suspend on Battery"
+msgstr "使用电池时自动挂起"
+
+#: src/ui/power.rs:252
+msgid "Sleeping uses far less power than staying on"
+msgstr "睡眠比保持开机省电得多"
+
+#: src/ui/power.rs:254
+msgid "Automatic Suspend When Plugged In"
+msgstr "接通电源时自动挂起"
+
+#: src/ui/power.rs:263
+msgid "Power Button and Lid"
+msgstr "电源按钮和屏幕盖"
+
+#: src/ui/power.rs:265
+msgid "Power Button"
+msgstr "电源按钮"
+
+#: src/ui/power.rs:266
+msgid "Close the Lid on Battery"
+msgstr "使用电池时合上屏幕盖"
+
+#: src/ui/power.rs:267
+msgid "Close the Lid When Plugged In"
+msgstr "接通电源时合上屏幕盖"
+
+#: src/ui/power.rs:277
+msgid "Power Saving and Power Button Settings Aren't Available"
+msgstr "节能和电源按钮设置不可用"
+
+#: src/ui/power.rs:278
+msgid "GNOME's power settings weren't found. They need GNOME Settings Daemon."
+msgstr "未找到 GNOME 的电源设置。它们需要 GNOME Settings Daemon。"
+
+#: src/ui/power.rs:284
+msgid "Show Battery Percentage"
+msgstr "显示电量百分比"
+
+#: src/ui/power.rs:284
+msgid "Shows the percentage next to the battery icon in the top bar"
+msgstr "在顶栏的电池图标旁显示百分比"
+
+#: src/ui/power.rs:286
+msgid "Top Bar"
+msgstr "顶栏"
+
+#: src/ui/preferences.rs:30
+msgid "Notifications"
+msgstr "通知"
+
+#: src/ui/preferences.rs:32
+msgid "Sent while Battery Health Center is running. Turn on Record History in the Background (Usage page) to get them even when the window is closed."
+msgstr "在 Battery Health Center 运行期间发送。开启“在后台记录历史”（“使用情况”页面）后，即使窗口关闭也能收到通知。"
+
+#: src/ui/preferences.rs:37
+msgid "Charge Limit Reached"
+msgstr "已达到充电上限"
+
+#: src/ui/preferences.rs:38
+msgid "When charging stops at your limit"
+msgstr "充电在您设定的上限处停止时"
+
+#: src/ui/preferences.rs:44
+msgid "Fully Charged Without a Limit"
+msgstr "无上限时已充满"
+
+#: src/ui/preferences.rs:45
+msgid "A reminder to unplug, or to set a charge limit"
+msgstr "提醒您拔下电源，或设置充电上限"
+
+#: src/ui/preferences.rs:49
+msgid "Low Battery"
+msgstr "电量低"
+
+#: src/ui/preferences.rs:49
+msgid "When the battery drops to the level below"
+msgstr "电量降到下面的级别时"
+
+#: src/ui/preferences.rs:52
+msgid "Notify At"
+msgstr "通知电量"
+
+#: src/ui/preferences.rs:67
+msgid "Apps Using Significant Energy"
+msgstr "大量耗电的应用"
+
+#: src/ui/preferences.rs:68
+msgid "When an app keeps the CPU busy for a while on battery"
+msgstr "使用电池时某个应用持续占用 CPU 一段时间"
+
+#: src/ui/preferences.rs:74
+msgid "High Drain During Sleep"
+msgstr "睡眠期间耗电较多"
+
+#: src/ui/preferences.rs:75
+msgid "When your laptop used a lot of battery while asleep"
+msgstr "笔记本电脑在睡眠期间消耗了大量电量时"
+
+#: src/ui/usage.rs:101
+#, no-c-format
+msgid "{0}% CPU"
+msgstr "CPU {0}%"
+
+#: src/ui/usage.rs:138 src/ui/usage.rs:403
+msgid "No apps are using significant energy"
+msgstr "没有应用在大量耗电"
+
+#: src/ui/usage.rs:152
+msgid "No app activity recorded yet"
+msgstr "尚未记录到应用活动"
+
+#: src/ui/usage.rs:152
+msgid "Usage is recorded while Battery Health Center is running."
+msgstr "使用情况在 Battery Health Center 运行期间记录。"
+
+#: src/ui/usage.rs:179
+#, no-c-format
+msgid "{when} · {0} asleep"
+msgstr "{when} · 睡眠 {0}"
+
+#: src/ui/usage.rs:180
+#, no-c-format
+msgid "Used {used}% ({rate}% per hour)"
+msgstr "消耗 {used}%（每小时 {rate}%）"
+
+#: src/ui/usage.rs:183
+msgid "Moderate"
+msgstr "中等"
+
+#: src/ui/usage.rs:213 src/ui/usage.rs:389
+msgid "Battery Level"
+msgstr "电池电量"
+
+#: src/ui/usage.rs:214
+msgid "Level"
+msgstr "电量"
+
+#: src/ui/usage.rs:214
+msgid "Power"
+msgstr "功率"
+
+#: src/ui/usage.rs:259
+msgid "Record History in the Background"
+msgstr "在后台记录历史"
+
+#: src/ui/usage.rs:260
+msgid "History, sleep drain and notifications only work while Battery Health Center is running. This starts it hidden when you log in."
+msgstr "历史、睡眠耗电和通知仅在 Battery Health Center 运行时有效。此选项会在您登录时隐藏启动它。"
+
+#: src/ui/usage.rs:275
+msgid "Battery Use During Sleep"
+msgstr "睡眠期间的电池消耗"
+
+#: src/ui/usage.rs:276
+msgid "How much charge your laptop used while suspended."
+msgstr "笔记本电脑在挂起期间消耗的电量。"
+
+#: src/ui/usage.rs:278
+msgid "Sleep Mode"
+msgstr "睡眠模式"
+
+#: src/ui/usage.rs:289
+msgid "Using Significant Energy"
+msgstr "大量耗电"
+
+#: src/ui/usage.rs:297
+msgid "Energy Use by App"
+msgstr "各应用的能耗"
+
+#: src/ui/usage.rs:299
+msgid "Since Opened"
+msgstr "自打开以来"
+
+#: src/ui/usage.rs:312
+msgid "Linux does not measure power per app. Energy impact is estimated from CPU time, and watts are the measured battery drain above idle, shared between apps by CPU use. Treat them as a guide."
+msgstr "Linux 不会按应用测量功率。能耗影响是根据 CPU 时间估算的，瓦特数则是测得的高于空闲状态的电池消耗，按 CPU 使用量在各应用之间分摊。请仅作参考。"
+
+#: src/ui/usage.rs:344 src/ui/usage.rs:345
+msgid "Collecting the first app samples"
+msgstr "正在收集首批应用样本"
+
+#: src/ui/usage.rs:344
+msgid "App activity appears after a few seconds. Keep the app open to start recording."
+msgstr "应用活动将在几秒钟后出现。请保持应用打开以开始记录。"
+
+#: src/ui/usage.rs:389
+msgid "Green: plugged in · Blue: on battery · Dashed: charge limit"
+msgstr "绿色：接通电源 · 蓝色：使用电池 · 虚线：充电上限"
+
+#: src/ui/usage.rs:390
+msgid "Power Draw"
+msgstr "功耗"
+
+#: src/ui/usage.rs:390
+msgid "Blue: power used on battery · Green: charging power"
+msgstr "蓝色：使用电池时的功耗 · 绿色：充电功率"
+
+#: src/ui/usage.rs:399
+msgid "Average energy impact since Battery Health Center started."
+msgstr "自 Battery Health Center 启动以来的平均能耗影响。"
+
+#: src/ui/usage.rs:410
+msgid "Share of app activity, with energy used while on battery."
+msgstr "应用活动占比，以及使用电池时消耗的能量。"
+
+#: src/ui/usage.rs:423
+msgid "No sleep recorded yet"
+msgstr "尚未记录到睡眠"
+
+#: src/ui/usage.rs:424
+msgid "Measured when Battery Health Center is running before and after your laptop sleeps on battery."
+msgstr "在笔记本电脑使用电池睡眠前后，若 Battery Health Center 正在运行，则会进行测量。"
+
+#: src/ui/usage.rs:434
+msgid "Modern Standby (s2idle)"
+msgstr "现代待机（s2idle）"
+
+#: src/ui/usage.rs:434
+msgid "Wakes quickly, but some laptops drain more while asleep"
+msgstr "唤醒迅速，但部分笔记本电脑在睡眠时耗电较多"
+
+#: src/ui/usage.rs:435
+msgid "Deep Sleep (S3)"
+msgstr "深度睡眠（S3）"
+
+#: src/ui/usage.rs:435
+msgid "The lowest-power sleep mode"
+msgstr "功耗最低的睡眠模式"
+
+#: src/ui/usage.rs:436
+msgid "Shallow Sleep (S1)"
+msgstr "浅度睡眠（S1）"
+
+#: src/ui/usage.rs:436
+msgid "A light sleep mode"
+msgstr "较轻的睡眠模式"
+
+#: src/ui/usage.rs:439
+#, no-c-format
+msgid "Sleep Mode: {name}"
+msgstr "睡眠模式：{name}"
+
+#: src/ui/usage.rs:442
+#, no-c-format
+msgid "{about}. Your laptop also supports deep sleep, which usually uses less battery; you can choose it with the kernel option mem_sleep_default=deep."
+msgstr "{about}。您的笔记本电脑还支持深度睡眠，通常更省电；可以通过内核选项 mem_sleep_default=deep 选择它。"
+
+#: src/ui/usage.rs:468
+msgid "Your history starts here. Keep the app running; a battery sample is recorded every minute. Enable background recording below to keep collecting after login."
+msgstr "您的历史记录从这里开始。请保持应用运行；每分钟会记录一次电池样本。启用下方的后台记录，即可在登录后继续收集。"
+
+#: src/ui/usage.rs:470
+msgid "Not enough samples in this view yet. New readings arrive every minute while the app runs. Try a longer range, or switch to Level if power readings are unavailable."
+msgstr "此视图中的样本尚不足。应用运行时每分钟会有新的读数。请尝试更长的范围；如果无法获得功率读数，请切换到“电量”。"
+
+#: src/ui/usage.rs:485
+msgid "Apps ranked by their current energy impact, with estimated power draw."
+msgstr "按当前能耗影响排序的应用，并显示估算功耗。"
+
+#: src/ui/usage.rs:487
+msgid "Apps ranked by their current energy impact. Power estimates appear when running on battery."
+msgstr "按当前能耗影响排序的应用。使用电池时会显示功率估算。"
+
+#: src/ui/usage.rs:54
+msgid "Medium"
+msgstr "中"
+
+#: src/ui/usage.rs:96
+#, no-c-format
+msgid "{n} process"
+msgid_plural "{n} processes"
+msgstr[0] "{n} 个进程"
+
+#: src/ui/usage.rs:99
+msgid "System"
+msgstr "系统"
+
+#: src/ui/widgets.rs:261 src/ui/widgets.rs:285 src/ui/widgets.rs:358
+msgid "Not enough history yet"
+msgstr "历史记录尚不足"
+
+#: src/ui/widgets.rs:308
+msgid "Recorded once a day; check back tomorrow"
+msgstr "每天记录一次；请明天再来查看"
+
+#: src/ui/widgets.rs:369
+msgid "How energy estimates work"
+msgstr "能耗估算的工作原理"
+
+#: src/ui/widgets.rs:374
+msgid "Energy impact is based on CPU activity. Estimated watts share battery draw above idle between apps by CPU use. GPU, display and device activity are not measured per app. Use these values as a guide, not an exact measurement."
+msgstr "能耗影响基于 CPU 活动。估算的瓦特数按 CPU 使用量，在各应用之间分摊高于空闲状态的电池消耗。GPU、显示器和设备的活动不会按应用测量。这些数值仅供参考，并非精确测量。"

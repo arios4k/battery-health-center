@@ -1,6 +1,6 @@
 # So funktioniert Battery Health Center
 
-Die Details hinter der App, für Neugierige und Mitwirkende. Zurück zur [README](../README.de.md). Auch auf [English](HOW-IT-WORKS.md), [Español](HOW-IT-WORKS.es.md) und [Français](HOW-IT-WORKS.fr.md).
+Die Details hinter der App, für Neugierige und Mitwirkende. Zurück zur [README](../README.de.md). Auch auf [English](HOW-IT-WORKS.md), [Español](HOW-IT-WORKS.es.md), [Français](HOW-IT-WORKS.fr.md) und [简体中文](HOW-IT-WORKS.zh-CN.md).
 
 - **Akkudaten** werden direkt aus `/sys/class/power_supply/BAT*` gelesen. Sowohl energiebasierte (µWh) als auch
   ladungsbasierte (µAh) Treiber werden unterstützt.

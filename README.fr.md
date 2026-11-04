@@ -1,6 +1,6 @@
 <div align="center">
 
-[English](README.md) · [Español](README.es.md) · [Deutsch](README.de.md) · **Français**
+[English](README.md) · [Español](README.es.md) · [Deutsch](README.de.md) · **Français** · [简体中文](README.zh-CN.md)
 
 <img src="docs/icon.svg" width="128" alt="Icône de Battery Health Center : une batterie bleue avec une cellule turquoise et une pulsation blanche de santé">
 
@@ -14,7 +14,7 @@ Santé, nombre de cycles, limites et programmation de la charge, et applications
 [![Installer avec apt](https://img.shields.io/badge/install-apt-orange)](#installation-ubuntu-debian-et-dérivées)
 [![Installer sur Fedora](https://img.shields.io/badge/install-Fedora%20COPR-51a2da)](#installation-fedora)
 [![Licence : GPL-3.0-or-later](https://img.shields.io/badge/licence-GPL--3.0--or--later-blue)](LICENSE)
-[![Langues](https://img.shields.io/badge/langues-EN%20%C2%B7%20ES%20%C2%B7%20DE%20%C2%B7%20FR-lightgrey)](#traductions)
+[![Langues](https://img.shields.io/badge/langues-EN%20%C2%B7%20ES%20%C2%B7%20DE%20%C2%B7%20FR%20%C2%B7%20ZH-lightgrey)](#traductions)
 [![Fait avec Rust et GTK4](https://img.shields.io/badge/made%20with-Rust%20%2B%20GTK4-informational)](#compiler-depuis-les-sources)
 
 <picture>
@@ -133,7 +133,7 @@ pour un tableur.
   internet et n’a aucune télémétrie. L’historique tient dans quelques fichiers CSV de votre dossier personnel.
 - **Prudent avec root.** Seul un petit assistant s’exécute en tant que root. Il n’accepte que des valeurs
   validées et n’écrit que les fichiers de limite de charge de la batterie et sa propre configuration.
-- **Parle votre langue.** Anglais, espagnol, allemand et français, selon la langue de votre système.
+- **Parle votre langue.** Anglais, espagnol, allemand, français et chinois simplifié, selon la langue de votre système.
 - **Se met à jour avec votre système.** Installez-le depuis un dépôt apt signé (ou le COPR de Fedora) et vos
   mises à jour habituelles le tiennent à jour.
 
@@ -229,10 +229,10 @@ BHC_SCREENSHOTS=/path/to/folder cargo run --release
 
 ## Traductions
 
-L’application est disponible en anglais, espagnol (`es`), allemand (`de`) et français (`fr`). Elle utilise la
+L’application est disponible en anglais, espagnol (`es`), allemand (`de`), français (`fr`) et chinois simplifié (`zh_CN`). Elle utilise la
 langue de votre système et revient à l’anglais pour tout ce qui n’est pas traduit. Le rapport de batterie HTML
 exporté reste uniquement en anglais. Ce README et [Comment ça marche](docs/HOW-IT-WORKS.fr.md) existent aussi en
-[English](README.md), [Español](README.es.md) et [Deutsch](README.de.md).
+[English](README.md), [Español](README.es.md), [Deutsch](README.de.md) et [简体中文](README.zh-CN.md).
 
 Pour ajouter une langue, par exemple l’italien :
 

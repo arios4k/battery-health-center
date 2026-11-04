@@ -1,6 +1,6 @@
 <div align="center">
 
-[English](README.md) · [Español](README.es.md) · **Deutsch** · [Français](README.fr.md)
+[English](README.md) · [Español](README.es.md) · **Deutsch** · [Français](README.fr.md) · [简体中文](README.zh-CN.md)
 
 <img src="docs/icon.svg" width="128" alt="Symbol von Battery Health Center: ein blauer Akku mit türkisfarbener Zelle und weißem Gesundheitspuls">
 
@@ -14,7 +14,7 @@ Zustand, Ladezyklen, Ladelimits und Ladepläne und welche Apps ihn leeren, für 
 [![Mit apt installieren](https://img.shields.io/badge/install-apt-orange)](#installation-ubuntu-debian-und-abkömmlinge)
 [![Unter Fedora installieren](https://img.shields.io/badge/install-Fedora%20COPR-51a2da)](#installation-fedora)
 [![Lizenz: GPL-3.0-or-later](https://img.shields.io/badge/Lizenz-GPL--3.0--or--later-blue)](LICENSE)
-[![Sprachen](https://img.shields.io/badge/Sprachen-EN%20%C2%B7%20ES%20%C2%B7%20DE%20%C2%B7%20FR-lightgrey)](#übersetzungen)
+[![Sprachen](https://img.shields.io/badge/Sprachen-EN%20%C2%B7%20ES%20%C2%B7%20DE%20%C2%B7%20FR%20%C2%B7%20ZH-lightgrey)](#übersetzungen)
 [![Gemacht mit Rust und GTK4](https://img.shields.io/badge/made%20with-Rust%20%2B%20GTK4-informational)](#aus-dem-quellcode-bauen)
 
 <picture>
@@ -130,7 +130,7 @@ Ruhezustandssitzungen und den Energieverbrauch jeder App pro Stunde als CSV-Date
   hat keine Telemetrie. Der Verlauf besteht aus einigen CSV-Dateien in Ihrem Home-Ordner.
 - **Sorgfältig mit Root-Rechten.** Nur ein kleiner Helfer läuft als root. Er akzeptiert nur geprüfte Werte und
   schreibt ausschließlich die Ladelimit-Dateien des Akkus und seine eigene Konfiguration.
-- **Spricht Ihre Sprache.** Englisch, Spanisch, Deutsch und Französisch, passend zu Ihrer Systemsprache.
+- **Spricht Ihre Sprache.** Englisch, Spanisch, Deutsch, Französisch und Vereinfachtes Chinesisch, passend zu Ihrer Systemsprache.
 - **Aktualisiert sich mit Ihrem System.** Installieren Sie sie aus einem signierten apt-Repository (oder dem COPR
   von Fedora), und Ihre üblichen Updates halten sie aktuell.
 
@@ -225,10 +225,10 @@ BHC_SCREENSHOTS=/path/to/folder cargo run --release
 
 ## Übersetzungen
 
-Die App ist auf Englisch, Spanisch (`es`), Deutsch (`de`) und Französisch (`fr`) verfügbar. Sie verwendet Ihre
+Die App ist auf Englisch, Spanisch (`es`), Deutsch (`de`), Französisch (`fr`) und Vereinfachtem Chinesisch (`zh_CN`) verfügbar. Sie verwendet Ihre
 Systemsprache und greift für alles Unübersetzte auf Englisch zurück. Der exportierte HTML-Akkubericht ist weiterhin
 nur auf Englisch. Diese README und [So funktioniert es](docs/HOW-IT-WORKS.de.md) gibt es auch auf
-[English](README.md), [Español](README.es.md) und [Français](README.fr.md).
+[English](README.md), [Español](README.es.md), [Français](README.fr.md) und [简体中文](README.zh-CN.md).
 
 Um eine Sprache hinzuzufügen, zum Beispiel Italienisch:
 

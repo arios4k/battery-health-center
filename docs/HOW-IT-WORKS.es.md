@@ -1,6 +1,6 @@
 # Cómo funciona Battery Health Center
 
-Los detalles detrás de la aplicación, para los curiosos y para quienes contribuyen. Volver al [README](../README.es.md). También en [English](HOW-IT-WORKS.md), [Deutsch](HOW-IT-WORKS.de.md) y [Français](HOW-IT-WORKS.fr.md).
+Los detalles detrás de la aplicación, para los curiosos y para quienes contribuyen. Volver al [README](../README.es.md). También en [English](HOW-IT-WORKS.md), [Deutsch](HOW-IT-WORKS.de.md), [Français](HOW-IT-WORKS.fr.md) y [简体中文](HOW-IT-WORKS.zh-CN.md).
 
 - **Los datos de la batería** se leen directamente de `/sys/class/power_supply/BAT*`. Se admiten tanto los
   controladores basados en energía (µWh) como los basados en carga (µAh).

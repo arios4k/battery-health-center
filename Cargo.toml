@@ -63,6 +63,7 @@ assets = [
     ["locale/de/LC_MESSAGES/battery-health-center.mo", "usr/share/locale/de/LC_MESSAGES/", "644"],
     ["locale/es/LC_MESSAGES/battery-health-center.mo", "usr/share/locale/es/LC_MESSAGES/", "644"],
     ["locale/fr/LC_MESSAGES/battery-health-center.mo", "usr/share/locale/fr/LC_MESSAGES/", "644"],
+    ["locale/zh_CN/LC_MESSAGES/battery-health-center.mo", "usr/share/locale/zh_CN/LC_MESSAGES/", "644"],
     ["README.md", "usr/share/doc/battery-health-center/", "644"],
 ]
 

@@ -1,6 +1,6 @@
 <div align="center">
 
-**English** · [Español](README.es.md) · [Deutsch](README.de.md) · [Français](README.fr.md)
+**English** · [Español](README.es.md) · [Deutsch](README.de.md) · [Français](README.fr.md) · [简体中文](README.zh-CN.md)
 
 <img src="docs/icon.svg" width="128" alt="Battery Health Center icon: a blue battery with a turquoise cell and white health pulse">
 
@@ -14,7 +14,7 @@ Health, cycle count, charge limits and schedules, and which apps drain it, for G
 [![Install with apt](https://img.shields.io/badge/install-apt-orange)](#install-ubuntu-debian-and-derivatives)
 [![Install on Fedora](https://img.shields.io/badge/install-Fedora%20COPR-51a2da)](#install-fedora)
 [![License: GPL-3.0-or-later](https://img.shields.io/badge/license-GPL--3.0--or--later-blue)](LICENSE)
-[![Languages](https://img.shields.io/badge/languages-EN%20%C2%B7%20ES%20%C2%B7%20DE%20%C2%B7%20FR-lightgrey)](#translations)
+[![Languages](https://img.shields.io/badge/languages-EN%20%C2%B7%20ES%20%C2%B7%20DE%20%C2%B7%20FR%20%C2%B7%20ZH-lightgrey)](#translations)
 [![Made with Rust and GTK4](https://img.shields.io/badge/made%20with-Rust%20%2B%20GTK4-informational)](#build-from-source)
 
 <picture>
@@ -128,7 +128,7 @@ sessions and each app's energy use per hour as CSV files for a spreadsheet.
   has no telemetry. The history is a few CSV files in your home folder.
 - **Careful with root.** Only a small helper runs as root. It accepts nothing but validated values and
   writes only the battery's charge-limit files and its own config.
-- **Speaks your language.** English, Spanish, German and French, following your system language.
+- **Speaks your language.** English, Spanish, German, French and Simplified Chinese, following your system language.
 - **Updates with your system.** Install it from a signed apt repository (or Fedora's COPR) and your usual updates keep it current.
 
 ## FAQ
@@ -220,10 +220,10 @@ BHC_SCREENSHOTS=/path/to/folder cargo run --release
 
 ## Translations
 
-The app is available in English, Spanish (`es`), German (`de`) and French (`fr`). It uses your system
+The app is available in English, Spanish (`es`), German (`de`), French (`fr`) and Simplified Chinese (`zh_CN`). It uses your system
 language and falls back to English for anything that isn't translated. The exported HTML battery report is
 still English only. This README and [How it works](docs/HOW-IT-WORKS.md) are also available in
-[Español](README.es.md), [Deutsch](README.de.md) and [Français](README.fr.md); keep them in step when you
+[Español](README.es.md), [Deutsch](README.de.md), [Français](README.fr.md) and [简体中文](README.zh-CN.md); keep them in step when you
 change the English text.
 
 To add a language, for example Italian:
