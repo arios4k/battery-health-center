@@ -1,3 +1,11 @@
+battery-health-center (0.6.0-1) unstable; urgency=low
+
+  * Add French and Simplified Chinese translations.
+  * Translate the README and "How it works" into Spanish, German, French
+    and Simplified Chinese.
+
+ -- Alexis Rios-Negron <182820807+arios4k@users.noreply.github.com>  Wed, 04 Nov 2026 12:00:00 -0800
+
 battery-health-center (0.5.1-1) unstable; urgency=low
 
   * Remove the duplicate sidebar branding row.

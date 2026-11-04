@@ -1,6 +1,6 @@
 [package]
 name = "battery-health-center"
-version = "0.5.1"
+version = "0.6.0"
 edition = "2021"
 description = "All your laptop battery information in one place, for GNOME"
 license = "GPL-3.0-or-later"
@@ -62,6 +62,8 @@ assets = [
     # One line per language in po/ (cargo-deb flattens globs).
     ["locale/de/LC_MESSAGES/battery-health-center.mo", "usr/share/locale/de/LC_MESSAGES/", "644"],
     ["locale/es/LC_MESSAGES/battery-health-center.mo", "usr/share/locale/es/LC_MESSAGES/", "644"],
+    ["locale/fr/LC_MESSAGES/battery-health-center.mo", "usr/share/locale/fr/LC_MESSAGES/", "644"],
+    ["locale/zh_CN/LC_MESSAGES/battery-health-center.mo", "usr/share/locale/zh_CN/LC_MESSAGES/", "644"],
     ["README.md", "usr/share/doc/battery-health-center/", "644"],
 ]
 

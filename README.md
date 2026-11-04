@@ -1,5 +1,7 @@
 <div align="center">
 
+**English** · [Español](README.es.md) · [Deutsch](README.de.md) · [Français](README.fr.md) · [简体中文](README.zh-CN.md)
+
 <img src="docs/icon.svg" width="128" alt="Battery Health Center icon: a blue battery with a turquoise cell and white health pulse">
 
 # Battery Health Center
@@ -12,7 +14,7 @@ Health, cycle count, charge limits and schedules, and which apps drain it, for G
 [![Install with apt](https://img.shields.io/badge/install-apt-orange)](#install-ubuntu-debian-and-derivatives)
 [![Install on Fedora](https://img.shields.io/badge/install-Fedora%20COPR-51a2da)](#install-fedora)
 [![License: GPL-3.0-or-later](https://img.shields.io/badge/license-GPL--3.0--or--later-blue)](LICENSE)
-[![Languages](https://img.shields.io/badge/languages-EN%20%C2%B7%20ES%20%C2%B7%20DE-lightgrey)](#translations)
+[![Languages](https://img.shields.io/badge/languages-EN%20%C2%B7%20ES%20%C2%B7%20DE%20%C2%B7%20FR%20%C2%B7%20ZH-lightgrey)](#translations)
 [![Made with Rust and GTK4](https://img.shields.io/badge/made%20with-Rust%20%2B%20GTK4-informational)](#build-from-source)
 
 <picture>
@@ -126,7 +128,7 @@ sessions and each app's energy use per hour as CSV files for a spreadsheet.
   has no telemetry. The history is a few CSV files in your home folder.
 - **Careful with root.** Only a small helper runs as root. It accepts nothing but validated values and
   writes only the battery's charge-limit files and its own config.
-- **Speaks your language.** English, Spanish and German, following your system language.
+- **Speaks your language.** English, Spanish, German, French and Simplified Chinese, following your system language.
 - **Updates with your system.** Install it from a signed apt repository (or Fedora's COPR) and your usual updates keep it current.
 
 ## FAQ
@@ -218,21 +220,23 @@ BHC_SCREENSHOTS=/path/to/folder cargo run --release
 
 ## Translations
 
-The app is available in English, Spanish (`es`) and German (`de`). It uses your system language and
-falls back to English for anything that isn't translated. The exported HTML battery report is still
-English only.
+The app is available in English, Spanish (`es`), German (`de`), French (`fr`) and Simplified Chinese (`zh_CN`). It uses your system
+language and falls back to English for anything that isn't translated. The exported HTML battery report is
+still English only. This README and [How it works](docs/HOW-IT-WORKS.md) are also available in
+[Español](README.es.md), [Deutsch](README.de.md), [Français](README.fr.md) and [简体中文](README.zh-CN.md); keep them in step when you
+change the English text.
 
-To add a language, for example French:
+To add a language, for example Italian:
 
 ```bash
-msginit --locale=fr --input=po/battery-health-center.pot --output=po/fr.po
+msginit --locale=it --input=po/battery-health-center.pot --output=po/it.po
 ```
 
-Translate the strings in `po/fr.po` (a PO editor such as Poedit or GNOME's Gtranslator helps), then add
-`fr` to `po/LINGUAS` and a line for it next to the others in `[package.metadata.deb]` in `Cargo.toml`
+Translate the strings in `po/it.po` (a PO editor such as Poedit or GNOME's Gtranslator helps), then add
+`it` to `po/LINGUAS` and a line for it next to the others in `[package.metadata.deb]` in `Cargo.toml`
 (the `.mo` assets), and check it with the command above. Pull requests with new languages are very
-welcome. `Comment[fr]` and `Keywords[fr]` in `data/io.github.BatteryHealthCenter.desktop` and a
-`<summary xml:lang="fr">` in the metainfo file translate how the app is listed.
+welcome. `Comment[it]` and `Keywords[it]` in `data/io.github.BatteryHealthCenter.desktop` and a
+`<summary xml:lang="it">` in the metainfo file translate how the app is listed.
 
 When the text in the app changes, update the template and the translations (strings that haven't been
 translated yet show up as empty and are shown in English):
