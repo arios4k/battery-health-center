@@ -268,6 +268,14 @@ Bug reports, translations and testing on other laptops and distributions are esp
 [open an issue](https://github.com/arios4k/battery-health-center/issues) with your laptop model and
 distribution.
 
+## Support the project
+
+If Battery Health Center has been useful to you, please consider a donation of any amount to help
+keep development and maintenance going. My intention is to keep this tool free for everyone.
+Thank you for using it and for any support you can give.
+
+[♥ Donate through PayPal](https://paypal.me/AlexisRios)
+
 ## Author
 
 Created by **Alexis Rios-Negron**.
