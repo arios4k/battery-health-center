@@ -41,12 +41,12 @@ msgstr "Actualizaciones de software"
 msgid "Display Server (Xorg)"
 msgstr "Servidor gráfico (Xorg)"
 
-#: src/apps.rs:237
+#: src/apps.rs:240
 msgid "Linux Kernel"
 msgstr "Núcleo de Linux"
 
-#: src/battery.rs:110 src/system.rs:225 src/ui/charging.rs:14
-#: src/ui/usage.rs:177
+#: src/battery.rs:110 src/system.rs:245 src/ui/charging.rs:14
+#: src/ui/usage.rs:183
 msgid "Normal"
 msgstr "Normal"
 
@@ -58,7 +58,7 @@ msgstr "Desgastada"
 msgid "Service Recommended"
 msgstr "Se recomienda revisión"
 
-#: src/battery.rs:34 src/battery.rs:46 src/ui/overview.rs:173
+#: src/battery.rs:34 src/battery.rs:46 src/ui/overview.rs:180
 msgid "Charging"
 msgstr "Cargando"
 
@@ -66,8 +66,8 @@ msgstr "Cargando"
 msgid "USB-C Power Delivery"
 msgstr "USB-C Power Delivery"
 
-#: src/battery.rs:35 src/battery.rs:47 src/ui/overview.rs:175
-#: src/ui/power.rs:181
+#: src/battery.rs:35 src/battery.rs:47 src/ui/overview.rs:182
+#: src/ui/power.rs:183
 msgid "On Battery"
 msgstr "Con batería"
 
@@ -83,10 +83,10 @@ msgstr "Adaptador de corriente"
 msgid "Fully Charged"
 msgstr "Carga completa"
 
-#: src/battery.rs:38 src/ui/health.rs:48 src/ui/health.rs:272
-#: src/ui/health.rs:280 src/ui/health.rs:307 src/ui/health.rs:308
-#: src/ui/health.rs:309 src/ui/health.rs:310 src/ui/overview.rs:197
-#: src/ui/overview.rs:200 src/ui/overview.rs:252
+#: src/battery.rs:38 src/ui/health.rs:50 src/ui/health.rs:298
+#: src/ui/health.rs:307 src/ui/health.rs:334 src/ui/health.rs:335
+#: src/ui/health.rs:336 src/ui/health.rs:337 src/ui/overview.rs:205
+#: src/ui/overview.rs:208 src/ui/overview.rs:260
 msgid "Unknown"
 msgstr "Desconocido"
 
@@ -109,15 +109,15 @@ msgstr "{h} h {m} min"
 msgid "Not Charging"
 msgstr "Sin cargar"
 
-#: src/battery.rs:49 src/system.rs:227
+#: src/battery.rs:49 src/system.rs:247
 msgid "Full"
 msgstr "Llena"
 
-#: src/controller.rs:355
+#: src/controller.rs:363
 msgid "Calibration: Unplug Your Laptop"
 msgstr "Calibración: desconecta el portátil"
 
-#: src/controller.rs:355
+#: src/controller.rs:363
 msgid ""
 "The battery is full. Unplug the charger and use your laptop normally until "
 "the battery is nearly empty."
@@ -125,22 +125,22 @@ msgstr ""
 "La batería está llena. Desconecta el cargador y usa el portátil con "
 "normalidad hasta que la batería esté casi vacía."
 
-#: src/controller.rs:360
+#: src/controller.rs:368
 msgid "Calibration: Plug In Now"
 msgstr "Calibración: conecta el cargador ahora"
 
-#: src/controller.rs:360
+#: src/controller.rs:368
 msgid ""
 "The battery is nearly empty. Connect the charger and let it charge to 100%."
 msgstr ""
 "La batería está casi vacía. Conecta el cargador y deja que se cargue al "
 "100 %."
 
-#: src/controller.rs:364
+#: src/controller.rs:372
 msgid "Calibration Complete"
 msgstr "Calibración completada"
 
-#: src/controller.rs:364
+#: src/controller.rs:372
 msgid ""
 "The battery's capacity reading has been recalibrated. Your charge limit is "
 "back on."
@@ -148,20 +148,20 @@ msgstr ""
 "Se ha recalibrado la lectura de la capacidad de la batería. Tu límite de "
 "carga vuelve a estar activo."
 
-#: src/controller.rs:391
+#: src/controller.rs:399
 #, no-c-format
 msgid "Charged to {0}%"
 msgstr "Cargada hasta el {0} %"
 
-#: src/controller.rs:391
+#: src/controller.rs:399
 msgid "Charging has stopped at your limit to protect the battery."
 msgstr "La carga se ha detenido en tu límite para proteger la batería."
 
-#: src/controller.rs:402
+#: src/controller.rs:410
 msgid "Battery Fully Charged"
 msgstr "Batería completamente cargada"
 
-#: src/controller.rs:402
+#: src/controller.rs:410
 msgid ""
 "Unplug the charger, or set a charge limit in Battery Health Center to slow "
 "battery wear."
@@ -169,35 +169,35 @@ msgstr ""
 "Desconecta el cargador o define un límite de carga en Battery Health Center "
 "para reducir el desgaste de la batería."
 
-#: src/controller.rs:408
+#: src/controller.rs:416
 #, no-c-format
 msgid "About {0} remaining."
 msgstr "Quedan unos {0}."
 
-#: src/controller.rs:409
+#: src/controller.rs:417
 #, no-c-format
 msgid "Battery at {0}%"
 msgstr "Batería al {0} %"
 
-#: src/controller.rs:409
+#: src/controller.rs:417
 #, no-c-format
 msgid "Connect the charger soon.{remaining}"
 msgstr "Conecta el cargador pronto.{remaining}"
 
-#: src/controller.rs:421
+#: src/controller.rs:429
 #, no-c-format
 msgid "{0} Is Using Significant Energy"
 msgstr "{0} está usando mucha energía"
 
-#: src/controller.rs:421
+#: src/controller.rs:429
 msgid "Quit it if you're not using it to make your battery last longer."
 msgstr "Ciérrala si no la estás usando para que la batería dure más."
 
-#: src/controller.rs:435
+#: src/controller.rs:443
 msgid "High Battery Drain During Sleep"
 msgstr "Consumo elevado de batería durante la suspensión"
 
-#: src/controller.rs:436
+#: src/controller.rs:444
 #, no-c-format
 msgid "Your laptop used {0}% in {1} asleep ({rate}% per hour)."
 msgstr "Tu portátil usó el {0} % en {1} de suspensión ({rate} % por hora)."
@@ -251,11 +251,6 @@ msgid_plural "{n} hours"
 msgstr[0] "{n} hora"
 msgstr[1] "{n} horas"
 
-#: src/main.rs:186
-msgid "Battery health, charge limits and energy usage in one place."
-msgstr ""
-"Salud de la batería, límites de carga y consumo de energía en un solo lugar."
-
 #: src/system.rs:110
 msgid "Power Saver"
 msgstr "Ahorro de energía"
@@ -268,19 +263,19 @@ msgstr "Equilibrado"
 msgid "Performance"
 msgstr "Rendimiento"
 
-#: src/system.rs:223 src/ui/usage.rs:52
+#: src/system.rs:243 src/ui/usage.rs:56
 msgid "Low"
 msgstr "Bajo"
 
-#: src/system.rs:224
+#: src/system.rs:244
 msgid "Critical"
 msgstr "Crítico"
 
-#: src/system.rs:226 src/ui/usage.rs:48 src/ui/usage.rs:177
+#: src/system.rs:246 src/ui/usage.rs:52 src/ui/usage.rs:183
 msgid "High"
 msgstr "Alto"
 
-#: src/system.rs:272
+#: src/system.rs:292
 msgid "Wireless Device"
 msgstr "Dispositivo inalámbrico"
 
@@ -305,16 +300,107 @@ msgstr "Se canceló la autorización"
 msgid "The change could not be applied"
 msgstr "No se pudo aplicar el cambio"
 
+#: src/ui/about.rs:100
+#, no-c-format
+msgid "Could not open link: {error}"
+msgstr "No se pudo abrir el enlace: {error}"
+
+#: src/ui/about.rs:15
+msgid "Battery health, charge limits and energy usage in one place."
+msgstr ""
+"Salud de la batería, límites de carga y consumo de energía en un solo lugar."
+
+#: src/ui/about.rs:18 src/ui/about.rs:22
+msgid "Copy version information"
+msgstr "Copiar información de la versión"
+
+#: src/ui/about.rs:20 src/ui/about.rs:22
+#, no-c-format
+msgid "Version {version}"
+msgstr "Versión {version}"
+
+#: src/ui/about.rs:26
+msgid "Version information copied"
+msgstr "Información de la versión copiada"
+
+#: src/ui/about.rs:34
+msgid "Battery care"
+msgstr "Cuidado de la batería"
+
+#: src/ui/about.rs:35
+msgid "Native Linux app"
+msgstr "Aplicación nativa de Linux"
+
+#: src/ui/about.rs:35
+msgid "Open source"
+msgstr "Código abierto"
+
+#: src/ui/about.rs:43
+msgid "Explore Battery Health Center"
+msgstr "Explora Battery Health Center"
+
+#: src/ui/about.rs:44
+msgid "Project & source code"
+msgstr "Proyecto y código fuente"
+
+#: src/ui/about.rs:44
+msgid "Documentation, releases, and the code behind Battery Health Center"
+msgstr "Documentación, versiones y código de Battery Health Center"
+
+#: src/ui/about.rs:46
+msgid "Report an issue"
+msgstr "Informar de un problema"
+
+#: src/ui/about.rs:46
+msgid "Share a bug or suggest an improvement"
+msgstr "Informa de un error o sugiere una mejora"
+
+#: src/ui/about.rs:50
+msgid "More Linux Apps"
+msgstr "Más aplicaciones para Linux"
+
+#: src/ui/about.rs:51
+msgid "Power tools for your Linux desktop"
+msgstr "Herramientas de energía para tu escritorio Linux"
+
+#: src/ui/about.rs:53
+msgid "Universal shipping label printer for Linux"
+msgstr "Impresora universal de etiquetas de envío para Linux"
+
+#: src/ui/about.rs:57
+msgid "Credits and license"
+msgstr "Créditos y licencia"
+
+#: src/ui/about.rs:58
+msgid "Created by"
+msgstr "Creado por"
+
+#: src/ui/about.rs:60 src/ui/about.rs:115
+msgid "GNU General Public License v3 or later"
+msgstr "Licencia Pública General de GNU v3 o posterior"
+
+#: src/ui/about.rs:60
+msgid "Free to use, modify, and share"
+msgstr "Libre para usar, modificar y compartir"
+
+#: src/ui/about.rs:75
+msgid "About Battery Health Center"
+msgstr "Acerca de Battery Health Center"
+
+#: src/ui/about.rs:93
+msgid "Open in browser"
+msgstr "Abrir en el navegador"
+
 #: src/ui/app_trend.rs:31
 msgid "No activity"
 msgstr "Sin actividad"
 
-#: src/ui/app_trend.rs:31 src/ui/usage.rs:153
+#: src/ui/app_trend.rs:31 src/ui/usage.rs:158
 #, no-c-format
 msgid "{0} of CPU time"
 msgstr "{0} de tiempo de CPU"
 
-#: src/ui/app_trend.rs:33 src/ui/usage.rs:158
+#: src/ui/app_trend.rs:33 src/ui/usage.rs:163
 #, no-c-format
 msgid "≈ {0} Wh on battery"
 msgstr "≈ {0} Wh con batería"
@@ -327,23 +413,32 @@ msgstr "Últimas 24 horas"
 msgid "Last 7 Days"
 msgstr "Últimos 7 días"
 
-#: src/ui/app_trend.rs:71
+#: src/ui/app_trend.rs:71 src/ui/app_trend.rs:79 src/ui/app_trend.rs:109
 msgid "Energy Impact"
 msgstr "Impacto energético"
 
-#: src/ui/app_trend.rs:71
+#: src/ui/app_trend.rs:71 src/ui/app_trend.rs:109
 msgid "Energy Used"
 msgstr "Energía usada"
 
-#: src/ui/app_trend.rs:72 src/ui/usage.rs:209 src/ui/usage.rs:282
+#: src/ui/app_trend.rs:72 src/ui/usage.rs:215 src/ui/usage.rs:300
 msgid "24 Hours"
 msgstr "24 horas"
 
-#: src/ui/app_trend.rs:72 src/ui/usage.rs:209 src/ui/usage.rs:282
+#: src/ui/app_trend.rs:72 src/ui/usage.rs:215 src/ui/usage.rs:300
 msgid "7 Days"
 msgstr "7 días"
 
 #: src/ui/app_trend.rs:90
+msgid ""
+"No hourly history yet. Keep the app running to collect activity. Completed "
+"hours are saved for the last 7 days."
+msgstr ""
+"Aún no hay historial por hora. Mantén la aplicación en ejecución para "
+"registrar actividad. Las horas completas se guardan durante los últimos 7 "
+"días."
+
+#: src/ui/app_trend.rs:96
 msgid ""
 "Average CPU use in each hour, in percent of one core. Only hours when "
 "Battery Health Center was running are shown."
@@ -351,7 +446,7 @@ msgstr ""
 "Uso medio de la CPU en cada hora, en porcentaje de un núcleo. Solo se "
 "muestran las horas en que Battery Health Center estaba en ejecución."
 
-#: src/ui/app_trend.rs:91
+#: src/ui/app_trend.rs:97
 msgid ""
 "Estimated energy drawn from the battery in each hour. Linux doesn't measure "
 "power per app, so this is an estimate."
@@ -359,11 +454,31 @@ msgstr ""
 "Energía estimada consumida de la batería en cada hora. Linux no mide la "
 "energía por aplicación, así que es una estimación."
 
-#: src/ui/charging.rs:131 src/ui/charging.rs:208
+#: src/ui/charging.rs:134
+msgid "Charging Status"
+msgstr "Estado de carga"
+
+#: src/ui/charging.rs:135
+msgid "Active Charge Limit"
+msgstr "Límite de carga activo"
+
+#: src/ui/charging.rs:136
+msgid "Next Scheduled Full Charge"
+msgstr "Próxima carga completa programada"
+
+#: src/ui/charging.rs:137
+msgid "Temporary Override"
+msgstr "Anulación temporal"
+
+#: src/ui/charging.rs:15
+msgid "Pause Charging"
+msgstr "Pausar la carga"
+
+#: src/ui/charging.rs:153 src/ui/charging.rs:233
 msgid "Charge Limit"
 msgstr "Límite de carga"
 
-#: src/ui/charging.rs:133
+#: src/ui/charging.rs:155
 msgid ""
 "Lithium batteries wear faster when kept at full charge. If your laptop is "
 "plugged in most of the time, limiting the charge to about 80% can noticeably "
@@ -373,59 +488,55 @@ msgstr ""
 "cargadas. Si tu portátil está conectado casi siempre, limitar la carga a "
 "cerca del 80 % puede alargar notablemente la vida útil de la batería."
 
-#: src/ui/charging.rs:136
+#: src/ui/charging.rs:158
 msgid "Current Setting"
 msgstr "Ajuste actual"
-
-#: src/ui/charging.rs:140
-msgid "Profile"
-msgstr "Perfil"
-
-#: src/ui/charging.rs:145
-msgid "Limit Maximum Charge"
-msgstr "Limitar la carga máxima"
-
-#: src/ui/charging.rs:147
-msgid "Stop Charging At"
-msgstr "Dejar de cargar al"
-
-#: src/ui/charging.rs:148 src/ui/power.rs:188 src/ui/preferences.rs:53
-msgid "Percent"
-msgstr "Porcentaje"
-
-#: src/ui/charging.rs:15
-msgid "Pause Charging"
-msgstr "Pausar la carga"
-
-#: src/ui/charging.rs:152
-msgid "Resume Charging Below"
-msgstr "Volver a cargar por debajo del"
-
-#: src/ui/charging.rs:153
-msgid "Avoids topping up after every small drop"
-msgstr "Evita recargar tras cada pequeña bajada"
-
-#: src/ui/charging.rs:157
-msgid "Keep After Restart"
-msgstr "Mantener tras reiniciar"
-
-#: src/ui/charging.rs:158
-msgid "Re-apply the limit at startup and after waking from sleep"
-msgstr "Vuelve a aplicar el límite al iniciar y al despertar de la suspensión"
 
 #: src/ui/charging.rs:16
 msgid "Run on Battery"
 msgstr "Usar la batería"
 
 #: src/ui/charging.rs:162
+msgid "Profile"
+msgstr "Perfil"
+
+#: src/ui/charging.rs:168
+msgid "Limit Maximum Charge"
+msgstr "Limitar la carga máxima"
+
+#: src/ui/charging.rs:170
+msgid "Stop Charging At"
+msgstr "Dejar de cargar al"
+
+#: src/ui/charging.rs:171 src/ui/power.rs:190 src/ui/preferences.rs:53
+msgid "Percent"
+msgstr "Porcentaje"
+
+#: src/ui/charging.rs:175
+msgid "Resume Charging Below"
+msgstr "Volver a cargar por debajo del"
+
+#: src/ui/charging.rs:176
+msgid "Avoids topping up after every small drop"
+msgstr "Evita recargar tras cada pequeña bajada"
+
+#: src/ui/charging.rs:180
+msgid "Keep After Restart"
+msgstr "Mantener tras reiniciar"
+
+#: src/ui/charging.rs:181
+msgid "Re-apply the limit at startup and after waking from sleep"
+msgstr "Vuelve a aplicar el límite al iniciar y al despertar de la suspensión"
+
+#: src/ui/charging.rs:185
 msgid "Apply"
 msgstr "Aplicar"
 
-#: src/ui/charging.rs:177
+#: src/ui/charging.rs:201
 msgid "Charging Schedule"
 msgstr "Programación de carga"
 
-#: src/ui/charging.rs:178
+#: src/ui/charging.rs:202
 msgid ""
 "Charge to 100% just before you need the laptop, and keep your limit the rest "
 "of the time. This needs a saved charge limit: turn on Limit Maximum Charge "
@@ -436,39 +547,39 @@ msgstr ""
 "activa «Limitar la carga máxima» y «Mantener tras reiniciar», y pulsa "
 "Aplicar."
 
-#: src/ui/charging.rs:181
+#: src/ui/charging.rs:205
 msgid "Optimized Charging"
 msgstr "Carga optimizada"
 
-#: src/ui/charging.rs:182
+#: src/ui/charging.rs:206
 msgid "Learns when you usually unplug and charges to 100% just before"
 msgstr "Aprende cuándo sueles desconectarlo y carga al 100 % justo antes"
 
-#: src/ui/charging.rs:184
+#: src/ui/charging.rs:208
 msgid "Learned So Far"
 msgstr "Aprendido hasta ahora"
 
-#: src/ui/charging.rs:187
+#: src/ui/charging.rs:211
 msgid "Start Charging Before"
 msgstr "Empezar a cargar antes"
 
-#: src/ui/charging.rs:188
+#: src/ui/charging.rs:212
 msgid "Hours before the time, to have it full by then"
 msgstr "Horas antes de la hora, para tenerlo lleno a tiempo"
 
-#: src/ui/charging.rs:192
+#: src/ui/charging.rs:216
 msgid "Add a Time…"
 msgstr "Añadir una hora…"
 
-#: src/ui/charging.rs:195
+#: src/ui/charging.rs:219
 msgid "Save Schedule"
 msgstr "Guardar programación"
 
-#: src/ui/charging.rs:210
+#: src/ui/charging.rs:235
 msgid "Not supported on this laptop"
 msgstr "No compatible con este portátil"
 
-#: src/ui/charging.rs:211
+#: src/ui/charging.rs:236
 msgid ""
 "The battery driver does not expose charge thresholds "
 "(charge_control_end_threshold)."
@@ -476,26 +587,26 @@ msgstr ""
 "El controlador de la batería no expone los umbrales de carga "
 "(charge_control_end_threshold)."
 
-#: src/ui/charging.rs:218 src/ui/charging.rs:590
+#: src/ui/charging.rs:244 src/ui/charging.rs:663
 msgid "Charge to 100% Now"
 msgstr "Cargar al 100 % ahora"
 
-#: src/ui/charging.rs:220 src/ui/charging.rs:596
+#: src/ui/charging.rs:246 src/ui/charging.rs:669
 msgid "Charge Now"
 msgstr "Cargar ahora"
 
-#: src/ui/charging.rs:226
+#: src/ui/charging.rs:253
 msgid "Charging Behavior"
 msgstr "Comportamiento de carga"
 
-#: src/ui/charging.rs:227
+#: src/ui/charging.rs:254
 msgid ""
 "Temporarily pause charging, or run from the battery while still plugged in."
 msgstr ""
 "Pausa la carga temporalmente o usa la batería aunque el cargador esté "
 "conectado."
 
-#: src/ui/charging.rs:230
+#: src/ui/charging.rs:257
 msgid "While Plugged In"
 msgstr "Con el cargador conectado"
 
@@ -507,16 +618,6 @@ msgstr "Máxima duración (60 %)"
 msgid "Balanced (80%)"
 msgstr "Equilibrado (80 %)"
 
-#: src/ui/charging.rs:302
-msgid "Back to your charge limit"
-msgstr "De vuelta a tu límite de carga"
-
-#: src/ui/charging.rs:305
-msgid "Charging to 100% once; your limit comes back when full or unplugged"
-msgstr ""
-"Cargando al 100 % una vez; tu límite vuelve cuando esté llena o la "
-"desconectes"
-
 #: src/ui/charging.rs:31
 msgid "Full Capacity (100%)"
 msgstr "Capacidad completa (100 %)"
@@ -525,10 +626,15 @@ msgstr "Capacidad completa (100 %)"
 msgid "Custom"
 msgstr "Personalizado"
 
-#: src/ui/charging.rs:373
-#, no-c-format
-msgid "Charging behavior set to {0}"
-msgstr "Comportamiento de carga establecido en {0}"
+#: src/ui/charging.rs:334
+msgid "Back to your charge limit"
+msgstr "De vuelta a tu límite de carga"
+
+#: src/ui/charging.rs:337
+msgid "Charging to 100% once; your limit comes back when full or unplugged"
+msgstr ""
+"Cargando al 100 % una vez; tu límite vuelve cuando esté llena o la "
+"desconectes"
 
 #: src/ui/charging.rs:38
 msgid "Stops at 60%. Best when you're plugged in most of the time."
@@ -540,68 +646,64 @@ msgstr ""
 msgid "Stops at 80%. A good everyday balance."
 msgstr "Se detiene en el 80 %. Un buen equilibrio para el día a día."
 
-#: src/ui/charging.rs:394
-#, no-c-format
-msgid "Full by {time}"
-msgstr "Lleno a las {time}"
-
 #: src/ui/charging.rs:40
 msgid "Charges to 100%. For the longest time away from the charger."
 msgstr "Carga hasta el 100 %. Para estar el mayor tiempo posible sin cargador."
 
-#: src/ui/charging.rs:400
-msgid "Remove"
-msgstr "Quitar"
+#: src/ui/charging.rs:405
+#, no-c-format
+msgid "Charging behavior set to {0}"
+msgstr "Comportamiento de carga establecido en {0}"
 
 #: src/ui/charging.rs:41
 msgid "Your own settings below."
 msgstr "Tus propios ajustes, más abajo."
 
-#: src/ui/charging.rs:454
+#: src/ui/charging.rs:426
+#, no-c-format
+msgid "Full by {time}"
+msgstr "Lleno a las {time}"
+
+#: src/ui/charging.rs:432 src/ui/charging.rs:436
+msgid "Remove"
+msgstr "Quitar"
+
+#: src/ui/charging.rs:487
 msgid "Add a Time"
 msgstr "Añadir una hora"
 
-#: src/ui/charging.rs:455
+#: src/ui/charging.rs:488
 msgid "Choose the days, and the time you want the battery to be full by."
 msgstr "Elige los días y la hora a la que quieres tener la batería llena."
 
-#: src/ui/charging.rs:458 src/ui/charging.rs:586 src/ui/health.rs:191
-#: src/ui/health.rs:228
+#: src/ui/charging.rs:491 src/ui/charging.rs:659 src/ui/health.rs:206
+#: src/ui/health.rs:243
 msgid "Cancel"
 msgstr "Cancelar"
 
-#: src/ui/charging.rs:458
+#: src/ui/charging.rs:491
 msgid "Add"
 msgstr "Añadir"
 
-#: src/ui/charging.rs:469
+#: src/ui/charging.rs:502
 msgid "Choose at least one day"
 msgstr "Elige al menos un día"
-
-#: src/ui/charging.rs:490
-msgid "Schedule removed"
-msgstr "Programación eliminada"
-
-#: src/ui/charging.rs:490
-msgid "Schedule saved"
-msgstr "Programación guardada"
 
 #: src/ui/charging.rs:52
 msgid "Mon"
 msgstr "lun"
 
+#: src/ui/charging.rs:523
+msgid "Schedule removed"
+msgstr "Programación eliminada"
+
+#: src/ui/charging.rs:523
+msgid "Schedule saved"
+msgstr "Programación guardada"
+
 #: src/ui/charging.rs:53
 msgid "Tue"
 msgstr "mar"
-
-#: src/ui/charging.rs:533
-#, no-c-format
-msgid "Charging will stop at {end}%"
-msgstr "La carga se detendrá en el {end} %"
-
-#: src/ui/charging.rs:533
-msgid "Charge limit removed"
-msgstr "Límite de carga eliminado"
 
 #: src/ui/charging.rs:54
 msgid "Wed"
@@ -615,6 +717,15 @@ msgstr "jue"
 msgid "Fri"
 msgstr "vie"
 
+#: src/ui/charging.rs:566
+#, no-c-format
+msgid "Charging will stop at {end}%"
+msgstr "La carga se detendrá en el {end} %"
+
+#: src/ui/charging.rs:566
+msgid "Charge limit removed"
+msgstr "Límite de carga eliminado"
+
 #: src/ui/charging.rs:57
 msgid "Sat"
 msgstr "sáb"
@@ -623,15 +734,74 @@ msgstr "sáb"
 msgid "Sun"
 msgstr "dom"
 
-#: src/ui/charging.rs:584 src/ui/overview.rs:167
+#: src/ui/charging.rs:608
+msgid "Not supported"
+msgstr "No compatible"
+
+#: src/ui/charging.rs:616
+#, no-c-format
+msgid "{battery}: returns to {limit}%"
+msgstr "{battery}: volverá al {limit}%"
+
+#: src/ui/charging.rs:617
+#, no-c-format
+msgid "{battery}: previous limit will return"
+msgstr "{battery}: se restaurará el límite anterior"
+
+#: src/ui/charging.rs:621
+msgid "One-time full charge"
+msgstr "Carga completa por una vez"
+
+#: src/ui/charging.rs:621
+msgid "Scheduled full charge"
+msgstr "Carga completa programada"
+
+#: src/ui/charging.rs:623
+msgid "None — your charge limit is active"
+msgstr "Ninguna — tu límite de carga está activo"
+
+#: src/ui/charging.rs:624
+msgid "None — charging is unrestricted"
+msgstr "Ninguna — carga sin límite"
+
+#: src/ui/charging.rs:632
+msgid "Save a charge limit below 100% to use scheduled charging."
+msgstr ""
+"Guarda un límite de carga inferior al 100% para usar la carga programada."
+
+#: src/ui/charging.rs:635
+#, no-c-format
+msgid "Full by {ready} · starts {start}"
+msgstr "Carga completa para {ready} · comienza {start}"
+
+#: src/ui/charging.rs:637
+msgid "Learning your routine. Add a time to schedule a full charge now."
+msgstr ""
+"Aprendiendo tu rutina. Añade una hora para programar una carga completa "
+"ahora."
+
+#: src/ui/charging.rs:638
+msgid "No schedule set. Add a ready-by time below."
+msgstr ""
+"No hay un horario definido. Añade abajo una hora para tener la batería lista."
+
+#: src/ui/charging.rs:65
+msgid "Every day"
+msgstr "Todos los días"
+
+#: src/ui/charging.rs:657 src/ui/overview.rs:174
 msgid "Charging to 100%"
 msgstr "Cargando al 100 %"
 
-#: src/ui/charging.rs:585
+#: src/ui/charging.rs:658
 msgid "Your limit comes back when the battery is full or you unplug."
 msgstr "Tu límite vuelve cuando la batería esté llena o la desconectes."
 
-#: src/ui/charging.rs:592
+#: src/ui/charging.rs:66 src/ui/charging.rs:83
+msgid "Weekdays"
+msgstr "Entre semana"
+
+#: src/ui/charging.rs:665
 msgid ""
 "Charge fully once, for a trip or a long day. Your limit comes back when full "
 "or unplugged."
@@ -639,39 +809,31 @@ msgstr ""
 "Carga completa una vez, para un viaje o un día largo. Tu límite vuelve "
 "cuando esté llena o la desconectes."
 
-#: src/ui/charging.rs:594
+#: src/ui/charging.rs:667
 msgid "Connect the charger to charge fully once."
 msgstr "Conecta el cargador para cargar por completo una vez."
-
-#: src/ui/charging.rs:605
-#, no-c-format
-msgid "Stops at {end}%, resumes below {s}%"
-msgstr "Se detiene en el {end} %, se reanuda por debajo del {s} %"
-
-#: src/ui/charging.rs:606
-#, no-c-format
-msgid "Stops at {end}%"
-msgstr "Se detiene en el {end} %"
-
-#: src/ui/charging.rs:607
-msgid "Charges to 100%"
-msgstr "Carga hasta el 100 %"
-
-#: src/ui/charging.rs:647
-msgid "Charging to 100% for your schedule; your limit comes back afterwards"
-msgstr "Cargando al 100 % por tu programación; tu límite vuelve después"
-
-#: src/ui/charging.rs:65
-msgid "Every day"
-msgstr "Todos los días"
-
-#: src/ui/charging.rs:66 src/ui/charging.rs:83
-msgid "Weekdays"
-msgstr "Entre semana"
 
 #: src/ui/charging.rs:67 src/ui/charging.rs:84
 msgid "Weekends"
 msgstr "Fines de semana"
+
+#: src/ui/charging.rs:678
+#, no-c-format
+msgid "Stops at {end}%, resumes below {s}%"
+msgstr "Se detiene en el {end} %, se reanuda por debajo del {s} %"
+
+#: src/ui/charging.rs:679
+#, no-c-format
+msgid "Stops at {end}%"
+msgstr "Se detiene en el {end} %"
+
+#: src/ui/charging.rs:680
+msgid "Charges to 100%"
+msgstr "Carga hasta el 100 %"
+
+#: src/ui/charging.rs:720
+msgid "Charging to 100% for your schedule; your limit comes back afterwards"
+msgstr "Cargando al 100 % por tu programación; tu límite vuelve después"
 
 #: src/ui/charging.rs:75
 #, no-c-format
@@ -683,68 +845,76 @@ msgstr "{days}: cargada hacia las {time}"
 msgid "{days}: still learning ({n} of {min} unplugs)"
 msgstr "{days}: aún aprendiendo ({n} de {min} desconexiones)"
 
-#: src/ui/health.rs:100
+#: src/ui/health.rs:107
+msgid "Trend"
+msgstr "Tendencia"
+
+#: src/ui/health.rs:108
+msgid "Reaches 80%"
+msgstr "Llega al 80 %"
+
+#: src/ui/health.rs:109
 msgid "When batteries are usually considered worn"
 msgstr "Cuándo suele considerarse que una batería está desgastada"
 
-#: src/ui/health.rs:105
+#: src/ui/health.rs:115
 msgid "Usage"
 msgstr "Uso"
 
-#: src/ui/health.rs:106 src/ui/overview.rs:107
+#: src/ui/health.rs:116 src/ui/overview.rs:111
 msgid "Cycle Count"
 msgstr "Ciclos de carga"
 
-#: src/ui/health.rs:107
+#: src/ui/health.rs:117
 msgid "Most laptop batteries are rated for 300–1000 cycles"
 msgstr ""
 "La mayoría de las baterías de portátil están diseñadas para 300–1000 ciclos"
 
-#: src/ui/health.rs:108
+#: src/ui/health.rs:118
 msgid "Current Charge"
 msgstr "Carga actual"
 
-#: src/ui/health.rs:109
+#: src/ui/health.rs:119
 msgid "Average Draw on Battery (24 h)"
 msgstr "Consumo medio con batería (24 h)"
 
-#: src/ui/health.rs:110
+#: src/ui/health.rs:120
 msgid "Voltage"
 msgstr "Voltaje"
 
-#: src/ui/health.rs:111
+#: src/ui/health.rs:121
 msgid "Minimum Design Voltage"
 msgstr "Voltaje mínimo de diseño"
 
-#: src/ui/health.rs:114
+#: src/ui/health.rs:125
 msgid "Battery Information"
 msgstr "Información de la batería"
 
-#: src/ui/health.rs:115
+#: src/ui/health.rs:126
 msgid "Manufacturer"
 msgstr "Fabricante"
 
-#: src/ui/health.rs:116
+#: src/ui/health.rs:127
 msgid "Model"
 msgstr "Modelo"
 
-#: src/ui/health.rs:117
+#: src/ui/health.rs:128
 msgid "Serial Number"
 msgstr "Número de serie"
 
-#: src/ui/health.rs:118
+#: src/ui/health.rs:129
 msgid "Chemistry"
 msgstr "Química"
 
-#: src/ui/health.rs:119
+#: src/ui/health.rs:130
 msgid "Device"
 msgstr "Dispositivo"
 
-#: src/ui/health.rs:123
+#: src/ui/health.rs:135
 msgid "Calibration"
 msgstr "Calibración"
 
-#: src/ui/health.rs:125
+#: src/ui/health.rs:137
 msgid ""
 "If the percentage jumps or the laptop shuts down before reaching 0%, "
 "recalibrating helps the battery report its capacity accurately. It takes a "
@@ -755,19 +925,19 @@ msgstr ""
 "Requiere una carga completa, una descarga completa y otra carga completa, "
 "normalmente unas horas."
 
-#: src/ui/health.rs:128 src/ui/health.rs:209
+#: src/ui/health.rs:140 src/ui/health.rs:224
 msgid "Not running"
 msgstr "Detenida"
 
-#: src/ui/health.rs:130 src/ui/health.rs:191 src/ui/health.rs:228
+#: src/ui/health.rs:142 src/ui/health.rs:206 src/ui/health.rs:243
 msgid "Start"
 msgstr "Iniciar"
 
-#: src/ui/health.rs:188
+#: src/ui/health.rs:203
 msgid "Start Calibration?"
 msgstr "¿Iniciar la calibración?"
 
-#: src/ui/health.rs:189
+#: src/ui/health.rs:204
 #, no-c-format
 msgid ""
 "Your laptop will charge to 100%. Then unplug it and use it normally until "
@@ -780,96 +950,113 @@ msgstr ""
 "cargarlo al 100 %. Recibirás una notificación en cada paso y tu límite de "
 "carga vuelve al final."
 
-#: src/ui/health.rs:209
+#: src/ui/health.rs:224
 msgid "You'll get a notification at each step."
 msgstr "Recibirás una notificación en cada paso."
 
-#: src/ui/health.rs:212
+#: src/ui/health.rs:227
 #, no-c-format
 msgid "Charging, now at {pct}%"
 msgstr "Cargando, ahora al {pct} %"
 
-#: src/ui/health.rs:212
+#: src/ui/health.rs:227
 msgid "Connect the charger to continue"
 msgstr "Conecta el cargador para continuar"
 
-#: src/ui/health.rs:213
+#: src/ui/health.rs:228
 #, no-c-format
 msgid "Step {n} of 3: Charge to 100%"
 msgstr "Paso {n} de 3: cargar al 100 %"
 
-#: src/ui/health.rs:217
+#: src/ui/health.rs:232
 msgid "Unplug the charger to continue"
 msgstr "Desconecta el cargador para continuar"
 
-#: src/ui/health.rs:219
+#: src/ui/health.rs:234
 #, no-c-format
 msgid "Keep using your laptop until {CALIBRATION_EMPTY}%; now at {pct}%"
 msgstr ""
 "Sigue usando tu portátil hasta el {CALIBRATION_EMPTY} %; ahora al {pct} %"
 
-#: src/ui/health.rs:221
+#: src/ui/health.rs:236
 msgid "Step 2 of 3: Use the battery until nearly empty"
 msgstr "Paso 2 de 3: usar la batería hasta que esté casi vacía"
 
-#: src/ui/health.rs:243
+#: src/ui/health.rs:257
+msgid ""
+"This battery does not report capacity data, so a health trend cannot be "
+"calculated."
+msgstr ""
+"Esta batería no proporciona datos de capacidad, por lo que no se puede "
+"calcular una tendencia de salud."
+
+#: src/ui/health.rs:259
+msgid ""
+"A trend needs at least 5 daily readings spanning 14 days. Open the app on "
+"different days, or enable background recording on the Usage page."
+msgstr ""
+"Una tendencia necesita al menos 5 lecturas diarias a lo largo de 14 días. "
+"Abre la aplicación en días distintos o activa el registro en segundo plano "
+"en la página Uso."
+
+#: src/ui/health.rs:269
 #, no-c-format
 msgid "{0}% per month"
 msgstr "{0} % al mes"
 
-#: src/ui/health.rs:247
+#: src/ui/health.rs:273
 #, no-c-format
 msgid "Around {w}"
 msgstr "Hacia {w}"
 
-#: src/ui/health.rs:248
+#: src/ui/health.rs:274
 msgid "Not declining"
 msgstr "No disminuye"
 
-#: src/ui/health.rs:249
+#: src/ui/health.rs:275
 msgid "Already below 80%"
 msgstr "Ya por debajo del 80 %"
 
-#: src/ui/health.rs:254
+#: src/ui/health.rs:280
 #, no-c-format
-msgid "Collecting data ({days} of 14 days)"
-msgstr "Recopilando datos ({days} de 14 días)"
+msgid "{readings}/5 readings · {days}/14 days"
+msgstr "{readings}/5 lecturas · {days}/14 días"
 
-#: src/ui/health.rs:282
+#: src/ui/health.rs:309
 msgid "The battery is functioning normally"
 msgstr "La batería funciona con normalidad"
 
-#: src/ui/health.rs:283
+#: src/ui/health.rs:310
 msgid "The battery holds less charge than when new but works normally"
 msgstr ""
 "La batería retiene menos carga que cuando era nueva, pero funciona con "
 "normalidad"
 
-#: src/ui/health.rs:284
+#: src/ui/health.rs:311
 msgid "The battery holds significantly less charge; consider replacing it"
 msgstr "La batería retiene bastante menos carga; considera reemplazarla"
 
-#: src/ui/health.rs:292
+#: src/ui/health.rs:319
 msgid "None"
 msgstr "Ninguna"
 
-#: src/ui/health.rs:297 src/ui/overview.rs:201
+#: src/ui/health.rs:324 src/ui/overview.rs:209
 msgid "Not reported"
 msgstr "No disponible"
 
-#: src/ui/health.rs:303
+#: src/ui/health.rs:330
 msgid "No data yet"
 msgstr "Aún sin datos"
 
-#: src/ui/health.rs:57
+#: src/ui/health.rs:59
 msgid "Battery"
 msgstr "Batería"
 
-#: src/ui/health.rs:62
+#: src/ui/health.rs:65
 msgid "Capacity"
 msgstr "Capacidad"
 
-#: src/ui/health.rs:63
+#: src/ui/health.rs:66
 msgid ""
 "Batteries lose capacity as they age. Maximum capacity compares how much "
 "energy the battery holds now with how much it held when new."
@@ -877,31 +1064,32 @@ msgstr ""
 "Las baterías pierden capacidad con la edad. La capacidad máxima compara la "
 "energía que la batería almacena ahora con la que almacenaba cuando era nueva."
 
-#: src/ui/health.rs:65 src/ui/overview.rs:96
+#: src/ui/health.rs:68 src/ui/health.rs:303 src/ui/overview.rs:100
+#: src/ui/overview.rs:203
 msgid "Maximum Capacity"
 msgstr "Capacidad máxima"
 
-#: src/ui/health.rs:75 src/ui/overview.rs:106
+#: src/ui/health.rs:78 src/ui/overview.rs:110
 msgid "Condition"
 msgstr "Estado"
 
-#: src/ui/health.rs:76
+#: src/ui/health.rs:79
 msgid "Full Charge Capacity"
 msgstr "Capacidad de carga completa"
 
-#: src/ui/health.rs:77
+#: src/ui/health.rs:80
 msgid "Design Capacity"
 msgstr "Capacidad de diseño"
 
-#: src/ui/health.rs:78
+#: src/ui/health.rs:81
 msgid "Capacity Lost"
 msgstr "Capacidad perdida"
 
-#: src/ui/health.rs:82
+#: src/ui/health.rs:86 src/ui/health.rs:89
 msgid "Capacity Over Time"
 msgstr "Capacidad a lo largo del tiempo"
 
-#: src/ui/health.rs:83
+#: src/ui/health.rs:87
 msgid ""
 "Recorded once a day. Readings vary a little from day to day; the trend shows "
 "the overall direction."
@@ -909,238 +1097,278 @@ msgstr ""
 "Se registra una vez al día. Las lecturas varían un poco de un día a otro; la "
 "tendencia muestra la dirección general."
 
-#: src/ui/health.rs:98
-msgid "Trend"
-msgstr "Tendencia"
+#: src/ui/mod.rs:109
+msgid "Some changes could not be saved"
+msgstr "No se pudieron guardar algunos cambios"
 
-#: src/ui/health.rs:99
-msgid "Reaches 80%"
-msgstr "Llega al 80 %"
+#: src/ui/mod.rs:109 src/ui/overview.rs:314 src/ui/overview.rs:323
+msgid "Details"
+msgstr "Detalles"
 
-#: src/ui/mod.rs:156
+#: src/ui/mod.rs:113
+msgid "Could Not Save Data"
+msgstr "No se pudieron guardar los datos"
+
+#: src/ui/mod.rs:114
+msgid ""
+"Check available disk space and folder permissions. Failed preferences were "
+"not applied; unsaved history may be lost when the app closes."
+msgstr ""
+"Comprueba el espacio disponible y los permisos de la carpeta. Las "
+"preferencias que fallaron no se aplicaron; el historial sin guardar puede "
+"perderse al cerrar la aplicación."
+
+#: src/ui/mod.rs:116
+msgid "Close"
+msgstr "Cerrar"
+
+#: src/ui/mod.rs:239
 msgid "Export Battery Report"
 msgstr "Exportar informe de la batería"
 
-#: src/ui/mod.rs:171
+#: src/ui/mod.rs:254
 msgid "Battery report saved"
 msgstr "Informe de la batería guardado"
 
-#: src/ui/mod.rs:171 src/ui/mod.rs:198
+#: src/ui/mod.rs:254 src/ui/mod.rs:281
 msgid "Open"
 msgstr "Abrir"
 
-#: src/ui/mod.rs:178
+#: src/ui/mod.rs:261
 #, no-c-format
 msgid "Could not save the report: {0}"
 msgstr "No se pudo guardar el informe: {0}"
 
-#: src/ui/mod.rs:186
+#: src/ui/mod.rs:269
 msgid "Export Data as CSV"
 msgstr "Exportar datos como CSV"
 
-#: src/ui/mod.rs:186
+#: src/ui/mod.rs:269
 msgid "Save Here"
 msgstr "Guardar aquí"
 
-#: src/ui/mod.rs:197
+#: src/ui/mod.rs:280
 #, no-c-format
 msgid "Saved {n} file"
 msgid_plural "Saved {n} files"
 msgstr[0] "Se guardó {n} archivo"
 msgstr[1] "Se guardaron {n} archivos"
 
-#: src/ui/mod.rs:206
+#: src/ui/mod.rs:289
 #, no-c-format
 msgid "Could not save the files: {0}"
 msgstr "No se pudieron guardar los archivos: {0}"
 
-#: src/ui/mod.rs:223
+#: src/ui/mod.rs:306
 msgid "Record History in the Background?"
 msgstr "¿Registrar el historial en segundo plano?"
 
-#: src/ui/mod.rs:224
+#: src/ui/mod.rs:307
 msgid ""
 "Battery Health Center can start hidden when you log in, so battery history, "
 "sleep drain and notifications keep working with the window closed. You can "
 "change this any time on the Usage page."
 msgstr ""
-"Battery Health Center puede iniciarse oculto al iniciar sesión, para "
-"que el historial de la batería, el consumo en suspensión y las "
-"notificaciones sigan funcionando con la ventana cerrada. Puedes "
-"cambiarlo en cualquier momento en la página Uso."
+"Battery Health Center puede iniciarse oculto al iniciar sesión, para que el "
+"historial de la batería, el consumo en suspensión y las notificaciones sigan "
+"funcionando con la ventana cerrada. Puedes cambiarlo en cualquier momento en "
+"la página Uso."
 
-#: src/ui/mod.rs:226
+#: src/ui/mod.rs:309
 msgid "Not Now"
 msgstr "Ahora no"
 
-#: src/ui/mod.rs:226
+#: src/ui/mod.rs:309
 msgid "Turn On"
 msgstr "Activar"
 
-#: src/ui/mod.rs:29
+#: src/ui/mod.rs:37 src/ui/mod.rs:85 src/ui/mod.rs:121
 msgctxt "page title"
 msgid "Overview"
 msgstr "Resumen"
 
-#: src/ui/mod.rs:30
+#: src/ui/mod.rs:38 src/ui/mod.rs:86
 msgctxt "page title"
 msgid "Health"
 msgstr "Salud"
 
-#: src/ui/mod.rs:31
+#: src/ui/mod.rs:39 src/ui/mod.rs:87
 msgctxt "page title"
 msgid "Charging"
 msgstr "Carga"
 
-#: src/ui/mod.rs:32
+#: src/ui/mod.rs:40 src/ui/mod.rs:88
 msgctxt "page title"
 msgid "Power"
 msgstr "Energía"
 
-#: src/ui/mod.rs:33
+#: src/ui/mod.rs:41 src/ui/mod.rs:89
 msgctxt "page title"
 msgid "Usage"
 msgstr "Uso"
 
-#: src/ui/mod.rs:37
+#: src/ui/mod.rs:45
 msgid "No Battery Found"
 msgstr "No se encontró ninguna batería"
 
-#: src/ui/mod.rs:38
+#: src/ui/mod.rs:46
 msgid "Battery Health Center needs a laptop battery to show information."
 msgstr ""
 "Battery Health Center necesita la batería de un portátil para mostrar "
 "información."
 
-#: src/ui/mod.rs:50
+#: src/ui/mod.rs:65
 msgid "_Refresh"
 msgstr "_Actualizar"
 
-#: src/ui/mod.rs:51
+#: src/ui/mod.rs:66
 msgid "_Export Battery Report…"
 msgstr "_Exportar informe de la batería…"
 
-#: src/ui/mod.rs:52
+#: src/ui/mod.rs:67
 msgid "Export _Data as CSV…"
 msgstr "Exportar datos como _CSV…"
 
-#: src/ui/mod.rs:55
+#: src/ui/mod.rs:70
 msgid "_Preferences"
 msgstr "_Preferencias"
 
-#: src/ui/mod.rs:56
+#: src/ui/mod.rs:71
 msgid "_About Battery Health Center"
 msgstr "Acerca _de Battery Health Center"
 
-#: src/ui/mod.rs:57
+#: src/ui/mod.rs:72
 msgid "_Quit"
 msgstr "_Salir"
 
-#: src/ui/mod.rs:63
+#: src/ui/mod.rs:78 src/ui/mod.rs:80
 msgid "Main Menu"
 msgstr "Menú principal"
 
-#: src/ui/overview.rs:111 src/ui/overview.rs:211
+#: src/ui/mod.rs:85
+msgid "Your battery, charger and recommendations at a glance."
+msgstr "Tu batería, cargador y recomendaciones de un vistazo."
+
+#: src/ui/mod.rs:86
+msgid "Understand battery capacity, wear and long-term health."
+msgstr ""
+"Consulta la capacidad, el desgaste y la salud de la batería a largo plazo."
+
+#: src/ui/mod.rs:87
+msgid "Protect your battery with charge limits and schedules."
+msgstr "Protege tu batería con límites y horarios de carga."
+
+#: src/ui/mod.rs:88
+msgid "Choose a power mode and adjust energy-saving settings."
+msgstr "Elige un modo de energía y ajusta las opciones de ahorro."
+
+#: src/ui/mod.rs:89
+msgid "Explore battery history, sleep drain and app energy use."
+msgstr ""
+"Consulta el historial, el consumo en suspensión y el uso de energía por "
+"aplicación."
+
+#: src/ui/overview.rs:116 src/ui/overview.rs:219
 msgid "Since Last Charge"
 msgstr "Desde la última carga"
 
-#: src/ui/overview.rs:112
+#: src/ui/overview.rs:117
 msgid "Charger"
 msgstr "Cargador"
 
-#: src/ui/overview.rs:115 src/ui/overview.rs:233
+#: src/ui/overview.rs:120 src/ui/overview.rs:241
 msgid "Unplugged"
 msgstr "Desconectado"
 
-#: src/ui/overview.rs:116
+#: src/ui/overview.rs:121
 msgid "Battery Used"
 msgstr "Batería usada"
 
-#: src/ui/overview.rs:117
+#: src/ui/overview.rs:122
 msgid "Average Draw"
 msgstr "Consumo medio"
 
-#: src/ui/overview.rs:120
+#: src/ui/overview.rs:126
 msgid "Other Devices"
 msgstr "Otros dispositivos"
 
-#: src/ui/overview.rs:125
+#: src/ui/overview.rs:132
 msgid "Recommendations"
 msgstr "Recomendaciones"
 
-#: src/ui/overview.rs:167
+#: src/ui/overview.rs:174
 #, no-c-format
 msgid "{0} until 100%"
 msgstr "{0} hasta el 100 %"
 
-#: src/ui/overview.rs:168
+#: src/ui/overview.rs:175
 msgid "One-time full charge; your limit comes back afterwards"
 msgstr "Carga completa única; tu límite vuelve después"
 
-#: src/ui/overview.rs:170
+#: src/ui/overview.rs:177
 #, no-c-format
 msgid "{0} remaining"
 msgstr "{0} restantes"
 
-#: src/ui/overview.rs:170
+#: src/ui/overview.rs:177
 msgid "Estimated at the current usage"
 msgstr "Estimado según el uso actual"
 
-#: src/ui/overview.rs:173
+#: src/ui/overview.rs:180
 #, no-c-format
 msgid "{0} until {target}%"
 msgstr "{0} hasta el {target} %"
 
-#: src/ui/overview.rs:175
+#: src/ui/overview.rs:182
 msgid "Estimating time remaining…"
 msgstr "Estimando el tiempo restante…"
 
-#: src/ui/overview.rs:177
+#: src/ui/overview.rs:184
 msgid "Charging On Hold"
 msgstr "Carga en pausa"
 
-#: src/ui/overview.rs:178
+#: src/ui/overview.rs:185
 #, no-c-format
 msgid "Charge limit of {0}% protects your battery"
 msgstr "El límite de carga del {0} % protege tu batería"
 
-#: src/ui/overview.rs:180
+#: src/ui/overview.rs:187
 msgid "Connected to power"
 msgstr "Conectado a la corriente"
 
-#: src/ui/overview.rs:186
+#: src/ui/overview.rs:193
 #, no-c-format
 msgid "Using {p} W"
 msgstr "Usando {p} W"
 
-#: src/ui/overview.rs:187
+#: src/ui/overview.rs:194
 #, no-c-format
 msgid "Charging at {p} W"
 msgstr "Cargando a {p} W"
 
-#: src/ui/overview.rs:211
+#: src/ui/overview.rs:219
 msgid "Power Source"
 msgstr "Fuente de energía"
 
-#: src/ui/overview.rs:222
+#: src/ui/overview.rs:230
 msgid "This charger doesn't report its power rating"
 msgstr "Este cargador no informa de su potencia"
 
-#: src/ui/overview.rs:233
+#: src/ui/overview.rs:241
 msgid "Last Seen Plugged In"
 msgstr "Visto conectado por última vez"
 
-#: src/ui/overview.rs:234
+#: src/ui/overview.rs:242
 #, no-c-format
 msgid "{ago} ago, at {0}%"
 msgstr "Hace {ago}, al {0} %"
 
-#: src/ui/overview.rs:268
+#: src/ui/overview.rs:277
 #, no-c-format
 msgid "Battery capacity is down to {h}%"
 msgstr "La capacidad de la batería ha bajado al {h} %"
 
-#: src/ui/overview.rs:269
+#: src/ui/overview.rs:278
 msgid ""
 "Your battery holds noticeably less charge than when it was new. Calibrating "
 "can correct a wrong reading; if it stays low, consider a replacement."
@@ -1148,15 +1376,15 @@ msgstr ""
 "Tu batería retiene notablemente menos carga que cuando era nueva. Calibrar "
 "puede corregir una lectura errónea; si sigue baja, considera reemplazarla."
 
-#: src/ui/overview.rs:270
+#: src/ui/overview.rs:279
 msgid "Calibrate"
 msgstr "Calibrar"
 
-#: src/ui/overview.rs:276
+#: src/ui/overview.rs:285
 msgid "Limit charging to 80%"
 msgstr "Limita la carga al 80 %"
 
-#: src/ui/overview.rs:277
+#: src/ui/overview.rs:286
 msgid ""
 "Your laptop is plugged in. Keeping the battery below full charge slows down "
 "wear."
@@ -1164,15 +1392,15 @@ msgstr ""
 "Tu portátil está conectado. Mantener la batería por debajo de la carga "
 "completa reduce el desgaste."
 
-#: src/ui/overview.rs:278
+#: src/ui/overview.rs:287
 msgid "Set Up"
 msgstr "Configurar"
 
-#: src/ui/overview.rs:286
+#: src/ui/overview.rs:295
 msgid "Draining while plugged in"
 msgstr "Se descarga con el cargador conectado"
 
-#: src/ui/overview.rs:287
+#: src/ui/overview.rs:296
 #, no-c-format
 msgid ""
 "The {w} W charger can't keep up with your laptop's power use. Use a more "
@@ -1181,21 +1409,21 @@ msgstr ""
 "El cargador de {w} W no da abasto con el consumo de tu portátil. Usa un "
 "cargador más potente."
 
-#: src/ui/overview.rs:293
+#: src/ui/overview.rs:302
 #, no-c-format
 msgid "Low-power charger ({w} W)"
 msgstr "Cargador de baja potencia ({w} W)"
 
-#: src/ui/overview.rs:294
+#: src/ui/overview.rs:303
 msgid "Charging may be slow, especially while you're using the laptop."
 msgstr "La carga puede ser lenta, sobre todo mientras usas el portátil."
 
-#: src/ui/overview.rs:303
+#: src/ui/overview.rs:312
 #, no-c-format
 msgid "High drain during sleep ({0}% per hour)"
 msgstr "Consumo elevado durante la suspensión ({0} % por hora)"
 
-#: src/ui/overview.rs:304
+#: src/ui/overview.rs:313
 msgid ""
 "Your laptop used a lot of battery while asleep. See the sleep details for "
 "tips."
@@ -1203,24 +1431,20 @@ msgstr ""
 "Tu portátil usó mucha batería mientras estaba suspendido. Consulta los "
 "detalles de la suspensión para ver consejos."
 
-#: src/ui/overview.rs:305 src/ui/overview.rs:314
-msgid "Details"
-msgstr "Detalles"
-
-#: src/ui/overview.rs:312
+#: src/ui/overview.rs:321
 #, no-c-format
 msgid "{0} is using significant energy"
 msgstr "{0} está usando mucha energía"
 
-#: src/ui/overview.rs:313
+#: src/ui/overview.rs:322
 msgid "Quitting apps you are not using makes your battery last longer."
 msgstr "Cerrar las aplicaciones que no usas hace que la batería dure más."
 
-#: src/ui/overview.rs:322
+#: src/ui/overview.rs:331
 msgid "Performance mode is on"
 msgstr "El modo Rendimiento está activado"
 
-#: src/ui/overview.rs:323
+#: src/ui/overview.rs:332
 msgid ""
 "Performance mode drains the battery faster. Balanced is usually enough on "
 "battery."
@@ -1228,16 +1452,16 @@ msgstr ""
 "El modo Rendimiento gasta la batería más rápido. Con batería, Equilibrado "
 "suele ser suficiente."
 
-#: src/ui/overview.rs:324
+#: src/ui/overview.rs:333
 msgid "Use Balanced"
 msgstr "Usar Equilibrado"
 
-#: src/ui/overview.rs:331
+#: src/ui/overview.rs:340
 #, no-c-format
 msgid "Screen brightness is at {percent}%"
 msgstr "El brillo de la pantalla está al {percent} %"
 
-#: src/ui/overview.rs:332
+#: src/ui/overview.rs:341
 msgid ""
 "The screen is usually the biggest power user. Lowering the brightness makes "
 "the battery last noticeably longer."
@@ -1245,64 +1469,64 @@ msgstr ""
 "La pantalla suele ser lo que más energía gasta. Bajar el brillo hace que la "
 "batería dure notablemente más."
 
-#: src/ui/overview.rs:333
+#: src/ui/overview.rs:342
 msgid "Lower to 50%"
 msgstr "Bajar al 50 %"
 
-#: src/ui/overview.rs:339
+#: src/ui/overview.rs:348
 msgid "Keyboard backlight is on"
 msgstr "La luz del teclado está encendida"
 
-#: src/ui/overview.rs:340
+#: src/ui/overview.rs:349
 msgid "Turning it off while you don't need it saves a little power."
 msgstr "Apagarla cuando no la necesitas ahorra un poco de energía."
 
-#: src/ui/overview.rs:341 src/ui/overview.rs:349
+#: src/ui/overview.rs:350 src/ui/overview.rs:358
 msgid "Turn Off"
 msgstr "Apagar"
 
-#: src/ui/overview.rs:347
+#: src/ui/overview.rs:356
 msgid "Bluetooth is on but nothing is connected"
 msgstr "El Bluetooth está activado pero no hay nada conectado"
 
-#: src/ui/overview.rs:348
+#: src/ui/overview.rs:357
 msgid "Turning Bluetooth off saves a little power until you need it again."
 msgstr ""
 "Apagar el Bluetooth ahorra un poco de energía hasta que lo necesites de "
 "nuevo."
 
-#: src/ui/overview.rs:355
+#: src/ui/overview.rs:364
 msgid "Battery is low"
 msgstr "Batería baja"
 
-#: src/ui/overview.rs:356
+#: src/ui/overview.rs:365
 msgid ""
 "Connect to power soon. Regularly running the battery flat wears it faster."
 msgstr ""
 "Conéctate a la corriente pronto. Agotar la batería por completo con "
 "frecuencia la desgasta más rápido."
 
-#: src/ui/overview.rs:364
+#: src/ui/overview.rs:373
 msgid "Everything looks good"
 msgstr "Todo en orden"
 
-#: src/ui/overview.rs:365
+#: src/ui/overview.rs:374
 msgid "No recommendations right now."
 msgstr "No hay recomendaciones por ahora."
 
-#: src/ui/overview.rs:95
+#: src/ui/overview.rs:99
 msgid "Battery Health"
 msgstr "Salud de la batería"
 
-#: src/ui/power.rs:107
+#: src/ui/power.rs:108
 msgid "Never"
 msgstr "Nunca"
 
-#: src/ui/power.rs:164
+#: src/ui/power.rs:165
 msgid "Power Mode"
 msgstr "Modo de energía"
 
-#: src/ui/power.rs:165
+#: src/ui/power.rs:166
 msgid ""
 "Power Saver reduces performance to extend battery life. Performance is only "
 "offered on some laptops."
@@ -1310,15 +1534,15 @@ msgstr ""
 "El modo Ahorro de energía reduce el rendimiento para alargar la duración de "
 "la batería. El modo Rendimiento solo está disponible en algunos portátiles."
 
-#: src/ui/power.rs:168
+#: src/ui/power.rs:169
 msgid "Current Mode"
 msgstr "Modo actual"
 
-#: src/ui/power.rs:173
+#: src/ui/power.rs:175
 msgid "Automatic Power Mode"
 msgstr "Modo de energía automático"
 
-#: src/ui/power.rs:175
+#: src/ui/power.rs:177
 msgid ""
 "Switches the power mode by itself when you plug in or unplug the charger. "
 "You can still change the mode by hand; it's only switched again the next "
@@ -1328,31 +1552,31 @@ msgstr ""
 "Aún puedes cambiar el modo a mano; solo se vuelve a cambiar la próxima vez "
 "que algo cambie."
 
-#: src/ui/power.rs:179
+#: src/ui/power.rs:181
 msgid "Switch Automatically"
 msgstr "Cambiar automáticamente"
 
-#: src/ui/power.rs:180
+#: src/ui/power.rs:182
 msgid "When Plugged In"
 msgstr "Al conectar el cargador"
 
-#: src/ui/power.rs:183
+#: src/ui/power.rs:185
 msgid "Use Power Saver When Battery Is Low"
 msgstr "Usar Ahorro de energía con batería baja"
 
-#: src/ui/power.rs:184
+#: src/ui/power.rs:186
 msgid "Overrides the mode above on battery"
 msgstr "Sustituye el modo anterior al funcionar con batería"
 
-#: src/ui/power.rs:187
+#: src/ui/power.rs:189
 msgid "Low Battery Level"
 msgstr "Nivel de batería baja"
 
-#: src/ui/power.rs:198
+#: src/ui/power.rs:201
 msgid "Power Mode and Automatic Power Mode Aren't Available"
 msgstr "El modo de energía y el modo automático no están disponibles"
 
-#: src/ui/power.rs:199
+#: src/ui/power.rs:202
 msgid ""
 "Power Profiles Daemon isn't running, so the power mode can't be read or "
 "changed."
@@ -1360,11 +1584,11 @@ msgstr ""
 "Power Profiles Daemon no se está ejecutando, por lo que el modo de energía "
 "no se puede leer ni cambiar."
 
-#: src/ui/power.rs:211
+#: src/ui/power.rs:214
 msgid "Power Saving"
 msgstr "Ahorro de energía"
 
-#: src/ui/power.rs:212
+#: src/ui/power.rs:215
 msgid ""
 "GNOME's own settings that save the most battery. The same ones are in "
 "Settings → Power."
@@ -1372,88 +1596,88 @@ msgstr ""
 "Ajustes propios de GNOME que más batería ahorran. Los mismos están en "
 "Configuración → Energía."
 
-#: src/ui/power.rs:219
+#: src/ui/power.rs:222
 msgid "Power Saver When Battery Is Low"
 msgstr "Ahorro de energía con batería baja"
 
-#: src/ui/power.rs:220
+#: src/ui/power.rs:223
 msgid "GNOME switches to Power Saver mode when the battery gets low"
 msgstr "GNOME cambia al modo Ahorro de energía cuando la batería se agota"
 
-#: src/ui/power.rs:227
+#: src/ui/power.rs:230
 msgid "Dim Screen When Inactive"
 msgstr "Atenuar la pantalla si está inactiva"
 
-#: src/ui/power.rs:228
+#: src/ui/power.rs:231
 msgid "The screen is usually the biggest power user, so dimming it saves a lot"
 msgstr ""
 "La pantalla suele ser lo que más energía gasta, así que atenuarla ahorra "
 "mucho"
 
-#: src/ui/power.rs:232
+#: src/ui/power.rs:235
 msgid "Automatic Screen Brightness"
 msgstr "Brillo automático de la pantalla"
 
-#: src/ui/power.rs:232
+#: src/ui/power.rs:235
 msgid "Adjusts the brightness to the light around you"
 msgstr "Ajusta el brillo a la luz que te rodea"
 
-#: src/ui/power.rs:238
+#: src/ui/power.rs:241
 msgid "Screen Blank"
 msgstr "Apagado de pantalla"
 
-#: src/ui/power.rs:239
+#: src/ui/power.rs:242
 msgid "Turns the screen off after you stop using the laptop"
 msgstr "Apaga la pantalla cuando dejas de usar el portátil"
 
-#: src/ui/power.rs:249
+#: src/ui/power.rs:252
 msgid "Automatic Suspend on Battery"
 msgstr "Suspensión automática con batería"
 
-#: src/ui/power.rs:249
+#: src/ui/power.rs:252
 msgid "Sleeping uses far less power than staying on"
 msgstr "Dormir gasta mucha menos energía que seguir encendido"
 
-#: src/ui/power.rs:251
+#: src/ui/power.rs:254
 msgid "Automatic Suspend When Plugged In"
 msgstr "Suspensión automática con el cargador conectado"
 
-#: src/ui/power.rs:259
+#: src/ui/power.rs:263
 msgid "Power Button and Lid"
 msgstr "Botón de encendido y tapa"
 
-#: src/ui/power.rs:261
+#: src/ui/power.rs:265
 msgid "Power Button"
 msgstr "Botón de encendido"
 
-#: src/ui/power.rs:262
+#: src/ui/power.rs:266
 msgid "Close the Lid on Battery"
 msgstr "Cerrar la tapa con batería"
 
-#: src/ui/power.rs:263
+#: src/ui/power.rs:267
 msgid "Close the Lid When Plugged In"
 msgstr "Cerrar la tapa con el cargador conectado"
 
-#: src/ui/power.rs:272
+#: src/ui/power.rs:277
 msgid "Power Saving and Power Button Settings Aren't Available"
 msgstr "El ahorro de energía y el botón de encendido no están disponibles"
 
-#: src/ui/power.rs:273
+#: src/ui/power.rs:278
 msgid "GNOME's power settings weren't found. They need GNOME Settings Daemon."
 msgstr ""
 "No se encontraron los ajustes de energía de GNOME. Necesitan GNOME Settings "
 "Daemon."
 
-#: src/ui/power.rs:279
+#: src/ui/power.rs:284
 msgid "Show Battery Percentage"
 msgstr "Mostrar porcentaje de batería"
 
-#: src/ui/power.rs:279
+#: src/ui/power.rs:284
 msgid "Shows the percentage next to the battery icon in the top bar"
 msgstr ""
 "Muestra el porcentaje junto al icono de la batería en la barra superior"
 
-#: src/ui/power.rs:281
+#: src/ui/power.rs:286
 msgid "Top Bar"
 msgstr "Barra superior"
 
@@ -1514,49 +1738,55 @@ msgstr "Consumo elevado durante la suspensión"
 msgid "When your laptop used a lot of battery while asleep"
 msgstr "Cuando tu portátil gastó mucha batería mientras estaba suspendido"
 
-#: src/ui/usage.rs:133 src/ui/usage.rs:376
+#: src/ui/usage.rs:101
+#, no-c-format
+msgid "{0}% CPU"
+msgstr "{0} % de CPU"
+
+#: src/ui/usage.rs:138 src/ui/usage.rs:406
 msgid "No apps are using significant energy"
 msgstr "Ninguna aplicación está usando mucha energía"
 
-#: src/ui/usage.rs:147
+#: src/ui/usage.rs:152
 msgid "No app activity recorded yet"
 msgstr "Aún no hay actividad de aplicaciones registrada"
 
-#: src/ui/usage.rs:147
+#: src/ui/usage.rs:152
 msgid "Usage is recorded while Battery Health Center is running."
 msgstr "El uso se registra mientras Battery Health Center está en ejecución."
 
-#: src/ui/usage.rs:173
+#: src/ui/usage.rs:179
 #, no-c-format
 msgid "{when} · {0} asleep"
 msgstr "{when} · {0} en suspensión"
 
-#: src/ui/usage.rs:174
+#: src/ui/usage.rs:180
 #, no-c-format
 msgid "Used {used}% ({rate}% per hour)"
 msgstr "Usado {used} % ({rate} % por hora)"
 
-#: src/ui/usage.rs:177
+#: src/ui/usage.rs:183
 msgid "Moderate"
 msgstr "Moderado"
 
-#: src/ui/usage.rs:207 src/ui/usage.rs:362
+#: src/ui/usage.rs:213 src/ui/usage.rs:223 src/ui/usage.rs:390
+#: src/ui/widgets.rs:83
 msgid "Battery Level"
 msgstr "Nivel de batería"
 
-#: src/ui/usage.rs:208
+#: src/ui/usage.rs:214
 msgid "Level"
 msgstr "Nivel"
 
-#: src/ui/usage.rs:208
+#: src/ui/usage.rs:214
 msgid "Power"
 msgstr "Energía"
 
-#: src/ui/usage.rs:249
+#: src/ui/usage.rs:260
 msgid "Record History in the Background"
 msgstr "Registrar historial en segundo plano"
 
-#: src/ui/usage.rs:250
+#: src/ui/usage.rs:261
 msgid ""
 "History, sleep drain and notifications only work while Battery Health Center "
 "is running. This starts it hidden when you log in."
@@ -1565,31 +1795,31 @@ msgstr ""
 "mientras Battery Health Center está en ejecución. Esto lo inicia oculto al "
 "iniciar sesión."
 
-#: src/ui/usage.rs:262
+#: src/ui/usage.rs:276
 msgid "Battery Use During Sleep"
 msgstr "Uso de batería durante la suspensión"
 
-#: src/ui/usage.rs:263
+#: src/ui/usage.rs:277
 msgid "How much charge your laptop used while suspended."
 msgstr "Cuánta carga usó tu portátil mientras estaba suspendido."
 
-#: src/ui/usage.rs:265
+#: src/ui/usage.rs:279
 msgid "Sleep Mode"
 msgstr "Modo de suspensión"
 
-#: src/ui/usage.rs:275
+#: src/ui/usage.rs:290
 msgid "Using Significant Energy"
 msgstr "Uso intensivo de energía"
 
-#: src/ui/usage.rs:281
+#: src/ui/usage.rs:298
 msgid "Energy Use by App"
 msgstr "Consumo de energía por aplicación"
 
-#: src/ui/usage.rs:282
+#: src/ui/usage.rs:300
 msgid "Since Opened"
 msgstr "Desde que se abrió"
 
-#: src/ui/usage.rs:294
+#: src/ui/usage.rs:313
 msgid ""
 "Linux does not measure power per app. Energy impact is estimated from CPU "
 "time, and watts are the measured battery drain above idle, shared between "
@@ -1600,33 +1830,45 @@ msgstr ""
 "encima del reposo, repartido entre las aplicaciones según su uso de CPU. "
 "Tómalos como una referencia."
 
-#: src/ui/usage.rs:362
+#: src/ui/usage.rs:345 src/ui/usage.rs:346
+msgid "Collecting the first app samples"
+msgstr "Recopilando las primeras muestras de aplicaciones"
+
+#: src/ui/usage.rs:345
+msgid ""
+"App activity appears after a few seconds. Keep the app open to start "
+"recording."
+msgstr ""
+"La actividad de las aplicaciones aparece tras unos segundos. Mantén la "
+"aplicación abierta para empezar a registrar."
+
+#: src/ui/usage.rs:390
 msgid "Green: plugged in · Blue: on battery · Dashed: charge limit"
 msgstr "Verde: conectado · Azul: con batería · Discontinua: límite de carga"
 
-#: src/ui/usage.rs:363
+#: src/ui/usage.rs:391
 msgid "Power Draw"
 msgstr "Consumo de potencia"
 
-#: src/ui/usage.rs:363
+#: src/ui/usage.rs:391
 msgid "Blue: power used on battery · Green: charging power"
 msgstr "Azul: potencia usada con batería · Verde: potencia de carga"
 
-#: src/ui/usage.rs:372
+#: src/ui/usage.rs:402
 msgid "Average energy impact since Battery Health Center started."
 msgstr "Impacto energético medio desde que se inició Battery Health Center."
 
-#: src/ui/usage.rs:383
+#: src/ui/usage.rs:413
 msgid "Share of app activity, with energy used while on battery."
 msgstr ""
 "Proporción de actividad de las aplicaciones, con la energía usada con "
 "batería."
 
-#: src/ui/usage.rs:396
+#: src/ui/usage.rs:426
 msgid "No sleep recorded yet"
 msgstr "Aún no se ha registrado ninguna suspensión"
 
-#: src/ui/usage.rs:397
+#: src/ui/usage.rs:427
 msgid ""
 "Measured when Battery Health Center is running before and after your laptop "
 "sleeps on battery."
@@ -1634,36 +1876,36 @@ msgstr ""
 "Se mide cuando Battery Health Center está en ejecución antes y después de "
 "que tu portátil se suspenda con batería."
 
-#: src/ui/usage.rs:407
+#: src/ui/usage.rs:437
 msgid "Modern Standby (s2idle)"
 msgstr "Modern Standby (s2idle)"
 
-#: src/ui/usage.rs:407
+#: src/ui/usage.rs:437
 msgid "Wakes quickly, but some laptops drain more while asleep"
 msgstr "Despierta rápido, pero algunos portátiles gastan más mientras duermen"
 
-#: src/ui/usage.rs:408
+#: src/ui/usage.rs:438
 msgid "Deep Sleep (S3)"
 msgstr "Suspensión profunda (S3)"
 
-#: src/ui/usage.rs:408
+#: src/ui/usage.rs:438
 msgid "The lowest-power sleep mode"
 msgstr "El modo de suspensión de menor consumo"
 
-#: src/ui/usage.rs:409
+#: src/ui/usage.rs:439
 msgid "Shallow Sleep (S1)"
 msgstr "Suspensión ligera (S1)"
 
-#: src/ui/usage.rs:409
+#: src/ui/usage.rs:439
 msgid "A light sleep mode"
 msgstr "Un modo de suspensión ligero"
 
-#: src/ui/usage.rs:412
+#: src/ui/usage.rs:442
 #, no-c-format
 msgid "Sleep Mode: {name}"
 msgstr "Modo de suspensión: {name}"
 
-#: src/ui/usage.rs:415
+#: src/ui/usage.rs:445
 #, no-c-format
 msgid ""
 "{about}. Your laptop also supports deep sleep, which usually uses less "
@@ -1673,13 +1915,33 @@ msgstr ""
 "menos batería; puedes elegirla con la opción del núcleo "
 "mem_sleep_default=deep."
 
-#: src/ui/usage.rs:445
+#: src/ui/usage.rs:471
+msgid ""
+"Your history starts here. Keep the app running; a battery sample is recorded "
+"every minute. Enable background recording below to keep collecting after "
+"login."
+msgstr ""
+"Tu historial comienza aquí. Mantén la aplicación en ejecución; se registra "
+"una muestra de batería cada minuto. Activa abajo el registro en segundo "
+"plano para seguir recopilando al iniciar sesión."
+
+#: src/ui/usage.rs:473
+msgid ""
+"Not enough samples in this view yet. New readings arrive every minute while "
+"the app runs. Try a longer range, or switch to Level if power readings are "
+"unavailable."
+msgstr ""
+"Aún no hay suficientes muestras en esta vista. Llegan lecturas nuevas cada "
+"minuto mientras la aplicación está en ejecución. Prueba un intervalo más "
+"largo o cambia a Nivel si no hay lecturas de potencia."
+
+#: src/ui/usage.rs:491
 msgid "Apps ranked by their current energy impact, with estimated power draw."
 msgstr ""
 "Aplicaciones ordenadas por su impacto energético actual, con el consumo "
 "estimado."
 
-#: src/ui/usage.rs:447
+#: src/ui/usage.rs:493
 msgid ""
 "Apps ranked by their current energy impact. Power estimates appear when "
 "running on battery."
@@ -1687,186 +1949,45 @@ msgstr ""
 "Aplicaciones ordenadas por su impacto energético actual. Las estimaciones de "
 "consumo aparecen al funcionar con batería."
 
-#: src/ui/usage.rs:50
+#: src/ui/usage.rs:54
 msgid "Medium"
 msgstr "Medio"
 
-#: src/ui/usage.rs:92
+#: src/ui/usage.rs:96
 #, no-c-format
 msgid "{n} process"
 msgid_plural "{n} processes"
 msgstr[0] "{n} proceso"
 msgstr[1] "{n} procesos"
 
-#: src/ui/usage.rs:95
+#: src/ui/usage.rs:99
 msgid "System"
 msgstr "Sistema"
 
-#: src/ui/usage.rs:97
-#, no-c-format
-msgid "{0}% CPU"
-msgstr "{0} % de CPU"
-
-#: src/ui/widgets.rs:261 src/ui/widgets.rs:285 src/ui/widgets.rs:358
+#: src/ui/widgets.rs:301 src/ui/widgets.rs:325 src/ui/widgets.rs:398
 msgid "Not enough history yet"
 msgstr "Aún no hay suficiente historial"
 
-#: src/ui/widgets.rs:308
+#: src/ui/widgets.rs:348
 msgid "Recorded once a day; check back tomorrow"
 msgstr "Se registra una vez al día; vuelve mañana"
 
-msgid "Your battery, charger and recommendations at a glance."
-msgstr "Tu batería, cargador y recomendaciones de un vistazo."
-
-msgid "Understand battery capacity, wear and long-term health."
-msgstr "Consulta la capacidad, el desgaste y la salud de la batería a largo plazo."
-
-msgid "Protect your battery with charge limits and schedules."
-msgstr "Protege tu batería con límites y horarios de carga."
-
-msgid "Choose a power mode and adjust energy-saving settings."
-msgstr "Elige un modo de energía y ajusta las opciones de ahorro."
-
-msgid "Explore battery history, sleep drain and app energy use."
-msgstr "Consulta el historial, el consumo en suspensión y el uso de energía por aplicación."
-
-msgid "Copy version information"
-msgstr "Copiar información de la versión"
-
-msgid "Version information copied"
-msgstr "Información de la versión copiada"
-
-msgid "Version {version}"
-msgstr "Versión {version}"
-
-msgid "Battery care"
-msgstr "Cuidado de la batería"
-
-msgid "Native Linux app"
-msgstr "Aplicación nativa de Linux"
-
-msgid "Open source"
-msgstr "Código abierto"
-
-msgid "Explore Battery Health Center"
-msgstr "Explora Battery Health Center"
-
-msgid "Project & source code"
-msgstr "Proyecto y código fuente"
-
-msgid "Documentation, releases, and the code behind Battery Health Center"
-msgstr "Documentación, versiones y código de Battery Health Center"
-
-msgid "Report an issue"
-msgstr "Informar de un problema"
-
-msgid "Share a bug or suggest an improvement"
-msgstr "Informa de un error o sugiere una mejora"
-
-msgid "Credits and license"
-msgstr "Créditos y licencia"
-
-msgid "Created by"
-msgstr "Creado por"
-
-msgid "GNU General Public License v3 or later"
-msgstr "Licencia Pública General de GNU v3 o posterior"
-
-msgid "Free to use, modify, and share"
-msgstr "Libre para usar, modificar y compartir"
-
-msgid "About Battery Health Center"
-msgstr "Acerca de Battery Health Center"
-
-msgid "Open in browser"
-msgstr "Abrir en el navegador"
-
-msgid "Could not open link: {error}"
-msgstr "No se pudo abrir el enlace: {error}"
-
-msgid "Charging Status"
-msgstr "Estado de carga"
-
-msgid "Active Charge Limit"
-msgstr "Límite de carga activo"
-
-msgid "Next Scheduled Full Charge"
-msgstr "Próxima carga completa programada"
-
-msgid "Temporary Override"
-msgstr "Anulación temporal"
-
-msgid "Not supported"
-msgstr "No compatible"
-
-msgid "{battery}: returns to {limit}%"
-msgstr "{battery}: volverá al {limit}%"
-
-msgid "{battery}: previous limit will return"
-msgstr "{battery}: se restaurará el límite anterior"
-
-msgid "One-time full charge"
-msgstr "Carga completa por una vez"
-
-msgid "Scheduled full charge"
-msgstr "Carga completa programada"
-
-msgid "None — your charge limit is active"
-msgstr "Ninguna — tu límite de carga está activo"
-
-msgid "None — charging is unrestricted"
-msgstr "Ninguna — carga sin límite"
-
-msgid "Save a charge limit below 100% to use scheduled charging."
-msgstr "Guarda un límite de carga inferior al 100% para usar la carga programada."
-
-msgid "Full by {ready} · starts {start}"
-msgstr "Carga completa para {ready} · comienza {start}"
-
-msgid "Learning your routine. Add a time to schedule a full charge now."
-msgstr "Aprendiendo tu rutina. Añade una hora para programar una carga completa ahora."
-
-msgid "No schedule set. Add a ready-by time below."
-msgstr "No hay un horario definido. Añade abajo una hora para tener la batería lista."
-
-msgid "This battery does not report capacity data, so a health trend cannot be calculated."
-msgstr "Esta batería no proporciona datos de capacidad, por lo que no se puede calcular una tendencia de salud."
-
-msgid "A trend needs at least 5 daily readings spanning 14 days. Open the app on different days, or enable background recording on the Usage page."
-msgstr "Una tendencia necesita al menos 5 lecturas diarias a lo largo de 14 días. Abre la aplicación en días distintos o activa el registro en segundo plano en la página Uso."
-
-msgid "{readings}/5 readings · {days}/14 days"
-msgstr "{readings}/5 lecturas · {days}/14 días"
-
-msgid "Some changes could not be saved"
-msgstr "No se pudieron guardar algunos cambios"
-
-msgid "Could Not Save Data"
-msgstr "No se pudieron guardar los datos"
-
-msgid "Check available disk space and folder permissions. Failed preferences were not applied; unsaved history may be lost when the app closes."
-msgstr "Comprueba el espacio disponible y los permisos de la carpeta. Las preferencias que fallaron no se aplicaron; el historial sin guardar puede perderse al cerrar la aplicación."
-
-msgid "Close"
-msgstr "Cerrar"
-
-msgid "Collecting the first app samples"
-msgstr "Recopilando las primeras muestras de aplicaciones"
-
-msgid "App activity appears after a few seconds. Keep the app open to start recording."
-msgstr "La actividad de las aplicaciones aparece tras unos segundos. Mantén la aplicación abierta para empezar a registrar."
-
-msgid "Your history starts here. Keep the app running; a battery sample is recorded every minute. Enable background recording below to keep collecting after login."
-msgstr "Tu historial comienza aquí. Mantén la aplicación en ejecución; se registra una muestra de batería cada minuto. Activa abajo el registro en segundo plano para seguir recopilando al iniciar sesión."
-
-msgid "Not enough samples in this view yet. New readings arrive every minute while the app runs. Try a longer range, or switch to Level if power readings are unavailable."
-msgstr "Aún no hay suficientes muestras en esta vista. Llegan lecturas nuevas cada minuto mientras la aplicación está en ejecución. Prueba un intervalo más largo o cambia a Nivel si no hay lecturas de potencia."
-
-msgid "No hourly history yet. Keep the app running to collect activity. Completed hours are saved for the last 7 days."
-msgstr "Aún no hay historial por hora. Mantén la aplicación en ejecución para registrar actividad. Las horas completas se guardan durante los últimos 7 días."
-
+#: src/ui/widgets.rs:409 src/ui/widgets.rs:411
 msgid "How energy estimates work"
 msgstr "Cómo funcionan las estimaciones de energía"
 
-msgid "Energy impact is based on CPU activity. Estimated watts share battery draw above idle between apps by CPU use. GPU, display and device activity are not measured per app. Use these values as a guide, not an exact measurement."
-msgstr "El impacto energético se basa en la actividad de la CPU. Los vatios estimados reparten el consumo de batería por encima del reposo entre las aplicaciones según su uso de CPU. La actividad de GPU, pantalla y dispositivos no se mide por aplicación. Usa estos valores como orientación, no como una medición exacta."
+#: src/ui/widgets.rs:416
+msgid ""
+"Energy impact is based on CPU activity. Estimated watts share battery draw "
+"above idle between apps by CPU use. GPU, display and device activity are not "
+"measured per app. Use these values as a guide, not an exact measurement."
+msgstr ""
+"El impacto energético se basa en la actividad de la CPU. Los vatios "
+"estimados reparten el consumo de batería por encima del reposo entre las "
+"aplicaciones según su uso de CPU. La actividad de GPU, pantalla y "
+"dispositivos no se mide por aplicación. Usa estos valores como orientación, "
+"no como una medición exacta."
+
+#, no-c-format
+#~ msgid "Collecting data ({days} of 14 days)"
+#~ msgstr "Recopilando datos ({days} de 14 días)"
