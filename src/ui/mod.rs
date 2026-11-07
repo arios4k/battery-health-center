@@ -77,6 +77,7 @@ pub fn build_window(app: &adw::Application, ctrl: &Rc<Controller>) -> adw::Appli
         .primary(true)
         .tooltip_text(tr("Main Menu"))
         .build();
+    widgets::a11y_name(&menu_button, tr("Main Menu"));
     let sidebar_header = adw::HeaderBar::new();
     sidebar_header.pack_end(&menu_button);
     let list = gtk::ListBox::builder().selection_mode(gtk::SelectionMode::None).css_classes(["navigation-sidebar"]).build();
@@ -89,10 +90,11 @@ pub fn build_window(app: &adw::Application, ctrl: &Rc<Controller>) -> adw::Appli
     ];
     for (id, title, description, icon_name) in pages {
         let row_content = gtk::Box::builder().spacing(12).margin_top(2).margin_bottom(2).margin_start(4).build();
-        row_content.append(&gtk::Image::from_icon_name(icon_name));
+        row_content.append(&widgets::decorative_icon(icon_name));
         row_content.append(&gtk::Label::builder().label(title).xalign(0.0).ellipsize(gtk::pango::EllipsizeMode::End).build());
         let row = gtk::ListBoxRow::builder().child(&row_content).tooltip_text(description).build();
         row.set_widget_name(id);
+        widgets::a11y_description(&row, description);
         list.append(&row);
     }
     let sidebar_view = adw::ToolbarView::new();

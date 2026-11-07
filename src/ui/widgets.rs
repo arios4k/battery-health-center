@@ -13,8 +13,9 @@ use crate::health_log::HealthEntry;
 use crate::history::Sample;
 use crate::i18n::tr;
 
-pub const GREEN: (f64, f64, f64) = (0.18, 0.76, 0.49);
-pub const YELLOW: (f64, f64, f64) = (0.90, 0.65, 0.04);
+// Chart colors keep at least 3:1 contrast (WCAG 1.4.11) against both the light and dark card backgrounds.
+pub const GREEN: (f64, f64, f64) = (0.10, 0.60, 0.33);
+pub const YELLOW: (f64, f64, f64) = (0.78, 0.50, 0.0);
 pub const RED: (f64, f64, f64) = (0.88, 0.11, 0.14);
 pub const BLUE: (f64, f64, f64) = (0.21, 0.52, 0.89);
 
@@ -26,6 +27,36 @@ pub fn level_color(percent: f64, charging: bool) -> (f64, f64, f64) {
     } else {
         RED
     }
+}
+
+/// Gives a widget an accessible name for screen readers.
+pub fn a11y_name(widget: &impl IsA<gtk::Accessible>, label: &str) {
+    widget.update_property(&[gtk::accessible::Property::Label(label)]);
+}
+
+/// Gives a widget an accessible description (longer than its name).
+pub fn a11y_description(widget: &impl IsA<gtk::Accessible>, description: &str) {
+    widget.update_property(&[gtk::accessible::Property::Description(description)]);
+}
+
+/// A purely decorative icon: hidden from screen readers so rows read as their text only.
+pub fn decorative_icon(name: &str) -> gtk::Image {
+    gtk::Image::builder().icon_name(name).accessible_role(gtk::AccessibleRole::Presentation).build()
+}
+
+/// A chart or ring drawn by hand: exposed to screen readers as an image with a name and description.
+pub fn drawn_area(width: i32, height: i32, name: &str) -> gtk::DrawingArea {
+    let area = gtk::DrawingArea::builder().accessible_role(gtk::AccessibleRole::Img).build();
+    if width > 0 { area.set_content_width(width); }
+    if height > 0 { area.set_content_height(height); }
+    a11y_name(&area, name);
+    area
+}
+
+/// A level bar with a name and a spoken value such as "85%".
+pub fn level_bar_a11y(bar: &gtk::LevelBar, name: &str, value: f64) {
+    a11y_name(bar, name);
+    bar.update_property(&[gtk::accessible::Property::ValueText(&format!("{value:.0}%"))]);
 }
 
 /// A key/value row: title on the left, dimmed value label on the right.
@@ -49,7 +80,7 @@ pub struct Gauge {
 impl Gauge {
     pub fn new() -> Self {
         let data = Rc::new(Cell::new((0.0, false)));
-        let area = gtk::DrawingArea::builder().content_width(170).content_height(170).build();
+        let area = drawn_area(170, 170, tr("Battery Level"));
         let d = data.clone();
         area.set_draw_func(move |area, cr, w, h| {
             let (percent, charging) = d.get();
@@ -97,6 +128,7 @@ impl Gauge {
         }
         self.percent.set_label(&format!("{percent:.0}%"));
         self.caption.set_label(caption);
+        a11y_description(&self.area, &format!("{percent:.0}%. {caption}"));
     }
 }
 
@@ -151,7 +183,7 @@ pub fn draw_chart(cr: &cairo::Context, width: f64, height: f64, fg: &gdk::RGBA, 
         cr.move_to(left, y);
         cr.line_to(left + pw, y);
         let _ = cr.stroke();
-        set_rgba(cr, fg, 0.55);
+        set_rgba(cr, fg, 0.72);
         let label = (spec.y_label)(v);
         if let Ok(ext) = cr.text_extents(&label) {
             cr.move_to(left - 6.0 - ext.width(), y + ext.height() / 2.0);
@@ -177,7 +209,7 @@ pub fn draw_chart(cr: &cairo::Context, width: f64, height: f64, fg: &gdk::RGBA, 
         cr.line_to(x, top + ph);
         let _ = cr.stroke();
         if let Ok(label) = glib::DateTime::from_unix_local(t).and_then(|d| d.format(fmt)) {
-            set_rgba(cr, fg, 0.55);
+            set_rgba(cr, fg, 0.72);
             if let Ok(ext) = cr.text_extents(label.trim()) {
                 cr.move_to(x - ext.width() / 2.0, height - 6.0);
                 let _ = cr.show_text(label.trim());
@@ -220,6 +252,14 @@ pub fn draw_chart(cr: &cairo::Context, width: f64, height: f64, fg: &gdk::RGBA, 
         cr.move_to(x1, y1);
         cr.line_to(x2, y2);
         let _ = cr.stroke();
+        // Plugged-in periods also get a thick rail along the bottom, so they differ from battery periods by position, not just color.
+        if b.2 == GREEN {
+            cr.set_line_width(5.0);
+            cr.move_to(x1, top + ph - 2.5);
+            cr.line_to(x2, top + ph - 2.5);
+            let _ = cr.stroke();
+            cr.set_line_width(2.0);
+        }
     }
     if spec.dots {
         for p in visible.iter().filter(|p| p.0 >= spec.start) {
@@ -365,9 +405,11 @@ pub fn energy_info() -> gtk::MenuButton {
     let label = gtk::Label::builder().label(text).wrap(true).max_width_chars(42)
         .margin_top(12).margin_bottom(12).margin_start(12).margin_end(12).build();
     let popover = gtk::Popover::builder().child(&label).build();
-    gtk::MenuButton::builder().icon_name("dialog-information-symbolic")
+    let button = gtk::MenuButton::builder().icon_name("dialog-information-symbolic")
         .tooltip_text(tr("How energy estimates work")).popover(&popover)
-        .css_classes(["flat"]).valign(gtk::Align::Center).build()
+        .css_classes(["flat"]).valign(gtk::Align::Center).build();
+    a11y_name(&button, tr("How energy estimates work"));
+    button
 }
 
 pub fn energy_explanation() -> &'static str {

@@ -53,6 +53,9 @@
   </supports>
   <content_rating type="oars-1.1"/>
   <releases>
+    <release version="0.6.1" date="2026-11-06">
+      <description><p>Accessibility improvements: screen reader names and descriptions for the charge ring and charts, labelled level bars and buttons, higher chart contrast, and charger periods that no longer rely on color alone.</p></description>
+    </release>
     <release version="0.6.0" date="2026-11-04">
       <description><p>Adds French and Simplified Chinese translations, and translates the README and documentation.</p></description>
     </release>

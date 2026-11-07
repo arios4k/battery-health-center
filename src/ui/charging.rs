@@ -156,7 +156,7 @@ impl ChargingPage {
             )
             .build();
         let status_row = adw::ActionRow::builder().title(tr("Current Setting")).build();
-        status_row.add_prefix(&gtk::Image::from_icon_name("battery-level-80-charging-symbolic"));
+        status_row.add_prefix(&super::widgets::decorative_icon("battery-level-80-charging-symbolic"));
         let profile_labels: Vec<&str> = (0..=CUSTOM_PROFILE).map(profile_label).collect();
         let profile = adw::ComboRow::builder()
             .title(tr("Profile"))
@@ -206,7 +206,7 @@ impl ChargingPage {
             .subtitle(tr("Learns when you usually unplug and charges to 100% just before"))
             .build();
         let learned_row = adw::ActionRow::builder().title(tr("Learned So Far")).css_classes(["property"]).visible(false).build();
-        learned_row.add_prefix(&gtk::Image::from_icon_name("preferences-system-time-symbolic"));
+        learned_row.add_prefix(&super::widgets::decorative_icon("preferences-system-time-symbolic"));
         let lead = adw::SpinRow::builder()
             .title(tr("Start Charging Before"))
             .subtitle(tr("Hours before the time, to have it full by then"))
@@ -214,7 +214,7 @@ impl ChargingPage {
             .digits(1)
             .build();
         let add_row = adw::ActionRow::builder().title(tr("Add a Time…")).activatable(true).build();
-        add_row.add_prefix(&gtk::Image::from_icon_name("list-add-symbolic"));
+        add_row.add_prefix(&super::widgets::decorative_icon("list-add-symbolic"));
         let save_schedule = gtk::Button::builder()
             .label(tr("Save Schedule"))
             .css_classes(["suggested-action", "pill"])
@@ -235,14 +235,14 @@ impl ChargingPage {
             .title(tr("Not supported on this laptop"))
             .subtitle(tr("The battery driver does not expose charge thresholds (charge_control_end_threshold)."))
             .build();
-        row.add_prefix(&gtk::Image::from_icon_name("dialog-information-symbolic"));
+        row.add_prefix(&super::widgets::decorative_icon("dialog-information-symbolic"));
         unsupported.add(&row);
         unsupported.add_css_class("workspace-card");
         root.add(&unsupported);
 
         let full_group = adw::PreferencesGroup::new();
         let full_row = adw::ActionRow::builder().title(tr("Charge to 100% Now")).build();
-        full_row.add_prefix(&gtk::Image::from_icon_name("battery-level-100-charged-symbolic"));
+        full_row.add_prefix(&super::widgets::decorative_icon("battery-level-100-charged-symbolic"));
         let full_button = gtk::Button::builder().label(tr("Charge Now")).valign(gtk::Align::Center).build();
         full_row.add_suffix(&full_button);
         full_group.add(&full_row);
@@ -426,13 +426,14 @@ impl ChargingPage {
                 .title(trf("Full by {time}", &[("time", schedule::format_time(rule.ready))]))
                 .subtitle(days_label(rule.days))
                 .build();
-            row.add_prefix(&gtk::Image::from_icon_name("alarm-symbolic"));
+            row.add_prefix(&super::widgets::decorative_icon("alarm-symbolic"));
             let remove = gtk::Button::builder()
                 .icon_name("user-trash-symbolic")
                 .tooltip_text(tr("Remove"))
                 .valign(gtk::Align::Center)
                 .css_classes(["flat"])
                 .build();
+            super::widgets::a11y_name(&remove, &format!("{}: {} {}", tr("Remove"), row.title(), days_label(rule.days)));
             let this = Rc::downgrade(self);
             remove.connect_clicked(move |_| {
                 if let Some(this) = this.upgrade() {

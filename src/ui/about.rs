@@ -19,6 +19,7 @@ pub fn dialog() -> adw::Dialog {
         .css_classes(["flat", "about-version"])
         .child(&adw::ButtonContent::builder().label(trf("Version {version}", &[("version", env!("CARGO_PKG_VERSION").into())]))
             .icon_name("edit-copy-symbolic").build()).build();
+    super::widgets::a11y_name(&version, &format!("{}: {}", tr("Copy version information"), trf("Version {version}", &[("version", env!("CARGO_PKG_VERSION").into())])));
     let toast_overlay = toasts.clone();
     version.connect_clicked(move |button| {
         button.clipboard().set_text(concat!("Battery Health Center ", env!("CARGO_PKG_VERSION")));
@@ -51,7 +52,7 @@ pub fn dialog() -> adw::Dialog {
         .subtitle(glib::markup_escape_text(env!("CARGO_PKG_AUTHORS"))).subtitle_selectable(true).build());
     let license = adw::ActionRow::builder().title(tr("GNU General Public License v3 or later")).subtitle(tr("Free to use, modify, and share"))
         .activatable(true).build();
-    license.add_suffix(&gtk::Image::from_icon_name("go-next-symbolic"));
+    license.add_suffix(&super::widgets::decorative_icon("go-next-symbolic"));
     license.connect_activated(show_license);
     credits.add(&license);
     body.append(&credits);
@@ -70,7 +71,7 @@ pub fn dialog() -> adw::Dialog {
 
 fn link(title: &str, subtitle: &str, icon: &str, uri: &'static str, toasts: &adw::ToastOverlay) -> adw::ActionRow {
     let row = adw::ActionRow::builder().title(glib::markup_escape_text(title)).subtitle(glib::markup_escape_text(subtitle)).subtitle_lines(2).activatable(true).build();
-    row.add_prefix(&gtk::Image::from_icon_name(icon));
+    row.add_prefix(&super::widgets::decorative_icon(icon));
     row.add_suffix(&gtk::Image::builder().icon_name("adw-external-link-symbolic").tooltip_text(tr("Open in browser")).build());
     let toasts = toasts.clone();
     row.connect_activated(move |row| {

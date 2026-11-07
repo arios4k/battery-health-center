@@ -18,7 +18,7 @@ fn note(title: &str, why: &str, icon: &str) -> adw::PreferencesGroup {
     let group = adw::PreferencesGroup::new();
     group.add_css_class("workspace-card");
     let row = adw::ActionRow::builder().title(title).subtitle(why).build();
-    row.add_prefix(&gtk::Image::from_icon_name(icon));
+    row.add_prefix(&super::widgets::decorative_icon(icon));
     group.add(&row);
     group
 }

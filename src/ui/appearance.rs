@@ -13,7 +13,7 @@ fn update(provider: &gtk::CssProvider, style: &adw::StyleManager) {
          @define-color card_fg_color #f0f3f7;
          @define-color headerbar_bg_color #1b2026;
          @define-color headerbar_fg_color #f0f3f7;
-         @define-color accent_bg_color #2879ee;
+         @define-color accent_bg_color #2370e0;
          @define-color accent_fg_color #ffffff;
          @define-color accent_color #78acff;
          @define-color warning_color #ffca66;"

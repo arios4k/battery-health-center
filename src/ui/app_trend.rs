@@ -76,7 +76,8 @@ pub fn show(parent: &impl IsA<gtk::Widget>, ctrl: &Rc<Controller>, key: &str, na
     controls.insert(&range_box, -1);
     content.append(&controls);
 
-    let chart = gtk::DrawingArea::builder().content_height(200).hexpand(true).build();
+    let chart = super::widgets::drawn_area(0, 200, tr("Energy Impact"));
+    chart.set_hexpand(true);
     let (p, r, k) = (points.clone(), range.clone(), kind.clone());
     chart.set_draw_func(move |area, cr, w, h| draw_app_trend(cr, w as f64, h as f64, &area.color(), &p, now_unix(), r.get(), k.get()));
     chart.set_margin_top(12);
@@ -96,6 +97,7 @@ pub fn show(parent: &impl IsA<gtk::Widget>, ctrl: &Rc<Controller>, key: &str, na
         TrendKind::Energy => tr("Estimated energy drawn from the battery in each hour. Linux doesn't measure power per app, so this is an estimate."),
     };
     legend.set_label(describe(TrendKind::Impact));
+    super::widgets::a11y_description(&chart, describe(TrendKind::Impact));
     content.append(&legend);
 
     for (button, value) in kind_buttons.iter().zip([TrendKind::Impact, TrendKind::Energy]) {
@@ -104,6 +106,8 @@ pub fn show(parent: &impl IsA<gtk::Widget>, ctrl: &Rc<Controller>, key: &str, na
             if b.is_active() {
                 k.set(value);
                 legend.set_label(describe(value));
+                super::widgets::a11y_name(&chart, match value { TrendKind::Impact => tr("Energy Impact"), TrendKind::Energy => tr("Energy Used") });
+                super::widgets::a11y_description(&chart, describe(value));
                 chart.queue_draw();
             }
         });

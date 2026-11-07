@@ -81,7 +81,7 @@ fn suffix_labels(top: &str, top_class: &str, bottom: Option<String>) -> gtk::Box
 /// Makes a row open that app's trend window when clicked.
 fn make_openable(row: &adw::ActionRow, ctrl: &Weak<Controller>, key: &str, name: &str, icon: Option<gtk::gio::Icon>) {
     row.set_activatable(true);
-    row.add_suffix(&gtk::Image::from_icon_name("go-next-symbolic"));
+    row.add_suffix(&super::widgets::decorative_icon("go-next-symbolic"));
     let (ctrl, key, name) = (ctrl.clone(), key.to_string(), name.to_string());
     row.connect_activated(move |row| {
         if let Some(ctrl) = ctrl.upgrade() {
@@ -127,7 +127,7 @@ fn placeholder(list: &gtk::ListBox, icon: &str, title: &str, subtitle: Option<&s
     if let Some(s) = subtitle {
         row.set_subtitle(s);
     }
-    row.add_prefix(&gtk::Image::from_icon_name(icon));
+    row.add_prefix(&super::widgets::decorative_icon(icon));
     list.append(&row);
 }
 
@@ -179,7 +179,7 @@ fn sleep_row(s: &SleepSession) -> adw::ActionRow {
         .title(trf("{when} · {0} asleep", &[("when", when.to_string()), ("0", format_hours(s.slept_secs as f64 / 3600.0).to_string())]))
         .subtitle(trf("Used {used}% ({rate}% per hour)", &[("used", format!("{used:.0}")), ("rate", format!("{rate:.1}"))]))
         .build();
-    row.add_prefix(&gtk::Image::from_icon_name("weather-clear-night-symbolic"));
+    row.add_prefix(&super::widgets::decorative_icon("weather-clear-night-symbolic"));
     let (label, class) = if rate >= HIGH_SLEEP_DRAIN { (tr("High"), "error") } else if rate >= 1.0 { (tr("Moderate"), "warning") } else { (tr("Normal"), "success") };
     row.add_suffix(&suffix_labels(label, class, None));
     row
@@ -220,7 +220,8 @@ impl UsagePage {
         controls.insert(&range_box, -1);
         chart_group.add(&controls);
 
-        let chart = gtk::DrawingArea::builder().content_height(200).hexpand(true).build();
+        let chart = super::widgets::drawn_area(0, 200, tr("Battery Level"));
+        chart.set_hexpand(true);
         let weak: Weak<Controller> = Rc::downgrade(ctrl);
         let (r, k) = (range.clone(), kind.clone());
         chart.set_draw_func(move |area, cr, w, h| {
@@ -276,7 +277,7 @@ impl UsagePage {
             .description(tr("How much charge your laptop used while suspended."))
             .build();
         let sleep_mode_row = adw::ActionRow::builder().title(tr("Sleep Mode")).build();
-        sleep_mode_row.add_prefix(&gtk::Image::from_icon_name("power-profile-power-saver-symbolic"));
+        sleep_mode_row.add_prefix(&super::widgets::decorative_icon("power-profile-power-saver-symbolic"));
         let sleep_list = list();
         sleep_group.add(&sleep_list);
         let mode_list = list();
@@ -391,6 +392,8 @@ impl UsagePage {
         };
         self.chart_group.set_title(title);
         self.legend.set_label(legend);
+        super::widgets::a11y_name(&self.chart, title);
+        super::widgets::a11y_description(&self.chart, legend);
     }
 
     fn fill_energy(&self, st: &State) {
@@ -474,6 +477,9 @@ impl UsagePage {
     pub fn update(&self, st: &State) {
         self.update_chart_empty(st);
         if self.last_history_gen.replace(st.history_generation) != st.history_generation {
+            if let Some(last) = st.history.samples.last() {
+                super::widgets::a11y_description(&self.chart, &format!("{} {:.0}%", self.legend.label(), last.percent));
+            }
             self.chart.queue_draw();
             self.fill_sleep(st);
         }
