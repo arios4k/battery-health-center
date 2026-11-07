@@ -4,7 +4,7 @@
 %global debug_package %{nil}
 
 Name:           battery-health-center
-Version:        0.6.1
+Version:        0.6.2
 Release:        1%{?dist}
 Summary:        Laptop battery health, charge limits and energy usage in one place
 
@@ -100,6 +100,9 @@ fi
 %{_unitdir}/battery-health-center-scheduler.path
 
 %changelog
+* Sat Nov 07 2026 Alexis Rios-Negron <182820807+arios4k@users.noreply.github.com> - 0.6.2-1
+- About dialog links to Voltkit and ThermalPrint
+
 * Fri Nov 06 2026 Alexis Rios-Negron <182820807+arios4k@users.noreply.github.com> - 0.6.1-1
 - Accessibility improvements: screen reader labels for charts and controls, higher chart contrast
 
