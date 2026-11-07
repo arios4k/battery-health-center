@@ -274,11 +274,6 @@ msgstr ""
 msgid "The change could not be applied"
 msgstr ""
 
-#: src/ui/about.rs:100
-#, no-c-format
-msgid "Could not open link: {error}"
-msgstr ""
-
 #: src/ui/about.rs:15
 msgid "Battery health, charge limits and energy usage in one place."
 msgstr ""
@@ -296,72 +291,61 @@ msgstr ""
 msgid "Version information copied"
 msgstr ""
 
-#: src/ui/about.rs:34
-msgid "Battery care"
-msgstr ""
-
-#: src/ui/about.rs:35
-msgid "Native Linux app"
-msgstr ""
-
-#: src/ui/about.rs:35
-msgid "Open source"
-msgstr ""
-
-#: src/ui/about.rs:43
+#: src/ui/about.rs:31
 msgid "Explore Battery Health Center"
 msgstr ""
 
-#: src/ui/about.rs:44
+#: src/ui/about.rs:32
 msgid "Project & source code"
 msgstr ""
 
-#: src/ui/about.rs:44
+#: src/ui/about.rs:32
 msgid "Documentation, releases, and the code behind Battery Health Center"
 msgstr ""
 
-#: src/ui/about.rs:46
+#: src/ui/about.rs:34
 msgid "Report an issue"
 msgstr ""
 
-#: src/ui/about.rs:46
+#: src/ui/about.rs:34
 msgid "Share a bug or suggest an improvement"
 msgstr ""
 
-#: src/ui/about.rs:50
+#: src/ui/about.rs:38
 msgid "More Linux Apps"
 msgstr ""
 
-#: src/ui/about.rs:51
+#: src/ui/about.rs:39
 msgid "Power tools for your Linux desktop"
 msgstr ""
 
-#: src/ui/about.rs:53
+#: src/ui/about.rs:41
 msgid "Universal shipping label printer for Linux"
 msgstr ""
 
-#: src/ui/about.rs:57
-msgid "Credits and license"
-msgstr ""
-
-#: src/ui/about.rs:58
+#: src/ui/about.rs:46
 msgid "Created by"
 msgstr ""
 
-#: src/ui/about.rs:60 src/ui/about.rs:115
+#: src/ui/about.rs:48 src/ui/about.rs:100
 msgid "GNU General Public License v3 or later"
 msgstr ""
 
-#: src/ui/about.rs:60
+#: src/ui/about.rs:48
 msgid "Free to use, modify, and share"
 msgstr ""
 
-#: src/ui/about.rs:75
+#: src/ui/about.rs:60
 msgid "About Battery Health Center"
 msgstr ""
 
-#: src/ui/about.rs:93
+#: src/ui/about.rs:78
 msgid "Open in browser"
+msgstr ""
+
+#: src/ui/about.rs:85
+#, no-c-format
+msgid "Could not open link: {error}"
 msgstr ""
 
 #: src/ui/app_trend.rs:31
