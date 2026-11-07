@@ -274,6 +274,11 @@ msgstr ""
 msgid "The change could not be applied"
 msgstr ""
 
+#: src/ui/about.rs:100
+#, no-c-format
+msgid "Could not open link: {error}"
+msgstr ""
+
 #: src/ui/about.rs:15
 msgid "Battery health, charge limits and energy usage in one place."
 msgstr ""
@@ -324,32 +329,39 @@ msgid "Share a bug or suggest an improvement"
 msgstr ""
 
 #: src/ui/about.rs:50
-msgid "Credits and license"
+msgid "More Linux Apps"
 msgstr ""
 
 #: src/ui/about.rs:51
-msgid "Created by"
-msgstr ""
-
-#: src/ui/about.rs:53 src/ui/about.rs:97
-msgid "GNU General Public License v3 or later"
+msgid "Power tools for your Linux desktop"
 msgstr ""
 
 #: src/ui/about.rs:53
+msgid "Universal shipping label printer for Linux"
+msgstr ""
+
+#: src/ui/about.rs:57
+msgid "Credits and license"
+msgstr ""
+
+#: src/ui/about.rs:58
+msgid "Created by"
+msgstr ""
+
+#: src/ui/about.rs:60 src/ui/about.rs:115
+msgid "GNU General Public License v3 or later"
+msgstr ""
+
+#: src/ui/about.rs:60
 msgid "Free to use, modify, and share"
 msgstr ""
 
-#: src/ui/about.rs:68
+#: src/ui/about.rs:75
 msgid "About Battery Health Center"
 msgstr ""
 
-#: src/ui/about.rs:75
+#: src/ui/about.rs:93
 msgid "Open in browser"
-msgstr ""
-
-#: src/ui/about.rs:82
-#, no-c-format
-msgid "Could not open link: {error}"
 msgstr ""
 
 #: src/ui/app_trend.rs:31

@@ -47,6 +47,13 @@ pub fn dialog() -> adw::Dialog {
         concat!(env!("CARGO_PKG_REPOSITORY"), "/issues"), &toasts));
     body.append(&project);
 
+    let apps = adw::PreferencesGroup::builder().title(tr("More Linux Apps")).build();
+    apps.add(&product_link("Voltkit", tr("Power tools for your Linux desktop"), include_bytes!("../../data/about/voltkit.png"),
+        "https://arios4k.github.io/voltkit", &toasts));
+    apps.add(&product_link("ThermalPrint", tr("Universal shipping label printer for Linux"), include_bytes!("../../data/about/thermalprint.png"),
+        "https://github.com/arios4k/thermalprint", &toasts));
+    body.append(&apps);
+
     let credits = adw::PreferencesGroup::builder().title(tr("Credits and license")).build();
     credits.add(&adw::ActionRow::builder().title(tr("Created by"))
         .subtitle(glib::markup_escape_text(env!("CARGO_PKG_AUTHORS"))).subtitle_selectable(true).build());
@@ -70,8 +77,19 @@ pub fn dialog() -> adw::Dialog {
 }
 
 fn link(title: &str, subtitle: &str, icon: &str, uri: &'static str, toasts: &adw::ToastOverlay) -> adw::ActionRow {
+    link_row(title, subtitle, super::widgets::decorative_icon(icon), uri, toasts)
+}
+
+/// A link to another app by the same author, shown with its official icon.
+fn product_link(name: &str, subtitle: &str, icon_png: &'static [u8], uri: &'static str, toasts: &adw::ToastOverlay) -> adw::ActionRow {
+    let texture = gtk::gdk::Texture::from_bytes(&glib::Bytes::from_static(icon_png)).expect("bundled icon is a valid PNG");
+    let icon = gtk::Image::builder().paintable(&texture).pixel_size(40).accessible_role(gtk::AccessibleRole::Presentation).build();
+    link_row(name, subtitle, icon, uri, toasts)
+}
+
+fn link_row(title: &str, subtitle: &str, icon: gtk::Image, uri: &'static str, toasts: &adw::ToastOverlay) -> adw::ActionRow {
     let row = adw::ActionRow::builder().title(glib::markup_escape_text(title)).subtitle(glib::markup_escape_text(subtitle)).subtitle_lines(2).activatable(true).build();
-    row.add_prefix(&super::widgets::decorative_icon(icon));
+    row.add_prefix(&icon);
     row.add_suffix(&gtk::Image::builder().icon_name("adw-external-link-symbolic").tooltip_text(tr("Open in browser")).build());
     let toasts = toasts.clone();
     row.connect_activated(move |row| {

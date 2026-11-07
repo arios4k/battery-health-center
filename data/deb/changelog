@@ -1,3 +1,9 @@
+battery-health-center (0.6.2-1) unstable; urgency=low
+
+  * About: link to Voltkit and ThermalPrint with their official icons.
+
+ -- Alexis Rios-Negron <182820807+arios4k@users.noreply.github.com>  Sat, 07 Nov 2026 12:00:00 -0800
+
 battery-health-center (0.6.1-1) unstable; urgency=low
 
   * Accessibility: name and describe the charge ring and charts for screen
