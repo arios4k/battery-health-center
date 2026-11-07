@@ -5,11 +5,11 @@ use crate::i18n::{tr, trf};
 
 pub fn dialog() -> adw::Dialog {
     let toasts = adw::ToastOverlay::new();
-    let body = gtk::Box::builder().orientation(gtk::Orientation::Vertical).spacing(14)
+    let body = gtk::Box::builder().orientation(gtk::Orientation::Vertical).spacing(10)
         .css_classes(["about-body"]).build();
     let hero = gtk::Box::builder().orientation(gtk::Orientation::Vertical).spacing(6)
         .css_classes(["about-hero"]).build();
-    hero.append(&gtk::Image::builder().gicon(&crate::app_icon()).pixel_size(72)
+    hero.append(&gtk::Image::builder().gicon(&crate::app_icon()).pixel_size(56)
         .tooltip_text("Battery Health Center").build());
     hero.append(&gtk::Label::builder().label("Battery Health Center").wrap(true).justify(gtk::Justification::Center).css_classes(["about-title"]).build());
     hero.append(&gtk::Label::builder().label(tr("Battery health, charge limits and energy usage in one place."))
@@ -28,18 +28,6 @@ pub fn dialog() -> adw::Dialog {
     hero.append(&version);
     body.append(&hero);
 
-    let highlights = gtk::FlowBox::builder().selection_mode(gtk::SelectionMode::None)
-        .homogeneous(true).min_children_per_line(1).max_children_per_line(3)
-        .column_spacing(8).row_spacing(8).halign(gtk::Align::Center).build();
-    for (icon, text) in [("applications-utilities-symbolic", tr("Battery care")),
-        ("computer-symbolic", tr("Native Linux app")), ("emblem-shared-symbolic", tr("Open source"))] {
-        let item = gtk::Box::builder().spacing(6).css_classes(["about-chip"]).build();
-        item.append(&gtk::Image::from_icon_name(icon));
-        item.append(&gtk::Label::new(Some(text)));
-        highlights.insert(&item, -1);
-    }
-    body.append(&highlights);
-
     let project = adw::PreferencesGroup::builder().title(tr("Explore Battery Health Center")).build();
     project.add(&link(tr("Project & source code"), tr("Documentation, releases, and the code behind Battery Health Center"), "web-browser-symbolic",
         env!("CARGO_PKG_REPOSITORY"), &toasts));
@@ -49,12 +37,12 @@ pub fn dialog() -> adw::Dialog {
 
     let apps = adw::PreferencesGroup::builder().title(tr("More Linux Apps")).build();
     apps.add(&product_link("Voltkit", tr("Power tools for your Linux desktop"), include_bytes!("../../data/about/voltkit.png"),
-        "https://arios4k.github.io/voltkit", &toasts));
+        "https://github.com/arios4k/voltkit", &toasts));
     apps.add(&product_link("ThermalPrint", tr("Universal shipping label printer for Linux"), include_bytes!("../../data/about/thermalprint.png"),
         "https://github.com/arios4k/thermalprint", &toasts));
     body.append(&apps);
 
-    let credits = adw::PreferencesGroup::builder().title(tr("Credits and license")).build();
+    let credits = adw::PreferencesGroup::builder().build();
     credits.add(&adw::ActionRow::builder().title(tr("Created by"))
         .subtitle(glib::markup_escape_text(env!("CARGO_PKG_AUTHORS"))).subtitle_selectable(true).build());
     let license = adw::ActionRow::builder().title(tr("GNU General Public License v3 or later")).subtitle(tr("Free to use, modify, and share"))
@@ -63,16 +51,13 @@ pub fn dialog() -> adw::Dialog {
     license.connect_activated(show_license);
     credits.add(&license);
     body.append(&credits);
-    body.append(&gtk::Label::builder().label(format!("© 2026 {}", env!("CARGO_PKG_AUTHORS")))
-        .wrap(true).justify(gtk::Justification::Center).css_classes(["caption", "dim-label"]).build());
-
     let scroll = gtk::ScrolledWindow::builder().child(&body)
-        .hscrollbar_policy(gtk::PolicyType::Never).build();
+        .hscrollbar_policy(gtk::PolicyType::Never).propagate_natural_height(true).build();
     toasts.set_child(Some(&scroll));
     let view = adw::ToolbarView::new();
     view.add_top_bar(&adw::HeaderBar::new());
     view.set_content(Some(&toasts));
-    adw::Dialog::builder().title(tr("About Battery Health Center")).content_width(540).content_height(680)
+    adw::Dialog::builder().title(tr("About Battery Health Center")).content_width(540)
         .child(&view).css_classes(["battery-about"]).build()
 }
 
