@@ -41,3 +41,4 @@ The details behind the app, for the curious and for contributors. Back to the [R
   notifications and About dialog use the same application ID. Source builds load the source
   icon directly in the About dialog, notifications and app-usage list, so an older installed
   icon does not override it.
+- **Accessibility.** The charge ring and the charts are exposed to screen readers as images with a name and a description (the latest value and what the colors mean), level bars announce their value, icon-only buttons have names, and decorative icons are hidden. Chart colors keep at least 3:1 contrast on light and dark cards, periods on the charger also get a rail along the bottom of the chart so they don't depend on color alone, and the dark-theme accent keeps 4.5:1 for white button text. High-contrast mode keeps the system palette.

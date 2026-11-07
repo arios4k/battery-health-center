@@ -86,7 +86,8 @@ impl HealthPage {
             .title(tr("Capacity Over Time"))
             .description(tr("Recorded once a day. Readings vary a little from day to day; the trend shows the overall direction."))
             .build();
-        let chart = gtk::DrawingArea::builder().content_height(180).hexpand(true).build();
+        let chart = super::widgets::drawn_area(0, 180, tr("Capacity Over Time"));
+        chart.set_hexpand(true);
         let weak = Rc::downgrade(ctrl);
         chart.set_draw_func(move |area, cr, w, h| {
             if let Some(ctrl) = weak.upgrade() {
@@ -137,7 +138,7 @@ impl HealthPage {
             )
             .build();
         let calib_row = adw::ActionRow::builder().title(tr("Not running")).build();
-        calib_row.add_prefix(&gtk::Image::from_icon_name("emblem-synchronizing-symbolic"));
+        calib_row.add_prefix(&super::widgets::decorative_icon("emblem-synchronizing-symbolic"));
         let calib_button = gtk::Button::builder().label(tr("Start")).valign(gtk::Align::Center).build();
         calib_row.add_suffix(&calib_button);
         calib.add(&calib_row);
@@ -257,6 +258,9 @@ impl HealthPage {
         } else {
             tr("A trend needs at least 5 daily readings spanning 14 days. Open the app on different days, or enable background recording on the Usage page.")
         });
+        if let (Some(first), Some(last)) = (st.health_log.entries.first(), st.health_log.entries.last()) {
+            super::widgets::a11y_description(&self.chart, &format!("{:.0}% → {:.0}%", first.health, last.health));
+        }
         if self.last_log_len.replace(st.health_log.entries.len()) != st.health_log.entries.len() {
             self.chart.queue_draw();
         }
@@ -296,6 +300,7 @@ impl HealthPage {
         let health = b.health_percent();
         self.capacity.set_label(&health.map(|h| format!("{h:.1}%")).unwrap_or_else(unknown));
         self.capacity_bar.set_value(health.unwrap_or(0.0));
+        super::widgets::level_bar_a11y(&self.capacity_bar, tr("Maximum Capacity"), health.unwrap_or(0.0));
         self.capacity_bar.set_visible(health.is_some());
 
         let cond = b.condition();

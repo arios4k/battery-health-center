@@ -115,7 +115,7 @@ impl OverviewPage {
         // Charger while plugged in; battery use since unplugging otherwise.
         let power_group = adw::PreferencesGroup::builder().title(tr("Since Last Charge")).build();
         let charger_row = adw::ActionRow::builder().title(tr("Charger")).build();
-        charger_row.add_prefix(&gtk::Image::from_icon_name("ac-adapter-symbolic"));
+        charger_row.add_prefix(&super::widgets::decorative_icon("ac-adapter-symbolic"));
         power_group.add(&charger_row);
         let (unplugged_row, unplugged) = value_row(&power_group, tr("Unplugged"));
         let (used_row, used) = value_row(&power_group, tr("Battery Used"));
@@ -200,6 +200,7 @@ impl OverviewPage {
             Some(h) => {
                 self.health.set_label(&format!("{h:.0}%"));
                 self.health_bar.set_value(h);
+                super::widgets::level_bar_a11y(&self.health_bar, tr("Maximum Capacity"), h);
             }
             None => self.health.set_label(tr("Unknown")),
         }
@@ -255,11 +256,12 @@ impl OverviewPage {
         }
         for d in &st.devices {
             let row = adw::ActionRow::builder().title(&d.name).use_markup(false).build();
-            row.add_prefix(&gtk::Image::from_icon_name(d.icon));
+            row.add_prefix(&super::widgets::decorative_icon(d.icon));
             let value = d.percent.map(|p| format!("{p:.0}%")).or(d.level.map(String::from)).unwrap_or_else(|| tr("Unknown").into());
             row.add_suffix(&gtk::Label::builder().label(value).css_classes(["dim-label", "numeric"]).build());
             if let Some(p) = d.percent {
                 let bar = gtk::LevelBar::builder().max_value(100.0).value(p).width_request(100).valign(gtk::Align::Center).build();
+                super::widgets::level_bar_a11y(&bar, &d.name, p);
                 row.add_suffix(&bar);
             }
             self.devices_list.append(&row);
@@ -391,7 +393,7 @@ impl OverviewPage {
                 .subtitle(&rec.subtitle)
                 .use_markup(false)
                 .build();
-            row.add_prefix(&gtk::Image::from_icon_name(rec.icon));
+            row.add_prefix(&super::widgets::decorative_icon(rec.icon));
             if let Some((label, action)) = rec.action {
                 let button = gtk::Button::builder().label(label).valign(gtk::Align::Center).build();
                 let this = Rc::downgrade(self);
