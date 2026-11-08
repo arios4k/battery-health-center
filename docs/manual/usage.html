@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Usage · Battery Health Center User Manual</title>
+<meta name="description" content="Battery history, sleep drain and which apps use the most energy.">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" type="image/svg+xml" href="../icon.svg">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<a class="skip" href="#content">Skip to the content</a>
+<header class="top">
+  <a class="brand" href="../index.html"><img src="../icon.svg" alt="" width="32" height="32"><span>Battery Health Center <span class="sub">User manual</span></span></a>
+  <nav class="top-links" aria-label="Project links">
+    <a href="https://github.com/arios4k/battery-health-center">Source code</a>
+    <a href="https://github.com/arios4k/battery-health-center/releases/latest">Download</a>
+    <a href="https://github.com/arios4k/battery-health-center/issues">Report an issue</a>
+  </nav>
+</header>
+<div class="layout">
+<nav class="side" aria-label="Manual">
+<details class="side-menu" open>
+<summary>Contents</summary>
+<ul><li><a href="../index.html">Welcome</a></li><li><a href="getting-started.html">Getting started</a></li><li><a href="overview.html">Overview</a></li><li><a href="health.html">Health</a></li><li><a href="charging.html">Charging</a></li><li><a href="schedule.html">Charging schedule</a></li><li><a href="power.html">Power</a></li><li><a href="usage.html" aria-current="page">Usage</a></li><li><a href="preferences.html">Notifications and preferences</a></li><li><a href="data.html">Reports and your data</a></li><li><a href="reference.html">Reference</a></li><li><a href="troubleshooting.html">Troubleshooting and FAQ</a></li><li><a href="privacy.html">Privacy and security</a></li></ul>
+</details>
+</nav>
+<main id="content">
+<h1>Usage</h1><p class="lead">Battery history, sleep drain and which apps use the most energy.</p><nav class="toc" aria-label="On this page"><strong>On this page</strong><ul><li><a href="#chart">Battery level and power</a></li><li><a href="#background">Record history in the background</a></li><li><a href="#sleep">Battery use during sleep</a></li><li><a href="#apps">Apps using the most energy</a></li><li><a href="#detail">App detail</a></li></ul></nav>
+<p>The Usage page answers "where did my battery go?" It has the history of the battery level and power draw, how much the laptop used
+while asleep, and the apps that use the most energy.</p>
+<figure><picture><source media="(prefers-color-scheme: dark)" srcset="img/usage-dark.png"><img src="img/usage-light.png" alt="The Usage page with the battery level chart, the background recording switch, sleep sessions, and lists of apps by energy use." loading="lazy"></picture><figcaption>The Usage page: history on the left, apps on the right.</figcaption></figure>
+
+<h2 id="chart">Battery level and power</h2>
+<figure><picture><source media="(prefers-color-scheme: dark)" srcset="img/usage-battery-level-dark.png"><img src="img/usage-battery-level-light.png" alt="A chart of the battery level over 24 hours with green areas for plugged in and blue for on battery, with buttons Level, Power, 24 Hours and 7 Days." loading="lazy"></picture><figcaption>The history chart. Choose what to plot and how far back to look.</figcaption></figure>
+<p>Use the two button groups above the chart:</p>
+<ul>
+<li><strong>Level</strong> plots the battery percentage. <strong>Power</strong> plots the power draw in watts: blue is power used on battery, green is charging power.</li>
+<li><strong>24 Hours</strong> or <strong>7 Days</strong> sets the range. History is kept for 30 days.</li>
+</ul>
+<p>In the level chart, <strong>green is plugged in</strong>, <strong>blue is on battery</strong>, and a <strong>dashed line</strong> marks your charge limit. Periods on the charger also
+get a thick strip along the bottom, so the chart does not depend on color alone. Gaps are times when the app was not running.</p>
+<p>A new install says "Your history starts here" and "Not enough samples in this view yet" until the app has recorded a few minutes. A sample is
+saved every minute while the app runs.</p>
+
+<h2 id="background">Record history in the background</h2>
+<figure class="narrow"><picture><source media="(prefers-color-scheme: dark)" srcset="img/usage-background-dark.png"><img src="img/usage-background-light.png" alt="The Record History in the Background switch with its explanation." loading="lazy"></picture><figcaption>One switch keeps history, sleep drain and notifications running with the window closed.</figcaption></figure>
+<p>History, sleep drain and notifications only work while Battery Health Center is running. This switch adds a login item that starts
+the app <strong>hidden</strong> when you log in, so everything keeps working with no window. Open the app from your applications at any time
+to bring the window up; the hidden copy hands over to it.</p>
+<p>After an update the hidden copy notices that its program file was replaced and restarts itself in the new version, within about a minute, once no window is open.</p>
+
+<h2 id="sleep">Battery use during sleep</h2>
+<figure><picture><source media="(prefers-color-scheme: dark)" srcset="img/usage-sleep-dark.png"><img src="img/usage-sleep-light.png" alt="A list of sleep sessions with start times, durations, percent used, and High or Moderate labels, followed by a Sleep Mode row saying Modern Standby (s2idle)." loading="lazy"></picture><figcaption>How much charge your laptop used while suspended.</figcaption></figure>
+<p>When the app is running before and after the laptop sleeps <em>on battery</em> for at least 15 minutes, it records the session: when it
+started, how long it slept, and how much battery it used, in percent and in percent per hour. The five most recent sessions are listed.</p>
+<ul>
+<li><strong>High</strong> means more than 2% per hour. That is worth investigating, and you also get a notification and an Overview recommendation.</li>
+<li><strong>Moderate</strong> is 1% to 2% per hour, and <strong>Normal</strong> is under 1% per hour.</li>
+</ul>
+<p>The <strong>Sleep Mode</strong> row says how your laptop sleeps:</p>
+<div class="table-wrap"><table><thead><tr><th scope="col">Mode</th><th scope="col">Meaning</th></tr></thead><tbody><tr><td>Modern Standby (s2idle)</td><td>Wakes quickly, but some laptops drain more while asleep. If your laptop also supports deep sleep, the row says so and mentions the kernel option <code>mem_sleep_default=deep</code>.</td></tr><tr><td>Deep Sleep (S3)</td><td>The lowest-power sleep mode.</td></tr><tr><td>Shallow Sleep (S1)</td><td>A light sleep mode.</td></tr></tbody></table></div>
+<aside class="callout tip"><strong>Tip.</strong> A laptop that loses a lot of charge asleep is a common complaint. Modern Standby is usually the cause; deep sleep, when available, typically uses much less battery.</aside>
+
+<h2 id="apps">Apps using the most energy</h2>
+<figure><picture><source media="(prefers-color-scheme: dark)" srcset="img/usage-significant-dark.png"><img src="img/usage-significant-light.png" alt="A list of apps using significant energy: Claude High, GNOME Shell Medium, Display Server Medium and Linux Kernel Low." loading="lazy"></picture><figcaption>Apps ranked by their current energy impact.</figcaption></figure>
+<p>The <strong>Using Significant Energy</strong> list at the top right is what to look at when the battery is draining fast right now. It ranks the apps by their current energy impact; when none stands out, it says "No apps are using significant energy". Click an app to see its detail.</p>
+<figure><picture><source media="(prefers-color-scheme: dark)" srcset="img/usage-apps-dark.png"><img src="img/usage-apps-light.png" alt="Energy Use by App with the buttons Since Opened, 24 Hours and 7 Days and a ranked list of apps with their CPU use and an impact label." loading="lazy"></picture><figcaption>Energy Use by App: pick the period with the buttons.</figcaption></figure>
+<p>The <strong>Energy Use by App</strong> list covers a longer period: <strong>Since Opened</strong> (since the app started), <strong>24 Hours</strong> or <strong>7 Days</strong>. It shows the eight biggest. Each row has:</p>
+<ul>
+<li>the app's name and icon, and how many <em>processes</em> it has (a browser may have dozens);</li>
+<li>its <strong>CPU</strong> use in percent of one core, and the estimated energy used on battery;</li>
+<li>an <strong>impact</strong> label: <strong>High</strong> (40% or more), <strong>Medium</strong> (10% or more) or <strong>Low</strong>. <em>System</em> marks background services such as the Linux kernel.</li>
+</ul>
+<aside class="callout warn"><strong>Careful.</strong> Linux does not measure power per app. Energy impact is estimated from CPU time, and watts are the measured battery drain above idle, shared between apps by CPU use. GPU, display and device activity are not measured per app. Treat the numbers as a guide, not as a measurement. The (i) button next to each list explains this in the app.</aside>
+<p>Apps are grouped using the systemd scope that GNOME starts each app in. Apps that move their processes elsewhere (such as Chromium-based browsers) are grouped by their parent process, so a browser is one row, not fifty.</p>
+
+<h2 id="detail">App detail</h2>
+<figure class="narrow"><picture><source media="(prefers-color-scheme: dark)" srcset="img/app-detail-dark.png"><img src="img/app-detail-light.png" alt="The detail dialog for an app with its energy impact and energy used, and charts for the last 24 hours and 7 days." loading="lazy"></picture><figcaption>Click an app to see its energy impact and estimated use hour by hour.</figcaption></figure>
+<p>Click any app to open its detail. It shows the <strong>Energy Impact</strong> and the <strong>Energy Used</strong> (an estimate in Wh on battery), with the period set
+by the <strong>24 Hours / 7 Days</strong> buttons, and an hour-by-hour chart of CPU use and energy. Only hours when the app was running are shown, and completed hours are saved for the last 7 days. A new install says "No hourly history yet. Keep the app running to collect activity."</p>
+
+<nav class="pager" aria-label="Previous and next page"><a class="prev" href="power.html"><span>Previous</span>Power</a><a class="next" href="preferences.html"><span>Next</span>Notifications and preferences</a></nav>
+</main>
+</div>
+<footer>
+Battery Health Center 0.6.3 · GPL-3.0-or-later · © Alexis Rios-Negron · <a href="https://github.com/arios4k/battery-health-center">Source code</a> · <a href="https://github.com/arios4k/battery-health-center/issues">Report an issue</a>
+</footer>
+<script>
+(function () {
+  var d = document.querySelector('.side-menu');
+  if (d && window.matchMedia('(max-width: 900px)').matches) { d.removeAttribute('open'); }
+})();
+</script>
+</body>
+</html>

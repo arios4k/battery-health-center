@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reports and your data · Battery Health Center User Manual</title>
+<meta name="description" content="HTML battery report, CSV export and where everything is stored.">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" type="image/svg+xml" href="../icon.svg">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<a class="skip" href="#content">Skip to the content</a>
+<header class="top">
+  <a class="brand" href="../index.html"><img src="../icon.svg" alt="" width="32" height="32"><span>Battery Health Center <span class="sub">User manual</span></span></a>
+  <nav class="top-links" aria-label="Project links">
+    <a href="https://github.com/arios4k/battery-health-center">Source code</a>
+    <a href="https://github.com/arios4k/battery-health-center/releases/latest">Download</a>
+    <a href="https://github.com/arios4k/battery-health-center/issues">Report an issue</a>
+  </nav>
+</header>
+<div class="layout">
+<nav class="side" aria-label="Manual">
+<details class="side-menu" open>
+<summary>Contents</summary>
+<ul><li><a href="../index.html">Welcome</a></li><li><a href="getting-started.html">Getting started</a></li><li><a href="overview.html">Overview</a></li><li><a href="health.html">Health</a></li><li><a href="charging.html">Charging</a></li><li><a href="schedule.html">Charging schedule</a></li><li><a href="power.html">Power</a></li><li><a href="usage.html">Usage</a></li><li><a href="preferences.html">Notifications and preferences</a></li><li><a href="data.html" aria-current="page">Reports and your data</a></li><li><a href="reference.html">Reference</a></li><li><a href="troubleshooting.html">Troubleshooting and FAQ</a></li><li><a href="privacy.html">Privacy and security</a></li></ul>
+</details>
+</nav>
+<main id="content">
+<h1>Reports and your data</h1><p class="lead">HTML battery report, CSV export and where everything is stored.</p><nav class="toc" aria-label="On this page"><strong>On this page</strong><ul><li><a href="#report">Battery report (HTML)</a></li><li><a href="#csv">Export data as CSV</a></li><li><a href="#cli">From the command line</a></li><li><a href="#stored">Where your data is stored</a></li></ul></nav>
+<p>Your battery data belongs to you. Battery Health Center can export it as a readable report or as spreadsheet-friendly files, and
+it stores everything in plain files in your home folder.</p>
+
+<h2 id="report">Battery report (HTML)</h2>
+<p>Choose <strong>Export Battery Report…</strong> from the main menu, pick a file name, and the app saves a single self-contained
+HTML page you can open in any browser, print, email or keep. It is useful for a warranty claim, or to show a buyer when you sell the laptop. A <strong>Open</strong> button in the confirmation opens it straight away.</p>
+<p>The report has these sections:</p>
+<ul>
+<li><strong>Battery</strong>: a table for each battery with the manufacturer, model, chemistry, design and full-charge capacity, maximum capacity, condition, cycle count and more.</li>
+<li><strong>Capacity Over Time</strong>: the daily capacity chart.</li>
+<li><strong>Battery Level, Last 7 Days</strong>: the level chart with charger periods.</li>
+<li><strong>Battery Use During Sleep</strong>: the recorded sleep sessions.</li>
+<li><strong>Apps by Energy Use, Last 7 Days</strong>: the top apps with estimated use.</li>
+</ul>
+<p>The report is in English whatever your system language.</p>
+
+<h2 id="csv">Export data as CSV</h2>
+<p>Choose <strong>Export Data as CSV…</strong>, pick a folder, and choose <strong>Save Here</strong>. The app writes four files you can open in a spreadsheet
+or load into your own tools (the confirmation says how many files were saved):</p>
+<div class="table-wrap"><table><thead><tr><th scope="col">File</th><th scope="col">Contents</th></tr></thead><tbody><tr><td><code>battery-history.csv</code></td><td>Battery level and power samples, one per minute (kept for 30 days).</td></tr><tr><td><code>capacity-history.csv</code></td><td>The daily capacity readings used for the trend.</td></tr><tr><td><code>sleep-sessions.csv</code></td><td>Each recorded sleep session and how much battery it used.</td></tr><tr><td><code>app-energy.csv</code></td><td>Each app's CPU use and estimated energy, per hour (kept for 7 days).</td></tr></tbody></table></div>
+<p>Timestamps use the ISO 8601 format with your time zone, for example <code>2026-11-07T08:15:00-05:00</code>.</p>
+
+<h2 id="cli">From the command line</h2>
+<p>Both exports also work without opening the window, which is handy for scripts and scheduled backups:</p>
+<pre><code>battery-health-center --export-report report.html
+battery-health-center --export-csv ~/battery-data</code></pre>
+<p>The CSV command prints the path of each file it wrote.</p>
+
+<h2 id="stored">Where your data is stored</h2>
+<div class="table-wrap"><table><thead><tr><th scope="col">Location</th><th scope="col">What it holds</th></tr></thead><tbody><tr><td><code>~/.local/share/battery-health-center/history.csv</code></td><td>Battery samples, once a minute, for the last 30 days.</td></tr><tr><td><code>~/.local/share/battery-health-center/health.csv</code></td><td>The daily capacity readings used for the trend.</td></tr><tr><td><code>~/.local/share/battery-health-center/app-history.csv</code></td><td>Per-app energy by the hour, for the last 7 days.</td></tr><tr><td><code>~/.config/battery-health-center/settings.ini</code></td><td>Your preferences.</td></tr><tr><td><code>~/.config/autostart/io.github.BatteryHealthCenter.desktop</code></td><td>Present only when background recording is on.</td></tr></tbody></table></div>
+<p>The charge limit and the schedule are stored by the root helper, outside your home folder (see <a href="reference.html#files">Reference</a>).
+To start over, quit the app and delete the files you want to reset.</p>
+<p>Writes are made safely: preferences are replaced atomically, and if a save fails the app keeps the previous file, shows a banner with the path and the error, and retries the history when storage recovers.</p>
+
+<nav class="pager" aria-label="Previous and next page"><a class="prev" href="preferences.html"><span>Previous</span>Notifications and preferences</a><a class="next" href="reference.html"><span>Next</span>Reference</a></nav>
+</main>
+</div>
+<footer>
+Battery Health Center 0.6.3 · GPL-3.0-or-later · © Alexis Rios-Negron · <a href="https://github.com/arios4k/battery-health-center">Source code</a> · <a href="https://github.com/arios4k/battery-health-center/issues">Report an issue</a>
+</footer>
+<script>
+(function () {
+  var d = document.querySelector('.side-menu');
+  if (d && window.matchMedia('(max-width: 900px)').matches) { d.removeAttribute('open'); }
+})();
+</script>
+</body>
+</html>

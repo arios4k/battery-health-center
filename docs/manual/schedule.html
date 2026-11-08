@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Charging schedule · Battery Health Center User Manual</title>
+<meta name="description" content="Full when you need it, protected the rest of the time.">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" type="image/svg+xml" href="../icon.svg">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<a class="skip" href="#content">Skip to the content</a>
+<header class="top">
+  <a class="brand" href="../index.html"><img src="../icon.svg" alt="" width="32" height="32"><span>Battery Health Center <span class="sub">User manual</span></span></a>
+  <nav class="top-links" aria-label="Project links">
+    <a href="https://github.com/arios4k/battery-health-center">Source code</a>
+    <a href="https://github.com/arios4k/battery-health-center/releases/latest">Download</a>
+    <a href="https://github.com/arios4k/battery-health-center/issues">Report an issue</a>
+  </nav>
+</header>
+<div class="layout">
+<nav class="side" aria-label="Manual">
+<details class="side-menu" open>
+<summary>Contents</summary>
+<ul><li><a href="../index.html">Welcome</a></li><li><a href="getting-started.html">Getting started</a></li><li><a href="overview.html">Overview</a></li><li><a href="health.html">Health</a></li><li><a href="charging.html">Charging</a></li><li><a href="schedule.html" aria-current="page">Charging schedule</a></li><li><a href="power.html">Power</a></li><li><a href="usage.html">Usage</a></li><li><a href="preferences.html">Notifications and preferences</a></li><li><a href="data.html">Reports and your data</a></li><li><a href="reference.html">Reference</a></li><li><a href="troubleshooting.html">Troubleshooting and FAQ</a></li><li><a href="privacy.html">Privacy and security</a></li></ul>
+</details>
+</nav>
+<main id="content">
+<h1>Charging schedule</h1><p class="lead">Full when you need it, protected the rest of the time.</p><nav class="toc" aria-label="On this page"><strong>On this page</strong><ul><li><a href="#rules">Ready-by times</a></li><li><a href="#lead">Start charging before</a></li><li><a href="#optimized">Optimized charging</a></li><li><a href="#how">How it works</a></li></ul></nav>
+<p>A charge limit is great until the morning you need the laptop to last all day. The charging schedule gets you both: the
+limit protects the battery, and shortly before you need the laptop the limit is lifted so the battery is
+full on time, then put back.</p>
+<figure><picture><source media="(prefers-color-scheme: dark)" srcset="img/charging-schedule-dark.png"><img src="img/charging-schedule-light.png" alt="The Charging Schedule card with Optimized Charging on, learned unplug times, Start Charging Before 2.0 hours, two ready-by rules and an Add a Time row." loading="lazy"></picture><figcaption>The Charging Schedule card: optimized charging, the ready-by times, and the lead time.</figcaption></figure>
+<aside class="callout warn"><strong>Careful.</strong> The schedule needs a saved charge limit below 100%. Turn on <em>Limit Maximum Charge</em> and <em>Keep After Restart</em> on the Charging page, then choose <strong>Apply</strong>. Until then the schedule card tells you so.</aside>
+
+<h2 id="rules">Ready-by times</h2>
+<p>A <strong>ready-by time</strong> is a day or group of days with the time you want the battery to be full by, for example
+<em>Weekdays, 07:30</em>.</p>
+<ol class="steps"><li>Choose <strong>Add a Time…</strong>.</li><li>Pick the days (<em>Mon</em> to <em>Sun</em>) and the time. At least one day must be selected.</li><li>Choose <strong>Add</strong>. The time appears as a row such as "Full by 07:30 · Weekdays". Use the trash button on a row to remove it.</li><li>Choose <strong>Save Schedule</strong> and enter your password once.</li></ol>
+<figure><picture><source media="(prefers-color-scheme: dark)" srcset="img/add-time-dark.png"><img src="img/add-time-light.png" alt="The Add a Time dialog with day buttons Monday to Sunday and hour and minute spin buttons." loading="lazy"></picture><figcaption>Pick days and the time you want the battery to be full by.</figcaption></figure>
+<ul>
+<li>Days that share a time are shown together: <em>Every day</em>, <em>Weekdays</em>, <em>Weekends</em>, or a list of days.</li>
+<li>You can have up to 14 rules.</li>
+<li>Rules are saved only when you choose <strong>Save Schedule</strong>, and "Schedule saved" or "Schedule removed" confirms it.</li>
+</ul>
+
+<h2 id="lead">Start charging before</h2>
+<p><strong>Start Charging Before</strong> is the lead time, in hours before each ready-by time, when the limit is lifted. The default is
+2 hours; you can choose from half an hour to six hours. Pick a longer lead if your charger is slow or your battery is large.</p>
+<p>The limit stays lifted until the battery is full, you unplug, or 30 minutes after the ready-by time, whichever comes first, so a battery that is a bit
+slow still finishes. Then your limit is restored.</p>
+<p>The Charging Status card <em>Next Scheduled Full Charge</em> shows what will happen next, such as "Full by Mon 07:30 · starts Mon 05:30".</p>
+
+<h2 id="optimized">Optimized charging</h2>
+<p>Do not want to enter times? Turn on <strong>Optimized Charging</strong> and the app learns your routine.</p>
+<ul>
+<li>Whenever you unplug after the laptop was plugged in for <strong>at least 3 hours</strong>, the app records the time.</li>
+<li>When it has seen <strong>at least 3 such unplugs</strong> in the last <strong>28 days</strong> on weekdays (or on weekends) that are within
+<strong>an hour and a half</strong> of each other, it uses the <em>earlier end</em> of that range as the ready-by time for those days.</li>
+<li>The <strong>Learned So Far</strong> row shows the result: "Weekdays: charged by about 08:15", or "Weekends: still learning (2 of 3 unplugs)".</li>
+</ul>
+<p>Weekday and weekend habits are learned separately, so a lie-in on Saturday does not disturb your Monday. Everything stays on your computer, in a small file of unplug times.</p>
+
+<h2 id="how">How it works</h2>
+<p>When you choose <strong>Save Schedule</strong>, the app asks for your password once and installs the schedule where a small
+systemd service can read it. That service runs as root only while a schedule exists (a systemd <code>.path</code> unit starts it), lifts and restores the limit
+at the right moments, and goes back to sleep. It needs no password each time and does not
+need the app to be running. The details are on <a href="privacy.html">Privacy and security</a>.</p>
+
+<nav class="pager" aria-label="Previous and next page"><a class="prev" href="charging.html"><span>Previous</span>Charging</a><a class="next" href="power.html"><span>Next</span>Power</a></nav>
+</main>
+</div>
+<footer>
+Battery Health Center 0.6.3 · GPL-3.0-or-later · © Alexis Rios-Negron · <a href="https://github.com/arios4k/battery-health-center">Source code</a> · <a href="https://github.com/arios4k/battery-health-center/issues">Report an issue</a>
+</footer>
+<script>
+(function () {
+  var d = document.querySelector('.side-menu');
+  if (d && window.matchMedia('(max-width: 900px)').matches) { d.removeAttribute('open'); }
+})();
+</script>
+</body>
+</html>

@@ -234,6 +234,7 @@ msgmerge --update --backup=none po/zh_CN.po po/battery-health-center.pot   # 以
 
 ## 更多文档
 
+- [用户手册](https://arios4k.github.io/battery-health-center/)（英文）：详细介绍每项功能的指南，附截图。可在应用中通过帮助按钮或 `F1` 打开。
 - [工作原理](docs/HOW-IT-WORKS.zh-CN.md)：数据从何而来，以及充电上限、充电计划和应用能耗估算是如何工作的。
 - [维护与打包](docs/MAINTAINING.md)（英文）：如何发布新版本，以及给希望收录本应用的发行版的说明。欢迎收录，
   我将深感荣幸。

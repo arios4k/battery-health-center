@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Getting started · Battery Health Center User Manual</title>
+<meta name="description" content="Install the app, open it for the first time and find your way around.">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" type="image/svg+xml" href="../icon.svg">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<a class="skip" href="#content">Skip to the content</a>
+<header class="top">
+  <a class="brand" href="../index.html"><img src="../icon.svg" alt="" width="32" height="32"><span>Battery Health Center <span class="sub">User manual</span></span></a>
+  <nav class="top-links" aria-label="Project links">
+    <a href="https://github.com/arios4k/battery-health-center">Source code</a>
+    <a href="https://github.com/arios4k/battery-health-center/releases/latest">Download</a>
+    <a href="https://github.com/arios4k/battery-health-center/issues">Report an issue</a>
+  </nav>
+</header>
+<div class="layout">
+<nav class="side" aria-label="Manual">
+<details class="side-menu" open>
+<summary>Contents</summary>
+<ul><li><a href="../index.html">Welcome</a></li><li><a href="getting-started.html" aria-current="page">Getting started</a></li><li><a href="overview.html">Overview</a></li><li><a href="health.html">Health</a></li><li><a href="charging.html">Charging</a></li><li><a href="schedule.html">Charging schedule</a></li><li><a href="power.html">Power</a></li><li><a href="usage.html">Usage</a></li><li><a href="preferences.html">Notifications and preferences</a></li><li><a href="data.html">Reports and your data</a></li><li><a href="reference.html">Reference</a></li><li><a href="troubleshooting.html">Troubleshooting and FAQ</a></li><li><a href="privacy.html">Privacy and security</a></li></ul>
+</details>
+</nav>
+<main id="content">
+<h1>Getting started</h1><p class="lead">Install the app, open it for the first time and find your way around.</p><nav class="toc" aria-label="On this page"><strong>On this page</strong><ul><li><a href="#requirements">What you need</a></li><li><a href="#install">Install</a></li><li><a href="#first-launch">Your first launch</a></li><li><a href="#layout">Finding your way around</a></li><li><a href="#screen-readers">Accessibility</a></li></ul></nav>
+<p>Battery Health Center is a native GNOME app for the battery in your laptop. It shows how healthy the
+battery is, lets you protect it with a charge limit and a schedule, and shows which apps are draining it.
+This page gets you from zero to a running app.</p>
+
+<h2 id="requirements">What you need</h2>
+<ul>
+<li><strong>A laptop with a battery</strong> that Linux can read. Battery information works with any standard Linux
+battery driver. Without a battery the app shows a "No Battery Found" message.</li>
+<li><strong>GNOME</strong> with GTK 4.14 and libadwaita 1.5 or newer. It is developed and tested on Ubuntu 24.04,
+Zorin OS 18 and Linux Mint 22, and on Fedora 43 and newer. Ubuntu 22.04, Debian 12 and Mint 21 are too old.</li>
+<li><strong>Charge-limit support (optional).</strong> Setting a charge limit needs firmware that the Linux kernel exposes as
+<code>charge_control_end_threshold</code> (or <code>charge_stop_threshold</code>). This is common on ThinkPads and
+many ASUS, Dell, Huawei, LG, Samsung and System76 laptops. When your laptop does not have it, the Charging page says
+"Not supported on this laptop" and everything else keeps working.</li>
+</ul>
+
+<h2 id="install">Install</h2>
+<h3>Ubuntu, Debian and derivatives (apt)</h3>
+<p>For Ubuntu 24.04+, Debian 13+, Linux Mint 22, Zorin OS 18 and other derivatives on 64-bit Intel/AMD:</p>
+<pre><code>sudo install -d -m 0755 /etc/apt/keyrings
+curl -fsSL https://arios4k.github.io/apt/key.asc | sudo tee /etc/apt/keyrings/battery-health-center.asc &gt; /dev/null
+echo "deb [signed-by=/etc/apt/keyrings/battery-health-center.asc] https://arios4k.github.io/apt stable main" | sudo tee /etc/apt/sources.list.d/battery-health-center.list
+sudo apt update &amp;&amp; sudo apt install battery-health-center</code></pre>
+<p>Updates arrive with <code>sudo apt upgrade</code>. The signing key fingerprint is
+<code>F090 D01D 74F7 14C8 5A95 23CA 4773 367E BD97 6CF5</code>.</p>
+<h3>Fedora (COPR)</h3>
+<pre><code>sudo dnf copr enable arios/battery-health-center
+sudo dnf install battery-health-center</code></pre>
+<p>Updates arrive with <code>sudo dnf upgrade</code>. The charge-limit and schedule services are turned on by the
+installation, so nothing else needs setting up.</p>
+<h3>From source</h3>
+<p>See <a href="https://github.com/arios4k/battery-health-center#build-from-source">Build from source</a> in the README.</p>
+<aside class="callout note"><strong>Note.</strong> If you installed an older version as a snap, remove it first with <code>sudo snap remove battery-health-center</code>. That deletes its history, so copy <code>~/snap/battery-health-center/current/.local/share/battery-health-center/*.csv</code> to <code>~/.local/share/battery-health-center/</code> before you do.</aside>
+
+<h2 id="first-launch">Your first launch</h2>
+<p>Open <strong>Battery Health Center</strong> from your applications. The first time, the app asks whether it should
+<strong>record history in the background</strong>.</p>
+<ol class="steps"><li>Choose <strong>Turn On</strong> if you want battery history, sleep drain and notifications to keep working with the window closed. The app then starts hidden when you log in.</li><li>Choose <strong>Not Now</strong> to skip it. History is then only recorded while the window is open. You can change your mind any time with the <em>Record History in the Background</em> switch on the <a href="usage.html">Usage</a> page.</li></ol>
+<p>Some pages need time to fill with data. Nothing is wrong when a chart is empty at first:</p>
+<div class="table-wrap"><table><thead><tr><th scope="col">What</th><th scope="col">How long until it appears</th></tr></thead><tbody><tr><td>Battery level and power charts</td><td>A sample is saved once a minute while the app runs. The chart starts the moment you open the app.</td></tr><tr><td>Apps using significant energy</td><td>A few seconds after you open the app.</td></tr><tr><td>Capacity trend and the date the battery reaches 80%</td><td>At least 5 daily readings spread over 14 days. The capacity is logged once a day, so open the app on different days or turn on background recording.</td></tr><tr><td>Optimized charging</td><td>At least 3 unplugs after a long charge on weekdays (and again on weekends) in the last 28 days.</td></tr><tr><td>Sleep drain</td><td>After the laptop sleeps on battery for at least 15 minutes while the app was running before and after.</td></tr></tbody></table></div>
+
+<h2 id="layout">Finding your way around</h2>
+<figure><picture><source media="(prefers-color-scheme: dark)" srcset="img/overview-dark.png"><img src="img/overview-light.png" alt="The Overview page: a sidebar with Overview, Health, Charging, Power and Usage, the help and main menu buttons at the top of the sidebar, and a two-column dashboard." loading="lazy"></picture><figcaption>The main window. The sidebar on the left switches between the five pages; the question-mark button opens this manual and the menu button opens the main menu.</figcaption></figure>
+<ul>
+<li><strong>The sidebar</strong> has the five pages: <a href="overview.html">Overview</a>, <a href="health.html">Health</a>,
+<a href="charging.html">Charging</a>, <a href="power.html">Power</a> and <a href="usage.html">Usage</a>. Hover a page to read
+a one-line description of it.</li>
+<li><strong>The help button</strong> (a question mark, at the top of the sidebar) opens this manual in your browser. You can also
+press <kbd>F1</kbd> or choose <em>User Manual</em> from the main menu.</li>
+<li><strong>The main menu</strong> (three lines) has <em>Refresh</em>, <em>Export Battery Report…</em>, <em>Export Data as CSV…</em>,
+<em>Preferences</em>, <em>User Manual</em>, <em>About Battery Health Center</em> and <em>Quit</em>.</li>
+<li><strong>Adaptive layout.</strong> Overview, Health and Usage use two columns in a large window. Charging and Power use one
+centered column so the settings stay in reading order. Below 820 logical pixels of width the columns stack, and below
+600 pixels the sidebar becomes a back-navigation list, so the app also works in a narrow window.</li>
+<li><strong>Light and dark.</strong> The app follows your GNOME appearance and accent color. In high-contrast mode it keeps the
+system palette.</li>
+<li><strong>Save problems.</strong> If a preference or the history cannot be saved (for example, the disk is full), a banner at
+the top says so. Choose <em>Details</em> to see which file and why. The app retries history writes when storage recovers.</li>
+</ul>
+<figure class="narrow"><picture><source media="(prefers-color-scheme: dark)" srcset="img/about-dark.png"><img src="img/about-light.png" alt="The About dialog with the app icon, version, project links, links to Voltkit and ThermalPrint, and the author and license." loading="lazy"></picture><figcaption>The About dialog: copy the version number for a bug report, open the project page, report an issue, or read the license.</figcaption></figure>
+
+<h2 id="screen-readers">Accessibility</h2>
+<p>The charge ring and the charts are exposed to screen readers as images with a name and a description (the latest value
+and what the colors mean). Level bars announce their value, icon-only buttons have names, and decorative icons are hidden.
+Chart colors keep at least 3:1 contrast on light and dark cards, periods on the charger are marked by a strip along the bottom of the
+chart so color is never the only signal, and the dark theme's accent keeps 4.5:1 with white button text.</p>
+
+<nav class="pager" aria-label="Previous and next page"><a class="prev" href="../index.html"><span>Previous</span>Welcome</a><a class="next" href="overview.html"><span>Next</span>Overview</a></nav>
+</main>
+</div>
+<footer>
+Battery Health Center 0.6.3 · GPL-3.0-or-later · © Alexis Rios-Negron · <a href="https://github.com/arios4k/battery-health-center">Source code</a> · <a href="https://github.com/arios4k/battery-health-center/issues">Report an issue</a>
+</footer>
+<script>
+(function () {
+  var d = document.querySelector('.side-menu');
+  if (d && window.matchMedia('(max-width: 900px)').matches) { d.removeAttribute('open'); }
+})();
+</script>
+</body>
+</html>

@@ -188,6 +188,10 @@ fn setup_actions(app: &adw::Application, ctrl: &Rc<controller::Controller>) {
         dialog.present(a.active_window().as_ref());
     });
 
+    let help = gio::SimpleAction::new("help", None);
+    let a = app.clone();
+    help.connect_activate(move |_, _| ui::open_manual(a.active_window().as_ref()));
+
     // Clicking a notification opens (or raises) the window.
     let activate_window = gio::SimpleAction::new("activate-window", None);
     let a = app.clone();
@@ -200,8 +204,10 @@ fn setup_actions(app: &adw::Application, ctrl: &Rc<controller::Controller>) {
 
     app.add_action(&refresh);
     app.add_action(&about);
+    app.add_action(&help);
     app.add_action(&quit);
     app.set_accels_for_action("app.refresh", &["<Primary>r"]);
     app.set_accels_for_action("win.preferences", &["<Primary>comma"]);
+    app.set_accels_for_action("app.help", &["F1"]);
     app.set_accels_for_action("app.quit", &["<Primary>q"]);
 }

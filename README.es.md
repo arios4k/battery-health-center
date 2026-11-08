@@ -254,6 +254,8 @@ Las cadenas del código pasan por `tr("…")`, `trf("… {name}", &[("name", val
 
 ## Más documentación
 
+- [Manual de usuario](https://arios4k.github.io/battery-health-center/) (en inglés): una guía detallada de cada función, con capturas de pantalla. Ábrelo desde la
+  aplicación con el botón de ayuda o `F1`.
 - [Cómo funciona](docs/HOW-IT-WORKS.es.md): de dónde salen los datos, cómo funcionan el límite de carga, la
   programación y las estimaciones de energía de las aplicaciones.
 - [Mantenimiento y empaquetado](docs/MAINTAINING.md) (en inglés): publicar una versión y notas para las

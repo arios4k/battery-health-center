@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Battery Health Center User Manual</title>
+<meta name="description" content="The complete user manual for Battery Health Center: battery health, charge limits and schedules, power modes and app energy use for GNOME.">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" type="image/svg+xml" href="icon.svg">
+<link rel="stylesheet" href="manual/style.css">
+</head>
+<body>
+<a class="skip" href="#content">Skip to the content</a>
+<header class="top">
+  <a class="brand" href="index.html"><img src="icon.svg" alt="" width="32" height="32"><span>Battery Health Center <span class="sub">User manual</span></span></a>
+  <nav class="top-links" aria-label="Project links">
+    <a href="https://github.com/arios4k/battery-health-center">Source code</a>
+    <a href="https://github.com/arios4k/battery-health-center/releases/latest">Download</a>
+    <a href="https://github.com/arios4k/battery-health-center/issues">Report an issue</a>
+  </nav>
+</header>
+<div class="layout">
+<nav class="side" aria-label="Manual">
+<details class="side-menu" open>
+<summary>Contents</summary>
+<ul><li><a href="index.html" aria-current="page">Welcome</a></li><li><a href="manual/getting-started.html">Getting started</a></li><li><a href="manual/overview.html">Overview</a></li><li><a href="manual/health.html">Health</a></li><li><a href="manual/charging.html">Charging</a></li><li><a href="manual/schedule.html">Charging schedule</a></li><li><a href="manual/power.html">Power</a></li><li><a href="manual/usage.html">Usage</a></li><li><a href="manual/preferences.html">Notifications and preferences</a></li><li><a href="manual/data.html">Reports and your data</a></li><li><a href="manual/reference.html">Reference</a></li><li><a href="manual/troubleshooting.html">Troubleshooting and FAQ</a></li><li><a href="manual/privacy.html">Privacy and security</a></li></ul>
+</details>
+</nav>
+<main id="content">
+
+<section class="hero">
+<h1>Battery Health Center User Manual</h1>
+<p class="lead">Everything about your laptop battery, in one place. Health, cycle count, charge limits and schedules,
+and which apps drain it, for GNOME. This manual explains every feature, with screenshots.</p>
+<p class="cta"><a class="button" href="manual/getting-started.html">Get started</a>
+<a class="button secondary" href="https://github.com/arios4k/battery-health-center/releases/latest">Download version 0.6.3</a></p>
+</section>
+<figure><picture><source media="(prefers-color-scheme: dark)" srcset="manual/img/overview-dark.png"><img src="manual/img/overview-light.png" alt="The Battery Health Center window showing the Overview page." loading="lazy"></picture><figcaption>Battery Health Center: the Overview page.</figcaption></figure>
+<h2 id="contents">What is in this manual</h2>
+<div class="cards"><a class="card" href="manual/getting-started.html"><strong>Getting started</strong><span>Install the app, open it for the first time and find your way around.</span></a><a class="card" href="manual/overview.html"><strong>Overview</strong><span>Your battery, charger and recommendations at a glance.</span></a><a class="card" href="manual/health.html"><strong>Health</strong><span>Capacity, wear, cycle count, the long-term trend and calibration.</span></a><a class="card" href="manual/charging.html"><strong>Charging</strong><span>Charge limits, profiles, one-time full charges and pausing charging.</span></a><a class="card" href="manual/schedule.html"><strong>Charging schedule</strong><span>Full when you need it, protected the rest of the time.</span></a><a class="card" href="manual/power.html"><strong>Power</strong><span>Power mode, automatic power mode and GNOME&#x27;s power-saving settings.</span></a><a class="card" href="manual/usage.html"><strong>Usage</strong><span>Battery history, sleep drain and which apps use the most energy.</span></a><a class="card" href="manual/preferences.html"><strong>Notifications and preferences</strong><span>Choose which notifications you get and when.</span></a><a class="card" href="manual/data.html"><strong>Reports and your data</strong><span>HTML battery report, CSV export and where everything is stored.</span></a><a class="card" href="manual/reference.html"><strong>Reference</strong><span>Keyboard shortcuts, command line, files and a glossary.</span></a><a class="card" href="manual/troubleshooting.html"><strong>Troubleshooting and FAQ</strong><span>Answers to the most common questions and problems.</span></a><a class="card" href="manual/privacy.html"><strong>Privacy and security</strong><span>What stays on your computer and what the root helper can do.</span></a></div>
+<h2 id="tour">A quick tour</h2>
+<ul class="tour">
+<li><strong><a href="manual/health.html">Know how healthy your battery is.</a></strong> Maximum capacity against design capacity, condition, cycle count, a daily trend with the date it will reach 80%, and a guided calibration.</li>
+<li><strong><a href="manual/charging.html">Make it last for years.</a></strong> One-tap profiles (60%, 80% or 100%), a custom limit that survives restarts and sleep, and a one-time full charge for a trip.</li>
+<li><strong><a href="manual/schedule.html">Full when you need it.</a></strong> Tell it when you need the laptop, or let optimized charging learn your routine.</li>
+<li><strong><a href="manual/usage.html">See what is draining it.</a></strong> The battery level and power for the last day or week, sleep drain, and apps ranked by energy.</li>
+<li><strong><a href="manual/power.html">Power modes without the hunt.</a></strong> Power Saver, Balanced or Performance, switched automatically when you plug in, plus GNOME's power-saving settings.</li>
+<li><strong><a href="manual/data.html">Take your data with you.</a></strong> An HTML battery report and CSV exports, from the menu or the command line.</li>
+</ul>
+<h2 id="install">Install in one minute</h2>
+<p>Ubuntu, Debian and derivatives, from the signed apt repository, and Fedora from COPR. See <a href="manual/getting-started.html#install">Getting started</a> for the commands.</p>
+<h2 id="help">Help inside the app</h2>
+<p>Press <kbd>F1</kbd>, click the question-mark button at the top of the sidebar, or choose <em>User Manual</em> from the main menu to open this manual from Battery Health Center.</p>
+
+<nav class="pager" aria-label="Previous and next page"><a class="next" href="manual/getting-started.html"><span>Next</span>Getting started</a></nav>
+</main>
+</div>
+<footer>
+Battery Health Center 0.6.3 · GPL-3.0-or-later · © Alexis Rios-Negron · <a href="https://github.com/arios4k/battery-health-center">Source code</a> · <a href="https://github.com/arios4k/battery-health-center/issues">Report an issue</a>
+</footer>
+<script>
+(function () {
+  var d = document.querySelector('.side-menu');
+  if (d && window.matchMedia('(max-width: 900px)').matches) { d.removeAttribute('open'); }
+})();
+</script>
+</body>
+</html>
