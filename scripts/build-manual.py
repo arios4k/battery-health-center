@@ -30,6 +30,7 @@ PAGES = [
     ("reference", "Reference", "Keyboard shortcuts, command line, files and a glossary."),
     ("troubleshooting", "Troubleshooting and FAQ", "Answers to the most common questions and problems."),
     ("privacy", "Privacy and security", "What stays on your computer and what the root helper can do."),
+    ("whats-new", "What's new", "What changed in every release, with links to the full explanation."),
 ]
 TITLES = {slug: title for slug, title, _ in PAGES}
 
@@ -65,6 +66,74 @@ def table(head, rows):
 
 
 # --------------------------------------------------------------------------- content
+
+# What's new: one entry per release, newest first. Add the new release at the top when you publish it.
+# (version, date, [items as HTML: bold lead-in, then what changed and where to read more])
+WHATS_NEW = [
+    ("0.6.4", "November 8, 2026", [
+        "<strong>Help button and user manual.</strong> A question-mark button at the top of the sidebar, <kbd>F1</kbd> and <em>User Manual</em> in the main menu open this manual in your browser. See <a href=\"getting-started.html#layout\">Finding your way around</a>.",
+    ]),
+    ("0.6.3", "November 8, 2026", [
+        "<strong>About dialog fits without scrolling.</strong> It is more compact, and its Voltkit link now goes to the Voltkit source page, where the README is.",
+    ]),
+    ("0.6.2", "November 7, 2026", [
+        "<strong>More Linux Apps.</strong> The About dialog links to Voltkit and ThermalPrint, with their official icons.",
+    ]),
+    ("0.6.1", "November 6, 2026", [
+        "<strong>Screen reader support.</strong> The charge ring and the charts are named and described (the latest value and what the colors mean), level bars announce their value, icon-only buttons have names and decorative icons are hidden. See <a href=\"getting-started.html#screen-readers\">Accessibility</a>.",
+        "<strong>Clearer charts.</strong> Chart colors keep at least 3:1 contrast on light and dark cards, and periods on the charger get a strip along the bottom of the chart so they do not rely on color alone. The dark theme's accent keeps 4.5:1 with white button text. See <a href=\"usage.html#chart\">Battery level and power</a>.",
+    ]),
+    ("0.6.0", "November 4, 2026", [
+        "<strong>French and Simplified Chinese.</strong> The app is now available in English, Spanish, German, French and Simplified Chinese, following your system language.",
+        "<strong>Translated documentation.</strong> The README and <em>How it works</em> are available in Spanish, German, French and Simplified Chinese.",
+    ]),
+    ("0.5.1", "November 3, 2026", [
+        "<strong>Cleaner sidebar.</strong> The duplicate app name row at the top of the sidebar is gone.",
+    ]),
+    ("0.5.0", "November 3, 2026", [
+        "<strong>A refreshed app.</strong> New navigation with a sidebar, adaptive workspaces, a modern battery icon and a branded About dialog. See <a href=\"getting-started.html#layout\">Finding your way around</a>.",
+        "<strong>Dashboard columns.</strong> Overview, Health and Usage use two columns in a large window, while Charging and Power use one centered column so settings stay in reading order. The columns stack in a narrow window.",
+        "<strong>Charging status at a glance.</strong> Cards show the active charge limit, the next scheduled full charge and any temporary override. See <a href=\"charging.html#status\">Charging status</a>.",
+        "<strong>Clearer energy numbers.</strong> The app explains how the app energy estimates work, and empty charts say what to do. See <a href=\"usage.html#apps\">Apps using the most energy</a>.",
+        "<strong>Failed saves are reported.</strong> A banner names the file and the error, preferences are kept if saving fails, and health and app-usage history are retried once storage recovers. See <a href=\"data.html#stored\">Where your data is stored</a>.",
+    ]),
+    ("0.4.5", "November 1, 2026", [
+        "<strong>Links in About.</strong> The About dialog links to the project website and the issue tracker.",
+    ]),
+    ("0.4.4", "November 1, 2026", [
+        "<strong>First-launch question.</strong> The first time you open the app it asks whether to record history in the background, so history is not lost when the window is closed. The answer is remembered, and people who already had settings are not asked. See <a href=\"getting-started.html#first-launch\">Your first launch</a>.",
+    ]),
+    ("0.4.3", "October 28, 2026", [
+        "<strong>Updates reach the hidden copy.</strong> The background copy started at login used to keep running the old version after an update. Now, once the program file has been replaced and no window is open, it starts the new version and exits. See <a href=\"usage.html#background\">Record history in the background</a>.",
+    ]),
+    ("0.4.2", "October 28, 2026", [
+        "<strong>Housekeeping.</strong> Code that only existed for the discontinued snap package was removed. Nothing changes for the apt and Fedora packages.",
+    ]),
+    ("0.4.1", "October 27, 2026", [
+        "<strong>Clearer labels.</strong> <em>Current Mode</em> on the Power page, <em>Notify At</em> in Preferences, and <em>Charging Behavior</em> with a <em>While Plugged In</em> row on the Charging page. See <a href=\"charging.html#behavior\">Charging behavior</a>.",
+    ]),
+    ("0.4.0", "October 27, 2026", [
+        "<strong>Charge profiles.</strong> Maximum Lifespan (60%), Balanced (80%) and Full Capacity (100%). See <a href=\"charging.html#limit\">Charge limit</a>.",
+        "<strong>Charging schedule and optimized charging.</strong> The limit is lifted shortly before the times you choose, or before the times learned from when you usually unplug, and put back afterwards, without asking for a password each time. See <a href=\"schedule.html\">Charging schedule</a>.",
+        "<strong>App detail.</strong> Click an app on the Usage page to see its energy impact and estimated energy use hour by hour over a day or a week. See <a href=\"usage.html#detail\">App detail</a>.",
+        "<strong>CSV export.</strong> <em>Export Data as CSV</em> in the menu and the <code>--export-csv</code> option. See <a href=\"data.html#csv\">Export data as CSV</a>.",
+        "<strong>Smarter recommendations.</strong> While on battery, the Overview suggests turning down a bright screen, turning off the keyboard backlight, or turning off Bluetooth when nothing is connected. See <a href=\"overview.html#recommendations\">Recommendations</a>.",
+    ]),
+    ("0.3.3", "October 26, 2026", [
+        "<strong>Spanish and German.</strong> The app follows the system language and shows English for anything not yet translated. The application menu entry and its description are translated too.",
+    ]),
+    ("0.3.2", "October 26, 2026", [
+        "<strong>Crash fix.</strong> Changing Screen Blank or Automatic Suspend no longer crashes the app.",
+        "<strong>Fits the ring.</strong> The charge ring says \"Not Charging\" instead of the wider \"Plugged In, Not Charging\".",
+    ]),
+    ("0.3.1", "October 26, 2026", [
+        "<strong>Power Mode fix.</strong> Choosing a mode in the dropdown is no longer undone a moment later.",
+    ]),
+    ("0.3.0", "October 26, 2026", [
+        "<strong>The Power page.</strong> Power mode, automatic power mode, GNOME's power-saving settings, and the power button and lid actions. See <a href=\"power.html\">Power</a>.",
+        "<strong>Debian and Ubuntu packages.</strong> Charge limits ask for a password through PolicyKit, and a system service re-applies a saved limit at boot and after sleep. See <a href=\"getting-started.html#install\">Install</a>.",
+    ]),
+]
 
 CONTENT = {}
 
@@ -645,6 +714,16 @@ The charge limit itself is applied by the system and does not need the app.</p><
 <p>Please <a href="{REPO}/issues">open an issue</a> with your laptop model, your distribution, the app version (copy it from the About dialog with one click) and what you expected to see. Translations and testing on other laptops are especially welcome.</p>
 """
 
+CONTENT["whats-new"] = (
+    "<p>This page lists what changed in every release and links to the full explanation of each feature. Your version is shown in the "
+    "<strong>About Battery Health Center</strong> dialog (main menu).</p>"
+    + "".join(
+        f'<h2 id="version-{v.replace(".", "-")}">Version {v}</h2><p class="date">{d}</p><ul>' + "".join(f"<li>{i}</li>" for i in items) + "</ul>"
+        for v, d, items in WHATS_NEW
+    )
+    + f'<p>Every release is also listed, with its download, on the <a href="{REPO}/releases">releases page</a>.</p>'
+)
+
 CONTENT["privacy"] = f"""
 <h2 id="local">Everything stays on your computer</h2>
 <ul>
@@ -677,7 +756,7 @@ GROUPS = [
     ("Start here", ["index", "getting-started"]),
     ("The app", ["overview", "health", "charging", "schedule", "power", "usage"]),
     ("Settings and data", ["preferences", "data"]),
-    ("Reference", ["reference", "troubleshooting", "privacy"]),
+    ("Reference", ["reference", "troubleshooting", "privacy", "whats-new"]),
 ]
 TITLES["index"] = "Battery Health Center Manual"
 ORDER = [slug for _, slugs in GROUPS for slug in slugs]
