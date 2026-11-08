@@ -121,3 +121,4 @@ The manual at <https://arios4k.github.io/battery-health-center/> is a static sit
   `cargo build --release && scripts/capture-manual.sh` (it uses isolated settings and sample charge files, never your
   real ones, and `scripts/crop-manual.py` cuts the full pages into one image per card and hides the serial number).
 - Check the numbers the manual quotes (thresholds, defaults) against the code when they change.
+- **For every release,** add an entry at the top of `WHATS_NEW` in `scripts/build-manual.py` (it becomes the *What's new* page), regenerate the pages and commit them with the version bump.
