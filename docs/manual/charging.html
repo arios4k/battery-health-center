@@ -1,39 +1,24 @@
 <!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Charging · Battery Health Center User Manual</title>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Charging · Battery Health Center Manual</title>
 <meta name="description" content="Charge limits, profiles, one-time full charges and pausing charging.">
-<meta name="color-scheme" content="light dark">
-<link rel="icon" type="image/svg+xml" href="../icon.svg">
-<link rel="stylesheet" href="style.css">
-</head>
+<link rel="icon" href="img/icon.svg"><link rel="stylesheet" href="style.css"></head>
 <body>
-<a class="skip" href="#content">Skip to the content</a>
-<header class="top">
-  <a class="brand" href="../index.html"><img src="../icon.svg" alt="" width="32" height="32"><span>Battery Health Center <span class="sub">User manual</span></span></a>
-  <nav class="top-links" aria-label="Project links">
-    <a href="https://github.com/arios4k/battery-health-center">Source code</a>
-    <a href="https://github.com/arios4k/battery-health-center/releases/latest">Download</a>
-    <a href="https://github.com/arios4k/battery-health-center/issues">Report an issue</a>
-  </nav>
-</header>
+<header class="top"><button class="menu" aria-label="Open the menu" aria-expanded="false" aria-controls="nav">☰</button>
+<a class="brand" href="index.html"><img src="img/icon.svg" alt="" width="28" height="28"> <span>Battery Health Center Manual</span></a>
+<button class="find" aria-label="Search the manual" aria-expanded="false">⌕</button>
+<input id="q" type="search" placeholder="Search the manual…" aria-label="Search the manual" autocomplete="off">
+<a class="ghost" href="https://github.com/arios4k/battery-health-center">GitHub</a></header>
+<div id="results" class="results" hidden></div>
 <div class="layout">
-<nav class="side" aria-label="Manual">
-<details class="side-menu" open>
-<summary>Contents</summary>
-<ul><li><a href="../index.html">Welcome</a></li><li><a href="getting-started.html">Getting started</a></li><li><a href="overview.html">Overview</a></li><li><a href="health.html">Health</a></li><li><a href="charging.html" aria-current="page">Charging</a></li><li><a href="schedule.html">Charging schedule</a></li><li><a href="power.html">Power</a></li><li><a href="usage.html">Usage</a></li><li><a href="preferences.html">Notifications and preferences</a></li><li><a href="data.html">Reports and your data</a></li><li><a href="reference.html">Reference</a></li><li><a href="troubleshooting.html">Troubleshooting and FAQ</a></li><li><a href="privacy.html">Privacy and security</a></li></ul>
-</details>
-</nav>
-<main id="content">
-<h1>Charging</h1><p class="lead">Charge limits, profiles, one-time full charges and pausing charging.</p><nav class="toc" aria-label="On this page"><strong>On this page</strong><ul><li><a href="#status">Charging status</a></li><li><a href="#limit">Charge limit</a></li><li><a href="#now">Charge to 100% now</a></li><li><a href="#behavior">Charging behavior</a></li></ul></nav>
+<aside class="side" id="nav" aria-label="Manual pages"><button class="close" aria-label="Close the menu">✕ Close</button><div class="group"><div class="group-title">Start here</div><ul><li><a href="index.html">Battery Health Center Manual</a></li><li><a href="getting-started.html">Getting started</a></li></ul></div><div class="group"><div class="group-title">The app</div><ul><li><a href="overview.html">Overview</a></li><li><a href="health.html">Health</a></li><li><a href="charging.html" aria-current="page">Charging</a></li><li><a href="schedule.html">Charging schedule</a></li><li><a href="power.html">Power</a></li><li><a href="usage.html">Usage</a></li></ul></div><div class="group"><div class="group-title">Settings and data</div><ul><li><a href="preferences.html">Notifications and preferences</a></li><li><a href="data.html">Reports and your data</a></li></ul></div><div class="group"><div class="group-title">Reference</div><ul><li><a href="reference.html">Reference</a></li><li><a href="troubleshooting.html">Troubleshooting and FAQ</a></li><li><a href="privacy.html">Privacy and security</a></li></ul></div></aside>
+<main><details class="toc-m"><summary>On this page</summary><ul><li class="l2"><a href="#status">Charging status</a></li><li class="l2"><a href="#limit">Charge limit</a></li><li class="l3"><a href="#profiles">Profiles</a></li><li class="l3"><a href="#your-own-numbers">Your own numbers</a></li><li class="l3"><a href="#applying-the-limit">Applying the limit</a></li><li class="l2"><a href="#now">Charge to 100% now</a></li><li class="l2"><a href="#behavior">Charging behavior</a></li></ul></details><article><h1 id="charging">Charging</h1><p class="byline">By <a href="https://github.com/arios4k">Alexis Rios-Negron</a> · Battery Health Center 0.6.4</p>
 <p>Lithium batteries wear faster when they sit at full charge. If your laptop is plugged in most of the day, limiting
 the charge to about 80% can noticeably extend the battery's lifespan. This page sets that limit.</p>
 <figure><picture><source media="(prefers-color-scheme: dark)" srcset="img/charging-dark.png"><img src="img/charging-light.png" alt="The Charging page showing the Charging Status cards, then the Charge Limit settings." loading="lazy"></picture><figcaption>The Charging page is one centered column: status first, then the limit, the schedule and the behavior controls.</figcaption></figure>
-<aside class="callout hw"><strong>Hardware.</strong> Charge limits need firmware support that Linux exposes as <code>charge_control_end_threshold</code>. If your laptop does not have it, this page shows <strong>Not supported on this laptop</strong> with the reason, and the rest of the app works normally.</aside>
+<div class="callout note"><p><strong>Hardware.</strong> Charge limits need firmware support that Linux exposes as <code>charge_control_end_threshold</code>. If your laptop does not have it, this page shows <strong>Not supported on this laptop</strong> with the reason, and the rest of the app works normally.</p></div>
 
-<h2 id="status">Charging status</h2>
+<h2 id="status">Charging status<a class="anchor" href="#status" aria-label="Link to this section">#</a></h2>
 <figure><picture><source media="(prefers-color-scheme: dark)" srcset="img/charging-status-dark.png"><img src="img/charging-status-light.png" alt="Three small cards: Active Charge Limit BAT0 100 percent, Next Scheduled Full Charge Full by Sun 10:00 starting Sun 08:00, and Temporary Override None, charging is unrestricted." loading="lazy"></picture><figcaption>The three cards at the top tell you what is in force right now.</figcaption></figure>
 <ul>
 <li><strong>Active Charge Limit</strong>: where charging stops for each battery. "Charging will stop at 80%", or "Charge limit removed" when there is no limit.</li>
@@ -41,44 +26,33 @@ the charge to about 80% can noticeably extend the battery's lifespan. This page 
 <li><strong>Temporary Override</strong>: "None" normally. During a one-time full charge it says "One-time full charge", with the limit that comes back; during a scheduled full charge it says "Scheduled full charge".</li>
 </ul>
 
-<h2 id="limit">Charge limit</h2>
+<h2 id="limit">Charge limit<a class="anchor" href="#limit" aria-label="Link to this section">#</a></h2>
 <figure><picture><source media="(prefers-color-scheme: dark)" srcset="img/charging-limit-dark.png"><img src="img/charging-limit-light.png" alt="The Charge Limit card with Current Setting Charges to 100 percent, a Profile menu, the Limit Maximum Charge switch, Stop Charging At and Resume Charging Below spin buttons, Keep After Restart, and an Apply button." loading="lazy"></picture><figcaption>Pick a profile, or switch on Limit Maximum Charge and set your own numbers, then choose Apply.</figcaption></figure>
-<h3>Profiles</h3>
+<h3 id="profiles">Profiles<a class="anchor" href="#profiles" aria-label="Link to this section">#</a></h3>
 <p>The <strong>Profile</strong> menu sets both numbers at once:</p>
-<div class="table-wrap"><table><thead><tr><th scope="col">Profile</th><th scope="col">Stops charging at</th><th scope="col">Resumes below</th><th scope="col">Best for</th></tr></thead><tbody><tr><td><strong>Maximum Lifespan (60%)</strong></td><td>60%</td><td>55%</td><td>Plugged in most of the time. The least wear.</td></tr><tr><td><strong>Balanced (80%)</strong></td><td>80%</td><td>75%</td><td>A good everyday balance.</td></tr><tr><td><strong>Full Capacity (100%)</strong></td><td>100%</td><td>No limit</td><td>The longest time away from the charger.</td></tr><tr><td><strong>Custom</strong></td><td>Your number</td><td>Your number</td><td>Your own settings below.</td></tr></tbody></table></div>
-<h3>Your own numbers</h3>
+<div class="table"><table><thead><tr><th scope="col">Profile</th><th scope="col">Stops charging at</th><th scope="col">Resumes below</th><th scope="col">Best for</th></tr></thead><tbody><tr><td><strong>Maximum Lifespan (60%)</strong></td><td>60%</td><td>55%</td><td>Plugged in most of the time. The least wear.</td></tr><tr><td><strong>Balanced (80%)</strong></td><td>80%</td><td>75%</td><td>A good everyday balance.</td></tr><tr><td><strong>Full Capacity (100%)</strong></td><td>100%</td><td>No limit</td><td>The longest time away from the charger.</td></tr><tr><td><strong>Custom</strong></td><td>Your number</td><td>Your number</td><td>Your own settings below.</td></tr></tbody></table></div>
+<h3 id="your-own-numbers">Your own numbers<a class="anchor" href="#your-own-numbers" aria-label="Link to this section">#</a></h3>
 <ul>
 <li><strong>Limit Maximum Charge</strong> turns the limit on or off. When it is off, the battery charges to 100%.</li>
 <li><strong>Stop Charging At</strong> (a percentage) is the level where charging stops.</li>
 <li><strong>Resume Charging Below</strong> is the level where charging starts again. Keeping a gap avoids topping up after every small drop. It has to be below the stop level.</li>
 <li><strong>Keep After Restart</strong> re-applies the limit when the computer starts and after it wakes from sleep. Without it the firmware may forget the limit when it restarts. A saved limit is also required for the schedule.</li>
 </ul>
-<h3>Applying the limit</h3>
-<ol class="steps"><li>Pick a profile, or change the numbers.</li><li>Choose <strong>Apply</strong>.</li><li>Enter your password in the system prompt. Changing a charge limit writes to the battery's firmware settings, so it needs administrator permission. The prompt is the standard PolicyKit one.</li><li>A message confirms "Charging will stop at 80%" (or "Charge limit removed").</li></ol>
-<aside class="callout tip"><strong>Tip.</strong> Not every laptop has a separate resume level. When yours does not, <em>Resume Charging Below</em> is not shown. The page only offers the controls your laptop supports.</aside>
+<h3 id="applying-the-limit">Applying the limit<a class="anchor" href="#applying-the-limit" aria-label="Link to this section">#</a></h3>
+<ol><li>Pick a profile, or change the numbers.</li><li>Choose <strong>Apply</strong>.</li><li>Enter your password in the system prompt. Changing a charge limit writes to the battery's firmware settings, so it needs administrator permission. The prompt is the standard PolicyKit one.</li><li>A message confirms "Charging will stop at 80%" (or "Charge limit removed").</li></ol>
+<div class="callout tip"><p><strong>Tip.</strong> Not every laptop has a separate resume level. When yours does not, <em>Resume Charging Below</em> is not shown. The page only offers the controls your laptop supports.</p></div>
 
-<h2 id="now">Charge to 100% now</h2>
+<h2 id="now">Charge to 100% now<a class="anchor" href="#now" aria-label="Link to this section">#</a></h2>
 <p>Need a full battery for a trip or a long day away from the charger? While a limit below 100% is in force, a <strong>Charge to 100% Now</strong> row
 appears with a <strong>Charge Now</strong> button.</p>
-<ol class="steps"><li>Connect the charger and choose <strong>Charge Now</strong>.</li><li>The Overview says "Charging to 100%" and the Temporary Override card says "One-time full charge".</li><li>When the battery is full, or when you unplug, your limit comes back by itself. Choose <strong>Back to your charge limit</strong> if you change your mind earlier.</li></ol>
+<ol><li>Connect the charger and choose <strong>Charge Now</strong>.</li><li>The Overview says "Charging to 100%" and the Temporary Override card says "One-time full charge".</li><li>When the battery is full, or when you unplug, your limit comes back by itself. Choose <strong>Back to your charge limit</strong> if you change your mind earlier.</li></ol>
 
-<h2 id="behavior">Charging behavior</h2>
+<h2 id="behavior">Charging behavior<a class="anchor" href="#behavior" aria-label="Link to this section">#</a></h2>
 <figure><picture><source media="(prefers-color-scheme: dark)" srcset="img/charging-behavior-dark.png"><img src="img/charging-behavior-light.png" alt="The Charging Behavior card with a While Plugged In menu set to Normal." loading="lazy"></picture><figcaption>Temporarily pause charging or run from the battery while plugged in.</figcaption></figure>
 <p>The <strong>While Plugged In</strong> menu is a temporary override for special situations:</p>
-<div class="table-wrap"><table><thead><tr><th scope="col">Choice</th><th scope="col">What it does</th></tr></thead><tbody><tr><td><strong>Normal</strong></td><td>Charges as usual, following your limit.</td></tr><tr><td><strong>Pause Charging</strong></td><td>The laptop stays plugged in and runs from the charger without charging the battery.</td></tr><tr><td><strong>Run on Battery</strong></td><td>The laptop runs from the battery even though the charger is connected. Useful for testing how long the battery lasts.</td></tr></tbody></table></div>
+<div class="table"><table><thead><tr><th scope="col">Choice</th><th scope="col">What it does</th></tr></thead><tbody><tr><td><strong>Normal</strong></td><td>Charges as usual, following your limit.</td></tr><tr><td><strong>Pause Charging</strong></td><td>The laptop stays plugged in and runs from the charger without charging the battery.</td></tr><tr><td><strong>Run on Battery</strong></td><td>The laptop runs from the battery even though the charger is connected. Useful for testing how long the battery lasts.</td></tr></tbody></table></div>
 <p>Choose <strong>Normal</strong> to go back. This control only appears when your laptop supports it.</p>
-
-<nav class="pager" aria-label="Previous and next page"><a class="prev" href="health.html"><span>Previous</span>Health</a><a class="next" href="schedule.html"><span>Next</span>Charging schedule</a></nav>
-</main>
-</div>
-<footer>
-Battery Health Center 0.6.3 · GPL-3.0-or-later · © Alexis Rios-Negron · <a href="https://github.com/arios4k/battery-health-center">Source code</a> · <a href="https://github.com/arios4k/battery-health-center/issues">Report an issue</a>
-</footer>
-<script>
-(function () {
-  var d = document.querySelector('.side-menu');
-  if (d && window.matchMedia('(max-width: 900px)').matches) { d.removeAttribute('open'); }
-})();
-</script>
-</body>
-</html>
+</article><nav class="pager" aria-label="Previous and next page"><a class="prev" href="health.html"><span>Previous</span>Health</a><a class="next" href="schedule.html"><span>Next</span>Charging schedule</a></nav>
+<footer>Written by Alexis Rios-Negron · Battery Health Center 0.6.4 · <a href="https://github.com/arios4k/battery-health-center/issues">Report a problem with this manual</a> · GPL-3.0-or-later</footer></main>
+<aside class="toc" aria-label="On this page"><div class="group-title">On this page</div><ul><li class="l2"><a href="#status">Charging status</a></li><li class="l2"><a href="#limit">Charge limit</a></li><li class="l3"><a href="#profiles">Profiles</a></li><li class="l3"><a href="#your-own-numbers">Your own numbers</a></li><li class="l3"><a href="#applying-the-limit">Applying the limit</a></li><li class="l2"><a href="#now">Charge to 100% now</a></li><li class="l2"><a href="#behavior">Charging behavior</a></li></ul></aside>
+</div><script src="manual.js"></script></body></html>
