@@ -112,8 +112,8 @@ the site. `DRY_RUN=1 scripts/publish-apt.sh` shows the steps without doing anyth
 ## The user manual (GitHub Pages)
 
 The manual at <https://arios4k.github.io/battery-health-center/> is a static site served by GitHub Pages from the
-`docs/` folder of `main` (Settings → Pages → Deploy from a branch → `main` / `/docs`). The app's help button and
-`F1` open that address (`MANUAL_URL` in `src/ui/mod.rs`).
+`docs/` folder of `main` (`docs/index.html` forwards to `manual/`, which uses the same design as the Voltkit manual) (Settings → Pages → Deploy from a branch → `main` / `/docs`). The app's help button and
+`F1` open the page that matches the page you are on (`MANUAL_URL` in `src/ui/mod.rs`).
 
 - **Text** lives in `scripts/build-manual.py`. Edit it, then run `python3 scripts/build-manual.py` to regenerate
   `docs/index.html` and `docs/manual/*.html`, and commit them.

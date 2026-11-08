@@ -1,47 +1,32 @@
 <!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Reference · Battery Health Center User Manual</title>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reference · Battery Health Center Manual</title>
 <meta name="description" content="Keyboard shortcuts, command line, files and a glossary.">
-<meta name="color-scheme" content="light dark">
-<link rel="icon" type="image/svg+xml" href="../icon.svg">
-<link rel="stylesheet" href="style.css">
-</head>
+<link rel="icon" href="img/icon.svg"><link rel="stylesheet" href="style.css"></head>
 <body>
-<a class="skip" href="#content">Skip to the content</a>
-<header class="top">
-  <a class="brand" href="../index.html"><img src="../icon.svg" alt="" width="32" height="32"><span>Battery Health Center <span class="sub">User manual</span></span></a>
-  <nav class="top-links" aria-label="Project links">
-    <a href="https://github.com/arios4k/battery-health-center">Source code</a>
-    <a href="https://github.com/arios4k/battery-health-center/releases/latest">Download</a>
-    <a href="https://github.com/arios4k/battery-health-center/issues">Report an issue</a>
-  </nav>
-</header>
+<header class="top"><button class="menu" aria-label="Open the menu" aria-expanded="false" aria-controls="nav">☰</button>
+<a class="brand" href="index.html"><img src="img/icon.svg" alt="" width="28" height="28"> <span>Battery Health Center Manual</span></a>
+<button class="find" aria-label="Search the manual" aria-expanded="false">⌕</button>
+<input id="q" type="search" placeholder="Search the manual…" aria-label="Search the manual" autocomplete="off">
+<a class="ghost" href="https://github.com/arios4k/battery-health-center">GitHub</a></header>
+<div id="results" class="results" hidden></div>
 <div class="layout">
-<nav class="side" aria-label="Manual">
-<details class="side-menu" open>
-<summary>Contents</summary>
-<ul><li><a href="../index.html">Welcome</a></li><li><a href="getting-started.html">Getting started</a></li><li><a href="overview.html">Overview</a></li><li><a href="health.html">Health</a></li><li><a href="charging.html">Charging</a></li><li><a href="schedule.html">Charging schedule</a></li><li><a href="power.html">Power</a></li><li><a href="usage.html">Usage</a></li><li><a href="preferences.html">Notifications and preferences</a></li><li><a href="data.html">Reports and your data</a></li><li><a href="reference.html" aria-current="page">Reference</a></li><li><a href="troubleshooting.html">Troubleshooting and FAQ</a></li><li><a href="privacy.html">Privacy and security</a></li></ul>
-</details>
-</nav>
-<main id="content">
-<h1>Reference</h1><p class="lead">Keyboard shortcuts, command line, files and a glossary.</p><nav class="toc" aria-label="On this page"><strong>On this page</strong><ul><li><a href="#shortcuts">Keyboard shortcuts</a></li><li><a href="#menu">The main menu</a></li><li><a href="#cli">Command line</a></li><li><a href="#files">Files and services</a></li><li><a href="#glossary">Glossary</a></li></ul></nav>
-<h2 id="shortcuts">Keyboard shortcuts</h2>
-<div class="table-wrap"><table><thead><tr><th scope="col">Shortcut</th><th scope="col">Action</th></tr></thead><tbody><tr><td><kbd>F1</kbd></td><td>Open this user manual</td></tr><tr><td><kbd>Ctrl</kbd>+<kbd>R</kbd></td><td>Refresh the readings now</td></tr><tr><td><kbd>Ctrl</kbd>+<kbd>,</kbd></td><td>Open Preferences</td></tr><tr><td><kbd>Ctrl</kbd>+<kbd>Q</kbd></td><td>Quit</td></tr><tr><td><kbd>Tab</kbd>, <kbd>Shift</kbd>+<kbd>Tab</kbd>, <kbd>Enter</kbd></td><td>Move between controls and activate them; the sidebar rows are keyboard-accessible too</td></tr></tbody></table></div>
+<aside class="side" id="nav" aria-label="Manual pages"><button class="close" aria-label="Close the menu">✕ Close</button><div class="group"><div class="group-title">Start here</div><ul><li><a href="index.html">Battery Health Center Manual</a></li><li><a href="getting-started.html">Getting started</a></li></ul></div><div class="group"><div class="group-title">The app</div><ul><li><a href="overview.html">Overview</a></li><li><a href="health.html">Health</a></li><li><a href="charging.html">Charging</a></li><li><a href="schedule.html">Charging schedule</a></li><li><a href="power.html">Power</a></li><li><a href="usage.html">Usage</a></li></ul></div><div class="group"><div class="group-title">Settings and data</div><ul><li><a href="preferences.html">Notifications and preferences</a></li><li><a href="data.html">Reports and your data</a></li></ul></div><div class="group"><div class="group-title">Reference</div><ul><li><a href="reference.html" aria-current="page">Reference</a></li><li><a href="troubleshooting.html">Troubleshooting and FAQ</a></li><li><a href="privacy.html">Privacy and security</a></li></ul></div></aside>
+<main><details class="toc-m"><summary>On this page</summary><ul><li class="l2"><a href="#shortcuts">Keyboard shortcuts</a></li><li class="l2"><a href="#menu">The main menu</a></li><li class="l2"><a href="#cli">Command line</a></li><li class="l2"><a href="#files">Files and services</a></li><li class="l2"><a href="#glossary">Glossary</a></li></ul></details><article><h1 id="reference">Reference</h1><p class="byline">By <a href="https://github.com/arios4k">Alexis Rios-Negron</a> · Battery Health Center 0.6.4</p>
+<h2 id="shortcuts">Keyboard shortcuts<a class="anchor" href="#shortcuts" aria-label="Link to this section">#</a></h2>
+<div class="table"><table><thead><tr><th scope="col">Shortcut</th><th scope="col">Action</th></tr></thead><tbody><tr><td><kbd>F1</kbd></td><td>Open this manual at the page for the one you are on</td></tr><tr><td><kbd>Ctrl</kbd>+<kbd>R</kbd></td><td>Refresh the readings now</td></tr><tr><td><kbd>Ctrl</kbd>+<kbd>,</kbd></td><td>Open Preferences</td></tr><tr><td><kbd>Ctrl</kbd>+<kbd>Q</kbd></td><td>Quit</td></tr><tr><td><kbd>Tab</kbd>, <kbd>Shift</kbd>+<kbd>Tab</kbd>, <kbd>Enter</kbd></td><td>Move between controls and activate them; the sidebar rows are keyboard-accessible too</td></tr></tbody></table></div>
 
-<h2 id="menu">The main menu</h2>
-<div class="table-wrap"><table><thead><tr><th scope="col">Item</th><th scope="col">What it does</th></tr></thead><tbody><tr><td>Refresh</td><td>Reads the battery and everything else again right now.</td></tr><tr><td>Export Battery Report…</td><td>Saves the <a href="data.html#report">HTML report</a>.</td></tr><tr><td>Export Data as CSV…</td><td>Saves the <a href="data.html#csv">CSV files</a>.</td></tr><tr><td>Preferences</td><td>Opens the <a href="preferences.html">notification settings</a>.</td></tr><tr><td>User Manual</td><td>Opens this manual in your browser.</td></tr><tr><td>About Battery Health Center</td><td>Version, links, credits and license.</td></tr><tr><td>Quit</td><td>Closes the app.</td></tr></tbody></table></div>
+<h2 id="menu">The main menu<a class="anchor" href="#menu" aria-label="Link to this section">#</a></h2>
+<div class="table"><table><thead><tr><th scope="col">Item</th><th scope="col">What it does</th></tr></thead><tbody><tr><td>Refresh</td><td>Reads the battery and everything else again right now.</td></tr><tr><td>Export Battery Report…</td><td>Saves the <a href="data.html#report">HTML report</a>.</td></tr><tr><td>Export Data as CSV…</td><td>Saves the <a href="data.html#csv">CSV files</a>.</td></tr><tr><td>Preferences</td><td>Opens the <a href="preferences.html">notification settings</a>.</td></tr><tr><td>User Manual</td><td>Opens this manual at the page for the one you are on.</td></tr><tr><td>About Battery Health Center</td><td>Version, links, credits and license.</td></tr><tr><td>Quit</td><td>Closes the app.</td></tr></tbody></table></div>
 
-<h2 id="cli">Command line</h2>
-<div class="table-wrap"><table><thead><tr><th scope="col">Command</th><th scope="col">What it does</th></tr></thead><tbody><tr><td><code>battery-health-center</code></td><td>Open the window.</td></tr><tr><td><code>battery-health-center --background</code></td><td>Start hidden and keep recording history (this is what the login item runs).</td></tr><tr><td><code>battery-health-center --export-report FILE.html</code></td><td>Write the battery report and exit.</td></tr><tr><td><code>battery-health-center --export-csv FOLDER</code></td><td>Write the four CSV files into the folder and exit.</td></tr></tbody></table></div>
+<h2 id="cli">Command line<a class="anchor" href="#cli" aria-label="Link to this section">#</a></h2>
+<div class="table"><table><thead><tr><th scope="col">Command</th><th scope="col">What it does</th></tr></thead><tbody><tr><td><code>battery-health-center</code></td><td>Open the window.</td></tr><tr><td><code>battery-health-center --background</code></td><td>Start hidden and keep recording history (this is what the login item runs).</td></tr><tr><td><code>battery-health-center --export-report FILE.html</code></td><td>Write the battery report and exit.</td></tr><tr><td><code>battery-health-center --export-csv FOLDER</code></td><td>Write the four CSV files into the folder and exit.</td></tr></tbody></table></div>
 
-<h2 id="files">Files and services</h2>
-<div class="table-wrap"><table><thead><tr><th scope="col">Path or unit</th><th scope="col">Purpose</th></tr></thead><tbody><tr><td><code>/usr/bin/battery-health-center</code></td><td>The app.</td></tr><tr><td><code>bhc-helper</code></td><td>The only part that runs as root. It validates its arguments and writes the charge-limit files and its own configuration. Started through PolicyKit.</td></tr><tr><td><code>/etc/battery-health-center.conf</code></td><td>The saved charge limit that <em>Keep After Restart</em> re-applies.</td></tr><tr><td><code>/etc/battery-health-center.schedule</code></td><td>The saved ready-by times and lead time.</td></tr><tr><td><code>/var/lib/battery-health-center/unplug-log</code></td><td>The unplug times learned by optimized charging.</td></tr><tr><td><code>battery-health-center-restore.service</code></td><td>Re-applies your limit at startup and after sleep.</td></tr><tr><td><code>battery-health-center-scheduler.service</code> and <code>.path</code></td><td>Run the schedule; the <code>.path</code> unit starts the service only while a schedule exists.</td></tr><tr><td><code>/sys/class/power_supply/BAT*</code></td><td>Where the battery readings come from (read directly; no root needed).</td></tr></tbody></table></div>
+<h2 id="files">Files and services<a class="anchor" href="#files" aria-label="Link to this section">#</a></h2>
+<div class="table"><table><thead><tr><th scope="col">Path or unit</th><th scope="col">Purpose</th></tr></thead><tbody><tr><td><code>/usr/bin/battery-health-center</code></td><td>The app.</td></tr><tr><td><code>bhc-helper</code></td><td>The only part that runs as root. It validates its arguments and writes the charge-limit files and its own configuration. Started through PolicyKit.</td></tr><tr><td><code>/etc/battery-health-center.conf</code></td><td>The saved charge limit that <em>Keep After Restart</em> re-applies.</td></tr><tr><td><code>/etc/battery-health-center.schedule</code></td><td>The saved ready-by times and lead time.</td></tr><tr><td><code>/var/lib/battery-health-center/unplug-log</code></td><td>The unplug times learned by optimized charging.</td></tr><tr><td><code>battery-health-center-restore.service</code></td><td>Re-applies your limit at startup and after sleep.</td></tr><tr><td><code>battery-health-center-scheduler.service</code> and <code>.path</code></td><td>Run the schedule; the <code>.path</code> unit starts the service only while a schedule exists.</td></tr><tr><td><code>/sys/class/power_supply/BAT*</code></td><td>Where the battery readings come from (read directly; no root needed).</td></tr></tbody></table></div>
 <p>The exact configuration file locations can differ slightly between packages; the <a href="https://github.com/arios4k/battery-health-center/blob/main/docs/HOW-IT-WORKS.md">How it works</a> notes describe what each piece does.</p>
 
-<h2 id="glossary">Glossary</h2>
+<h2 id="glossary">Glossary<a class="anchor" href="#glossary" aria-label="Link to this section">#</a></h2>
 <dl>
 <dt>Capacity (maximum capacity)</dt><dd>How much energy the battery holds when full now, compared with when it was new.</dd>
 <dt>Design capacity</dt><dd>What the manufacturer rated the battery for when new, in Wh.</dd>
@@ -55,18 +40,7 @@
 <dt>Calibration</dt><dd>A full charge, a full discharge and a full charge that lets the battery gauge relearn the real capacity.</dd>
 <dt>PolicyKit</dt><dd>The standard Linux service that asks for your password before an app makes an administrator-level change.</dd>
 </dl>
-
-<nav class="pager" aria-label="Previous and next page"><a class="prev" href="data.html"><span>Previous</span>Reports and your data</a><a class="next" href="troubleshooting.html"><span>Next</span>Troubleshooting and FAQ</a></nav>
-</main>
-</div>
-<footer>
-Battery Health Center 0.6.3 · GPL-3.0-or-later · © Alexis Rios-Negron · <a href="https://github.com/arios4k/battery-health-center">Source code</a> · <a href="https://github.com/arios4k/battery-health-center/issues">Report an issue</a>
-</footer>
-<script>
-(function () {
-  var d = document.querySelector('.side-menu');
-  if (d && window.matchMedia('(max-width: 900px)').matches) { d.removeAttribute('open'); }
-})();
-</script>
-</body>
-</html>
+</article><nav class="pager" aria-label="Previous and next page"><a class="prev" href="data.html"><span>Previous</span>Reports and your data</a><a class="next" href="troubleshooting.html"><span>Next</span>Troubleshooting and FAQ</a></nav>
+<footer>Written by Alexis Rios-Negron · Battery Health Center 0.6.4 · <a href="https://github.com/arios4k/battery-health-center/issues">Report a problem with this manual</a> · GPL-3.0-or-later</footer></main>
+<aside class="toc" aria-label="On this page"><div class="group-title">On this page</div><ul><li class="l2"><a href="#shortcuts">Keyboard shortcuts</a></li><li class="l2"><a href="#menu">The main menu</a></li><li class="l2"><a href="#cli">Command line</a></li><li class="l2"><a href="#files">Files and services</a></li><li class="l2"><a href="#glossary">Glossary</a></li></ul></aside>
+</div><script src="manual.js"></script></body></html>

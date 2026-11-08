@@ -1,82 +1,56 @@
 <!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Troubleshooting and FAQ · Battery Health Center User Manual</title>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Troubleshooting and FAQ · Battery Health Center Manual</title>
 <meta name="description" content="Answers to the most common questions and problems.">
-<meta name="color-scheme" content="light dark">
-<link rel="icon" type="image/svg+xml" href="../icon.svg">
-<link rel="stylesheet" href="style.css">
-</head>
+<link rel="icon" href="img/icon.svg"><link rel="stylesheet" href="style.css"></head>
 <body>
-<a class="skip" href="#content">Skip to the content</a>
-<header class="top">
-  <a class="brand" href="../index.html"><img src="../icon.svg" alt="" width="32" height="32"><span>Battery Health Center <span class="sub">User manual</span></span></a>
-  <nav class="top-links" aria-label="Project links">
-    <a href="https://github.com/arios4k/battery-health-center">Source code</a>
-    <a href="https://github.com/arios4k/battery-health-center/releases/latest">Download</a>
-    <a href="https://github.com/arios4k/battery-health-center/issues">Report an issue</a>
-  </nav>
-</header>
+<header class="top"><button class="menu" aria-label="Open the menu" aria-expanded="false" aria-controls="nav">☰</button>
+<a class="brand" href="index.html"><img src="img/icon.svg" alt="" width="28" height="28"> <span>Battery Health Center Manual</span></a>
+<button class="find" aria-label="Search the manual" aria-expanded="false">⌕</button>
+<input id="q" type="search" placeholder="Search the manual…" aria-label="Search the manual" autocomplete="off">
+<a class="ghost" href="https://github.com/arios4k/battery-health-center">GitHub</a></header>
+<div id="results" class="results" hidden></div>
 <div class="layout">
-<nav class="side" aria-label="Manual">
-<details class="side-menu" open>
-<summary>Contents</summary>
-<ul><li><a href="../index.html">Welcome</a></li><li><a href="getting-started.html">Getting started</a></li><li><a href="overview.html">Overview</a></li><li><a href="health.html">Health</a></li><li><a href="charging.html">Charging</a></li><li><a href="schedule.html">Charging schedule</a></li><li><a href="power.html">Power</a></li><li><a href="usage.html">Usage</a></li><li><a href="preferences.html">Notifications and preferences</a></li><li><a href="data.html">Reports and your data</a></li><li><a href="reference.html">Reference</a></li><li><a href="troubleshooting.html" aria-current="page">Troubleshooting and FAQ</a></li><li><a href="privacy.html">Privacy and security</a></li></ul>
-</details>
-</nav>
-<main id="content">
-<h1>Troubleshooting and FAQ</h1><p class="lead">Answers to the most common questions and problems.</p><nav class="toc" aria-label="On this page"><strong>On this page</strong><ul><li><a href="#faq">Frequently asked questions</a></li><li><a href="#problems">Problems and fixes</a></li><li><a href="#report">Reporting a bug</a></li></ul></nav>
-<h2 id="faq">Frequently asked questions</h2>
+<aside class="side" id="nav" aria-label="Manual pages"><button class="close" aria-label="Close the menu">✕ Close</button><div class="group"><div class="group-title">Start here</div><ul><li><a href="index.html">Battery Health Center Manual</a></li><li><a href="getting-started.html">Getting started</a></li></ul></div><div class="group"><div class="group-title">The app</div><ul><li><a href="overview.html">Overview</a></li><li><a href="health.html">Health</a></li><li><a href="charging.html">Charging</a></li><li><a href="schedule.html">Charging schedule</a></li><li><a href="power.html">Power</a></li><li><a href="usage.html">Usage</a></li></ul></div><div class="group"><div class="group-title">Settings and data</div><ul><li><a href="preferences.html">Notifications and preferences</a></li><li><a href="data.html">Reports and your data</a></li></ul></div><div class="group"><div class="group-title">Reference</div><ul><li><a href="reference.html">Reference</a></li><li><a href="troubleshooting.html" aria-current="page">Troubleshooting and FAQ</a></li><li><a href="privacy.html">Privacy and security</a></li></ul></div></aside>
+<main><details class="toc-m"><summary>On this page</summary><ul><li class="l2"><a href="#faq">Frequently asked questions</a></li><li class="l3"><a href="#will-the-charge-limit-work-on-my-laptop">Will the charge limit work on my laptop?</a></li><li class="l3"><a href="#which-desktops-and-distributions-are-supported">Which desktops and distributions are supported?</a></li><li class="l3"><a href="#is-it-safe-to-change-the-charge-limit">Is it safe to change the charge limit?</a></li><li class="l3"><a href="#do-i-have-to-keep-the-app-open">Do I have to keep the app open?</a></li><li class="l3"><a href="#why-do-the-charts-and-the-trend-start-empty">Why do the charts and the trend start empty?</a></li><li class="l3"><a href="#why-are-the-energy-numbers-per-app-only-estimates">Why are the energy numbers per app only estimates?</a></li><li class="l3"><a href="#does-it-work-on-a-desktop-pc">Does it work on a desktop PC?</a></li><li class="l3"><a href="#can-i-use-it-in-my-language">Can I use it in my language?</a></li><li class="l2"><a href="#problems">Problems and fixes</a></li><li class="l2"><a href="#report">Reporting a bug</a></li></ul></details><article><h1 id="troubleshooting-and-faq">Troubleshooting and FAQ</h1><p class="byline">By <a href="https://github.com/arios4k">Alexis Rios-Negron</a> · Battery Health Center 0.6.4</p>
+<h2 id="faq">Frequently asked questions<a class="anchor" href="#faq" aria-label="Link to this section">#</a></h2>
 
-<details open><summary>Will the charge limit work on my laptop?</summary>
+<h3 id="will-the-charge-limit-work-on-my-laptop">Will the charge limit work on my laptop?<a class="anchor" href="#will-the-charge-limit-work-on-my-laptop" aria-label="Link to this section">#</a></h3>
 <p>Battery information works on any laptop with a standard Linux battery driver. Charge limits need firmware support that the kernel exposes as
 <code>charge_control_end_threshold</code> (or <code>charge_stop_threshold</code>), as on ThinkPads and many ASUS, Dell, Huawei, LG, Samsung and System76
 laptops. You can check from a terminal:</p>
 <pre><code>ls /sys/class/power_supply/BAT*/charge_control_end_threshold</code></pre>
-<p>If the file exists, the limit should work. If not, the Charging page says "Not supported on this laptop" and everything else still works.</p></details>
+<p>If the file exists, the limit should work. If not, the Charging page says "Not supported on this laptop" and everything else still works.</p>
 
-<details><summary>Which desktops and distributions are supported?</summary>
-<p>It is developed and tested on GNOME: Ubuntu 24.04, Zorin OS 18 and Linux Mint 22, and Fedora 43 and newer. It needs GTK 4.14 and libadwaita 1.5 or newer, so Ubuntu 22.04, Debian 12 and Mint 21 are too old. The Power page uses GNOME's own settings, so it is the part most tied to GNOME.</p></details>
+<h3 id="which-desktops-and-distributions-are-supported">Which desktops and distributions are supported?<a class="anchor" href="#which-desktops-and-distributions-are-supported" aria-label="Link to this section">#</a></h3>
+<p>It is developed and tested on GNOME: Ubuntu 24.04, Zorin OS 18 and Linux Mint 22, and Fedora 43 and newer. It needs GTK 4.14 and libadwaita 1.5 or newer, so Ubuntu 22.04, Debian 12 and Mint 21 are too old. The Power page uses GNOME's own settings, so it is the part most tied to GNOME.</p>
 
-<details><summary>Is it safe to change the charge limit?</summary>
-<p>It sets the same firmware thresholds that other tools and BIOS options use. <strong>Full Capacity (100%)</strong> removes the limit again. Changing it asks for your password, and only a small helper that accepts nothing but validated values makes the change.</p></details>
+<h3 id="is-it-safe-to-change-the-charge-limit">Is it safe to change the charge limit?<a class="anchor" href="#is-it-safe-to-change-the-charge-limit" aria-label="Link to this section">#</a></h3>
+<p>It sets the same firmware thresholds that other tools and BIOS options use. <strong>Full Capacity (100%)</strong> removes the limit again. Changing it asks for your password, and only a small helper that accepts nothing but validated values makes the change.</p>
 
-<details><summary>Do I have to keep the app open?</summary>
+<h3 id="do-i-have-to-keep-the-app-open">Do I have to keep the app open?<a class="anchor" href="#do-i-have-to-keep-the-app-open" aria-label="Link to this section">#</a></h3>
 <p>History, sleep drain and notifications are recorded while the app runs. Turn on <em>Record History in the Background</em> on the <a href="usage.html#background">Usage</a> page and it starts hidden when you log in.
-The charge limit itself is applied by the system and does not need the app.</p></details>
+The charge limit itself is applied by the system and does not need the app.</p>
 
-<details><summary>Why do the charts and the trend start empty?</summary>
+<h3 id="why-do-the-charts-and-the-trend-start-empty">Why do the charts and the trend start empty?<a class="anchor" href="#why-do-the-charts-and-the-trend-start-empty" aria-label="Link to this section">#</a></h3>
 <p>Samples are taken once a minute while the app runs, and the capacity once a day. The trend needs 5 readings over 14 days. See
-<a href="getting-started.html#first-launch">your first launch</a> for how long each thing takes.</p></details>
+<a href="getting-started.html#first-launch">your first launch</a> for how long each thing takes.</p>
 
-<details><summary>Why are the energy numbers per app only estimates?</summary>
-<p>Linux does not measure power per app. The app shares the measured battery drain above idle between apps by their CPU use. GPU, display and device activity are not measured per app, so treat the numbers as a guide.</p></details>
+<h3 id="why-are-the-energy-numbers-per-app-only-estimates">Why are the energy numbers per app only estimates?<a class="anchor" href="#why-are-the-energy-numbers-per-app-only-estimates" aria-label="Link to this section">#</a></h3>
+<p>Linux does not measure power per app. The app shares the measured battery drain above idle between apps by their CPU use. GPU, display and device activity are not measured per app, so treat the numbers as a guide.</p>
 
-<details><summary>Does it work on a desktop PC?</summary>
-<p>No. It needs a battery. Without one the app says "No Battery Found".</p></details>
+<h3 id="does-it-work-on-a-desktop-pc">Does it work on a desktop PC?<a class="anchor" href="#does-it-work-on-a-desktop-pc" aria-label="Link to this section">#</a></h3>
+<p>No. It needs a battery. Without one the app says "No Battery Found".</p>
 
-<details><summary>Can I use it in my language?</summary>
-<p>The app is available in English, Spanish, German, French and Simplified Chinese, following your system language. The exported HTML report and this manual are in English.</p></details>
+<h3 id="can-i-use-it-in-my-language">Can I use it in my language?<a class="anchor" href="#can-i-use-it-in-my-language" aria-label="Link to this section">#</a></h3>
+<p>The app is available in English, Spanish, German, French and Simplified Chinese, following your system language. The exported HTML report and this manual are in English.</p>
 
-<h2 id="problems">Problems and fixes</h2>
-<div class="table-wrap"><table><thead><tr><th scope="col">Problem</th><th scope="col">What to try</th></tr></thead><tbody><tr><td>The charge limit does not stop charging at my number</td><td>Choose <strong>Apply</strong> after changing it, and keep <em>Keep After Restart</em> on. Some laptops round the value or accept only certain ones. Check that the Charging Status card shows the limit you expect. Charging is held at the limit and resumes only below the <em>Resume Charging Below</em> level.</td></tr><tr><td>It asks for my password every time I change a limit</td><td>That is the PolicyKit prompt, which appears each time you apply a new limit. You enter your password once more when you save a schedule, and the schedule itself then runs without asking. A copy run from the build folder (not installed) asks every time.</td></tr><tr><td>"The bhc-helper program was not found. Is the app installed?"</td><td>The helper that makes root changes is missing. Install the app from the packages instead of running a loose build, or run <code>./install.sh</code> from the source.</td></tr><tr><td>"Authorization was cancelled" / "The change could not be applied"</td><td>The password prompt was closed or the firmware refused the value. Try again, and pick a value your laptop accepts.</td></tr><tr><td>The schedule does not seem to run</td><td>A schedule needs a <em>saved</em> limit below 100% (<em>Limit Maximum Charge</em> and <em>Keep After Restart</em>, then <strong>Apply</strong>) and a saved schedule (<strong>Save Schedule</strong>). Check the <em>Next Scheduled Full Charge</em> card.</td></tr><tr><td>Optimized charging says it is still learning</td><td>It needs at least 3 unplugs on weekdays (and 3 on weekends) within 28 days, each after at least 3 hours on the charger and within 90 minutes of one another.</td></tr><tr><td>The Power page says the mode is not available</td><td>The Power Profiles Daemon is not running. Install and start <code>power-profiles-daemon</code>, then reopen the page.</td></tr><tr><td>No notifications when the window is closed</td><td>Turn on <em>Record History in the Background</em> on the Usage page. Check GNOME's notification settings for the app.</td></tr><tr><td>The battery percentage jumps or the laptop dies before 0%</td><td>Run the <a href="health.html#calibration">calibration</a>. If the maximum capacity is low afterwards, that is the true state of the battery.</td></tr><tr><td>A banner says "Some changes could not be saved"</td><td>Choose <strong>Details</strong>. Check disk space and the permissions of the folder named there. The app retries when storage recovers.</td></tr><tr><td>High drain during sleep</td><td>Check the sleep list on the Usage page. If the Sleep Mode row says Modern Standby and your laptop supports deep sleep, you can try the kernel option <code>mem_sleep_default=deep</code>. Disconnect USB devices before sleeping.</td></tr></tbody></table></div>
+<h2 id="problems">Problems and fixes<a class="anchor" href="#problems" aria-label="Link to this section">#</a></h2>
+<div class="table"><table><thead><tr><th scope="col">Problem</th><th scope="col">What to try</th></tr></thead><tbody><tr><td>The charge limit does not stop charging at my number</td><td>Choose <strong>Apply</strong> after changing it, and keep <em>Keep After Restart</em> on. Some laptops round the value or accept only certain ones. Check that the Charging Status card shows the limit you expect. Charging is held at the limit and resumes only below the <em>Resume Charging Below</em> level.</td></tr><tr><td>It asks for my password every time I change a limit</td><td>That is the PolicyKit prompt, which appears each time you apply a new limit. You enter your password once more when you save a schedule, and the schedule itself then runs without asking. A copy run from the build folder (not installed) asks every time.</td></tr><tr><td>"The bhc-helper program was not found. Is the app installed?"</td><td>The helper that makes root changes is missing. Install the app from the packages instead of running a loose build, or run <code>./install.sh</code> from the source.</td></tr><tr><td>"Authorization was cancelled" / "The change could not be applied"</td><td>The password prompt was closed or the firmware refused the value. Try again, and pick a value your laptop accepts.</td></tr><tr><td>The schedule does not seem to run</td><td>A schedule needs a <em>saved</em> limit below 100% (<em>Limit Maximum Charge</em> and <em>Keep After Restart</em>, then <strong>Apply</strong>) and a saved schedule (<strong>Save Schedule</strong>). Check the <em>Next Scheduled Full Charge</em> card.</td></tr><tr><td>Optimized charging says it is still learning</td><td>It needs at least 3 unplugs on weekdays (and 3 on weekends) within 28 days, each after at least 3 hours on the charger and within 90 minutes of one another.</td></tr><tr><td>The Power page says the mode is not available</td><td>The Power Profiles Daemon is not running. Install and start <code>power-profiles-daemon</code>, then reopen the page.</td></tr><tr><td>No notifications when the window is closed</td><td>Turn on <em>Record History in the Background</em> on the Usage page. Check GNOME's notification settings for the app.</td></tr><tr><td>The battery percentage jumps or the laptop dies before 0%</td><td>Run the <a href="health.html#calibration">calibration</a>. If the maximum capacity is low afterwards, that is the true state of the battery.</td></tr><tr><td>A banner says "Some changes could not be saved"</td><td>Choose <strong>Details</strong>. Check disk space and the permissions of the folder named there. The app retries when storage recovers.</td></tr><tr><td>High drain during sleep</td><td>Check the sleep list on the Usage page. If the Sleep Mode row says Modern Standby and your laptop supports deep sleep, you can try the kernel option <code>mem_sleep_default=deep</code>. Disconnect USB devices before sleeping.</td></tr></tbody></table></div>
 
-<h2 id="report">Reporting a bug</h2>
+<h2 id="report">Reporting a bug<a class="anchor" href="#report" aria-label="Link to this section">#</a></h2>
 <p>Please <a href="https://github.com/arios4k/battery-health-center/issues">open an issue</a> with your laptop model, your distribution, the app version (copy it from the About dialog with one click) and what you expected to see. Translations and testing on other laptops are especially welcome.</p>
-
-<nav class="pager" aria-label="Previous and next page"><a class="prev" href="reference.html"><span>Previous</span>Reference</a><a class="next" href="privacy.html"><span>Next</span>Privacy and security</a></nav>
-</main>
-</div>
-<footer>
-Battery Health Center 0.6.3 · GPL-3.0-or-later · © Alexis Rios-Negron · <a href="https://github.com/arios4k/battery-health-center">Source code</a> · <a href="https://github.com/arios4k/battery-health-center/issues">Report an issue</a>
-</footer>
-<script>
-(function () {
-  var d = document.querySelector('.side-menu');
-  if (d && window.matchMedia('(max-width: 900px)').matches) { d.removeAttribute('open'); }
-})();
-</script>
-</body>
-</html>
+</article><nav class="pager" aria-label="Previous and next page"><a class="prev" href="reference.html"><span>Previous</span>Reference</a><a class="next" href="privacy.html"><span>Next</span>Privacy and security</a></nav>
+<footer>Written by Alexis Rios-Negron · Battery Health Center 0.6.4 · <a href="https://github.com/arios4k/battery-health-center/issues">Report a problem with this manual</a> · GPL-3.0-or-later</footer></main>
+<aside class="toc" aria-label="On this page"><div class="group-title">On this page</div><ul><li class="l2"><a href="#faq">Frequently asked questions</a></li><li class="l3"><a href="#will-the-charge-limit-work-on-my-laptop">Will the charge limit work on my laptop?</a></li><li class="l3"><a href="#which-desktops-and-distributions-are-supported">Which desktops and distributions are supported?</a></li><li class="l3"><a href="#is-it-safe-to-change-the-charge-limit">Is it safe to change the charge limit?</a></li><li class="l3"><a href="#do-i-have-to-keep-the-app-open">Do I have to keep the app open?</a></li><li class="l3"><a href="#why-do-the-charts-and-the-trend-start-empty">Why do the charts and the trend start empty?</a></li><li class="l3"><a href="#why-are-the-energy-numbers-per-app-only-estimates">Why are the energy numbers per app only estimates?</a></li><li class="l3"><a href="#does-it-work-on-a-desktop-pc">Does it work on a desktop PC?</a></li><li class="l3"><a href="#can-i-use-it-in-my-language">Can I use it in my language?</a></li><li class="l2"><a href="#problems">Problems and fixes</a></li><li class="l2"><a href="#report">Reporting a bug</a></li></ul></aside>
+</div><script src="manual.js"></script></body></html>

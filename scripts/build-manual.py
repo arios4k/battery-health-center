@@ -123,7 +123,7 @@ installation, so nothing else needs setting up.</p>
 <li><strong>The sidebar</strong> has the five pages: <a href="overview.html">Overview</a>, <a href="health.html">Health</a>,
 <a href="charging.html">Charging</a>, <a href="power.html">Power</a> and <a href="usage.html">Usage</a>. Hover a page to read
 a one-line description of it.</li>
-<li><strong>The help button</strong> (a question mark, at the top of the sidebar) opens this manual in your browser. You can also
+<li><strong>The help button</strong> (a question mark, at the top of the sidebar) opens this manual in your browser, at the page that matches the page you are on: on Charging it opens the Charging page. You can also
 press <kbd>F1</kbd> or choose <em>User Manual</em> from the main menu.</li>
 <li><strong>The main menu</strong> (three lines) has <em>Refresh</em>, <em>Export Battery Report…</em>, <em>Export Data as CSV…</em>,
 <em>Preferences</em>, <em>User Manual</em>, <em>About Battery Health Center</em> and <em>Quit</em>.</li>
@@ -538,7 +538,7 @@ To start over, quit the app and delete the files you want to reset.</p>
 CONTENT["reference"] = f"""
 <h2 id="shortcuts">Keyboard shortcuts</h2>
 {table(["Shortcut", "Action"], [
-    ["<kbd>F1</kbd>", "Open this user manual"],
+    ["<kbd>F1</kbd>", "Open this manual at the page for the one you are on"],
     ["<kbd>Ctrl</kbd>+<kbd>R</kbd>", "Refresh the readings now"],
     ["<kbd>Ctrl</kbd>+<kbd>,</kbd>", "Open Preferences"],
     ["<kbd>Ctrl</kbd>+<kbd>Q</kbd>", "Quit"],
@@ -551,7 +551,7 @@ CONTENT["reference"] = f"""
     ["Export Battery Report…", "Saves the <a href=\"data.html#report\">HTML report</a>."],
     ["Export Data as CSV…", "Saves the <a href=\"data.html#csv\">CSV files</a>."],
     ["Preferences", "Opens the <a href=\"preferences.html\">notification settings</a>."],
-    ["User Manual", "Opens this manual in your browser."],
+    ["User Manual", "Opens this manual at the page for the one you are on."],
     ["About Battery Health Center", "Version, links, credits and license."],
     ["Quit", "Closes the app."],
 ])}
@@ -670,159 +670,189 @@ CONTENT["privacy"] = f"""
 """
 
 
-# --------------------------------------------------------------------------- templates
+# --------------------------------------------------------------------------- site (same design as the Voltkit manual)
 
-CSS_LINK = '<link rel="stylesheet" href="@ASSET@style.css">'
+# (slug, group) in reading order; "index" is the manual's front page.
+GROUPS = [
+    ("Start here", ["index", "getting-started"]),
+    ("The app", ["overview", "health", "charging", "schedule", "power", "usage"]),
+    ("Settings and data", ["preferences", "data"]),
+    ("Reference", ["reference", "troubleshooting", "privacy"]),
+]
+TITLES["index"] = "Battery Health Center Manual"
+ORDER = [slug for _, slugs in GROUPS for slug in slugs]
+SITE_TITLE = "Battery Health Center Manual"
+AUTHOR = "https://github.com/arios4k"
 
 PAGE = """<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>@TITLE@</title>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>@TITLE@ · @SITE@</title>
 <meta name="description" content="@DESC@">
-<meta name="color-scheme" content="light dark">
-<link rel="icon" type="image/svg+xml" href="@ICON@">
-<link rel="stylesheet" href="@ASSET@style.css">
-</head>
+<link rel="icon" href="img/icon.svg"><link rel="stylesheet" href="style.css"></head>
 <body>
-<a class="skip" href="#content">Skip to the content</a>
-<header class="top">
-  <a class="brand" href="@HOME@"><img src="@ICON@" alt="" width="32" height="32"><span>Battery Health Center <span class="sub">User manual</span></span></a>
-  <nav class="top-links" aria-label="Project links">
-    <a href="@REPO@">Source code</a>
-    <a href="@REPO@/releases/latest">Download</a>
-    <a href="@REPO@/issues">Report an issue</a>
-  </nav>
-</header>
+<header class="top"><button class="menu" aria-label="Open the menu" aria-expanded="false" aria-controls="nav">☰</button>
+<a class="brand" href="index.html"><img src="img/icon.svg" alt="" width="28" height="28"> <span>@SITE@</span></a>
+<button class="find" aria-label="Search the manual" aria-expanded="false">⌕</button>
+<input id="q" type="search" placeholder="Search the manual…" aria-label="Search the manual" autocomplete="off">
+<a class="ghost" href="@REPO@">GitHub</a></header>
+<div id="results" class="results" hidden></div>
 <div class="layout">
-<nav class="side" aria-label="Manual">
-<details class="side-menu" open>
-<summary>Contents</summary>
-@NAV@
-</details>
-</nav>
-<main id="content">
-@BODY@
-@PREVNEXT@
-</main>
-</div>
-<footer>
-Battery Health Center @VERSION@ · GPL-3.0-or-later · © Alexis Rios-Negron · <a href="@REPO@">Source code</a> · <a href="@REPO@/issues">Report an issue</a>
-</footer>
-<script>
-(function () {
-  var d = document.querySelector('.side-menu');
-  if (d && window.matchMedia('(max-width: 900px)').matches) { d.removeAttribute('open'); }
-})();
-</script>
-</body>
-</html>
+<aside class="side" id="nav" aria-label="Manual pages"><button class="close" aria-label="Close the menu">✕ Close</button>@NAV@</aside>
+<main><details class="toc-m"><summary>On this page</summary><ul>@TOC@</ul></details><article>@BODY@</article>@PAGER@
+<footer>Written by Alexis Rios-Negron · Battery Health Center @VERSION@ · <a href="@REPO@/issues">Report a problem with this manual</a> · GPL-3.0-or-later</footer></main>
+<aside class="toc" aria-label="On this page"><div class="group-title">On this page</div><ul>@TOC@</ul></aside>
+</div><script src="manual.js"></script></body></html>
+"""
+
+REDIRECT = """<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Battery Health Center Manual</title>
+<meta http-equiv="refresh" content="0; url=manual/">
+<link rel="canonical" href="@SITE@manual/"></head>
+<body><p>The manual is at <a href="manual/">manual/</a>.</p></body></html>
 """
 
 
-def nav_html(current, base):
-    items = [f'<a href="{base}index.html"{" aria-current=\"page\"" if current == "index" else ""}>Welcome</a>']
-    for slug, title, _ in PAGES:
-        cur = ' aria-current="page"' if slug == current else ""
-        items.append(f'<a href="{base}{slug}.html"{cur}>{e(title)}</a>')
-    return "<ul>" + "".join(f"<li>{i}</li>" for i in items) + "</ul>"
-
-
-def toc(body):
+def slugify(text):
     import re
-    heads = re.findall(r'<h2 id="([^"]+)">(.*?)</h2>', body)
-    if len(heads) < 3:
-        return ""
-    return '<nav class="toc" aria-label="On this page"><strong>On this page</strong><ul>' + "".join(
-        f'<li><a href="#{i}">{t}</a></li>' for i, t in heads
-    ) + "</ul></nav>"
+    s = re.sub(r"<[^>]+>", "", text).lower()
+    return re.sub(r"[^a-z0-9]+", "-", s).strip("-") or "section"
 
 
-def prevnext(slug, base):
-    order = ["index"] + [s for s, _, _ in PAGES]
-    i = order.index(slug)
-    out = '<nav class="pager" aria-label="Previous and next page">'
-    if i > 0:
-        prev = order[i - 1]
-        title = "Welcome" if prev == "index" else TITLES[prev]
-        out += f'<a class="prev" href="{base}{prev}.html"><span>Previous</span>{e(title)}</a>'
-    if i < len(order) - 1:
-        nxt = order[i + 1]
-        out += f'<a class="next" href="{base}{nxt}.html"><span>Next</span>{e(TITLES[nxt])}</a>'
-    return out + "</nav>"
+def convert(body):
+    """Turns the page markup into the Voltkit manual's conventions and returns (html, headings)."""
+    import re
+    body = re.sub(r'<aside class="callout (\w+)"><strong>(.*?)</strong> (.*?)</aside>',
+                  lambda m: f'<div class="callout {"warning" if m.group(1) == "warn" else "note" if m.group(1) == "hw" else m.group(1)}"><p><strong>{m.group(2)}</strong> {m.group(3)}</p></div>',
+                  body, flags=re.S)
+    body = body.replace('<div class="table-wrap">', '<div class="table">').replace('<ol class="steps">', "<ol>").replace('<figure class="narrow">', "<figure>")
+    body = re.sub(r"<details( open)?><summary>(.*?)</summary>(.*?)</details>", r"<h3>\2</h3>\3", body, flags=re.S)
+    heads, seen = [], set()
 
+    def head(m):
+        level, attrs, text = m.group(1), m.group(2), m.group(3)
+        found = re.search(r'id="([^"]+)"', attrs)
+        ident = found.group(1) if found else slugify(text)
+        while ident in seen:
+            ident += "-2"
+        seen.add(ident)
+        if level in "23":
+            heads.append((int(level), ident, re.sub(r"<[^>]+>", "", text)))
+        anchor = f'<a class="anchor" href="#{ident}" aria-label="Link to this section">#</a>' if level != "1" else ""
+        return f'<h{level} id="{ident}">{text}{anchor}</h{level}>'
 
-def render(slug, title, desc, body, in_root):
-    """in_root: the page lives in docs/ (the home page); otherwise in docs/manual/."""
-    base = "manual/" if in_root else ""
-    asset = "manual/" if in_root else ""
-    img = f"{asset}img/"
-    icon = ("" if in_root else "../") + "icon.svg"
-    home = "index.html" if in_root else "../index.html"
-    nav_base = base
-    nav = nav_html(slug, nav_base)
-    if not in_root:
-        nav = nav.replace('href="index.html"', 'href="../index.html"')
-    else:
-        nav = nav.replace('href="manual/index.html"', 'href="index.html"')
-    page = PAGE
-    for key, value in {
-        "@TITLE@": e(title), "@DESC@": e(desc), "@ASSET@": asset, "@ICON@": icon, "@HOME@": home,
-        "@REPO@": REPO, "@NAV@": nav, "@VERSION@": VERSION,
-        "@PREVNEXT@": prevnext(slug, base if in_root else "").replace('href="index.html"', 'href="../index.html"') if not in_root else prevnext(slug, base),
-    }.items():
-        page = page.replace(key, value)
-    body = body.replace("@IMG@", img)
-    return page.replace("@BODY@", body)
+    body = re.sub(r"<h([1-3])([^>]*)>(.*?)</h\1>", head, body, flags=re.S)
+    return body, heads
 
 
 def build():
+    import json, re, shutil
     manual = DOCS / "manual"
     manual.mkdir(parents=True, exist_ok=True)
+    (manual / "img").mkdir(exist_ok=True)
+    shutil.copy(DOCS / "icon.svg", manual / "img" / "icon.svg")
 
-    # Home page.
-    cards = "".join(
-        f'<a class="card" href="manual/{slug}.html"><strong>{e(title)}</strong><span>{e(summary)}</span></a>'
-        for slug, title, summary in PAGES
+    intro_rows = "".join(
+        f'<tr><td><a href="{slug}.html">{e(title)}</a></td><td>{e(summary)}</td></tr>' for slug, title, summary in PAGES
     )
-    home = f"""
-<section class="hero">
-<h1>Battery Health Center User Manual</h1>
-<p class="lead">Everything about your laptop battery, in one place. Health, cycle count, charge limits and schedules,
-and which apps drain it, for GNOME. This manual explains every feature, with screenshots.</p>
-<p class="cta"><a class="button" href="manual/getting-started.html">Get started</a>
-<a class="button secondary" href="{REPO}/releases/latest">Download version {VERSION}</a></p>
-</section>
-{fig("overview", "The Battery Health Center window showing the Overview page.", "Battery Health Center: the Overview page.")}
-<h2 id="contents">What is in this manual</h2>
-<div class="cards">{cards}</div>
-<h2 id="tour">A quick tour</h2>
-<ul class="tour">
-<li><strong><a href="manual/health.html">Know how healthy your battery is.</a></strong> Maximum capacity against design capacity, condition, cycle count, a daily trend with the date it will reach 80%, and a guided calibration.</li>
-<li><strong><a href="manual/charging.html">Make it last for years.</a></strong> One-tap profiles (60%, 80% or 100%), a custom limit that survives restarts and sleep, and a one-time full charge for a trip.</li>
-<li><strong><a href="manual/schedule.html">Full when you need it.</a></strong> Tell it when you need the laptop, or let optimized charging learn your routine.</li>
-<li><strong><a href="manual/usage.html">See what is draining it.</a></strong> The battery level and power for the last day or week, sleep drain, and apps ranked by energy.</li>
-<li><strong><a href="manual/power.html">Power modes without the hunt.</a></strong> Power Saver, Balanced or Performance, switched automatically when you plug in, plus GNOME's power-saving settings.</li>
-<li><strong><a href="manual/data.html">Take your data with you.</a></strong> An HTML battery report and CSV exports, from the menu or the command line.</li>
+    CONTENT["index"] = f"""
+<p><strong>Battery Health Center</strong> is a native GNOME app for the battery in your laptop. It shows how healthy the battery is, lets you protect it with a charge limit and a schedule, and shows which apps are draining it. This manual explains every feature of the app, page by page, with screenshots.</p>
+{fig("overview", "Battery Health Center's Overview page, the page the app opens on", "Battery Health Center's Overview page, the page the app opens on")}
+<h2 id="how-to-read-this-manual">How to read this manual</h2>
+<ul>
+<li><strong>New here?</strong> Start with <a href="getting-started.html">Getting started</a>.</li>
+<li><strong>Looking for one page of the app?</strong> Pick it in the left menu. Each page of this manual follows the app's own pages, with every control explained.</li>
+<li><strong>Looking for a setting, a file or a command?</strong> See <a href="reference.html">Reference</a>.</li>
+<li><strong>Something is not working?</strong> See <a href="troubleshooting.html">Troubleshooting and FAQ</a>.</li>
+<li>Press <kbd>/</kbd> anywhere in the manual to search it.</li>
 </ul>
-<h2 id="install">Install in one minute</h2>
-<p>Ubuntu, Debian and derivatives, from the signed apt repository, and Fedora from COPR. See <a href="manual/getting-started.html#install">Getting started</a> for the commands.</p>
-<h2 id="help">Help inside the app</h2>
-<p>Press <kbd>F1</kbd>, click the question-mark button at the top of the sidebar, or choose <em>User Manual</em> from the main menu to open this manual from Battery Health Center.</p>
+<h2 id="the-pages">The pages of this manual</h2>
+<div class="table"><table><thead><tr><th>Page</th><th>What it covers</th></tr></thead><tbody>{intro_rows}</tbody></table></div>
+<h2 id="principles">Principles</h2>
+<ul>
+<li><strong>Native and light.</strong> Rust with GTK 4 and libadwaita. It follows your GNOME theme, light and dark.</li>
+<li><strong>Private by design.</strong> Everything runs on your computer. The app makes no network requests and sends no telemetry. The only things that leave your computer are the links you click yourself, such as this manual.</li>
+<li><strong>Careful with root.</strong> Only a small helper runs as root. It accepts nothing but validated values and writes only the battery's charge-limit files and its own configuration.</li>
+<li><strong>Accessible.</strong> Screen reader names and descriptions, and charts that never rely on color alone.</li>
+<li><strong>In your language.</strong> The app follows your system language: English, Spanish, German, French and Simplified Chinese. This manual is in English.</li>
+</ul>
+<h2 id="getting-help">Getting help</h2>
+<ul>
+<li>In the app, press <kbd>F1</kbd> or click the <strong>?</strong> button at the top of the sidebar to open this manual.</li>
+<li>Found a bug or have an idea? <a href="{REPO}/issues">Open an issue</a>.</li>
+</ul>
 """
-    (DOCS / "index.html").write_text(
-        render("index", "Battery Health Center User Manual",
-               "The complete user manual for Battery Health Center: battery health, charge limits and schedules, power modes and app energy use for GNOME.",
-               home, True)
-    )
-    for slug, title, summary in PAGES:
-        body = f'<h1>{e(title)}</h1><p class="lead">{e(summary)}</p>' + toc(CONTENT[slug]) + CONTENT[slug]
-        (manual / f"{slug}.html").write_text(
-            render(slug, f"{title} · Battery Health Center User Manual", summary, body, False)
-        )
+    CONTENT["getting-started"] = CONTENT["getting-started"]
+
+    pages = []
+    for slug in ORDER:
+        if slug == "index":
+            title, summary = TITLES["index"], ""
+        else:
+            title = TITLES[slug]
+            summary = next(s for sl, _, s in PAGES if sl == slug)
+        body, heads = convert(f"<h1>{e(title)}</h1>" + CONTENT[slug])
+        if slug != "index":
+            body = body.replace("</h1>", "</h1>", 1)
+        text = re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", body))
+        group = next(g for g, slugs in GROUPS if slug in slugs)
+        pages.append(dict(slug=slug, title=title, summary=summary, body=body, heads=heads, text=text, group=group))
+
+    def nav(current):
+        out = ""
+        for group, slugs in GROUPS:
+            out += f'<div class="group"><div class="group-title">{e(group)}</div><ul>'
+            for slug in slugs:
+                cur = ' aria-current="page"' if slug == current else ""
+                out += f'<li><a href="{slug}.html"{cur}>{e(TITLES[slug])}</a></li>'
+            out += "</ul></div>"
+        return out
+
+    (manual / "search.json").write_text(json.dumps([
+        dict(url=f'{p["slug"]}.html', title=p["title"], group=p["group"], text=p["text"][:6000],
+             heads=[dict(id=i, t=t) for _, i, t in p["heads"]]) for p in pages], ensure_ascii=False))
+
+    byline = f'<p class="byline">By <a href="{AUTHOR}">Alexis Rios-Negron</a> · Battery Health Center {VERSION}</p>'
+    for n, p in enumerate(pages):
+        toc = "".join(f'<li class="l{lvl}"><a href="#{i}">{e(t)}</a></li>' for lvl, i, t in p["heads"])
+        prev = pages[n - 1] if n else None
+        nxt = pages[n + 1] if n + 1 < len(pages) else None
+        pager = '<nav class="pager" aria-label="Previous and next page">'
+        pager += f'<a class="prev" href="{prev["slug"]}.html"><span>Previous</span>{e(prev["title"])}</a>' if prev else "<span></span>"
+        pager += f'<a class="next" href="{nxt["slug"]}.html"><span>Next</span>{e(nxt["title"])}</a>' if nxt else "<span></span>"
+        pager += "</nav>"
+        desc = p["summary"] or "Battery Health Center is a native GNOME app that shows battery health, protects it with charge limits and schedules, and shows which apps drain it."
+        page = PAGE
+        for key, value in {
+            "@TITLE@": e(p["title"]), "@SITE@": SITE_TITLE, "@DESC@": e(desc), "@REPO@": REPO, "@NAV@": nav(p["slug"]),
+            "@TOC@": toc, "@PAGER@": pager, "@VERSION@": VERSION,
+        }.items():
+            page = page.replace(key, value)
+        body = p["body"].replace("</h1>", "</h1>" + byline, 1).replace("@IMG@", "img/")
+        (manual / f'{p["slug"]}.html').write_text(page.replace("@BODY@", body))
+
+    # The site root only forwards to the manual, so the address the app opens keeps working.
+    (DOCS / "index.html").write_text(REDIRECT.replace("@SITE@", SITE))
     (DOCS / ".nojekyll").write_text("")
-    print(f"built {len(PAGES) + 1} pages")
+
+    # A broken link or image fails the build.
+    ids = {f'{p["slug"]}.html': set(re.findall(r'id="([^"]+)"', (manual / f'{p["slug"]}.html').read_text())) for p in pages}
+    bad = []
+    for p in pages:
+        text = (manual / f'{p["slug"]}.html').read_text()
+        for href in re.findall(r'href="([^"]+)"', text):
+            if href.startswith(("http://", "https://", "mailto:")):
+                continue
+            target, _, frag = href.partition("#")
+            target = target or f'{p["slug"]}.html'
+            if target not in ids and not (manual / target).exists():
+                bad.append(f'{p["slug"]}: no page {href}')
+            elif frag and target in ids and frag not in ids[target]:
+                bad.append(f'{p["slug"]}: no section {href}')
+        bad += [f'{p["slug"]}: missing {src}' for src in re.findall(r'(?:src|srcset)="([^"]+)"', text) if not (manual / src).exists()]
+    if bad:
+        raise SystemExit("Broken links in the manual:\n  " + "\n  ".join(bad))
+    print(f"built {len(pages)} pages")
 
 
 if __name__ == "__main__":

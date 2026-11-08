@@ -1084,47 +1084,47 @@ msgstr ""
 msgid "Close"
 msgstr "关闭"
 
-#: src/ui/mod.rs:256
+#: src/ui/mod.rs:266
 msgid "Export Battery Report"
 msgstr "导出电池报告"
 
-#: src/ui/mod.rs:271
+#: src/ui/mod.rs:281
 msgid "Battery report saved"
 msgstr "电池报告已保存"
 
-#: src/ui/mod.rs:271 src/ui/mod.rs:298
+#: src/ui/mod.rs:281 src/ui/mod.rs:308
 msgid "Open"
 msgstr "打开"
 
-#: src/ui/mod.rs:278
+#: src/ui/mod.rs:288
 #, no-c-format
 msgid "Could not save the report: {0}"
 msgstr "无法保存报告：{0}"
 
-#: src/ui/mod.rs:286
+#: src/ui/mod.rs:296
 msgid "Export Data as CSV"
 msgstr "将数据导出为 CSV"
 
-#: src/ui/mod.rs:286
+#: src/ui/mod.rs:296
 msgid "Save Here"
 msgstr "保存到此处"
 
-#: src/ui/mod.rs:297
+#: src/ui/mod.rs:307
 #, no-c-format
 msgid "Saved {n} file"
 msgid_plural "Saved {n} files"
 msgstr[0] "已保存 {n} 个文件"
 
-#: src/ui/mod.rs:306
+#: src/ui/mod.rs:316
 #, no-c-format
 msgid "Could not save the files: {0}"
 msgstr "无法保存文件：{0}"
 
-#: src/ui/mod.rs:323
+#: src/ui/mod.rs:333
 msgid "Record History in the Background?"
 msgstr "在后台记录历史？"
 
-#: src/ui/mod.rs:324
+#: src/ui/mod.rs:334
 msgid ""
 "Battery Health Center can start hidden when you log in, so battery history, "
 "sleep drain and notifications keep working with the window closed. You can "
@@ -1133,11 +1133,11 @@ msgstr ""
 "Battery Health Center 可以在您登录时隐藏启动，这样即使关闭窗口，电池历史、睡"
 "眠耗电和通知也能继续工作。您可以随时在“使用情况”页面更改此设置。"
 
-#: src/ui/mod.rs:326
+#: src/ui/mod.rs:336
 msgid "Not Now"
 msgstr "暂不"
 
-#: src/ui/mod.rs:326
+#: src/ui/mod.rs:336
 msgid "Turn On"
 msgstr "开启"
 

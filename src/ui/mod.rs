@@ -24,11 +24,11 @@ pub fn about_dialog() -> adw::Dialog {
 }
 
 /// The online user manual, published with GitHub Pages from `docs/`.
-pub const MANUAL_URL: &str = "https://arios4k.github.io/battery-health-center/";
+pub const MANUAL_URL: &str = "https://arios4k.github.io/battery-health-center/manual/";
 
-/// Opens the user manual in the default browser.
-pub fn open_manual(parent: Option<&gtk::Window>) {
-    gtk::UriLauncher::new(MANUAL_URL).launch(parent, gio::Cancellable::NONE, |result| {
+/// Opens the page of the user manual that matches the page shown in the app.
+pub fn open_manual(parent: Option<&gtk::Window>, page: &str) {
+    gtk::UriLauncher::new(&format!("{MANUAL_URL}{page}.html")).launch(parent, gio::Cancellable::NONE, |result| {
         if let Err(error) = result {
             eprintln!("could not open the user manual: {error}");
         }
@@ -80,7 +80,7 @@ pub fn build_window(app: &adw::Application, ctrl: &Rc<Controller>) -> adw::Appli
     menu.append_section(None, &section);
     let section = gio::Menu::new();
     section.append(Some(tr("_Preferences")), Some("win.preferences"));
-    section.append(Some(tr("_User Manual")), Some("app.help"));
+    section.append(Some(tr("_User Manual")), Some("win.help"));
     section.append(Some(tr("_About Battery Health Center")), Some("app.about"));
     section.append(Some(tr("_Quit")), Some("app.quit"));
     menu.append_section(None, &section);
@@ -91,7 +91,7 @@ pub fn build_window(app: &adw::Application, ctrl: &Rc<Controller>) -> adw::Appli
         .tooltip_text(tr("Main Menu"))
         .build();
     widgets::a11y_name(&menu_button, tr("Main Menu"));
-    let help_button = gtk::Button::builder().icon_name("help-browser-symbolic").action_name("app.help")
+    let help_button = gtk::Button::builder().icon_name("help-browser-symbolic").action_name("win.help")
         .tooltip_text(tr("User Manual (F1)")).build();
     widgets::a11y_name(&help_button, tr("User Manual"));
     let sidebar_header = adw::HeaderBar::new();
@@ -190,6 +190,16 @@ pub fn build_window(app: &adw::Application, ctrl: &Rc<Controller>) -> adw::Appli
         }
     });
     window.add_action(&prefs);
+
+    // Help (the button, the menu item and F1) opens the manual page for the page you are on.
+    let help = gio::SimpleAction::new("help", None);
+    let (w, st) = (window.downgrade(), stack.downgrade());
+    help.connect_activate(move |_, _| {
+        let page = st.upgrade().and_then(|s| s.visible_child_name()).map(|n| n.to_string()).unwrap_or_default();
+        let page = if ["overview", "health", "charging", "power", "usage"].contains(&page.as_str()) { page } else { "index".into() };
+        open_manual(w.upgrade().as_ref().map(|w| w.upcast_ref::<gtk::Window>()), &page);
+    });
+    window.add_action(&help);
 
     let export = gio::SimpleAction::new("export-report", None);
     let (w, c, t) = (window.downgrade(), Rc::downgrade(ctrl), toasts.clone());

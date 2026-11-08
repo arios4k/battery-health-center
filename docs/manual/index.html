@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Battery Health Center Manual · Battery Health Center Manual</title>
+<meta name="description" content="Battery Health Center is a native GNOME app that shows battery health, protects it with charge limits and schedules, and shows which apps drain it.">
+<link rel="icon" href="img/icon.svg"><link rel="stylesheet" href="style.css"></head>
+<body>
+<header class="top"><button class="menu" aria-label="Open the menu" aria-expanded="false" aria-controls="nav">☰</button>
+<a class="brand" href="index.html"><img src="img/icon.svg" alt="" width="28" height="28"> <span>Battery Health Center Manual</span></a>
+<button class="find" aria-label="Search the manual" aria-expanded="false">⌕</button>
+<input id="q" type="search" placeholder="Search the manual…" aria-label="Search the manual" autocomplete="off">
+<a class="ghost" href="https://github.com/arios4k/battery-health-center">GitHub</a></header>
+<div id="results" class="results" hidden></div>
+<div class="layout">
+<aside class="side" id="nav" aria-label="Manual pages"><button class="close" aria-label="Close the menu">✕ Close</button><div class="group"><div class="group-title">Start here</div><ul><li><a href="index.html" aria-current="page">Battery Health Center Manual</a></li><li><a href="getting-started.html">Getting started</a></li></ul></div><div class="group"><div class="group-title">The app</div><ul><li><a href="overview.html">Overview</a></li><li><a href="health.html">Health</a></li><li><a href="charging.html">Charging</a></li><li><a href="schedule.html">Charging schedule</a></li><li><a href="power.html">Power</a></li><li><a href="usage.html">Usage</a></li></ul></div><div class="group"><div class="group-title">Settings and data</div><ul><li><a href="preferences.html">Notifications and preferences</a></li><li><a href="data.html">Reports and your data</a></li></ul></div><div class="group"><div class="group-title">Reference</div><ul><li><a href="reference.html">Reference</a></li><li><a href="troubleshooting.html">Troubleshooting and FAQ</a></li><li><a href="privacy.html">Privacy and security</a></li></ul></div></aside>
+<main><details class="toc-m"><summary>On this page</summary><ul><li class="l2"><a href="#how-to-read-this-manual">How to read this manual</a></li><li class="l2"><a href="#the-pages">The pages of this manual</a></li><li class="l2"><a href="#principles">Principles</a></li><li class="l2"><a href="#getting-help">Getting help</a></li></ul></details><article><h1 id="battery-health-center-manual">Battery Health Center Manual</h1><p class="byline">By <a href="https://github.com/arios4k">Alexis Rios-Negron</a> · Battery Health Center 0.6.4</p>
+<p><strong>Battery Health Center</strong> is a native GNOME app for the battery in your laptop. It shows how healthy the battery is, lets you protect it with a charge limit and a schedule, and shows which apps are draining it. This manual explains every feature of the app, page by page, with screenshots.</p>
+<figure><picture><source media="(prefers-color-scheme: dark)" srcset="img/overview-dark.png"><img src="img/overview-light.png" alt="Battery Health Center&#x27;s Overview page, the page the app opens on" loading="lazy"></picture><figcaption>Battery Health Center's Overview page, the page the app opens on</figcaption></figure>
+<h2 id="how-to-read-this-manual">How to read this manual<a class="anchor" href="#how-to-read-this-manual" aria-label="Link to this section">#</a></h2>
+<ul>
+<li><strong>New here?</strong> Start with <a href="getting-started.html">Getting started</a>.</li>
+<li><strong>Looking for one page of the app?</strong> Pick it in the left menu. Each page of this manual follows the app's own pages, with every control explained.</li>
+<li><strong>Looking for a setting, a file or a command?</strong> See <a href="reference.html">Reference</a>.</li>
+<li><strong>Something is not working?</strong> See <a href="troubleshooting.html">Troubleshooting and FAQ</a>.</li>
+<li>Press <kbd>/</kbd> anywhere in the manual to search it.</li>
+</ul>
+<h2 id="the-pages">The pages of this manual<a class="anchor" href="#the-pages" aria-label="Link to this section">#</a></h2>
+<div class="table"><table><thead><tr><th>Page</th><th>What it covers</th></tr></thead><tbody><tr><td><a href="getting-started.html">Getting started</a></td><td>Install the app, open it for the first time and find your way around.</td></tr><tr><td><a href="overview.html">Overview</a></td><td>Your battery, charger and recommendations at a glance.</td></tr><tr><td><a href="health.html">Health</a></td><td>Capacity, wear, cycle count, the long-term trend and calibration.</td></tr><tr><td><a href="charging.html">Charging</a></td><td>Charge limits, profiles, one-time full charges and pausing charging.</td></tr><tr><td><a href="schedule.html">Charging schedule</a></td><td>Full when you need it, protected the rest of the time.</td></tr><tr><td><a href="power.html">Power</a></td><td>Power mode, automatic power mode and GNOME&#x27;s power-saving settings.</td></tr><tr><td><a href="usage.html">Usage</a></td><td>Battery history, sleep drain and which apps use the most energy.</td></tr><tr><td><a href="preferences.html">Notifications and preferences</a></td><td>Choose which notifications you get and when.</td></tr><tr><td><a href="data.html">Reports and your data</a></td><td>HTML battery report, CSV export and where everything is stored.</td></tr><tr><td><a href="reference.html">Reference</a></td><td>Keyboard shortcuts, command line, files and a glossary.</td></tr><tr><td><a href="troubleshooting.html">Troubleshooting and FAQ</a></td><td>Answers to the most common questions and problems.</td></tr><tr><td><a href="privacy.html">Privacy and security</a></td><td>What stays on your computer and what the root helper can do.</td></tr></tbody></table></div>
+<h2 id="principles">Principles<a class="anchor" href="#principles" aria-label="Link to this section">#</a></h2>
+<ul>
+<li><strong>Native and light.</strong> Rust with GTK 4 and libadwaita. It follows your GNOME theme, light and dark.</li>
+<li><strong>Private by design.</strong> Everything runs on your computer. The app makes no network requests and sends no telemetry. The only things that leave your computer are the links you click yourself, such as this manual.</li>
+<li><strong>Careful with root.</strong> Only a small helper runs as root. It accepts nothing but validated values and writes only the battery's charge-limit files and its own configuration.</li>
+<li><strong>Accessible.</strong> Screen reader names and descriptions, and charts that never rely on color alone.</li>
+<li><strong>In your language.</strong> The app follows your system language: English, Spanish, German, French and Simplified Chinese. This manual is in English.</li>
+</ul>
+<h2 id="getting-help">Getting help<a class="anchor" href="#getting-help" aria-label="Link to this section">#</a></h2>
+<ul>
+<li>In the app, press <kbd>F1</kbd> or click the <strong>?</strong> button at the top of the sidebar to open this manual.</li>
+<li>Found a bug or have an idea? <a href="https://github.com/arios4k/battery-health-center/issues">Open an issue</a>.</li>
+</ul>
+</article><nav class="pager" aria-label="Previous and next page"><span></span><a class="next" href="getting-started.html"><span>Next</span>Getting started</a></nav>
+<footer>Written by Alexis Rios-Negron · Battery Health Center 0.6.4 · <a href="https://github.com/arios4k/battery-health-center/issues">Report a problem with this manual</a> · GPL-3.0-or-later</footer></main>
+<aside class="toc" aria-label="On this page"><div class="group-title">On this page</div><ul><li class="l2"><a href="#how-to-read-this-manual">How to read this manual</a></li><li class="l2"><a href="#the-pages">The pages of this manual</a></li><li class="l2"><a href="#principles">Principles</a></li><li class="l2"><a href="#getting-help">Getting help</a></li></ul></aside>
+</div><script src="manual.js"></script></body></html>
