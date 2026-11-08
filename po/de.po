@@ -1127,48 +1127,48 @@ msgstr ""
 msgid "Close"
 msgstr "Schließen"
 
-#: src/ui/mod.rs:256
+#: src/ui/mod.rs:266
 msgid "Export Battery Report"
 msgstr "Akkubericht exportieren"
 
-#: src/ui/mod.rs:271
+#: src/ui/mod.rs:281
 msgid "Battery report saved"
 msgstr "Akkubericht gespeichert"
 
-#: src/ui/mod.rs:271 src/ui/mod.rs:298
+#: src/ui/mod.rs:281 src/ui/mod.rs:308
 msgid "Open"
 msgstr "Öffnen"
 
-#: src/ui/mod.rs:278
+#: src/ui/mod.rs:288
 #, no-c-format
 msgid "Could not save the report: {0}"
 msgstr "Der Bericht konnte nicht gespeichert werden: {0}"
 
-#: src/ui/mod.rs:286
+#: src/ui/mod.rs:296
 msgid "Export Data as CSV"
 msgstr "Daten als CSV exportieren"
 
-#: src/ui/mod.rs:286
+#: src/ui/mod.rs:296
 msgid "Save Here"
 msgstr "Hier speichern"
 
-#: src/ui/mod.rs:297
+#: src/ui/mod.rs:307
 #, no-c-format
 msgid "Saved {n} file"
 msgid_plural "Saved {n} files"
 msgstr[0] "{n} Datei gespeichert"
 msgstr[1] "{n} Dateien gespeichert"
 
-#: src/ui/mod.rs:306
+#: src/ui/mod.rs:316
 #, no-c-format
 msgid "Could not save the files: {0}"
 msgstr "Die Dateien konnten nicht gespeichert werden: {0}"
 
-#: src/ui/mod.rs:323
+#: src/ui/mod.rs:333
 msgid "Record History in the Background?"
 msgstr "Verlauf im Hintergrund aufzeichnen?"
 
-#: src/ui/mod.rs:324
+#: src/ui/mod.rs:334
 msgid ""
 "Battery Health Center can start hidden when you log in, so battery history, "
 "sleep drain and notifications keep working with the window closed. You can "
@@ -1179,11 +1179,11 @@ msgstr ""
 "Fenster funktionieren. Du kannst das jederzeit auf der Seite „Nutzung“ "
 "ändern."
 
-#: src/ui/mod.rs:326
+#: src/ui/mod.rs:336
 msgid "Not Now"
 msgstr "Nicht jetzt"
 
-#: src/ui/mod.rs:326
+#: src/ui/mod.rs:336
 msgid "Turn On"
 msgstr "Einschalten"
 
