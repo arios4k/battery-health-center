@@ -108,3 +108,16 @@ Bump the version in `Cargo.toml`, add an entry to `data/deb/changelog`, then run
 the site. `DRY_RUN=1 scripts/publish-apt.sh` shows the steps without doing anything. It needs
 `reprepro`, the signing key in your GPG keyring, and the repository's private files in `~/apt-repo`
 (configuration and database, never published) next to a clone of `arios4k/apt` in `~/apt-site`.
+
+## The user manual (GitHub Pages)
+
+The manual at <https://arios4k.github.io/battery-health-center/> is a static site served by GitHub Pages from the
+`docs/` folder of `main` (Settings → Pages → Deploy from a branch → `main` / `/docs`). The app's help button and
+`F1` open that address (`MANUAL_URL` in `src/ui/mod.rs`).
+
+- **Text** lives in `scripts/build-manual.py`. Edit it, then run `python3 scripts/build-manual.py` to regenerate
+  `docs/index.html` and `docs/manual/*.html`, and commit them.
+- **Screenshots** are in `docs/manual/img`. Regenerate them after UI changes with
+  `cargo build --release && scripts/capture-manual.sh` (it uses isolated settings and sample charge files, never your
+  real ones, and `scripts/crop-manual.py` cuts the full pages into one image per card and hides the serial number).
+- Check the numbers the manual quotes (thresholds, defaults) against the code when they change.

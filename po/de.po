@@ -302,11 +302,6 @@ msgstr "Die Autorisierung wurde abgebrochen"
 msgid "The change could not be applied"
 msgstr "Die Änderung konnte nicht angewendet werden"
 
-#: src/ui/about.rs:100
-#, no-c-format
-msgid "Could not open link: {error}"
-msgstr "Link konnte nicht geöffnet werden: {error}"
-
 #: src/ui/about.rs:15
 msgid "Battery health, charge limits and energy usage in one place."
 msgstr "Akkuzustand, Ladelimits und Energieverbrauch an einem Ort."
@@ -324,73 +319,62 @@ msgstr "Version {version}"
 msgid "Version information copied"
 msgstr "Versionsinformationen kopiert"
 
-#: src/ui/about.rs:34
-msgid "Battery care"
-msgstr "Akkupflege"
-
-#: src/ui/about.rs:35
-msgid "Native Linux app"
-msgstr "Native Linux-App"
-
-#: src/ui/about.rs:35
-msgid "Open source"
-msgstr "Quelloffen"
-
-#: src/ui/about.rs:43
+#: src/ui/about.rs:31
 msgid "Explore Battery Health Center"
 msgstr "Battery Health Center entdecken"
 
-#: src/ui/about.rs:44
+#: src/ui/about.rs:32
 msgid "Project & source code"
 msgstr "Projekt und Quellcode"
 
-#: src/ui/about.rs:44
+#: src/ui/about.rs:32
 msgid "Documentation, releases, and the code behind Battery Health Center"
 msgstr "Dokumentation, Versionen und Quellcode von Battery Health Center"
 
-#: src/ui/about.rs:46
+#: src/ui/about.rs:34
 msgid "Report an issue"
 msgstr "Problem melden"
 
-#: src/ui/about.rs:46
+#: src/ui/about.rs:34
 msgid "Share a bug or suggest an improvement"
 msgstr "Einen Fehler melden oder eine Verbesserung vorschlagen"
 
-#: src/ui/about.rs:50
+#: src/ui/about.rs:38
 msgid "More Linux Apps"
 msgstr "Weitere Linux-Apps"
 
-#: src/ui/about.rs:51
+#: src/ui/about.rs:39
 msgid "Power tools for your Linux desktop"
 msgstr "Energiewerkzeuge für Ihren Linux-Desktop"
 
-#: src/ui/about.rs:53
+#: src/ui/about.rs:41
 msgid "Universal shipping label printer for Linux"
 msgstr "Universeller Versandetikettendrucker für Linux"
 
-#: src/ui/about.rs:57
-msgid "Credits and license"
-msgstr "Mitwirkende und Lizenz"
-
-#: src/ui/about.rs:58
+#: src/ui/about.rs:46
 msgid "Created by"
 msgstr "Erstellt von"
 
-#: src/ui/about.rs:60 src/ui/about.rs:115
+#: src/ui/about.rs:48 src/ui/about.rs:100
 msgid "GNU General Public License v3 or later"
 msgstr "GNU General Public License v3 oder neuer"
 
-#: src/ui/about.rs:60
+#: src/ui/about.rs:48
 msgid "Free to use, modify, and share"
 msgstr "Frei zu verwenden, zu ändern und weiterzugeben"
 
-#: src/ui/about.rs:75
+#: src/ui/about.rs:60
 msgid "About Battery Health Center"
 msgstr "Über Battery Health Center"
 
-#: src/ui/about.rs:93
+#: src/ui/about.rs:78
 msgid "Open in browser"
 msgstr "Im Browser öffnen"
+
+#: src/ui/about.rs:85
+#, no-c-format
+msgid "Could not open link: {error}"
+msgstr "Link konnte nicht geöffnet werden: {error}"
 
 #: src/ui/app_trend.rs:31
 msgid "No activity"
@@ -1096,19 +1080,41 @@ msgstr ""
 "Wird einmal täglich erfasst. Die Werte schwanken von Tag zu Tag leicht; der "
 "Trend zeigt die allgemeine Richtung."
 
-#: src/ui/mod.rs:109
+#: src/ui/mod.rs:102
+msgid "Your battery, charger and recommendations at a glance."
+msgstr "Akku, Ladegerät und Empfehlungen auf einen Blick."
+
+#: src/ui/mod.rs:103
+msgid "Understand battery capacity, wear and long-term health."
+msgstr "Kapazität, Verschleiß und langfristigen Akkuzustand verstehen."
+
+#: src/ui/mod.rs:104
+msgid "Protect your battery with charge limits and schedules."
+msgstr "Schütze deinen Akku mit Ladegrenzen und Zeitplänen."
+
+#: src/ui/mod.rs:105
+msgid "Choose a power mode and adjust energy-saving settings."
+msgstr "Wähle einen Energiemodus und passe die Energiespareinstellungen an."
+
+#: src/ui/mod.rs:106
+msgid "Explore battery history, sleep drain and app energy use."
+msgstr ""
+"Erkunde den Akkuverlauf, den Verbrauch im Ruhezustand und den "
+"Energieverbrauch von Apps."
+
+#: src/ui/mod.rs:126
 msgid "Some changes could not be saved"
 msgstr "Einige Änderungen konnten nicht gespeichert werden"
 
-#: src/ui/mod.rs:109 src/ui/overview.rs:314 src/ui/overview.rs:323
+#: src/ui/mod.rs:126 src/ui/overview.rs:314 src/ui/overview.rs:323
 msgid "Details"
 msgstr "Details"
 
-#: src/ui/mod.rs:113
+#: src/ui/mod.rs:130
 msgid "Could Not Save Data"
 msgstr "Daten konnten nicht gespeichert werden"
 
-#: src/ui/mod.rs:114
+#: src/ui/mod.rs:131
 msgid ""
 "Check available disk space and folder permissions. Failed preferences were "
 "not applied; unsaved history may be lost when the app closes."
@@ -1117,52 +1123,52 @@ msgstr ""
 "Einstellungen wurden nicht übernommen; ungespeicherter Verlauf kann beim "
 "Schließen der App verloren gehen."
 
-#: src/ui/mod.rs:116
+#: src/ui/mod.rs:133
 msgid "Close"
 msgstr "Schließen"
 
-#: src/ui/mod.rs:239
+#: src/ui/mod.rs:256
 msgid "Export Battery Report"
 msgstr "Akkubericht exportieren"
 
-#: src/ui/mod.rs:254
+#: src/ui/mod.rs:271
 msgid "Battery report saved"
 msgstr "Akkubericht gespeichert"
 
-#: src/ui/mod.rs:254 src/ui/mod.rs:281
+#: src/ui/mod.rs:271 src/ui/mod.rs:298
 msgid "Open"
 msgstr "Öffnen"
 
-#: src/ui/mod.rs:261
+#: src/ui/mod.rs:278
 #, no-c-format
 msgid "Could not save the report: {0}"
 msgstr "Der Bericht konnte nicht gespeichert werden: {0}"
 
-#: src/ui/mod.rs:269
+#: src/ui/mod.rs:286
 msgid "Export Data as CSV"
 msgstr "Daten als CSV exportieren"
 
-#: src/ui/mod.rs:269
+#: src/ui/mod.rs:286
 msgid "Save Here"
 msgstr "Hier speichern"
 
-#: src/ui/mod.rs:280
+#: src/ui/mod.rs:297
 #, no-c-format
 msgid "Saved {n} file"
 msgid_plural "Saved {n} files"
 msgstr[0] "{n} Datei gespeichert"
 msgstr[1] "{n} Dateien gespeichert"
 
-#: src/ui/mod.rs:289
+#: src/ui/mod.rs:306
 #, no-c-format
 msgid "Could not save the files: {0}"
 msgstr "Die Dateien konnten nicht gespeichert werden: {0}"
 
-#: src/ui/mod.rs:306
+#: src/ui/mod.rs:323
 msgid "Record History in the Background?"
 msgstr "Verlauf im Hintergrund aufzeichnen?"
 
-#: src/ui/mod.rs:307
+#: src/ui/mod.rs:324
 msgid ""
 "Battery Health Center can start hidden when you log in, so battery history, "
 "sleep drain and notifications keep working with the window closed. You can "
@@ -1173,98 +1179,88 @@ msgstr ""
 "Fenster funktionieren. Du kannst das jederzeit auf der Seite „Nutzung“ "
 "ändern."
 
-#: src/ui/mod.rs:309
+#: src/ui/mod.rs:326
 msgid "Not Now"
 msgstr "Nicht jetzt"
 
-#: src/ui/mod.rs:309
+#: src/ui/mod.rs:326
 msgid "Turn On"
 msgstr "Einschalten"
 
-#: src/ui/mod.rs:37 src/ui/mod.rs:85 src/ui/mod.rs:121
+#: src/ui/mod.rs:49 src/ui/mod.rs:102 src/ui/mod.rs:138
 msgctxt "page title"
 msgid "Overview"
 msgstr "Übersicht"
 
-#: src/ui/mod.rs:38 src/ui/mod.rs:86
+#: src/ui/mod.rs:50 src/ui/mod.rs:103
 msgctxt "page title"
 msgid "Health"
 msgstr "Zustand"
 
-#: src/ui/mod.rs:39 src/ui/mod.rs:87
+#: src/ui/mod.rs:51 src/ui/mod.rs:104
 msgctxt "page title"
 msgid "Charging"
 msgstr "Laden"
 
-#: src/ui/mod.rs:40 src/ui/mod.rs:88
+#: src/ui/mod.rs:52 src/ui/mod.rs:105
 msgctxt "page title"
 msgid "Power"
 msgstr "Energie"
 
-#: src/ui/mod.rs:41 src/ui/mod.rs:89
+#: src/ui/mod.rs:53 src/ui/mod.rs:106
 msgctxt "page title"
 msgid "Usage"
 msgstr "Nutzung"
 
-#: src/ui/mod.rs:45
+#: src/ui/mod.rs:57
 msgid "No Battery Found"
 msgstr "Kein Akku gefunden"
 
-#: src/ui/mod.rs:46
+#: src/ui/mod.rs:58
 msgid "Battery Health Center needs a laptop battery to show information."
 msgstr ""
 "Battery Health Center benötigt einen Laptop-Akku, um Informationen "
 "anzuzeigen."
 
-#: src/ui/mod.rs:65
+#: src/ui/mod.rs:77
 msgid "_Refresh"
 msgstr "_Aktualisieren"
 
-#: src/ui/mod.rs:66
+#: src/ui/mod.rs:78
 msgid "_Export Battery Report…"
 msgstr "Akkubericht e_xportieren…"
 
-#: src/ui/mod.rs:67
+#: src/ui/mod.rs:79
 msgid "Export _Data as CSV…"
 msgstr "Daten als _CSV exportieren…"
 
-#: src/ui/mod.rs:70
+#: src/ui/mod.rs:82
 msgid "_Preferences"
 msgstr "_Einstellungen"
 
-#: src/ui/mod.rs:71
+#: src/ui/mod.rs:83
+msgid "_User Manual"
+msgstr "_Benutzerhandbuch"
+
+#: src/ui/mod.rs:84
 msgid "_About Battery Health Center"
 msgstr "_Info zu Battery Health Center"
 
-#: src/ui/mod.rs:72
+#: src/ui/mod.rs:85
 msgid "_Quit"
 msgstr "_Beenden"
 
-#: src/ui/mod.rs:78 src/ui/mod.rs:80
+#: src/ui/mod.rs:91 src/ui/mod.rs:93
 msgid "Main Menu"
 msgstr "Hauptmenü"
 
-#: src/ui/mod.rs:85
-msgid "Your battery, charger and recommendations at a glance."
-msgstr "Akku, Ladegerät und Empfehlungen auf einen Blick."
+#: src/ui/mod.rs:95
+msgid "User Manual (F1)"
+msgstr "Benutzerhandbuch (F1)"
 
-#: src/ui/mod.rs:86
-msgid "Understand battery capacity, wear and long-term health."
-msgstr "Kapazität, Verschleiß und langfristigen Akkuzustand verstehen."
-
-#: src/ui/mod.rs:87
-msgid "Protect your battery with charge limits and schedules."
-msgstr "Schütze deinen Akku mit Ladegrenzen und Zeitplänen."
-
-#: src/ui/mod.rs:88
-msgid "Choose a power mode and adjust energy-saving settings."
-msgstr "Wähle einen Energiemodus und passe die Energiespareinstellungen an."
-
-#: src/ui/mod.rs:89
-msgid "Explore battery history, sleep drain and app energy use."
-msgstr ""
-"Erkunde den Akkuverlauf, den Verbrauch im Ruhezustand und den "
-"Energieverbrauch von Apps."
+#: src/ui/mod.rs:96
+msgid "User Manual"
+msgstr "Benutzerhandbuch"
 
 #: src/ui/overview.rs:116 src/ui/overview.rs:219
 msgid "Since Last Charge"
@@ -1985,6 +1981,18 @@ msgstr ""
 "verteilen den Akkuverbrauch über dem Leerlauf nach CPU-Nutzung auf Apps. "
 "GPU-, Bildschirm- und Geräteaktivität werden nicht pro App gemessen. Diese "
 "Werte dienen als Orientierung, nicht als exakte Messung."
+
+#~ msgid "Battery care"
+#~ msgstr "Akkupflege"
+
+#~ msgid "Native Linux app"
+#~ msgstr "Native Linux-App"
+
+#~ msgid "Open source"
+#~ msgstr "Quelloffen"
+
+#~ msgid "Credits and license"
+#~ msgstr "Mitwirkende und Lizenz"
 
 #, no-c-format
 #~ msgid "Collecting data ({days} of 14 days)"

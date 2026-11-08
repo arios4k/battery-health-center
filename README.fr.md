@@ -259,6 +259,8 @@ et `trn`/`trnf` pour les pluriels ; voir `src/i18n.rs`.
 
 ## Plus de documentation
 
+- [Manuel d’utilisation](https://arios4k.github.io/battery-health-center/) (en anglais) : un guide détaillé de chaque fonction, avec des captures d’écran. Ouvrez-le
+  depuis l’application avec le bouton d’aide ou `F1`.
 - [Comment ça marche](docs/HOW-IT-WORKS.fr.md) : d’où viennent les chiffres, comment fonctionnent la limite de
   charge, la programmation et les estimations d’énergie des applications.
 - [Maintenance et empaquetage](docs/MAINTAINING.md) (en anglais) : publier une version, et notes pour les

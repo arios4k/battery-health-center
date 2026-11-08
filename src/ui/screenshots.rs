@@ -99,7 +99,22 @@ fn capture_page(window: adw::ApplicationWindow, stack: adw::ViewStack, split: ad
             }
         });
     }
-    glib::timeout_add_local_once(Duration::from_millis(1200), move || {
+    // BHC_SCREENSHOTS_ACTION=<win.action> or BHC_SCREENSHOTS_CLICK=<label> opens a dialog first.
+    if let Ok(action) = std::env::var("BHC_SCREENSHOTS_ACTION") {
+        let window = window.clone();
+        glib::timeout_add_local_once(Duration::from_millis(850), move || {
+            let _ = gtk::prelude::WidgetExt::activate_action(&window, &action, None);
+        });
+    }
+    if let Ok(label) = std::env::var("BHC_SCREENSHOTS_CLICK") {
+        let window = window.clone();
+        glib::timeout_add_local_once(Duration::from_millis(850), move || {
+            if !click_labelled(window.upcast_ref(), &label) {
+                eprintln!("no control labelled {label}");
+            }
+        });
+    }
+    glib::timeout_add_local_once(Duration::from_millis(1800), move || {
         let path = dir.join(format!("{}-{name}.png", i + 1));
         // A page occasionally renders empty right after switching; retry once.
         let rendered = render(&window).or_else(|_| {
@@ -135,6 +150,31 @@ fn capture_page(window: adw::ApplicationWindow, stack: adw::ViewStack, split: ad
             capture_page(window, stack, split, dir, scroll_usage, i + 1);
         }
     });
+}
+
+/// Activates the first button or row whose label or title is `label`.
+fn click_labelled(widget: &gtk::Widget, label: &str) -> bool {
+    let mut child = widget.first_child();
+    while let Some(w) = child {
+        if let Some(button) = w.downcast_ref::<gtk::Button>() {
+            let content = button.child().and_then(|c| c.downcast::<adw::ButtonContent>().ok());
+            if button.label().as_deref() == Some(label) || content.is_some_and(|c| c.label() == label) {
+                button.emit_clicked();
+                return true;
+            }
+        }
+        if let Some(row) = w.downcast_ref::<adw::ActionRow>() {
+            if row.title() == label {
+                adw::prelude::ActionRowExt::activate(row);
+                return true;
+            }
+        }
+        if click_labelled(&w, label) {
+            return true;
+        }
+        child = w.next_sibling();
+    }
+    false
 }
 
 fn render(widget: &impl IsA<gtk::Widget>) -> Result<gtk::gdk::Texture, String> {

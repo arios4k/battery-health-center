@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Privacy and security · Battery Health Center User Manual</title>
+<meta name="description" content="What stays on your computer and what the root helper can do.">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" type="image/svg+xml" href="../icon.svg">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<a class="skip" href="#content">Skip to the content</a>
+<header class="top">
+  <a class="brand" href="../index.html"><img src="../icon.svg" alt="" width="32" height="32"><span>Battery Health Center <span class="sub">User manual</span></span></a>
+  <nav class="top-links" aria-label="Project links">
+    <a href="https://github.com/arios4k/battery-health-center">Source code</a>
+    <a href="https://github.com/arios4k/battery-health-center/releases/latest">Download</a>
+    <a href="https://github.com/arios4k/battery-health-center/issues">Report an issue</a>
+  </nav>
+</header>
+<div class="layout">
+<nav class="side" aria-label="Manual">
+<details class="side-menu" open>
+<summary>Contents</summary>
+<ul><li><a href="../index.html">Welcome</a></li><li><a href="getting-started.html">Getting started</a></li><li><a href="overview.html">Overview</a></li><li><a href="health.html">Health</a></li><li><a href="charging.html">Charging</a></li><li><a href="schedule.html">Charging schedule</a></li><li><a href="power.html">Power</a></li><li><a href="usage.html">Usage</a></li><li><a href="preferences.html">Notifications and preferences</a></li><li><a href="data.html">Reports and your data</a></li><li><a href="reference.html">Reference</a></li><li><a href="troubleshooting.html">Troubleshooting and FAQ</a></li><li><a href="privacy.html" aria-current="page">Privacy and security</a></li></ul>
+</details>
+</nav>
+<main id="content">
+<h1>Privacy and security</h1><p class="lead">What stays on your computer and what the root helper can do.</p><nav class="toc" aria-label="On this page"><strong>On this page</strong><ul><li><a href="#local">Everything stays on your computer</a></li><li><a href="#root">The root helper</a></li><li><a href="#open">Open source</a></li></ul></nav>
+<h2 id="local">Everything stays on your computer</h2>
+<ul>
+<li>The app <strong>never connects to the internet</strong> and has <strong>no telemetry</strong>, no accounts and no ads.</li>
+<li>Your history is a few CSV files in your home folder. Delete them whenever you like.</li>
+<li>Optimized charging stores a list of unplug times on your computer. Nothing leaves it.</li>
+<li>The only network activity involved is opening a link in your browser when <em>you</em> click one, such as this manual.</li>
+</ul>
+
+<h2 id="root">The root helper</h2>
+<p>Changing the battery's charge limit requires administrator rights, because the firmware settings are protected. The app itself never runs as root. Instead:</p>
+<ul>
+<li>A small program, <code>bhc-helper</code>, is the <strong>only part that runs as root</strong>. It is started through PolicyKit, so you approve it with your password.</li>
+<li>It uses only Rust's standard library (plus libc for the local time), <strong>accepts nothing but validated arguments</strong>, and refuses anything else.</li>
+<li>It writes only: the battery's <code>charge_control_start_threshold</code> and <code>charge_control_end_threshold</code> files; its own configuration files in <code>/etc</code> (the saved limit and the charging schedule); and a list of unplug times in <code>/var/lib/battery-health-center</code> for optimized charging.</li>
+<li>With <em>Keep After Restart</em> on, a small systemd service re-applies the limit at startup and after sleep. With a schedule saved, a second service (started by a <code>.path</code> unit only while a schedule exists) lifts and restores the limit at the right times without asking for a password each time.</li>
+</ul>
+<p>Everything else (reading battery data, drawing charts, power modes, GNOME settings) is done as you, with no extra permissions.</p>
+
+<h2 id="open">Open source</h2>
+<p>The app is free software under the <strong>GPL-3.0-or-later</strong>. You can read exactly what it does in the
+<a href="https://github.com/arios4k/battery-health-center">source code</a>. Packages are published from a signed apt repository and Fedora's COPR, so your usual updates keep it current.</p>
+
+<nav class="pager" aria-label="Previous and next page"><a class="prev" href="troubleshooting.html"><span>Previous</span>Troubleshooting and FAQ</a></nav>
+</main>
+</div>
+<footer>
+Battery Health Center 0.6.3 · GPL-3.0-or-later · © Alexis Rios-Negron · <a href="https://github.com/arios4k/battery-health-center">Source code</a> · <a href="https://github.com/arios4k/battery-health-center/issues">Report an issue</a>
+</footer>
+<script>
+(function () {
+  var d = document.querySelector('.side-menu');
+  if (d && window.matchMedia('(max-width: 900px)').matches) { d.removeAttribute('open'); }
+})();
+</script>
+</body>
+</html>

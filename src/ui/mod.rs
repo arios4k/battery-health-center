@@ -23,6 +23,18 @@ pub fn about_dialog() -> adw::Dialog {
     about::dialog()
 }
 
+/// The online user manual, published with GitHub Pages from `docs/`.
+pub const MANUAL_URL: &str = "https://arios4k.github.io/battery-health-center/";
+
+/// Opens the user manual in the default browser.
+pub fn open_manual(parent: Option<&gtk::Window>) {
+    gtk::UriLauncher::new(MANUAL_URL).launch(parent, gio::Cancellable::NONE, |result| {
+        if let Err(error) = result {
+            eprintln!("could not open the user manual: {error}");
+        }
+    });
+}
+
 pub fn build_window(app: &adw::Application, ctrl: &Rc<Controller>) -> adw::ApplicationWindow {
     appearance::install();
     let stack = adw::ViewStack::new();
@@ -68,6 +80,7 @@ pub fn build_window(app: &adw::Application, ctrl: &Rc<Controller>) -> adw::Appli
     menu.append_section(None, &section);
     let section = gio::Menu::new();
     section.append(Some(tr("_Preferences")), Some("win.preferences"));
+    section.append(Some(tr("_User Manual")), Some("app.help"));
     section.append(Some(tr("_About Battery Health Center")), Some("app.about"));
     section.append(Some(tr("_Quit")), Some("app.quit"));
     menu.append_section(None, &section);
@@ -78,8 +91,12 @@ pub fn build_window(app: &adw::Application, ctrl: &Rc<Controller>) -> adw::Appli
         .tooltip_text(tr("Main Menu"))
         .build();
     widgets::a11y_name(&menu_button, tr("Main Menu"));
+    let help_button = gtk::Button::builder().icon_name("help-browser-symbolic").action_name("app.help")
+        .tooltip_text(tr("User Manual (F1)")).build();
+    widgets::a11y_name(&help_button, tr("User Manual"));
     let sidebar_header = adw::HeaderBar::new();
     sidebar_header.pack_end(&menu_button);
+    sidebar_header.pack_end(&help_button);
     let list = gtk::ListBox::builder().selection_mode(gtk::SelectionMode::None).css_classes(["navigation-sidebar"]).build();
     let pages = [
         ("overview", trc("page title", "Overview"), tr("Your battery, charger and recommendations at a glance."), "battery-level-80-symbolic"),

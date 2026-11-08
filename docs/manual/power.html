@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Power · Battery Health Center User Manual</title>
+<meta name="description" content="Power mode, automatic power mode and GNOME&#x27;s power-saving settings.">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" type="image/svg+xml" href="../icon.svg">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<a class="skip" href="#content">Skip to the content</a>
+<header class="top">
+  <a class="brand" href="../index.html"><img src="../icon.svg" alt="" width="32" height="32"><span>Battery Health Center <span class="sub">User manual</span></span></a>
+  <nav class="top-links" aria-label="Project links">
+    <a href="https://github.com/arios4k/battery-health-center">Source code</a>
+    <a href="https://github.com/arios4k/battery-health-center/releases/latest">Download</a>
+    <a href="https://github.com/arios4k/battery-health-center/issues">Report an issue</a>
+  </nav>
+</header>
+<div class="layout">
+<nav class="side" aria-label="Manual">
+<details class="side-menu" open>
+<summary>Contents</summary>
+<ul><li><a href="../index.html">Welcome</a></li><li><a href="getting-started.html">Getting started</a></li><li><a href="overview.html">Overview</a></li><li><a href="health.html">Health</a></li><li><a href="charging.html">Charging</a></li><li><a href="schedule.html">Charging schedule</a></li><li><a href="power.html" aria-current="page">Power</a></li><li><a href="usage.html">Usage</a></li><li><a href="preferences.html">Notifications and preferences</a></li><li><a href="data.html">Reports and your data</a></li><li><a href="reference.html">Reference</a></li><li><a href="troubleshooting.html">Troubleshooting and FAQ</a></li><li><a href="privacy.html">Privacy and security</a></li></ul>
+</details>
+</nav>
+<main id="content">
+<h1>Power</h1><p class="lead">Power mode, automatic power mode and GNOME&#x27;s power-saving settings.</p><nav class="toc" aria-label="On this page"><strong>On this page</strong><ul><li><a href="#mode">Power mode</a></li><li><a href="#automatic">Automatic power mode</a></li><li><a href="#saving">Power saving</a></li><li><a href="#buttons">Power button and lid</a></li><li><a href="#top-bar">Top bar</a></li></ul></nav>
+<p>The Power page puts the most useful power options in one place: the power mode, a way to switch it
+automatically, and the GNOME settings that save the most battery. Everything here is shown only if your system supports it.</p>
+<figure><picture><source media="(prefers-color-scheme: dark)" srcset="img/power-dark.png"><img src="img/power-light.png" alt="The Power page with Power Mode, Automatic Power Mode and Power Saving sections." loading="lazy"></picture><figcaption>The Power page is one centered column, like Charging.</figcaption></figure>
+
+<h2 id="mode">Power mode</h2>
+<figure><picture><source media="(prefers-color-scheme: dark)" srcset="img/power-mode-dark.png"><img src="img/power-mode-light.png" alt="A Power Mode card with Current Mode set to Balanced." loading="lazy"></picture><figcaption>Choose how the laptop trades performance for battery life.</figcaption></figure>
+<p>Power Saver, Balanced or Performance, using the same system service as GNOME's quick settings. <strong>Power Saver</strong> reduces
+performance to extend battery life. <strong>Performance</strong> is only offered on some laptops and drains the battery faster.
+The setting is shared with the GNOME panel, so a change made there shows up here and the other way around.</p>
+<aside class="callout note"><strong>Note.</strong> If the Power Profiles Daemon is not running, the page says "Power Mode and Automatic Power Mode Aren't Available", because the mode can neither be read nor changed.</aside>
+
+<h2 id="automatic">Automatic power mode</h2>
+<figure><picture><source media="(prefers-color-scheme: dark)" srcset="img/power-automatic-dark.png"><img src="img/power-automatic-light.png" alt="The Automatic Power Mode card with Switch Automatically off, plugged-in and on-battery modes, and a low battery override." loading="lazy"></picture><figcaption>Switch the mode by itself when you plug in or unplug.</figcaption></figure>
+<p>Turn on <strong>Switch Automatically</strong> and the app changes the power mode when you plug in or unplug the charger.</p>
+<ul>
+<li><strong>When Plugged In</strong> and <strong>On Battery</strong>: choose the mode for each state. A typical setup is Performance on the charger and Power Saver on battery.</li>
+<li><strong>Use Power Saver When Battery Is Low</strong> overrides the on-battery mode once the charge falls to the <strong>Low Battery Level</strong> (20% by default).</li>
+<li>You can still change the mode by hand at any time. It is only switched again the next time something changes (the charger is connected or removed).</li>
+</ul>
+
+<h2 id="saving">Power saving</h2>
+<figure><picture><source media="(prefers-color-scheme: dark)" srcset="img/power-saving-dark.png"><img src="img/power-saving-light.png" alt="The Power Saving card with switches for Power Saver When Battery Is Low and Dim Screen When Inactive, and menus for Screen Blank, Automatic Suspend on Battery and Automatic Suspend When Plugged In." loading="lazy"></picture><figcaption>GNOME's own battery-saving settings.</figcaption></figure>
+<p>These are the same settings as <em>Settings → Power</em>, collected in one place:</p>
+<div class="table-wrap"><table><thead><tr><th scope="col">Setting</th><th scope="col">What it does</th></tr></thead><tbody><tr><td>Power Saver When Battery Is Low</td><td>GNOME switches to Power Saver mode when the battery gets low.</td></tr><tr><td>Dim Screen When Inactive</td><td>Dims the screen when you stop using the laptop. The screen is usually the biggest power user, so this saves a lot.</td></tr><tr><td>Automatic Screen Brightness</td><td>Adjusts the brightness to the light around you (needs an ambient light sensor).</td></tr><tr><td>Screen Blank</td><td>Turns the screen off after you stop using the laptop. Choose from 1 to 15 minutes, or Never.</td></tr><tr><td>Automatic Suspend on Battery</td><td>Sleeps after a time of inactivity on battery (5 minutes to 2 hours, or Never). Sleeping uses far less power than staying on.</td></tr><tr><td>Automatic Suspend When Plugged In</td><td>The same, on the charger.</td></tr></tbody></table></div>
+
+<h2 id="buttons">Power button and lid</h2>
+<figure><picture><source media="(prefers-color-scheme: dark)" srcset="img/power-buttons-dark.png"><img src="img/power-buttons-light.png" alt="The Power Button and Lid card with menus for Power Button, Close the Lid on Battery and Close the Lid When Plugged In, each set to Suspend." loading="lazy"></picture><figcaption>What the power button and the lid do.</figcaption></figure>
+<p>Choose what happens when you press the power button and when you close the lid, separately on battery and on the charger. The options
+include <em>Suspend</em>, <em>Hibernate</em>, <em>Turn Off the Screen</em>, <em>Shut Down</em>, <em>Log Out</em>, <em>Ask What to Do</em> and <em>Do Nothing</em>;
+you only see the ones your system supports.</p>
+
+<h2 id="top-bar">Top bar</h2>
+<figure><picture><source media="(prefers-color-scheme: dark)" srcset="img/power-top-bar-dark.png"><img src="img/power-top-bar-light.png" alt="A Top Bar card with the switch Show Battery Percentage." loading="lazy"></picture><figcaption>Show the percentage next to the battery icon.</figcaption></figure>
+<p><strong>Show Battery Percentage</strong> shows the percentage next to the battery icon in the GNOME top bar.</p>
+<aside class="callout note"><strong>Note.</strong> If GNOME's power settings cannot be found, this part of the page says "Power Saving and Power Button Settings Aren't Available". They need GNOME Settings Daemon. The page is the part of the app that is most tied to GNOME.</aside>
+
+<nav class="pager" aria-label="Previous and next page"><a class="prev" href="schedule.html"><span>Previous</span>Charging schedule</a><a class="next" href="usage.html"><span>Next</span>Usage</a></nav>
+</main>
+</div>
+<footer>
+Battery Health Center 0.6.3 · GPL-3.0-or-later · © Alexis Rios-Negron · <a href="https://github.com/arios4k/battery-health-center">Source code</a> · <a href="https://github.com/arios4k/battery-health-center/issues">Report an issue</a>
+</footer>
+<script>
+(function () {
+  var d = document.querySelector('.side-menu');
+  if (d && window.matchMedia('(max-width: 900px)').matches) { d.removeAttribute('open'); }
+})();
+</script>
+</body>
+</html>

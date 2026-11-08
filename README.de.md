@@ -255,6 +255,8 @@ Zeichenketten im Code laufen über `tr("…")`, `trf("… {name}", &[("name", va
 
 ## Weitere Dokumentation
 
+- [Benutzerhandbuch](https://arios4k.github.io/battery-health-center/) (auf Englisch): eine ausführliche Anleitung zu jeder Funktion, mit Screenshots. Öffnen Sie es
+  in der App über die Hilfe-Schaltfläche oder `F1`.
 - [So funktioniert es](docs/HOW-IT-WORKS.de.md): woher die Zahlen kommen und wie das Ladelimit, der Ladeplan und
   die Energieschätzungen der Apps funktionieren.
 - [Wartung und Paketierung](docs/MAINTAINING.md) (auf Englisch): eine Version veröffentlichen, und Hinweise für

@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Notifications and preferences · Battery Health Center User Manual</title>
+<meta name="description" content="Choose which notifications you get and when.">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" type="image/svg+xml" href="../icon.svg">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<a class="skip" href="#content">Skip to the content</a>
+<header class="top">
+  <a class="brand" href="../index.html"><img src="../icon.svg" alt="" width="32" height="32"><span>Battery Health Center <span class="sub">User manual</span></span></a>
+  <nav class="top-links" aria-label="Project links">
+    <a href="https://github.com/arios4k/battery-health-center">Source code</a>
+    <a href="https://github.com/arios4k/battery-health-center/releases/latest">Download</a>
+    <a href="https://github.com/arios4k/battery-health-center/issues">Report an issue</a>
+  </nav>
+</header>
+<div class="layout">
+<nav class="side" aria-label="Manual">
+<details class="side-menu" open>
+<summary>Contents</summary>
+<ul><li><a href="../index.html">Welcome</a></li><li><a href="getting-started.html">Getting started</a></li><li><a href="overview.html">Overview</a></li><li><a href="health.html">Health</a></li><li><a href="charging.html">Charging</a></li><li><a href="schedule.html">Charging schedule</a></li><li><a href="power.html">Power</a></li><li><a href="usage.html">Usage</a></li><li><a href="preferences.html" aria-current="page">Notifications and preferences</a></li><li><a href="data.html">Reports and your data</a></li><li><a href="reference.html">Reference</a></li><li><a href="troubleshooting.html">Troubleshooting and FAQ</a></li><li><a href="privacy.html">Privacy and security</a></li></ul>
+</details>
+</nav>
+<main id="content">
+<h1>Notifications and preferences</h1><p class="lead">Choose which notifications you get and when.</p>
+<p>Open <strong>Preferences</strong> from the main menu or with <kbd>Ctrl</kbd>+<kbd>,</kbd> to choose which notifications you
+get. Everything else in the app is on its own page.</p>
+<figure><picture><source media="(prefers-color-scheme: dark)" srcset="img/preferences-dark.png"><img src="img/preferences-light.png" alt="The Preferences dialog with switches for Charge Limit Reached, Fully Charged Without a Limit, Low Battery with a Notify At level, Apps Using Significant Energy and High Drain During Sleep." loading="lazy"></picture><figcaption>The Preferences dialog.</figcaption></figure>
+
+<h2 id="notifications">Notifications</h2>
+<p>Notifications are sent while Battery Health Center is running. Turn on <em>Record History in the Background</em> on the
+<a href="usage.html">Usage</a> page to get them even when the window is closed. All of them are on by default; turn off any you do not want.</p>
+<div class="table-wrap"><table><thead><tr><th scope="col">Notification</th><th scope="col">When you get it</th></tr></thead><tbody><tr><td><strong>Charge Limit Reached</strong></td><td>Charging stops at your limit: "Charged to 80%. Charging has stopped at your limit to protect the battery."</td></tr><tr><td><strong>Fully Charged Without a Limit</strong></td><td>The battery is full and no limit is set: a reminder to unplug, or to set a charge limit to slow wear.</td></tr><tr><td><strong>Low Battery</strong></td><td>The battery drops to the <em>Notify At</em> level (20% by default) and you are not charging. It adds the time remaining when it knows it.</td></tr><tr><td><strong>Apps Using Significant Energy</strong></td><td>An app keeps the CPU very busy for a couple of minutes while you are on battery. Quit it if you are not using it.</td></tr><tr><td><strong>High Drain During Sleep</strong></td><td>The laptop used a lot of battery while asleep (over 2% per hour): "Your laptop used 7% in 51 min asleep (8.3% per hour)."</td></tr></tbody></table></div>
+<p>Clicking a notification opens, or raises, the app window.</p>
+<aside class="callout note"><strong>Note.</strong> The calibration step notifications (<em>Unplug Your Laptop</em>, <em>Plug In Now</em>, <em>Calibration Complete</em>) are always sent, because you need them to complete the calibration.</aside>
+
+<h2 id="other">Other settings, found elsewhere</h2>
+<div class="table-wrap"><table><thead><tr><th scope="col">Setting</th><th scope="col">Where</th></tr></thead><tbody><tr><td>Record history in the background</td><td><a href="usage.html#background">Usage</a> page</td></tr><tr><td>Charge limit, schedule and charging behavior</td><td><a href="charging.html">Charging</a> page</td></tr><tr><td>Power mode, automatic power mode, power saving</td><td><a href="power.html">Power</a> page</td></tr><tr><td>Where the settings are saved</td><td><code>~/.config/battery-health-center/settings.ini</code></td></tr></tbody></table></div>
+
+<nav class="pager" aria-label="Previous and next page"><a class="prev" href="usage.html"><span>Previous</span>Usage</a><a class="next" href="data.html"><span>Next</span>Reports and your data</a></nav>
+</main>
+</div>
+<footer>
+Battery Health Center 0.6.3 · GPL-3.0-or-later · © Alexis Rios-Negron · <a href="https://github.com/arios4k/battery-health-center">Source code</a> · <a href="https://github.com/arios4k/battery-health-center/issues">Report an issue</a>
+</footer>
+<script>
+(function () {
+  var d = document.querySelector('.side-menu');
+  if (d && window.matchMedia('(max-width: 900px)').matches) { d.removeAttribute('open'); }
+})();
+</script>
+</body>
+</html>

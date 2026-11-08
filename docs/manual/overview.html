@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Overview · Battery Health Center User Manual</title>
+<meta name="description" content="Your battery, charger and recommendations at a glance.">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" type="image/svg+xml" href="../icon.svg">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<a class="skip" href="#content">Skip to the content</a>
+<header class="top">
+  <a class="brand" href="../index.html"><img src="../icon.svg" alt="" width="32" height="32"><span>Battery Health Center <span class="sub">User manual</span></span></a>
+  <nav class="top-links" aria-label="Project links">
+    <a href="https://github.com/arios4k/battery-health-center">Source code</a>
+    <a href="https://github.com/arios4k/battery-health-center/releases/latest">Download</a>
+    <a href="https://github.com/arios4k/battery-health-center/issues">Report an issue</a>
+  </nav>
+</header>
+<div class="layout">
+<nav class="side" aria-label="Manual">
+<details class="side-menu" open>
+<summary>Contents</summary>
+<ul><li><a href="../index.html">Welcome</a></li><li><a href="getting-started.html">Getting started</a></li><li><a href="overview.html" aria-current="page">Overview</a></li><li><a href="health.html">Health</a></li><li><a href="charging.html">Charging</a></li><li><a href="schedule.html">Charging schedule</a></li><li><a href="power.html">Power</a></li><li><a href="usage.html">Usage</a></li><li><a href="preferences.html">Notifications and preferences</a></li><li><a href="data.html">Reports and your data</a></li><li><a href="reference.html">Reference</a></li><li><a href="troubleshooting.html">Troubleshooting and FAQ</a></li><li><a href="privacy.html">Privacy and security</a></li></ul>
+</details>
+</nav>
+<main id="content">
+<h1>Overview</h1><p class="lead">Your battery, charger and recommendations at a glance.</p><nav class="toc" aria-label="On this page"><strong>On this page</strong><ul><li><a href="#ring">The charge ring</a></li><li><a href="#power-source">Power source</a></li><li><a href="#health">Battery health summary</a></li><li><a href="#recommendations">Recommendations</a></li></ul></nav>
+<p>Overview is the page the app opens on. It answers "how is my battery doing right now?" without making you hunt for it.</p>
+<figure><picture><source media="(prefers-color-scheme: dark)" srcset="img/overview-dark.png"><img src="img/overview-light.png" alt="The Overview page showing 100 percent fully charged on the left, and on the right the battery health and two recommendations." loading="lazy"></picture><figcaption>The Overview page. The left column is about right now; the right column is about the battery's long-term health and what you could do better.</figcaption></figure>
+
+<h2 id="ring">The charge ring</h2>
+<figure class="narrow"><picture><source media="(prefers-color-scheme: dark)" srcset="img/overview-ring-dark.png"><img src="img/overview-ring-light.png" alt="A green ring showing 100 percent and Full, with the headline Fully Charged and the line Connected to power." loading="lazy"></picture><figcaption>The ring shows the charge level. The headline and the line under it say what the battery is doing.</figcaption></figure>
+<p>The percentage is in the middle. The headline underneath is one of:</p>
+<div class="table-wrap"><table><thead><tr><th scope="col">Headline</th><th scope="col">Meaning</th></tr></thead><tbody><tr><td><strong>Charging</strong></td><td>The charger is connected and the battery is filling up. Below it you see the time left until full (or until your limit), for example "1 h 10 min until 80%", or the charging power in watts.</td></tr><tr><td><strong>On Battery</strong></td><td>The laptop is running from the battery. The line below estimates the time remaining at the current usage; while it is still measuring it says "Estimating time remaining…".</td></tr><tr><td><strong>Plugged In, Not Charging</strong> / <strong>Charging On Hold</strong></td><td>The charger is connected but charging is held on purpose, usually because the charge limit has been reached. The line below says "Charge limit of 80% protects your battery".</td></tr><tr><td><strong>Fully Charged</strong></td><td>The battery is at 100% and the charger is connected.</td></tr><tr><td><strong>Charging to 100%</strong></td><td>A one-time or scheduled full charge is running. Your limit comes back automatically.</td></tr></tbody></table></div>
+<p>The time estimates are based on how fast the battery has been charging or draining recently, so they settle after a minute or two.</p>
+
+<h2 id="power-source">Power source</h2>
+<figure class="narrow"><picture><source media="(prefers-color-scheme: dark)" srcset="img/overview-power-source-dark.png"><img src="img/overview-power-source-light.png" alt="A card named Power Source showing USB-C Power Delivery at 65 W with 20 V times 3.25 A." loading="lazy"></picture><figcaption>The Power Source card names the charger and its rating.</figcaption></figure>
+<p>When a charger is connected, this card names it (<em>AC adapter</em> or <em>USB-C Power Delivery</em>) and shows its
+rating in watts, with volts and amps when the laptop reports them. Chargers that do not report a rating say "This charger
+doesn't report its power rating". The card also appears on battery and shows <strong>Last Seen Plugged In</strong>.</p>
+<p>Three more groups can show up on this page depending on the situation:</p>
+<ul>
+<li><strong>Since Last Charge</strong> (on battery): how long ago you unplugged, how much of the battery you used, and the average draw in watts.</li>
+<li><strong>Other Devices</strong>: the battery level of connected wireless devices such as a mouse or a keyboard, when Linux reports it.</li>
+<li><strong>Two batteries</strong>: laptops with two batteries are supported.</li>
+</ul>
+
+<h2 id="health">Battery health summary</h2>
+<figure class="narrow"><picture><source media="(prefers-color-scheme: dark)" srcset="img/overview-health-dark.png"><img src="img/overview-health-light.png" alt="A card named Battery Health with Maximum Capacity 87 percent with a bar, Condition Normal, and Cycle Count 214." loading="lazy"></picture><figcaption>A short health summary. The full picture is on the Health page.</figcaption></figure>
+<p>Maximum capacity compared with when the battery was new, its condition, and its cycle count. Open the
+<a href="health.html">Health</a> page for explanations, the trend and calibration.</p>
+
+<h2 id="recommendations">Recommendations</h2>
+<figure class="narrow"><picture><source media="(prefers-color-scheme: dark)" srcset="img/overview-recommendations-dark.png"><img src="img/overview-recommendations-light.png" alt="Two recommendations: Limit charging to 80 percent with a Set Up button, and High drain during sleep with a Details button." loading="lazy"></picture><figcaption>Each recommendation says what it noticed and, where it can, has a button that fixes it.</figcaption></figure>
+<p>Recommendations are small, practical suggestions based on the current state. They only appear while they are true, and
+when there is nothing to suggest the card says <strong>Everything looks good</strong>.</p>
+<div class="table-wrap"><table><thead><tr><th scope="col">Recommendation</th><th scope="col">When it appears</th><th scope="col">Button</th></tr></thead><tbody><tr><td>Battery capacity is down to N%</td><td>Maximum capacity is below 80%. Calibrating can correct a wrong reading; if it stays low, consider a replacement.</td><td><em>Calibrate</em> opens the calibration on the Health page.</td></tr><tr><td>Limit charging to 80%</td><td>The laptop is plugged in and no charge limit is set, and your battery supports one.</td><td><em>Set Up</em> opens the Charging page.</td></tr><tr><td>Draining while plugged in</td><td>The charger cannot keep up with the laptop's power use. Use a more powerful charger.</td><td>None</td></tr><tr><td>Low-power charger</td><td>The charger is under 45 W, so charging can be slow, especially while you work.</td><td>None</td></tr><tr><td>High drain during sleep</td><td>The laptop used a lot of battery while asleep (more than 2% per hour).</td><td><em>Details</em> opens the sleep list on the Usage page.</td></tr><tr><td>An app is using significant energy</td><td>An app is keeping the CPU busy on battery. Quitting apps you are not using makes the battery last longer.</td><td><em>Details</em> opens the app on the Usage page.</td></tr><tr><td>Performance mode is on</td><td>You are on battery in Performance mode, which drains faster. Balanced is usually enough.</td><td><em>Use Balanced</em></td></tr><tr><td>Screen brightness is at N%</td><td>On battery with the brightness at 80% or more. The screen is usually the biggest power user.</td><td><em>Lower to 50%</em></td></tr><tr><td>Keyboard backlight is on</td><td>On battery with the keyboard backlight on.</td><td><em>Turn Off</em></td></tr><tr><td>Bluetooth is on but nothing is connected</td><td>On battery with Bluetooth enabled and no device connected.</td><td><em>Turn Off</em></td></tr><tr><td>Battery is low</td><td>The battery is low and not charging. Regularly running it flat wears it faster.</td><td>None</td></tr></tbody></table></div>
+<aside class="callout tip"><strong>Tip.</strong> The brightness, keyboard backlight and Bluetooth suggestions only appear on battery, and only when your desktop exposes those controls.</aside>
+
+<nav class="pager" aria-label="Previous and next page"><a class="prev" href="getting-started.html"><span>Previous</span>Getting started</a><a class="next" href="health.html"><span>Next</span>Health</a></nav>
+</main>
+</div>
+<footer>
+Battery Health Center 0.6.3 · GPL-3.0-or-later · © Alexis Rios-Negron · <a href="https://github.com/arios4k/battery-health-center">Source code</a> · <a href="https://github.com/arios4k/battery-health-center/issues">Report an issue</a>
+</footer>
+<script>
+(function () {
+  var d = document.querySelector('.side-menu');
+  if (d && window.matchMedia('(max-width: 900px)').matches) { d.removeAttribute('open'); }
+})();
+</script>
+</body>
+</html>

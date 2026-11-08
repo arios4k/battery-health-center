@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Health · Battery Health Center User Manual</title>
+<meta name="description" content="Capacity, wear, cycle count, the long-term trend and calibration.">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" type="image/svg+xml" href="../icon.svg">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<a class="skip" href="#content">Skip to the content</a>
+<header class="top">
+  <a class="brand" href="../index.html"><img src="../icon.svg" alt="" width="32" height="32"><span>Battery Health Center <span class="sub">User manual</span></span></a>
+  <nav class="top-links" aria-label="Project links">
+    <a href="https://github.com/arios4k/battery-health-center">Source code</a>
+    <a href="https://github.com/arios4k/battery-health-center/releases/latest">Download</a>
+    <a href="https://github.com/arios4k/battery-health-center/issues">Report an issue</a>
+  </nav>
+</header>
+<div class="layout">
+<nav class="side" aria-label="Manual">
+<details class="side-menu" open>
+<summary>Contents</summary>
+<ul><li><a href="../index.html">Welcome</a></li><li><a href="getting-started.html">Getting started</a></li><li><a href="overview.html">Overview</a></li><li><a href="health.html" aria-current="page">Health</a></li><li><a href="charging.html">Charging</a></li><li><a href="schedule.html">Charging schedule</a></li><li><a href="power.html">Power</a></li><li><a href="usage.html">Usage</a></li><li><a href="preferences.html">Notifications and preferences</a></li><li><a href="data.html">Reports and your data</a></li><li><a href="reference.html">Reference</a></li><li><a href="troubleshooting.html">Troubleshooting and FAQ</a></li><li><a href="privacy.html">Privacy and security</a></li></ul>
+</details>
+</nav>
+<main id="content">
+<h1>Health</h1><p class="lead">Capacity, wear, cycle count, the long-term trend and calibration.</p><nav class="toc" aria-label="On this page"><strong>On this page</strong><ul><li><a href="#capacity">Capacity</a></li><li><a href="#trend">Capacity over time and the trend</a></li><li><a href="#usage">Usage</a></li><li><a href="#information">Battery information</a></li><li><a href="#calibration">Calibration</a></li></ul></nav>
+<p>Every battery loses a little capacity with age. The Health page measures how much, shows how it has changed over time,
+and tells you when it is worth doing something about it.</p>
+<figure><picture><source media="(prefers-color-scheme: dark)" srcset="img/health-dark.png"><img src="img/health-light.png" alt="The Health page with the Capacity card on the left and the Capacity Over Time chart on the right." loading="lazy"></picture><figcaption>The Health page: capacity and usage on the left, the long-term trend and battery details on the right.</figcaption></figure>
+
+<h2 id="capacity">Capacity</h2>
+<figure class="narrow"><picture><source media="(prefers-color-scheme: dark)" srcset="img/health-capacity-dark.png"><img src="img/health-capacity-light.png" alt="The Capacity card: Maximum Capacity 86.8 percent, Condition Normal, Full Charge Capacity 44.2 Wh, Design Capacity 51.0 Wh and Capacity Lost 6.8 Wh (13.2 percent)." loading="lazy"></picture><figcaption>The Capacity card compares what the battery holds now with what it held when new.</figcaption></figure>
+<ul>
+<li><strong>Maximum Capacity</strong> is the energy the battery holds when full now, as a percentage of what it held when it was new,
+shown with a level bar.</li>
+<li><strong>Full Charge Capacity</strong> is that energy in watt-hours (Wh). <strong>Design Capacity</strong> is what the manufacturer
+rated the battery for when new. <strong>Capacity Lost</strong> is the difference in Wh and in percent.</li>
+<li><strong>Condition</strong> turns the number into a plain word:</li>
+</ul>
+<div class="table-wrap"><table><thead><tr><th scope="col">Condition</th><th scope="col">Maximum capacity</th><th scope="col">What it means</th></tr></thead><tbody><tr><td>Normal</td><td>80% or more</td><td>The battery is functioning normally.</td></tr><tr><td>Worn</td><td>60% to 80%</td><td>The battery holds less charge than when new but works normally.</td></tr><tr><td>Service Recommended</td><td>Under 60%</td><td>The battery holds significantly less charge; consider replacing it.</td></tr></tbody></table></div>
+<aside class="callout note"><strong>Note.</strong> Some drivers report charge in µAh (charge-based) and others in µWh (energy-based). The app supports both.</aside>
+
+<h2 id="trend">Capacity over time and the trend</h2>
+<figure class="narrow"><picture><source media="(prefers-color-scheme: dark)" srcset="img/health-trend-dark.png"><img src="img/health-trend-light.png" alt="A chart of capacity from 70 to 100 percent over three weeks with a dashed line at 80 percent, and a Trend row saying 14 of 5 readings and 12 of 14 days." loading="lazy"></picture><figcaption>Capacity is recorded once a day. The dashed line marks 80%, the usual point where a battery is considered worn.</figcaption></figure>
+<p>The app records the maximum capacity once a day (the first time it runs that day) and plots it. Readings wobble a little from
+day to day, so the line is the direction that matters, not any single point.</p>
+<p>After <strong>at least 5 daily readings spanning at least 14 days</strong> the <em>Trend</em> row switches from progress
+("3/5 readings · 6/14 days") to a result:</p>
+<ul>
+<li><strong>N% per month</strong>, the rate at which capacity is falling, and <strong>Reaches 80%</strong>: the month and year the
+battery is projected to cross 80% ("Around March 2028").</li>
+<li><strong>Not declining</strong> when the line is flat or rising.</li>
+<li><strong>Already below 80%</strong> when it has already crossed.</li>
+</ul>
+<p>A battery that does not report capacity data shows "This battery does not report capacity data, so a health trend cannot be calculated."</p>
+<aside class="callout tip"><strong>Tip.</strong> Turn on <em>Record History in the Background</em> on the Usage page so the daily reading is saved even on days you never open the window.</aside>
+
+<h2 id="usage">Usage</h2>
+<figure class="narrow"><picture><source media="(prefers-color-scheme: dark)" srcset="img/health-usage-dark.png"><img src="img/health-usage-light.png" alt="A Usage card with Cycle Count 214, Current Charge 44.2 Wh, Average Draw on Battery over 24 hours 13.8 W, Voltage 12.85 V and Minimum Design Voltage 11.52 V." loading="lazy"></picture><figcaption>Cycle count and live electrical readings.</figcaption></figure>
+<ul>
+<li><strong>Cycle Count</strong> is how many full charge-and-discharge equivalents the battery has been through. Most laptop
+batteries are rated for 300–1000 cycles.</li>
+<li><strong>Current Charge</strong> is the energy in the battery now, in Wh.</li>
+<li><strong>Average Draw on Battery (24 h)</strong> is the average power the laptop used while on battery over the last day. It
+appears once there is enough history.</li>
+<li><strong>Voltage</strong> and <strong>Minimum Design Voltage</strong>: the present voltage and the lowest voltage the battery is designed to reach.</li>
+</ul>
+<p>Rows the battery does not report are shown as "Not reported", and rows with no history yet say "No data yet".</p>
+
+<h2 id="information">Battery information</h2>
+<figure class="narrow"><picture><source media="(prefers-color-scheme: dark)" srcset="img/health-information-dark.png"><img src="img/health-information-light.png" alt="A Battery Information card listing the manufacturer, model, serial number, chemistry and device name." loading="lazy"></picture><figcaption>The details of the battery itself. The serial number is hidden in this screenshot.</figcaption></figure>
+<p>Manufacturer, model, serial number, chemistry (for example Li-ion or Li-poly) and the device name Linux uses
+(<code>BAT0</code>). It is handy for warranty claims and when you shop for a replacement.</p>
+
+<h2 id="calibration">Calibration</h2>
+<figure class="narrow"><picture><source media="(prefers-color-scheme: dark)" srcset="img/health-calibration-dark.png"><img src="img/health-calibration-light.png" alt="A Calibration card with the text Not running, You&#x27;ll get a notification at each step, and a Start button." loading="lazy"></picture><figcaption>Start a guided calibration from the Calibration card.</figcaption></figure>
+<p>Battery gauges estimate the charge. When the percentage jumps around, or the laptop shuts down before it reaches 0%, the
+estimate has drifted. Calibration lets the battery relearn its true capacity. It takes a full charge, a full discharge and another full
+charge, usually a few hours in total, and you can use the laptop normally in between.</p>
+<ol class="steps"><li>Choose <strong>Start</strong> and confirm <em>Start Calibration?</em>. If the laptop is not full, plug it in; the card shows "Step 1 of 3: Charge to 100%".</li><li>When the battery is full you get the notification <em>Calibration: Unplug Your Laptop</em>. Unplug the charger and use the laptop until the battery is nearly empty (5%). The card shows "Step 2 of 3" with the current percentage.</li><li>At 5% you get <em>Calibration: Plug In Now</em>. Connect the charger and let it charge to 100% again.</li><li>You get <em>Calibration Complete</em>. The battery's capacity reading has been recalibrated, and your charge limit is back on.</li></ol>
+<figure><picture><source media="(prefers-color-scheme: dark)" srcset="img/calibration-dark.png"><img src="img/calibration-light.png" alt="The Start Calibration confirmation dialog on top of the Health page." loading="lazy"></picture><figcaption>The confirmation explains the three steps before anything starts.</figcaption></figure>
+<aside class="callout warn"><strong>Careful.</strong> During calibration the charge limit is lifted so the battery can reach 100%. Choose <strong>Cancel</strong> on the card at any time to stop; your limit returns.</aside>
+<aside class="callout hw"><strong>Hardware.</strong> Calibration needs a battery that reports its charge accurately. It is a fix for a wrong reading, not for a battery that has genuinely worn out: if the maximum capacity stays low afterwards, that number is the truth.</aside>
+
+<nav class="pager" aria-label="Previous and next page"><a class="prev" href="overview.html"><span>Previous</span>Overview</a><a class="next" href="charging.html"><span>Next</span>Charging</a></nav>
+</main>
+</div>
+<footer>
+Battery Health Center 0.6.3 · GPL-3.0-or-later · © Alexis Rios-Negron · <a href="https://github.com/arios4k/battery-health-center">Source code</a> · <a href="https://github.com/arios4k/battery-health-center/issues">Report an issue</a>
+</footer>
+<script>
+(function () {
+  var d = document.querySelector('.side-menu');
+  if (d && window.matchMedia('(max-width: 900px)').matches) { d.removeAttribute('open'); }
+})();
+</script>
+</body>
+</html>
