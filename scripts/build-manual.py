@@ -697,7 +697,7 @@ PAGE = """<!doctype html>
 <a class="ghost" href="@REPO@">GitHub</a></header>
 <div id="results" class="results" hidden></div>
 <div class="layout">
-<aside class="side" id="nav" aria-label="Manual pages"><button class="close" aria-label="Close the menu">✕ Close</button>@NAV@</aside>
+<aside class="side" id="nav" aria-label="Manual pages"><div class="drawer-head"><a class="brand" href="index.html"><img src="img/icon.svg" alt="" width="28" height="28"> <span>@SITE@</span></a><button class="close" aria-label="Close the menu">✕ Close</button></div>@NAV@</aside>
 <main><details class="toc-m"><summary>On this page</summary><ul>@TOC@</ul></details><article>@BODY@</article>@PAGER@
 <footer>Written by Alexis Rios-Negron · Battery Health Center @VERSION@ · <a href="@REPO@/issues">Report a problem with this manual</a> · GPL-3.0-or-later</footer></main>
 <aside class="toc" aria-label="On this page"><div class="group-title">On this page</div><ul>@TOC@</ul></aside>
