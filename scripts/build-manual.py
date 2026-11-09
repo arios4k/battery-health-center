@@ -868,6 +868,8 @@ def build():
 """
     CONTENT["getting-started"] = CONTENT["getting-started"]
 
+    if WHATS_NEW[0][0] != VERSION:
+        raise SystemExit(f"What's new starts at {WHATS_NEW[0][0]} but Cargo.toml says {VERSION}: add an entry for {VERSION} to WHATS_NEW")
     pages = []
     for slug in ORDER:
         if slug == "index":
