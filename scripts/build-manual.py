@@ -70,6 +70,11 @@ def table(head, rows):
 # What's new: one entry per release, newest first. Add the new release at the top when you publish it.
 # (version, date, [items as HTML: bold lead-in, then what changed and where to read more])
 WHATS_NEW = [
+    ("0.6.5", "November 9, 2026", [
+        "<strong>Help opens the right page.</strong> The help button, <kbd>F1</kbd> and <em>User Manual</em> now open the manual page that matches the page you are on: on Charging they open the Charging page. See <a href=\"getting-started.html#layout\">Finding your way around</a>.",
+        "<strong>What's new.</strong> This page lists what changed in every release.",
+        "<strong>A friendlier manual on phones.</strong> The mobile menu keeps the icon and title in a header with a Close button, and the manual uses the same design as the Voltkit and ThermalPrint manuals.",
+    ]),
     ("0.6.4", "November 8, 2026", [
         "<strong>Help button and user manual.</strong> A question-mark button at the top of the sidebar, <kbd>F1</kbd> and <em>User Manual</em> in the main menu open this manual in your browser. See <a href=\"getting-started.html#layout\">Finding your way around</a>.",
     ]),

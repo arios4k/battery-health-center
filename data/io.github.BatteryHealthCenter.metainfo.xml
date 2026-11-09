@@ -53,6 +53,9 @@
   </supports>
   <content_rating type="oars-1.1"/>
   <releases>
+    <release version="0.6.5" date="2026-11-09">
+      <description><p>Help now opens the page of the user manual that matches the page you are on, and the manual has a What's new page.</p></description>
+    </release>
     <release version="0.6.4" date="2026-11-08">
       <description><p>Adds a Help button (and F1) that opens the new online user manual, a detailed guide to every feature with screenshots.</p></description>
     </release>
