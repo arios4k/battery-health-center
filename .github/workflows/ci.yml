@@ -24,6 +24,10 @@ jobs:
           scripts/build-locale.sh
           python3 scripts/update-pot.py
           git diff --exit-code po/battery-health-center.pot
+      - name: The user manual is up to date and matches the version
+        run: |
+          python3 scripts/build-manual.py
+          git diff --exit-code docs
 
   package:
     runs-on: ubuntu-24.04
