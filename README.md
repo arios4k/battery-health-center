@@ -11,11 +11,15 @@ Health, cycle count, charge limits and schedules, and which apps drain it, for G
 
 [![Latest release](https://img.shields.io/github/v/release/arios4k/battery-health-center?label=release&color=26a269)](https://github.com/arios4k/battery-health-center/releases/latest)
 [![CI](https://github.com/arios4k/battery-health-center/actions/workflows/ci.yml/badge.svg)](https://github.com/arios4k/battery-health-center/actions/workflows/ci.yml)
+[![Manual](https://img.shields.io/badge/Manual-read-2ea44f)](https://arios4k.github.io/battery-health-center/manual/)
+[![Downloads](https://img.shields.io/github/downloads/arios4k/battery-health-center/total?color=26a269)](https://github.com/arios4k/battery-health-center/releases)
 [![Install with apt](https://img.shields.io/badge/install-apt-orange)](#install-ubuntu-debian-and-derivatives)
 [![Install on Fedora](https://img.shields.io/badge/install-Fedora%20COPR-51a2da)](#install-fedora)
+[![COPR build](https://copr.fedorainfracloud.org/coprs/arios/battery-health-center/package/battery-health-center/status_image/last_build.png)](https://copr.fedorainfracloud.org/coprs/arios/battery-health-center/builds/)
 [![License: GPL-3.0-or-later](https://img.shields.io/badge/license-GPL--3.0--or--later-blue)](LICENSE)
 [![Languages](https://img.shields.io/badge/languages-EN%20%C2%B7%20ES%20%C2%B7%20DE%20%C2%B7%20FR%20%C2%B7%20ZH-lightgrey)](#translations)
 [![Made with Rust and GTK4](https://img.shields.io/badge/made%20with-Rust%20%2B%20GTK4-informational)](#build-from-source)
+[![Support on PayPal](https://img.shields.io/badge/PayPal-Support-00457C?logo=paypal&logoColor=white)](https://paypal.me/AlexisRios)
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/v0.5.0/overview-dark.png">
@@ -38,87 +42,9 @@ in one native GNOME app, much like the Battery settings on macOS:
 | digging through Settings, Tweaks and extensions for power options | **Power**: power mode, automatic power mode and GNOME's power-saving settings on one page |
 | a spreadsheet of readings | **Reports**: an HTML battery report and CSV exports of your history |
 
-## Features
+## Manual
 
-### 🔋 Know how healthy your battery really is
-
-Maximum capacity compared with when the battery was new, its condition (Normal, Worn or Service
-Recommended), cycle count, voltage, manufacturer, model and chemistry. Capacity is logged once a day, so
-after about two weeks you get a trend and the date it is projected to reach 80%. If the percentage jumps
-or the laptop shuts down early, a guided calibration (charge, run nearly empty, charge again) fixes the
-reading. Laptops with two batteries are supported.
-
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/v0.5.0/health-dark.png">
-  <img src="docs/screenshots/v0.5.0/health-light.png" alt="The Health dashboard with battery capacity, condition, usage details and long-term trend guidance">
-</picture>
-
-### 🛡️ Make the battery last for years
-
-Lithium batteries wear faster when they sit at 100%. Pick a profile, **Maximum Lifespan (60%)**,
-**Balanced (80%)** or **Full Capacity (100%)**, or set exactly where charging stops and resumes. The limit
-is kept after restarts and sleep. Need a full battery for a trip? **Charge to 100% Now** charges fully
-once, then your limit comes back by itself.
-
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/v0.5.0/charging-dark.png">
-  <img src="docs/screenshots/v0.5.0/charging-light.png" alt="The centered Charging workspace with active limits, scheduled full charges, temporary overrides and charge controls">
-</picture>
-
-### 🗓️ Full when you need it, protected the rest of the time
-
-Tell it when you need the laptop, for example **weekdays at 07:30**, and the limit is lifted shortly
-before so the battery is full on time, then put back. Or turn on **optimized charging** and it learns
-your routine from when you usually unplug. You enter your password once, when you save the schedule; a
-small service does the rest.
-
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/v0.5.0/schedule-dark.png">
-  <img src="docs/screenshots/v0.5.0/schedule-light.png" alt="Charging Schedule with optimized charging, learned unplug times and ready-by rules">
-</picture>
-
-### 📊 See what is draining it
-
-Battery level and power draw for the last day or week, battery use while the laptop slept (with a warning
-when it is unusually high), and the apps using the most energy right now, since you opened the app, or
-over 24 hours and 7 days. Click an app to see its energy impact and estimated use hour by hour. Linux
-doesn't measure power per app, so the numbers are estimates from CPU time and the measured draw above idle.
-
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/v0.5.0/usage-dark.png">
-  <img src="docs/screenshots/v0.5.0/usage-light.png" alt="The Usage dashboard with battery history, app energy estimates and background recording controls">
-</picture>
-
-<div align="center">
-<img src="docs/screenshots/v0.5.0/app-trend-dark.png" width="360" alt="The current app-detail dialog with energy impact and hourly history">
-</div>
-
-### ⚡ Power modes without the hunt
-
-Power Saver, Balanced or Performance, with an **automatic power mode** that switches when you plug in or
-unplug the charger, plus GNOME's power-saving settings (dim screen, screen blank, automatic suspend,
-power button and lid) and the battery percentage in the top bar. Only what your hardware supports is
-shown.
-
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/v0.5.0/power-dark.png">
-  <img src="docs/screenshots/v0.5.0/power-light.png" alt="The Power page: current power mode, automatic power mode, and GNOME's power-saving settings">
-</picture>
-
-### 💡 Small nudges, not nagging
-
-While you are on battery, the Overview can suggest turning down a very bright screen, switching off the
-keyboard backlight, or turning off Bluetooth when nothing is connected, each with a button. Notifications
-tell you when the charge limit is reached, when you are fully charged without a limit, when the battery is
-low, when an app is draining it, and when the laptop used a lot of battery asleep. You can turn them
-off in Preferences (the calibration steps excepted).
-
-### 📤 Take your data with you
-
-Export an HTML battery report (for a warranty claim, or when you sell the laptop) from the menu, or run
-`battery-health-center --export-report report.html`. **Export Data as CSV** (or
-`battery-health-center --export-csv <folder>`) writes the battery history, capacity over time, sleep
-sessions and each app's energy use per hour as CSV files for a spreadsheet.
+**To learn how to use Battery Health Center, read the [Battery Health Center Manual](https://arios4k.github.io/battery-health-center/manual/).** It explains every page step by step: health and calibration, charge limits and the charging schedule, app usage, power modes, notifications, reports and your data, with troubleshooting and a list of what's new in each release. It also opens from the app with **F1** or the help button.
 
 ## Why Battery Health Center
 
@@ -131,27 +57,7 @@ sessions and each app's energy use per hour as CSV files for a spreadsheet.
 - **Speaks your language.** English, Spanish, German, French and Simplified Chinese, following your system language.
 - **Updates with your system.** Install it from a signed apt repository (or Fedora's COPR) and your usual updates keep it current.
 
-## FAQ
-
-**Will the charge limit work on my laptop?**
-Battery information works on any laptop with a standard Linux battery driver. Charge limits need firmware
-support that the kernel exposes as `charge_control_end_threshold` (or `charge_stop_threshold`), as on
-ThinkPads and many ASUS, Dell, Huawei, LG, Samsung and System76 laptops. If yours doesn't have it, the
-Charging page says so and everything else still works.
-
-**Which desktops and distributions?**
-It is developed and tested on GNOME: Ubuntu 24.04, Zorin OS 18 and Linux Mint 22. The package needs
-GTK 4.14 and libadwaita 1.5 or newer, so Ubuntu 22.04, Debian 12 and Mint 21 are too old. The Power page
-uses GNOME's own settings, so it is the part most tied to GNOME.
-
-**Is it safe to change the charge limit?**
-It sets the same firmware thresholds that other tools and BIOS options use, and **Full Capacity (100%)**
-removes the limit again. Changing it asks for your password.
-
-**Do I have to keep the app open?**
-History, sleep drain and notifications are recorded while the app runs. The first time you open it, it asks
-whether to **record history in the background**; say yes and it starts hidden when you log in. You can change
-your mind any time on the Usage page.
+More answers, such as whether the charge limit works on your laptop, are in the manual's [Troubleshooting and FAQ](https://arios4k.github.io/battery-health-center/manual/troubleshooting.html#faq).
 
 <sub>Screenshots taken on Zorin OS 18 with its ZorinBlue theme. Regenerate them with
 `docs/screenshots/capture.sh`.</sub>
@@ -251,7 +157,7 @@ in it, and `trn`/`trnf` for plurals; see `src/i18n.rs`.
 
 ## More documentation
 
-- [User manual](https://arios4k.github.io/battery-health-center/): a detailed guide to every feature, with screenshots. Open it from the app with
+- [User manual](https://arios4k.github.io/battery-health-center/manual/): a detailed guide to every feature, with screenshots. Open it from the app with
   the help button or `F1`.
 - [How it works](docs/HOW-IT-WORKS.md): where the numbers come from, how the charge limit, the schedule
   and the app energy estimates work.

@@ -11,11 +11,15 @@
 
 [![最新版本](https://img.shields.io/github/v/release/arios4k/battery-health-center?label=%E7%89%88%E6%9C%AC&color=26a269)](https://github.com/arios4k/battery-health-center/releases/latest)
 [![CI](https://github.com/arios4k/battery-health-center/actions/workflows/ci.yml/badge.svg)](https://github.com/arios4k/battery-health-center/actions/workflows/ci.yml)
+[![手册](https://img.shields.io/badge/%E6%89%8B%E5%86%8C-%E9%98%85%E8%AF%BB-2ea44f)](https://arios4k.github.io/battery-health-center/manual/)
+[![下载量](https://img.shields.io/github/downloads/arios4k/battery-health-center/total?color=26a269)](https://github.com/arios4k/battery-health-center/releases)
 [![使用 apt 安装](https://img.shields.io/badge/install-apt-orange)](#在-ubuntu-和-debian-上安装)
 [![在 Fedora 上安装](https://img.shields.io/badge/install-Fedora%20COPR-51a2da)](#在-fedora-上安装)
+[![COPR 构建](https://copr.fedorainfracloud.org/coprs/arios/battery-health-center/package/battery-health-center/status_image/last_build.png)](https://copr.fedorainfracloud.org/coprs/arios/battery-health-center/builds/)
 [![许可证：GPL-3.0-or-later](https://img.shields.io/badge/%E8%AE%B8%E5%8F%AF%E8%AF%81-GPL--3.0--or--later-blue)](LICENSE)
 [![语言](https://img.shields.io/badge/%E8%AF%AD%E8%A8%80-EN%20%C2%B7%20ES%20%C2%B7%20DE%20%C2%B7%20FR%20%C2%B7%20ZH-lightgrey)](#翻译)
 [![使用 Rust 和 GTK4 开发](https://img.shields.io/badge/made%20with-Rust%20%2B%20GTK4-informational)](#从源码构建)
+[![通过 PayPal 支持](https://img.shields.io/badge/PayPal-Support-00457C?logo=paypal&logoColor=white)](https://paypal.me/AlexisRios)
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/v0.5.0/overview-dark.png">
@@ -38,78 +42,9 @@ Linux 能提供电池数据，但它们分散各处：满屏 `upower` 和 `/sys`
 | 在“设置”、“优化”和各种扩展中寻找电源选项 | **电源**：电源模式、自动电源模式和 GNOME 的节能设置集中在一个页面 |
 | 一张记录读数的电子表格 | **报告**：HTML 电池报告和历史数据的 CSV 导出 |
 
-## 功能
+## 手册
 
-### 🔋 真正了解电池的健康状况
-
-最大容量与新品时的对比、电池状态（正常、已损耗或建议维修）、循环次数、电压、制造商、型号和化学类型。容量每天
-记录一次，大约两周后即可看到趋势以及预计降至 80% 的日期。如果电量百分比跳变，或笔记本电脑过早关机，引导式
-校准（充电、几乎放电至耗尽、再次充电）可以修正读数。支持配有两块电池的笔记本电脑。
-
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/v0.5.0/health-dark.png">
-  <img src="docs/screenshots/v0.5.0/health-light.png" alt="“健康”仪表盘，显示电池容量、状态、使用详情和长期趋势指引">
-</picture>
-
-### 🛡️ 让电池用上好几年
-
-锂电池长期保持 100% 电量会损耗得更快。选择一个配置：**最长寿命（60%）**、**平衡（80%）**或**完整容量（100%）**，
-也可以精确设定停止和恢复充电的电量。上限在重启和睡眠后依然保留。出行需要满电？点击**立即充电至 100%**，只
-充满一次，之后您的上限会自动恢复。
-
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/v0.5.0/charging-dark.png">
-  <img src="docs/screenshots/v0.5.0/charging-light.png" alt="居中的“充电”工作区，显示当前生效的上限、计划充满、临时覆盖和充电控制">
-</picture>
-
-### 🗓️ 需要时充满，其余时间受保护
-
-告诉它您什么时候要用笔记本电脑，例如**工作日 07:30**，上限会在此之前不久解除，让电池按时充满，然后再恢复。
-或者开启**优化充电**，它会根据您通常拔下电源的时间学习您的习惯。您只需在保存计划时输入一次密码，其余由一个
-小型服务完成。
-
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/v0.5.0/schedule-dark.png">
-  <img src="docs/screenshots/v0.5.0/schedule-light.png" alt="“充电计划”，包含优化充电、已学习的拔下电源时间和充满时间规则">
-</picture>
-
-### 📊 看清是什么在耗电
-
-查看过去一天或一周的电量和功耗、笔记本电脑睡眠期间的电池消耗（异常偏高时会发出警告），以及此刻、自打开
-应用以来、过去 24 小时和 7 天内最耗电的应用。点击某个应用，可查看其能耗影响和逐小时的估算使用情况。
-Linux 不会按应用测量功率，所以这些数字是根据 CPU 时间和高于空闲状态的实测功耗得出的估算值。
-
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/v0.5.0/usage-dark.png">
-  <img src="docs/screenshots/v0.5.0/usage-light.png" alt="“使用情况”仪表盘，显示电池历史、各应用能耗估算和后台记录控制">
-</picture>
-
-<div align="center">
-<img src="docs/screenshots/v0.5.0/app-trend-dark.png" width="360" alt="当前的应用详情对话框，显示能耗影响和逐小时历史">
-</div>
-
-### ⚡ 无需费力寻找的电源模式
-
-节能、平衡或性能模式，外加**自动电源模式**，在您接通或拔下充电器时自动切换；还包括 GNOME 的节能设置（调暗
-屏幕、关闭屏幕、自动挂起、电源按钮和屏幕盖），以及顶栏中的电量百分比。只显示您的硬件支持的选项。
-
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/v0.5.0/power-dark.png">
-  <img src="docs/screenshots/v0.5.0/power-light.png" alt="“电源”页面：当前电源模式、自动电源模式和 GNOME 的节能设置">
-</picture>
-
-### 💡 小提醒，不打扰
-
-使用电池时，“概览”可能会建议您调低过亮的屏幕、关闭键盘背光，或在没有连接设备时关闭蓝牙，每条建议都带有
-一个按钮。通知会在以下情况提醒您：达到充电上限、没有上限时已充满、电量不足、某个应用在耗电，以及笔记本电脑
-在睡眠期间消耗了大量电量。您可以在“首选项”中关闭这些通知（校准步骤除外）。
-
-### 📤 带走您的数据
-
-通过菜单导出 HTML 电池报告（用于保修申请，或出售笔记本电脑时），也可以运行
-`battery-health-center --export-report report.html`。**将数据导出为 CSV**（或
-`battery-health-center --export-csv <文件夹>`）会把电池历史、容量变化、睡眠记录和各应用每小时的能耗
-写成 CSV 文件，方便用电子表格处理。
+**要了解如何使用 Battery Health Center，请阅读 [Battery Health Center 手册](https://arios4k.github.io/battery-health-center/manual/)**（英文）。它逐步讲解每个页面：电池健康与校准、充电上限与充电计划、应用使用情况、电源模式、通知、报告与您的数据，还包括故障排除和每个版本的更新内容。也可以在应用中按 **F1** 或点击帮助按钮打开。
 
 ## 为什么选择 Battery Health Center
 
@@ -121,25 +56,7 @@ Linux 不会按应用测量功率，所以这些数字是根据 CPU 时间和高
 - **说您的语言。** 英语、西班牙语、德语、法语和简体中文，跟随您的系统语言。
 - **随系统更新。** 从已签名的 apt 仓库（或 Fedora 的 COPR）安装，日常系统更新就会让它保持最新。
 
-## 常见问题
-
-**充电上限能在我的笔记本电脑上使用吗？**
-只要笔记本电脑使用标准的 Linux 电池驱动，就能查看电池信息。充电上限需要固件支持，并由内核以
-`charge_control_end_threshold`（或 `charge_stop_threshold`）的形式提供，例如 ThinkPad 以及许多华硕（ASUS）、
-戴尔（Dell）、华为、LG、三星和 System76 笔记本电脑。如果您的设备不支持，“充电”页面会说明，其余功能仍可正常使用。
-
-**支持哪些桌面环境和发行版？**
-开发和测试都在 GNOME 上进行：Ubuntu 24.04、Zorin OS 18 和 Linux Mint 22。软件包需要 GTK 4.14 和 libadwaita 1.5
-或更高版本，因此 Ubuntu 22.04、Debian 12 和 Mint 21 版本过旧。“电源”页面使用 GNOME 自身的设置，因此它是与
-GNOME 绑定最紧的部分。
-
-**更改充电上限安全吗？**
-它设置的是其他工具和 BIOS 选项所使用的同一组固件阈值，选择**完整容量（100%）**即可再次取消上限。更改时需要
-输入您的密码。
-
-**我需要一直打开这个应用吗？**
-历史、睡眠耗电和通知只在应用运行时记录。首次打开时，它会询问是否**在后台记录历史**；选择“是”，它就会在您
-登录时隐藏启动。您可以随时在“使用情况”页面更改这一选择。
+更多问题的答案（例如充电上限能否在您的笔记本电脑上使用）请见手册中的[故障排除与常见问题](https://arios4k.github.io/battery-health-center/manual/troubleshooting.html#faq)。
 
 <sub>截图在 Zorin OS 18 上使用其 ZorinBlue 主题拍摄。可用 `docs/screenshots/capture.sh` 重新生成。</sub>
 
@@ -234,7 +151,7 @@ msgmerge --update --backup=none po/zh_CN.po po/battery-health-center.pot   # 以
 
 ## 更多文档
 
-- [用户手册](https://arios4k.github.io/battery-health-center/)（英文）：详细介绍每项功能的指南，附截图。可在应用中通过帮助按钮或 `F1` 打开。
+- [用户手册](https://arios4k.github.io/battery-health-center/manual/)（英文）：详细介绍每项功能的指南，附截图。可在应用中通过帮助按钮或 `F1` 打开。
 - [工作原理](docs/HOW-IT-WORKS.zh-CN.md)：数据从何而来，以及充电上限、充电计划和应用能耗估算是如何工作的。
 - [维护与打包](docs/MAINTAINING.md)（英文）：如何发布新版本，以及给希望收录本应用的发行版的说明。欢迎收录，
   我将深感荣幸。

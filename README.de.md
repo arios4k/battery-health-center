@@ -11,11 +11,15 @@ Zustand, Ladezyklen, Ladelimits und Ladepläne und welche Apps ihn leeren, für 
 
 [![Neueste Version](https://img.shields.io/github/v/release/arios4k/battery-health-center?label=Version&color=26a269)](https://github.com/arios4k/battery-health-center/releases/latest)
 [![CI](https://github.com/arios4k/battery-health-center/actions/workflows/ci.yml/badge.svg)](https://github.com/arios4k/battery-health-center/actions/workflows/ci.yml)
+[![Handbuch](https://img.shields.io/badge/Handbuch-lesen-2ea44f)](https://arios4k.github.io/battery-health-center/manual/)
+[![Downloads](https://img.shields.io/github/downloads/arios4k/battery-health-center/total?color=26a269)](https://github.com/arios4k/battery-health-center/releases)
 [![Mit apt installieren](https://img.shields.io/badge/install-apt-orange)](#installation-ubuntu-debian-und-abkömmlinge)
 [![Unter Fedora installieren](https://img.shields.io/badge/install-Fedora%20COPR-51a2da)](#installation-fedora)
+[![COPR-Build](https://copr.fedorainfracloud.org/coprs/arios/battery-health-center/package/battery-health-center/status_image/last_build.png)](https://copr.fedorainfracloud.org/coprs/arios/battery-health-center/builds/)
 [![Lizenz: GPL-3.0-or-later](https://img.shields.io/badge/Lizenz-GPL--3.0--or--later-blue)](LICENSE)
 [![Sprachen](https://img.shields.io/badge/Sprachen-EN%20%C2%B7%20ES%20%C2%B7%20DE%20%C2%B7%20FR%20%C2%B7%20ZH-lightgrey)](#übersetzungen)
 [![Gemacht mit Rust und GTK4](https://img.shields.io/badge/made%20with-Rust%20%2B%20GTK4-informational)](#aus-dem-quellcode-bauen)
+[![Über PayPal unterstützen](https://img.shields.io/badge/PayPal-Support-00457C?logo=paypal&logoColor=white)](https://paypal.me/AlexisRios)
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/v0.5.0/overview-dark.png">
@@ -38,89 +42,9 @@ einer nativen GNOME-App zusammen, ähnlich den Akku-Einstellungen von macOS:
 | dem Durchsuchen von Einstellungen, Optimierungen und Erweiterungen nach Energieoptionen | **Energie**: Energiemodus, automatischer Energiemodus und die Energiespareinstellungen von GNOME auf einer Seite |
 | einer Tabelle mit Messwerten | **Berichte**: ein HTML-Akkubericht und CSV-Exporte Ihres Verlaufs |
 
-## Funktionen
+## Handbuch
 
-### 🔋 Wissen, wie gesund Ihr Akku wirklich ist
-
-Die maximale Kapazität im Vergleich zum Neuzustand, sein Zustand (Normal, Abgenutzt oder Service empfohlen),
-Ladezyklen, Spannung, Hersteller, Modell und Zellchemie. Die Kapazität wird einmal am Tag aufgezeichnet, sodass
-Sie nach etwa zwei Wochen einen Trend und das Datum erhalten, an dem voraussichtlich 80 % erreicht werden.
-Springt die Prozentanzeige oder schaltet sich der Laptop zu früh ab, behebt eine geführte Kalibrierung (laden,
-fast leer laufen lassen, wieder laden) die Anzeige. Laptops mit zwei Akkus werden unterstützt.
-
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/v0.5.0/health-dark.png">
-  <img src="docs/screenshots/v0.5.0/health-light.png" alt="Das Dashboard Zustand mit Akkukapazität, Zustand, Nutzungsdetails und Hinweisen zum langfristigen Trend">
-</picture>
-
-### 🛡️ Den Akku jahrelang schonen
-
-Lithium-Akkus verschleißen schneller, wenn sie auf 100 % stehen. Wählen Sie ein Profil, **Maximale
-Lebensdauer (60 %)**, **Ausgeglichen (80 %)** oder **Volle Kapazität (100 %)**, oder legen Sie genau fest, wo
-das Laden stoppt und wieder beginnt. Das Limit bleibt nach Neustarts und Ruhezustand erhalten. Für eine Reise
-einen vollen Akku nötig? **Jetzt auf 100 % laden** lädt einmal vollständig, danach kehrt Ihr Limit von selbst
-zurück.
-
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/v0.5.0/charging-dark.png">
-  <img src="docs/screenshots/v0.5.0/charging-light.png" alt="Der zentrierte Bereich Laden mit aktiven Limits, geplanten Volladungen, temporären Ausnahmen und Ladesteuerung">
-</picture>
-
-### 🗓️ Voll, wenn Sie es brauchen, geschützt in der übrigen Zeit
-
-Sagen Sie, wann Sie den Laptop brauchen, zum Beispiel **werktags um 07:30**: Das Limit wird kurz davor
-aufgehoben, damit der Akku rechtzeitig voll ist, und danach wieder gesetzt. Oder schalten Sie das **optimierte
-Laden** ein, das Ihre Gewohnheiten daran lernt, wann Sie normalerweise den Stecker ziehen. Ihr Passwort geben
-Sie nur einmal ein, beim Speichern des Plans; ein kleiner Dienst erledigt den Rest.
-
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/v0.5.0/schedule-dark.png">
-  <img src="docs/screenshots/v0.5.0/schedule-light.png" alt="Ladeplan mit optimiertem Laden, gelernten Abziehzeiten und Bereit-bis-Regeln">
-</picture>
-
-### 📊 Sehen, was ihn leert
-
-Akkustand und Leistungsaufnahme des letzten Tages oder der letzten Woche, der Akkuverbrauch im Ruhezustand des
-Laptops (mit einer Warnung, wenn er ungewöhnlich hoch ist) und die Apps, die gerade, seit dem Öffnen der App oder
-in 24 Stunden und 7 Tagen am meisten Energie verbrauchen. Klicken Sie auf eine App, um ihre Energieauswirkung
-und die geschätzte Nutzung Stunde für Stunde zu sehen. Linux misst die Leistung nicht pro App; die Zahlen sind
-Schätzungen aus der CPU-Zeit und der gemessenen Leistungsaufnahme über dem Leerlauf.
-
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/v0.5.0/usage-dark.png">
-  <img src="docs/screenshots/v0.5.0/usage-light.png" alt="Das Dashboard Nutzung mit Akkuverlauf, Energieschätzungen der Apps und Steuerung der Hintergrundaufzeichnung">
-</picture>
-
-<div align="center">
-<img src="docs/screenshots/v0.5.0/app-trend-dark.png" width="360" alt="Der aktuelle Detaildialog einer App mit Energieauswirkung und Stundenverlauf">
-</div>
-
-### ⚡ Energiemodi ohne Suchen
-
-Energiesparmodus, Ausgeglichen oder Leistung, mit einem **automatischen Energiemodus**, der beim Anstecken oder
-Abziehen des Ladegeräts wechselt, dazu die Energiespareinstellungen von GNOME (Bildschirm abdunkeln,
-Bildschirm ausschalten, automatische Bereitschaft, Ein-/Aus-Taste und Deckel) und die Akkuanzeige in Prozent in
-der oberen Leiste. Angezeigt wird nur, was Ihre Hardware unterstützt.
-
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/v0.5.0/power-dark.png">
-  <img src="docs/screenshots/v0.5.0/power-light.png" alt="Die Seite Energie: aktueller Energiemodus, automatischer Energiemodus und die Energiespareinstellungen von GNOME">
-</picture>
-
-### 💡 Kleine Hinweise, kein Dauergemecker
-
-Im Akkubetrieb kann die Übersicht vorschlagen, einen sehr hellen Bildschirm herunterzudimmen, die
-Tastaturbeleuchtung auszuschalten oder Bluetooth auszuschalten, wenn nichts verbunden ist, jeweils mit einer
-Schaltfläche. Benachrichtigungen melden, wenn das Ladelimit erreicht ist, wenn der Akku ohne Limit voll ist,
-wenn der Akku schwach ist, wenn eine App ihn leert und wenn der Laptop im Ruhezustand viel Akku verbraucht hat.
-In den Einstellungen können Sie sie abschalten (außer den Schritten der Kalibrierung).
-
-### 📤 Ihre Daten mitnehmen
-
-Exportieren Sie über das Menü einen HTML-Akkubericht (für einen Garantiefall oder beim Verkauf des Laptops) oder
-führen Sie `battery-health-center --export-report report.html` aus. **Daten als CSV exportieren** (oder
-`battery-health-center --export-csv <Ordner>`) schreibt den Akkuverlauf, die Kapazität im Zeitverlauf, die
-Ruhezustandssitzungen und den Energieverbrauch jeder App pro Stunde als CSV-Dateien für eine Tabellenkalkulation.
+**Wie Sie Battery Health Center verwenden, erfahren Sie im [Handbuch von Battery Health Center](https://arios4k.github.io/battery-health-center/manual/)** (auf Englisch). Es erklärt jede Seite Schritt für Schritt: Zustand und Kalibrierung, Ladelimits und den Ladeplan, die Nutzung der Apps, Energiemodi, Benachrichtigungen, Berichte und Ihre Daten, dazu Hilfe bei Problemen und eine Liste der Neuerungen jeder Version. Sie öffnen es auch in der App mit **F1** oder der Hilfe-Schaltfläche.
 
 ## Warum Battery Health Center
 
@@ -134,27 +58,7 @@ Ruhezustandssitzungen und den Energieverbrauch jeder App pro Stunde als CSV-Date
 - **Aktualisiert sich mit Ihrem System.** Installieren Sie sie aus einem signierten apt-Repository (oder dem COPR
   von Fedora), und Ihre üblichen Updates halten sie aktuell.
 
-## FAQ
-
-**Funktioniert das Ladelimit auf meinem Laptop?**
-Akkuinformationen funktionieren auf jedem Laptop mit einem Standard-Akkutreiber für Linux. Ladelimits erfordern
-Firmware-Unterstützung, die der Kernel als `charge_control_end_threshold` (oder `charge_stop_threshold`)
-bereitstellt, wie bei ThinkPads und vielen Laptops von ASUS, Dell, Huawei, LG, Samsung und System76. Hat Ihrer
-sie nicht, weist die Seite Laden darauf hin, und alles andere funktioniert weiterhin.
-
-**Welche Desktops und Distributionen?**
-Entwickelt und getestet wird unter GNOME: Ubuntu 24.04, Zorin OS 18 und Linux Mint 22. Das Paket benötigt
-GTK 4.14 und libadwaita 1.5 oder neuer, daher sind Ubuntu 22.04, Debian 12 und Mint 21 zu alt. Die Seite Energie
-nutzt die eigenen Einstellungen von GNOME und ist deshalb der am stärksten an GNOME gebundene Teil.
-
-**Ist es sicher, das Ladelimit zu ändern?**
-Es setzt dieselben Firmware-Schwellenwerte, die auch andere Werkzeuge und BIOS-Optionen verwenden, und **Volle
-Kapazität (100 %)** hebt das Limit wieder auf. Für die Änderung wird Ihr Passwort abgefragt.
-
-**Muss ich die App geöffnet lassen?**
-Verlauf, Ruhezustandsverbrauch und Benachrichtigungen werden aufgezeichnet, solange die App läuft. Beim ersten
-Öffnen fragt sie, ob sie den **Verlauf im Hintergrund aufzeichnen** soll; sagen Sie ja, und sie startet beim
-Anmelden unsichtbar. Sie können es sich jederzeit auf der Seite Nutzung anders überlegen.
+Weitere Antworten, etwa ob das Ladelimit auf Ihrem Laptop funktioniert, finden Sie im Handbuch unter [Troubleshooting and FAQ](https://arios4k.github.io/battery-health-center/manual/troubleshooting.html#faq).
 
 <sub>Screenshots aufgenommen unter Zorin OS 18 mit dem Design ZorinBlue. Erzeugen Sie sie neu mit
 `docs/screenshots/capture.sh`.</sub>
@@ -255,7 +159,7 @@ Zeichenketten im Code laufen über `tr("…")`, `trf("… {name}", &[("name", va
 
 ## Weitere Dokumentation
 
-- [Benutzerhandbuch](https://arios4k.github.io/battery-health-center/) (auf Englisch): eine ausführliche Anleitung zu jeder Funktion, mit Screenshots. Öffnen Sie es
+- [Benutzerhandbuch](https://arios4k.github.io/battery-health-center/manual/) (auf Englisch): eine ausführliche Anleitung zu jeder Funktion, mit Screenshots. Öffnen Sie es
   in der App über die Hilfe-Schaltfläche oder `F1`.
 - [So funktioniert es](docs/HOW-IT-WORKS.de.md): woher die Zahlen kommen und wie das Ladelimit, der Ladeplan und
   die Energieschätzungen der Apps funktionieren.

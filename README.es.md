@@ -11,11 +11,15 @@ Salud, ciclos, límites y programación de la carga, y qué aplicaciones la gast
 
 [![Última versión](https://img.shields.io/github/v/release/arios4k/battery-health-center?label=versi%C3%B3n&color=26a269)](https://github.com/arios4k/battery-health-center/releases/latest)
 [![CI](https://github.com/arios4k/battery-health-center/actions/workflows/ci.yml/badge.svg)](https://github.com/arios4k/battery-health-center/actions/workflows/ci.yml)
+[![Manual](https://img.shields.io/badge/manual-leer-2ea44f)](https://arios4k.github.io/battery-health-center/manual/)
+[![Descargas](https://img.shields.io/github/downloads/arios4k/battery-health-center/total?color=26a269)](https://github.com/arios4k/battery-health-center/releases)
 [![Instalar con apt](https://img.shields.io/badge/install-apt-orange)](#instalación-ubuntu-debian-y-derivadas)
 [![Instalar en Fedora](https://img.shields.io/badge/install-Fedora%20COPR-51a2da)](#instalación-fedora)
+[![Compilación COPR](https://copr.fedorainfracloud.org/coprs/arios/battery-health-center/package/battery-health-center/status_image/last_build.png)](https://copr.fedorainfracloud.org/coprs/arios/battery-health-center/builds/)
 [![Licencia: GPL-3.0-or-later](https://img.shields.io/badge/licencia-GPL--3.0--or--later-blue)](LICENSE)
 [![Idiomas](https://img.shields.io/badge/idiomas-EN%20%C2%B7%20ES%20%C2%B7%20DE%20%C2%B7%20FR%20%C2%B7%20ZH-lightgrey)](#traducciones)
 [![Hecho con Rust y GTK4](https://img.shields.io/badge/made%20with-Rust%20%2B%20GTK4-informational)](#compilar-desde-el-código-fuente)
+[![Apoyar en PayPal](https://img.shields.io/badge/PayPal-Support-00457C?logo=paypal&logoColor=white)](https://paypal.me/AlexisRios)
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/v0.5.0/overview-dark.png">
@@ -38,89 +42,9 @@ Center los reúne en una aplicación nativa de GNOME, parecida a los ajustes de 
 | rebuscar en Ajustes, Retoques y extensiones las opciones de energía | **Energía**: modo de energía, modo automático y los ajustes de ahorro de energía de GNOME en una sola página |
 | una hoja de cálculo con mediciones | **Informes**: un informe de batería en HTML y exportaciones CSV de tu historial |
 
-## Características
+## Manual
 
-### 🔋 Conoce de verdad la salud de tu batería
-
-La capacidad máxima comparada con la de la batería nueva, su estado (Normal, Desgastada o Se recomienda
-revisión), los ciclos, el voltaje, el fabricante, el modelo y la química. La capacidad se registra una vez al
-día, así que tras unas dos semanas obtienes una tendencia y la fecha prevista para llegar al 80 %. Si el
-porcentaje da saltos o el portátil se apaga antes de tiempo, una calibración guiada (cargar, descargar casi por
-completo, cargar de nuevo) corrige la lectura. Se admiten portátiles con dos baterías.
-
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/v0.5.0/health-dark.png">
-  <img src="docs/screenshots/v0.5.0/health-light.png" alt="El panel Salud con la capacidad de la batería, su estado, detalles de uso y orientación sobre la tendencia a largo plazo">
-</picture>
-
-### 🛡️ Haz que la batería dure años
-
-Las baterías de litio se desgastan más rápido cuando permanecen al 100 %. Elige un perfil, **Máxima duración
-(60 %)**, **Equilibrado (80 %)** o **Capacidad completa (100 %)**, o fija exactamente dónde se detiene y se
-reanuda la carga. El límite se mantiene tras reiniciar y tras suspender. ¿Necesitas la batería llena para un
-viaje? **Cargar al 100 % ahora** carga por completo una sola vez y luego tu límite vuelve solo.
-
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/v0.5.0/charging-dark.png">
-  <img src="docs/screenshots/v0.5.0/charging-light.png" alt="El espacio Carga centrado con límites activos, cargas completas programadas, anulaciones temporales y controles de carga">
-</picture>
-
-### 🗓️ Llena cuando la necesitas, protegida el resto del tiempo
-
-Dile cuándo necesitas el portátil, por ejemplo **de lunes a viernes a las 07:30**, y el límite se levanta poco
-antes para que la batería esté llena a tiempo y luego se restablece. O activa la **carga optimizada** y aprende
-tu rutina según cuándo sueles desenchufar. Introduces tu contraseña una sola vez, al guardar la programación;
-un pequeño servicio hace el resto.
-
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/v0.5.0/schedule-dark.png">
-  <img src="docs/screenshots/v0.5.0/schedule-light.png" alt="Programación de carga con carga optimizada, horas de desconexión aprendidas y reglas de hora de disponibilidad">
-</picture>
-
-### 📊 Mira qué la está gastando
-
-Nivel de batería y consumo del último día o de la última semana, uso de la batería mientras el portátil estaba
-suspendido (con un aviso cuando es inusualmente alto) y las aplicaciones que más energía usan ahora mismo, desde
-que abriste la aplicación, o en 24 horas y 7 días. Haz clic en una aplicación para ver su impacto energético y su
-uso estimado hora a hora. Linux no mide la potencia por aplicación, así que las cifras son estimaciones basadas
-en el tiempo de CPU y el consumo medido por encima del reposo.
-
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/v0.5.0/usage-dark.png">
-  <img src="docs/screenshots/v0.5.0/usage-light.png" alt="El panel Uso con el historial de la batería, estimaciones de energía de las aplicaciones y controles de registro en segundo plano">
-</picture>
-
-<div align="center">
-<img src="docs/screenshots/v0.5.0/app-trend-dark.png" width="360" alt="El diálogo actual de detalle de una aplicación con el impacto energético y el historial por horas">
-</div>
-
-### ⚡ Modos de energía sin buscarlos
-
-Ahorro de energía, Equilibrado o Rendimiento, con un **modo de energía automático** que cambia al conectar o
-desconectar el cargador, además de los ajustes de ahorro de energía de GNOME (atenuar la pantalla, apagar la
-pantalla, suspensión automática, botón de encendido y tapa) y el porcentaje de batería en la barra superior. Solo
-se muestra lo que admite tu hardware.
-
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/v0.5.0/power-dark.png">
-  <img src="docs/screenshots/v0.5.0/power-light.png" alt="La página Energía: modo de energía actual, modo de energía automático y ajustes de ahorro de energía de GNOME">
-</picture>
-
-### 💡 Pequeños empujones, sin agobiar
-
-Mientras funcionas con batería, el Resumen puede sugerirte bajar una pantalla muy brillante, apagar la
-retroiluminación del teclado o desactivar el Bluetooth cuando no hay nada conectado, cada cosa con un botón. Las
-notificaciones te avisan cuando se alcanza el límite de carga, cuando está completamente cargada sin límite,
-cuando la batería está baja, cuando una aplicación la gasta y cuando el portátil gastó mucha batería suspendido.
-Puedes desactivarlas en Preferencias (salvo los pasos de la calibración).
-
-### 📤 Llévate tus datos
-
-Exporta un informe de batería en HTML (para una reclamación de garantía o cuando vendas el portátil) desde el
-menú, o ejecuta `battery-health-center --export-report report.html`. **Exportar datos como CSV** (o
-`battery-health-center --export-csv <carpeta>`) escribe el historial de la batería, la capacidad a lo largo del
-tiempo, las sesiones de suspensión y el uso de energía de cada aplicación por hora como archivos CSV para una
-hoja de cálculo.
+**Para aprender a usar Battery Health Center, lee el [manual de Battery Health Center](https://arios4k.github.io/battery-health-center/manual/)** (en inglés). Explica cada página paso a paso: salud y calibración, límites de carga y la programación de la carga, el uso de las aplicaciones, los modos de energía, las notificaciones, los informes y tus datos, con solución de problemas y una lista de las novedades de cada versión. También se abre desde la aplicación con **F1** o el botón de ayuda.
 
 ## Por qué Battery Health Center
 
@@ -134,27 +58,7 @@ hoja de cálculo.
 - **Se actualiza con tu sistema.** Instálala desde un repositorio apt firmado (o el COPR de Fedora) y tus
   actualizaciones habituales la mantienen al día.
 
-## Preguntas frecuentes
-
-**¿Funcionará el límite de carga en mi portátil?**
-La información de la batería funciona en cualquier portátil con un controlador de batería estándar de Linux. Los
-límites de carga necesitan que el firmware lo permita y que el kernel lo exponga como `charge_control_end_threshold`
-(o `charge_stop_threshold`), como en los ThinkPad y muchos portátiles ASUS, Dell, Huawei, LG, Samsung y System76.
-Si el tuyo no lo tiene, la página Carga lo indica y todo lo demás sigue funcionando.
-
-**¿Qué escritorios y distribuciones?**
-Se desarrolla y prueba en GNOME: Ubuntu 24.04, Zorin OS 18 y Linux Mint 22. El paquete necesita GTK 4.14 y
-libadwaita 1.5 o posteriores, así que Ubuntu 22.04, Debian 12 y Mint 21 son demasiado antiguos. La página Energía
-usa los ajustes propios de GNOME, por lo que es la parte más ligada a GNOME.
-
-**¿Es seguro cambiar el límite de carga?**
-Fija los mismos umbrales del firmware que usan otras herramientas y opciones de la BIOS, y **Capacidad completa
-(100 %)** vuelve a quitar el límite. Cambiarlo pide tu contraseña.
-
-**¿Tengo que dejar la aplicación abierta?**
-El historial, el consumo en suspensión y las notificaciones se registran mientras la aplicación está en
-ejecución. La primera vez que la abres pregunta si quieres **registrar el historial en segundo plano**; di que
-sí y se inicia oculta al iniciar sesión. Puedes cambiar de opinión cuando quieras en la página Uso.
+Encontrarás más respuestas, como si el límite de carga funciona en tu portátil, en [Solución de problemas y preguntas frecuentes](https://arios4k.github.io/battery-health-center/manual/troubleshooting.html#faq) del manual.
 
 <sub>Capturas realizadas en Zorin OS 18 con su tema ZorinBlue. Regénéralas con
 `docs/screenshots/capture.sh`.</sub>
@@ -254,7 +158,7 @@ Las cadenas del código pasan por `tr("…")`, `trf("… {name}", &[("name", val
 
 ## Más documentación
 
-- [Manual de usuario](https://arios4k.github.io/battery-health-center/) (en inglés): una guía detallada de cada función, con capturas de pantalla. Ábrelo desde la
+- [Manual de usuario](https://arios4k.github.io/battery-health-center/manual/) (en inglés): una guía detallada de cada función, con capturas de pantalla. Ábrelo desde la
   aplicación con el botón de ayuda o `F1`.
 - [Cómo funciona](docs/HOW-IT-WORKS.es.md): de dónde salen los datos, cómo funcionan el límite de carga, la
   programación y las estimaciones de energía de las aplicaciones.

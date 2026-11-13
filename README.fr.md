@@ -11,11 +11,15 @@ Santé, nombre de cycles, limites et programmation de la charge, et applications
 
 [![Dernière version](https://img.shields.io/github/v/release/arios4k/battery-health-center?label=version&color=26a269)](https://github.com/arios4k/battery-health-center/releases/latest)
 [![CI](https://github.com/arios4k/battery-health-center/actions/workflows/ci.yml/badge.svg)](https://github.com/arios4k/battery-health-center/actions/workflows/ci.yml)
+[![Manuel](https://img.shields.io/badge/manuel-lire-2ea44f)](https://arios4k.github.io/battery-health-center/manual/)
+[![Téléchargements](https://img.shields.io/github/downloads/arios4k/battery-health-center/total?color=26a269)](https://github.com/arios4k/battery-health-center/releases)
 [![Installer avec apt](https://img.shields.io/badge/install-apt-orange)](#installation-ubuntu-debian-et-dérivées)
 [![Installer sur Fedora](https://img.shields.io/badge/install-Fedora%20COPR-51a2da)](#installation-fedora)
+[![Compilation COPR](https://copr.fedorainfracloud.org/coprs/arios/battery-health-center/package/battery-health-center/status_image/last_build.png)](https://copr.fedorainfracloud.org/coprs/arios/battery-health-center/builds/)
 [![Licence : GPL-3.0-or-later](https://img.shields.io/badge/licence-GPL--3.0--or--later-blue)](LICENSE)
 [![Langues](https://img.shields.io/badge/langues-EN%20%C2%B7%20ES%20%C2%B7%20DE%20%C2%B7%20FR%20%C2%B7%20ZH-lightgrey)](#traductions)
 [![Fait avec Rust et GTK4](https://img.shields.io/badge/made%20with-Rust%20%2B%20GTK4-informational)](#compiler-depuis-les-sources)
+[![Soutenir sur PayPal](https://img.shields.io/badge/PayPal-Support-00457C?logo=paypal&logoColor=white)](https://paypal.me/AlexisRios)
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/v0.5.0/overview-dark.png">
@@ -39,91 +43,9 @@ batterie de macOS :
 | fouiller Paramètres, Ajustements et les extensions pour les options d’énergie | **Énergie** : mode d’alimentation, mode automatique et réglages d’économie d’énergie de GNOME sur une seule page |
 | un tableur de mesures | **Rapports** : un rapport de batterie HTML et des exports CSV de votre historique |
 
-## Fonctionnalités
+## Manuel
 
-### 🔋 Sachez vraiment dans quel état est votre batterie
-
-La capacité maximale comparée à celle de la batterie neuve, son état (Normal, Usée ou Remplacement conseillé),
-le nombre de cycles, la tension, le fabricant, le modèle et la chimie. La capacité est enregistrée une fois par
-jour : au bout d’environ deux semaines, vous obtenez une tendance et la date prévue pour atteindre 80 %. Si le
-pourcentage fait des sauts ou si l’ordinateur s’éteint trop tôt, un calibrage guidé (charger, décharger presque
-complètement, recharger) corrige la mesure. Les ordinateurs à deux batteries sont pris en charge.
-
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/v0.5.0/health-dark.png">
-  <img src="docs/screenshots/v0.5.0/health-light.png" alt="Le tableau de bord Santé avec la capacité de la batterie, son état, les détails d’utilisation et des conseils sur la tendance à long terme">
-</picture>
-
-### 🛡️ Faites durer la batterie des années
-
-Les batteries au lithium s’usent plus vite lorsqu’elles restent à 100 %. Choisissez un profil, **Durée de vie
-maximale (60 %)**, **Équilibré (80 %)** ou **Pleine capacité (100 %)**, ou fixez précisément où la charge
-s’arrête et reprend. La limite est conservée après les redémarrages et la mise en veille. Besoin d’une batterie
-pleine pour un voyage ? **Charger à 100 % maintenant** charge complètement une seule fois, puis votre limite
-revient toute seule.
-
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/v0.5.0/charging-dark.png">
-  <img src="docs/screenshots/v0.5.0/charging-light.png" alt="L’espace Charge centré avec les limites actives, les charges complètes programmées, les dérogations temporaires et les commandes de charge">
-</picture>
-
-### 🗓️ Pleine quand il le faut, protégée le reste du temps
-
-Dites quand vous avez besoin de l’ordinateur, par exemple **en semaine à 7 h 30** : la limite est levée peu
-avant pour que la batterie soit pleine à l’heure, puis rétablie. Ou activez la **charge optimisée** : elle
-apprend votre routine d’après les moments où vous débranchez d’habitude. Vous saisissez votre mot de passe une
-seule fois, à l’enregistrement de la programmation ; un petit service fait le reste.
-
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/v0.5.0/schedule-dark.png">
-  <img src="docs/screenshots/v0.5.0/schedule-light.png" alt="Programmation de la charge avec charge optimisée, heures de débranchement apprises et règles d’heure de disponibilité">
-</picture>
-
-### 📊 Voyez ce qui la vide
-
-Niveau de batterie et consommation électrique sur la dernière journée ou la dernière semaine, consommation de la
-batterie pendant la veille de l’ordinateur (avec un avertissement lorsqu’elle est anormalement élevée), et les
-applications qui consomment le plus d’énergie en ce moment, depuis l’ouverture de l’application, ou sur 24 heures
-et 7 jours. Cliquez sur une application pour voir son impact énergétique et son utilisation estimée heure par
-heure. Linux ne mesure pas la puissance par application : les chiffres sont des estimations calculées à partir du
-temps processeur et de la consommation mesurée au-dessus du repos.
-
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/v0.5.0/usage-dark.png">
-  <img src="docs/screenshots/v0.5.0/usage-light.png" alt="Le tableau de bord Utilisation avec l’historique de la batterie, les estimations d’énergie des applications et les commandes d’enregistrement en arrière-plan">
-</picture>
-
-<div align="center">
-<img src="docs/screenshots/v0.5.0/app-trend-dark.png" width="360" alt="La boîte de dialogue actuelle de détail d’une application avec l’impact énergétique et l’historique heure par heure">
-</div>
-
-### ⚡ Les modes d’alimentation sans les chercher
-
-Économie d’énergie, Équilibré ou Performances, avec un **mode d’alimentation automatique** qui change quand vous
-branchez ou débranchez le chargeur, plus les réglages d’économie d’énergie de GNOME (assombrissement de l’écran,
-extinction de l’écran, mise en veille automatique, bouton d’alimentation et capot) et le pourcentage de batterie
-dans la barre supérieure. Seul ce que votre matériel prend en charge est affiché.
-
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/v0.5.0/power-dark.png">
-  <img src="docs/screenshots/v0.5.0/power-light.png" alt="La page Énergie : mode d’alimentation actuel, mode d’alimentation automatique et réglages d’économie d’énergie de GNOME">
-</picture>
-
-### 💡 De petits coups de pouce, sans harcèlement
-
-Sur batterie, la Vue d’ensemble peut vous suggérer de baisser un écran très lumineux, d’éteindre le
-rétroéclairage du clavier ou de désactiver le Bluetooth quand rien n’est connecté, chaque fois avec un bouton.
-Des notifications vous préviennent quand la limite de charge est atteinte, quand la batterie est pleine sans
-limite, quand elle est faible, quand une application la vide et quand l’ordinateur a beaucoup consommé en veille.
-Vous pouvez les désactiver dans les Préférences (sauf les étapes du calibrage).
-
-### 📤 Emportez vos données
-
-Exportez un rapport de batterie HTML (pour une demande de garantie, ou à la revente de l’ordinateur) depuis le
-menu, ou lancez `battery-health-center --export-report report.html`. **Exporter les données en CSV** (ou
-`battery-health-center --export-csv <dossier>`) écrit l’historique de la batterie, la capacité au fil du temps,
-les sessions de veille et la consommation d’énergie de chaque application par heure sous forme de fichiers CSV
-pour un tableur.
+**Pour apprendre à utiliser Battery Health Center, lisez le [manuel de Battery Health Center](https://arios4k.github.io/battery-health-center/manual/)** (en anglais). Il explique chaque page pas à pas : santé et calibrage, limites de charge et programmation de la charge, utilisation des applications, modes d’alimentation, notifications, rapports et vos données, avec le dépannage et la liste des nouveautés de chaque version. Il s’ouvre aussi depuis l’application avec **F1** ou le bouton d’aide.
 
 ## Pourquoi Battery Health Center
 
@@ -137,28 +59,7 @@ pour un tableur.
 - **Se met à jour avec votre système.** Installez-le depuis un dépôt apt signé (ou le COPR de Fedora) et vos
   mises à jour habituelles le tiennent à jour.
 
-## FAQ
-
-**La limite de charge fonctionnera-t-elle sur mon ordinateur ?**
-Les informations sur la batterie fonctionnent sur tout ordinateur portable doté d’un pilote de batterie Linux
-standard. Les limites de charge nécessitent une prise en charge du micrologiciel que le noyau expose sous le nom
-`charge_control_end_threshold` (ou `charge_stop_threshold`), comme sur les ThinkPad et de nombreux ordinateurs
-ASUS, Dell, Huawei, LG, Samsung et System76. Si le vôtre n’en dispose pas, la page Charge l’indique et tout le
-reste fonctionne quand même.
-
-**Quels bureaux et quelles distributions ?**
-Il est développé et testé sur GNOME : Ubuntu 24.04, Zorin OS 18 et Linux Mint 22. Le paquet nécessite GTK 4.14
-et libadwaita 1.5 ou plus récents ; Ubuntu 22.04, Debian 12 et Mint 21 sont donc trop anciens. La page Énergie
-utilise les réglages propres à GNOME : c’est la partie la plus liée à GNOME.
-
-**Est-il sans danger de modifier la limite de charge ?**
-Elle fixe les mêmes seuils du micrologiciel que ceux utilisés par d’autres outils et options du BIOS, et
-**Pleine capacité (100 %)** supprime de nouveau la limite. La modification demande votre mot de passe.
-
-**Dois-je laisser l’application ouverte ?**
-L’historique, la décharge en veille et les notifications sont enregistrés tant que l’application fonctionne. À
-la première ouverture, elle demande si elle doit **enregistrer l’historique en arrière-plan** ; répondez oui et
-elle démarre masquée à l’ouverture de session. Vous pouvez changer d’avis à tout moment sur la page Utilisation.
+D’autres réponses, par exemple pour savoir si la limite de charge fonctionne sur votre ordinateur, se trouvent dans la page [Troubleshooting and FAQ](https://arios4k.github.io/battery-health-center/manual/troubleshooting.html#faq) du manuel.
 
 <sub>Captures d’écran réalisées sur Zorin OS 18 avec son thème ZorinBlue. Régénérez-les avec
 `docs/screenshots/capture.sh`.</sub>
@@ -259,7 +160,7 @@ et `trn`/`trnf` pour les pluriels ; voir `src/i18n.rs`.
 
 ## Plus de documentation
 
-- [Manuel d’utilisation](https://arios4k.github.io/battery-health-center/) (en anglais) : un guide détaillé de chaque fonction, avec des captures d’écran. Ouvrez-le
+- [Manuel d’utilisation](https://arios4k.github.io/battery-health-center/manual/) (en anglais) : un guide détaillé de chaque fonction, avec des captures d’écran. Ouvrez-le
   depuis l’application avec le bouton d’aide ou `F1`.
 - [Comment ça marche](docs/HOW-IT-WORKS.fr.md) : d’où viennent les chiffres, comment fonctionnent la limite de
   charge, la programmation et les estimations d’énergie des applications.
