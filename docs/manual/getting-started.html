@@ -12,7 +12,7 @@
 <div id="results" class="results" hidden></div>
 <div class="layout">
 <aside class="side" id="nav" aria-label="Manual pages"><div class="drawer-head"><a class="brand" href="index.html"><img src="img/icon.svg" alt="" width="28" height="28"> <span>Battery Health Center Manual</span></a><button class="close" aria-label="Close the menu">✕ Close</button></div><div class="group"><div class="group-title">Start here</div><ul><li><a href="index.html">Battery Health Center Manual</a></li><li><a href="getting-started.html" aria-current="page">Getting started</a></li></ul></div><div class="group"><div class="group-title">The app</div><ul><li><a href="overview.html">Overview</a></li><li><a href="health.html">Health</a></li><li><a href="charging.html">Charging</a></li><li><a href="schedule.html">Charging schedule</a></li><li><a href="power.html">Power</a></li><li><a href="usage.html">Usage</a></li></ul></div><div class="group"><div class="group-title">Settings and data</div><ul><li><a href="preferences.html">Notifications and preferences</a></li><li><a href="data.html">Reports and your data</a></li></ul></div><div class="group"><div class="group-title">Reference</div><ul><li><a href="reference.html">Reference</a></li><li><a href="troubleshooting.html">Troubleshooting and FAQ</a></li><li><a href="privacy.html">Privacy and security</a></li><li><a href="whats-new.html">What&#x27;s new</a></li></ul></div></aside>
-<main><details class="toc-m"><summary>On this page</summary><ul><li class="l2"><a href="#requirements">What you need</a></li><li class="l2"><a href="#install">Install</a></li><li class="l3"><a href="#ubuntu-debian-and-derivatives-apt">Ubuntu, Debian and derivatives (apt)</a></li><li class="l3"><a href="#fedora-copr">Fedora (COPR)</a></li><li class="l3"><a href="#from-source">From source</a></li><li class="l2"><a href="#first-launch">Your first launch</a></li><li class="l2"><a href="#layout">Finding your way around</a></li><li class="l2"><a href="#screen-readers">Accessibility</a></li></ul></details><article><h1 id="getting-started">Getting started</h1><p class="byline">By <a href="https://github.com/arios4k">Alexis Rios-Negron</a> · Battery Health Center 0.6.5</p>
+<main><details class="toc-m"><summary>On this page</summary><ul><li class="l2"><a href="#requirements">What you need</a></li><li class="l2"><a href="#install">Install</a></li><li class="l3"><a href="#ubuntu-debian-and-derivatives-apt">Ubuntu, Debian and derivatives (apt)</a></li><li class="l3"><a href="#fedora-copr">Fedora (COPR)</a></li><li class="l3"><a href="#snap-store">Snap Store</a></li><li class="l3"><a href="#from-source">From source</a></li><li class="l2"><a href="#first-launch">Your first launch</a></li><li class="l2"><a href="#layout">Finding your way around</a></li><li class="l2"><a href="#screen-readers">Accessibility</a></li></ul></details><article><h1 id="getting-started">Getting started</h1><p class="byline">By <a href="https://github.com/arios4k">Alexis Rios-Negron</a> · Battery Health Center 0.6.6</p>
 <p>Battery Health Center is a native GNOME app for the battery in your laptop. It shows how healthy the
 battery is, lets you protect it with a charge limit and a schedule, and shows which apps are draining it.
 This page gets you from zero to a running app.</p>
@@ -43,9 +43,27 @@ sudo apt update &amp;&amp; sudo apt install battery-health-center</code></pre>
 sudo dnf install battery-health-center</code></pre>
 <p>Updates arrive with <code>sudo dnf upgrade</code>. The charge-limit and schedule services are turned on by the
 installation, so nothing else needs setting up.</p>
+<h3 id="snap-store">Snap Store<a class="anchor" href="#snap-store" aria-label="Link to this section">#</a></h3>
+<p>For any distribution with snap support, on 64-bit Intel/AMD:</p>
+<pre><code>sudo snap install battery-health-center
+sudo snap connect battery-health-center:hardware-observe
+sudo snap connect battery-health-center:system-observe
+sudo snap connect battery-health-center:power-control</code></pre>
+<p>Snaps don't get these permissions by themselves: <code>hardware-observe</code> reads the battery,
+<code>system-observe</code> sees which apps use energy, and <code>power-control</code> changes the charge limit.
+Until they are connected, the app shows a banner with the same commands. Updates install by themselves.</p>
+<p>The snap runs in a sandbox, so it can't do everything the apt and Fedora packages do:</p>
+<ul>
+<li><strong>Power mode</strong> and <strong>Automatic Power Mode</strong> are not available. Change the mode in Settings → Power.</li>
+<li><strong>GNOME's power-saving settings</strong> (dim screen, screen blank, automatic suspend, power button, lid) are not available. Change them in Settings → Power. The battery percentage in the top bar works.</li>
+<li>The <strong>charging behaviour</strong> switch is hidden.</li>
+<li>Charge limits are applied by a service inside the snap instead of asking for your password, so any user of the computer can change them.</li>
+<li>With background recording on, the hidden copy closes when an update is waiting so it can install, and starts again at your next login.</li>
+<li>History is kept in <code>~/snap/battery-health-center</code>, separate from the apt or Fedora version.</li>
+</ul>
+<div class="callout note"><p><strong>Note.</strong> Install only one version. To move from the snap to apt or Fedora, copy <code>~/snap/battery-health-center/current/.local/share/battery-health-center/*.csv</code> to <code>~/.local/share/battery-health-center/</code>, then remove the snap with <code>sudo snap remove battery-health-center</code>, which deletes its history.</p></div>
 <h3 id="from-source">From source<a class="anchor" href="#from-source" aria-label="Link to this section">#</a></h3>
 <p>See <a href="https://github.com/arios4k/battery-health-center#build-from-source">Build from source</a> in the README.</p>
-<div class="callout note"><p><strong>Note.</strong> If you installed an older version as a snap, remove it first with <code>sudo snap remove battery-health-center</code>. That deletes its history, so copy <code>~/snap/battery-health-center/current/.local/share/battery-health-center/*.csv</code> to <code>~/.local/share/battery-health-center/</code> before you do.</p></div>
 
 <h2 id="first-launch">Your first launch<a class="anchor" href="#first-launch" aria-label="Link to this section">#</a></h2>
 <p>Open <strong>Battery Health Center</strong> from your applications. The first time, the app asks whether it should
@@ -80,6 +98,6 @@ and what the colors mean). Level bars announce their value, icon-only buttons ha
 Chart colors keep at least 3:1 contrast on light and dark cards, periods on the charger are marked by a strip along the bottom of the
 chart so color is never the only signal, and the dark theme's accent keeps 4.5:1 with white button text.</p>
 </article><nav class="pager" aria-label="Previous and next page"><a class="prev" href="index.html"><span>Previous</span>Battery Health Center Manual</a><a class="next" href="overview.html"><span>Next</span>Overview</a></nav>
-<footer>Written by Alexis Rios-Negron · Battery Health Center 0.6.5 · <a href="https://github.com/arios4k/battery-health-center/issues">Report a problem with this manual</a> · GPL-3.0-or-later</footer></main>
-<aside class="toc" aria-label="On this page"><div class="group-title">On this page</div><ul><li class="l2"><a href="#requirements">What you need</a></li><li class="l2"><a href="#install">Install</a></li><li class="l3"><a href="#ubuntu-debian-and-derivatives-apt">Ubuntu, Debian and derivatives (apt)</a></li><li class="l3"><a href="#fedora-copr">Fedora (COPR)</a></li><li class="l3"><a href="#from-source">From source</a></li><li class="l2"><a href="#first-launch">Your first launch</a></li><li class="l2"><a href="#layout">Finding your way around</a></li><li class="l2"><a href="#screen-readers">Accessibility</a></li></ul></aside>
+<footer>Written by Alexis Rios-Negron · Battery Health Center 0.6.6 · <a href="https://github.com/arios4k/battery-health-center/issues">Report a problem with this manual</a> · GPL-3.0-or-later</footer></main>
+<aside class="toc" aria-label="On this page"><div class="group-title">On this page</div><ul><li class="l2"><a href="#requirements">What you need</a></li><li class="l2"><a href="#install">Install</a></li><li class="l3"><a href="#ubuntu-debian-and-derivatives-apt">Ubuntu, Debian and derivatives (apt)</a></li><li class="l3"><a href="#fedora-copr">Fedora (COPR)</a></li><li class="l3"><a href="#snap-store">Snap Store</a></li><li class="l3"><a href="#from-source">From source</a></li><li class="l2"><a href="#first-launch">Your first launch</a></li><li class="l2"><a href="#layout">Finding your way around</a></li><li class="l2"><a href="#screen-readers">Accessibility</a></li></ul></aside>
 </div><script src="manual.js"></script></body></html>

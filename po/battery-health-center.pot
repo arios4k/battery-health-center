@@ -39,7 +39,7 @@ msgstr ""
 msgid "Linux Kernel"
 msgstr ""
 
-#: src/battery.rs:110 src/system.rs:245 src/ui/charging.rs:14 src/ui/usage.rs:183
+#: src/battery.rs:110 src/system.rs:318 src/ui/charging.rs:14 src/ui/usage.rs:183
 msgid "Normal"
 msgstr ""
 
@@ -59,7 +59,7 @@ msgstr ""
 msgid "USB-C Power Delivery"
 msgstr ""
 
-#: src/battery.rs:35 src/battery.rs:47 src/ui/overview.rs:182 src/ui/power.rs:183
+#: src/battery.rs:35 src/battery.rs:47 src/ui/overview.rs:182 src/ui/power.rs:184
 msgid "On Battery"
 msgstr ""
 
@@ -98,7 +98,7 @@ msgstr ""
 msgid "Not Charging"
 msgstr ""
 
-#: src/battery.rs:49 src/system.rs:247
+#: src/battery.rs:49 src/system.rs:320
 msgid "Full"
 msgstr ""
 
@@ -176,101 +176,129 @@ msgstr ""
 msgid "Your laptop used {0}% in {1} asleep ({rate}% per hour)."
 msgstr ""
 
-#: src/desktop.rs:250
+#: src/desktop.rs:251
 msgid "Suspend"
 msgstr ""
 
-#: src/desktop.rs:251
+#: src/desktop.rs:252
 msgid "Hibernate"
 msgstr ""
 
-#: src/desktop.rs:252
+#: src/desktop.rs:253
 msgid "Do Nothing"
 msgstr ""
 
-#: src/desktop.rs:253
+#: src/desktop.rs:254
 msgid "Ask What to Do"
 msgstr ""
 
-#: src/desktop.rs:254
+#: src/desktop.rs:255
 msgid "Turn Off the Screen"
 msgstr ""
 
-#: src/desktop.rs:255
+#: src/desktop.rs:256
 msgid "Shut Down"
 msgstr ""
 
-#: src/desktop.rs:256
+#: src/desktop.rs:257
 msgid "Log Out"
 msgstr ""
 
-#: src/desktop.rs:268
+#: src/desktop.rs:269
 #, no-c-format
 msgid "{n} second"
 msgid_plural "{n} seconds"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/desktop.rs:269 src/desktop.rs:271
+#: src/desktop.rs:270 src/desktop.rs:272
 #, no-c-format
 msgid "{n} minute"
 msgid_plural "{n} minutes"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/desktop.rs:270
+#: src/desktop.rs:271
 #, no-c-format
 msgid "{n} hour"
 msgid_plural "{n} hours"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/system.rs:110
+#: src/main.rs:176
+msgid "Battery Health Center Is Updating"
+msgstr ""
+
+#: src/main.rs:177
+msgid "It closed so the update can install. Background recording starts again the next time you log in or open the app."
+msgstr ""
+
+#: src/system.rs:163
 msgid "Power Saver"
 msgstr ""
 
-#: src/system.rs:111
+#: src/system.rs:164
 msgid "Balanced"
 msgstr ""
 
-#: src/system.rs:112
+#: src/system.rs:165
 msgid "Performance"
 msgstr ""
 
-#: src/system.rs:243 src/ui/usage.rs:56
+#: src/system.rs:18
+msgid "read battery information"
+msgstr ""
+
+#: src/system.rs:19
+msgid "see which apps use energy"
+msgstr ""
+
+#: src/system.rs:20
+msgid "change the charge limit"
+msgstr ""
+
+#: src/system.rs:316 src/ui/usage.rs:56
 msgid "Low"
 msgstr ""
 
-#: src/system.rs:244
+#: src/system.rs:317
 msgid "Critical"
 msgstr ""
 
-#: src/system.rs:246 src/ui/usage.rs:52 src/ui/usage.rs:183
+#: src/system.rs:319 src/ui/usage.rs:52 src/ui/usage.rs:183
 msgid "High"
 msgstr ""
 
-#: src/system.rs:292
+#: src/system.rs:365
 msgid "Wireless Device"
 msgstr ""
 
-#: src/system.rs:32
-msgid "The bhc-helper program was not found. Is the app installed?"
+#: src/system.rs:60
+msgid "The Battery Health Center service is not running"
 msgstr ""
 
-#: src/system.rs:35
+#: src/system.rs:67
+msgid "Permission denied. Run: snap connect battery-health-center:power-control"
+msgstr ""
+
+#: src/system.rs:79 src/system.rs:84
 msgid "The helper crashed"
 msgstr ""
 
-#: src/system.rs:36
+#: src/system.rs:81
+msgid "The bhc-helper program was not found. Is the app installed?"
+msgstr ""
+
+#: src/system.rs:85
 #, no-c-format
 msgid "Could not run pkexec: {e}"
 msgstr ""
 
-#: src/system.rs:39
+#: src/system.rs:88
 msgid "Authorization was cancelled"
 msgstr ""
 
-#: src/system.rs:42
+#: src/system.rs:91
 msgid "The change could not be applied"
 msgstr ""
 
@@ -446,7 +474,7 @@ msgstr ""
 msgid "Stop Charging At"
 msgstr ""
 
-#: src/ui/charging.rs:171 src/ui/power.rs:190 src/ui/preferences.rs:53
+#: src/ui/charging.rs:171 src/ui/power.rs:191 src/ui/preferences.rs:53
 msgid "Percent"
 msgstr ""
 
@@ -971,120 +999,142 @@ msgstr ""
 msgid "Recorded once a day. Readings vary a little from day to day; the trend shows the overall direction."
 msgstr ""
 
-#: src/ui/mod.rs:102
-msgid "Your battery, charger and recommendations at a glance."
-msgstr ""
-
-#: src/ui/mod.rs:103
-msgid "Understand battery capacity, wear and long-term health."
-msgstr ""
-
-#: src/ui/mod.rs:104
-msgid "Protect your battery with charge limits and schedules."
-msgstr ""
-
-#: src/ui/mod.rs:105
-msgid "Choose a power mode and adjust energy-saving settings."
+#: src/ui/mod.rs:100
+msgid "User Manual"
 msgstr ""
 
 #: src/ui/mod.rs:106
+msgid "Your battery, charger and recommendations at a glance."
+msgstr ""
+
+#: src/ui/mod.rs:107
+msgid "Understand battery capacity, wear and long-term health."
+msgstr ""
+
+#: src/ui/mod.rs:108
+msgid "Protect your battery with charge limits and schedules."
+msgstr ""
+
+#: src/ui/mod.rs:109
+msgid "Choose a power mode and adjust energy-saving settings."
+msgstr ""
+
+#: src/ui/mod.rs:110
 msgid "Explore battery history, sleep drain and app energy use."
 msgstr ""
 
-#: src/ui/mod.rs:126
+#: src/ui/mod.rs:130
 msgid "Some changes could not be saved"
 msgstr ""
 
-#: src/ui/mod.rs:126 src/ui/overview.rs:314 src/ui/overview.rs:323
+#: src/ui/mod.rs:130 src/ui/overview.rs:314 src/ui/overview.rs:323
 msgid "Details"
 msgstr ""
 
-#: src/ui/mod.rs:130
+#: src/ui/mod.rs:134
 msgid "Could Not Save Data"
 msgstr ""
 
-#: src/ui/mod.rs:131
+#: src/ui/mod.rs:135
 msgid "Check available disk space and folder permissions. Failed preferences were not applied; unsaved history may be lost when the app closes."
 msgstr ""
 
-#: src/ui/mod.rs:133
+#: src/ui/mod.rs:137 src/ui/mod.rs:287
 msgid "Close"
 msgstr ""
 
-#: src/ui/mod.rs:266
+#: src/ui/mod.rs:275
+msgid "Some features need permissions that aren't connected yet"
+msgstr ""
+
+#: src/ui/mod.rs:276
+msgid "How to Fix"
+msgstr ""
+
+#: src/ui/mod.rs:280
+msgid ""
+"Run these commands in a terminal, then restart Battery Health Center:\n"
+"\n"
+msgstr ""
+
+#: src/ui/mod.rs:285
+msgid "Connect Permissions"
+msgstr ""
+
+#: src/ui/mod.rs:298
 msgid "Export Battery Report"
 msgstr ""
 
-#: src/ui/mod.rs:281
+#: src/ui/mod.rs:313
 msgid "Battery report saved"
 msgstr ""
 
-#: src/ui/mod.rs:281 src/ui/mod.rs:308
+#: src/ui/mod.rs:313 src/ui/mod.rs:340
 msgid "Open"
 msgstr ""
 
-#: src/ui/mod.rs:288
+#: src/ui/mod.rs:320
 #, no-c-format
 msgid "Could not save the report: {0}"
 msgstr ""
 
-#: src/ui/mod.rs:296
+#: src/ui/mod.rs:328
 msgid "Export Data as CSV"
 msgstr ""
 
-#: src/ui/mod.rs:296
+#: src/ui/mod.rs:328
 msgid "Save Here"
 msgstr ""
 
-#: src/ui/mod.rs:307
+#: src/ui/mod.rs:339
 #, no-c-format
 msgid "Saved {n} file"
 msgid_plural "Saved {n} files"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/ui/mod.rs:316
+#: src/ui/mod.rs:348
 #, no-c-format
 msgid "Could not save the files: {0}"
 msgstr ""
 
-#: src/ui/mod.rs:333
+#: src/ui/mod.rs:365
 msgid "Record History in the Background?"
 msgstr ""
 
-#: src/ui/mod.rs:334
+#: src/ui/mod.rs:366
 msgid "Battery Health Center can start hidden when you log in, so battery history, sleep drain and notifications keep working with the window closed. You can change this any time on the Usage page."
 msgstr ""
 
-#: src/ui/mod.rs:336
+#: src/ui/mod.rs:368
 msgid "Not Now"
 msgstr ""
 
-#: src/ui/mod.rs:336
+#: src/ui/mod.rs:368
 msgid "Turn On"
 msgstr ""
 
-#: src/ui/mod.rs:49 src/ui/mod.rs:102 src/ui/mod.rs:138
+#: src/ui/mod.rs:49 src/ui/mod.rs:106 src/ui/mod.rs:145
 msgctxt "page title"
 msgid "Overview"
 msgstr ""
 
-#: src/ui/mod.rs:50 src/ui/mod.rs:103
+#: src/ui/mod.rs:50 src/ui/mod.rs:107
 msgctxt "page title"
 msgid "Health"
 msgstr ""
 
-#: src/ui/mod.rs:51 src/ui/mod.rs:104
+#: src/ui/mod.rs:51 src/ui/mod.rs:108
 msgctxt "page title"
 msgid "Charging"
 msgstr ""
 
-#: src/ui/mod.rs:52 src/ui/mod.rs:105
+#: src/ui/mod.rs:52 src/ui/mod.rs:109
 msgctxt "page title"
 msgid "Power"
 msgstr ""
 
-#: src/ui/mod.rs:53 src/ui/mod.rs:106
+#: src/ui/mod.rs:53 src/ui/mod.rs:110
 msgctxt "page title"
 msgid "Usage"
 msgstr ""
@@ -1093,48 +1143,48 @@ msgstr ""
 msgid "No Battery Found"
 msgstr ""
 
-#: src/ui/mod.rs:58
+#: src/ui/mod.rs:59
+msgid "Battery Health Center needs a laptop battery to show information. If this laptop has one, make sure the hardware-observe permission is connected."
+msgstr ""
+
+#: src/ui/mod.rs:61
 msgid "Battery Health Center needs a laptop battery to show information."
 msgstr ""
 
-#: src/ui/mod.rs:77
+#: src/ui/mod.rs:81
 msgid "_Refresh"
 msgstr ""
 
-#: src/ui/mod.rs:78
+#: src/ui/mod.rs:82
 msgid "_Export Battery Report…"
 msgstr ""
 
-#: src/ui/mod.rs:79
+#: src/ui/mod.rs:83
 msgid "Export _Data as CSV…"
 msgstr ""
 
-#: src/ui/mod.rs:82
+#: src/ui/mod.rs:86
 msgid "_Preferences"
 msgstr ""
 
-#: src/ui/mod.rs:83
+#: src/ui/mod.rs:87
 msgid "_User Manual"
 msgstr ""
 
-#: src/ui/mod.rs:84
+#: src/ui/mod.rs:88
 msgid "_About Battery Health Center"
 msgstr ""
 
-#: src/ui/mod.rs:85
+#: src/ui/mod.rs:89
 msgid "_Quit"
 msgstr ""
 
-#: src/ui/mod.rs:91 src/ui/mod.rs:93
+#: src/ui/mod.rs:95 src/ui/mod.rs:97
 msgid "Main Menu"
 msgstr ""
 
-#: src/ui/mod.rs:95
+#: src/ui/mod.rs:99
 msgid "User Manual (F1)"
-msgstr ""
-
-#: src/ui/mod.rs:96
-msgid "User Manual"
 msgstr ""
 
 #: src/ui/overview.rs:116 src/ui/overview.rs:219
@@ -1362,139 +1412,147 @@ msgstr ""
 msgid "Never"
 msgstr ""
 
-#: src/ui/power.rs:165
+#: src/ui/power.rs:166
 msgid "Power Mode"
 msgstr ""
 
-#: src/ui/power.rs:166
+#: src/ui/power.rs:167
 msgid "Power Saver reduces performance to extend battery life. Performance is only offered on some laptops."
 msgstr ""
 
-#: src/ui/power.rs:169
+#: src/ui/power.rs:170
 msgid "Current Mode"
 msgstr ""
 
-#: src/ui/power.rs:175
+#: src/ui/power.rs:176
 msgid "Automatic Power Mode"
 msgstr ""
 
-#: src/ui/power.rs:177
+#: src/ui/power.rs:178
 msgid "Switches the power mode by itself when you plug in or unplug the charger. You can still change the mode by hand; it's only switched again the next time something changes."
 msgstr ""
 
-#: src/ui/power.rs:181
+#: src/ui/power.rs:182
 msgid "Switch Automatically"
 msgstr ""
 
-#: src/ui/power.rs:182
+#: src/ui/power.rs:183
 msgid "When Plugged In"
 msgstr ""
 
-#: src/ui/power.rs:185
+#: src/ui/power.rs:186
 msgid "Use Power Saver When Battery Is Low"
 msgstr ""
 
-#: src/ui/power.rs:186
+#: src/ui/power.rs:187
 msgid "Overrides the mode above on battery"
 msgstr ""
 
-#: src/ui/power.rs:189
+#: src/ui/power.rs:190
 msgid "Low Battery Level"
 msgstr ""
 
-#: src/ui/power.rs:201
+#: src/ui/power.rs:202
 msgid "Power Mode and Automatic Power Mode Aren't Available"
 msgstr ""
 
-#: src/ui/power.rs:202
+#: src/ui/power.rs:204
+msgid "The snap sandbox doesn't allow access to the power mode service. Use the regular version of the app, or change the mode in Settings → Power."
+msgstr ""
+
+#: src/ui/power.rs:206
 msgid "Power Profiles Daemon isn't running, so the power mode can't be read or changed."
 msgstr ""
 
-#: src/ui/power.rs:214
+#: src/ui/power.rs:219
 msgid "Power Saving"
 msgstr ""
 
-#: src/ui/power.rs:215
+#: src/ui/power.rs:220
 msgid "GNOME's own settings that save the most battery. The same ones are in Settings → Power."
 msgstr ""
 
-#: src/ui/power.rs:222
+#: src/ui/power.rs:227
 msgid "Power Saver When Battery Is Low"
 msgstr ""
 
-#: src/ui/power.rs:223
+#: src/ui/power.rs:228
 msgid "GNOME switches to Power Saver mode when the battery gets low"
 msgstr ""
 
-#: src/ui/power.rs:230
+#: src/ui/power.rs:235
 msgid "Dim Screen When Inactive"
 msgstr ""
 
-#: src/ui/power.rs:231
+#: src/ui/power.rs:236
 msgid "The screen is usually the biggest power user, so dimming it saves a lot"
 msgstr ""
 
-#: src/ui/power.rs:235
+#: src/ui/power.rs:240
 msgid "Automatic Screen Brightness"
 msgstr ""
 
-#: src/ui/power.rs:235
+#: src/ui/power.rs:240
 msgid "Adjusts the brightness to the light around you"
 msgstr ""
 
-#: src/ui/power.rs:241
+#: src/ui/power.rs:246
 msgid "Screen Blank"
 msgstr ""
 
-#: src/ui/power.rs:242
+#: src/ui/power.rs:247
 msgid "Turns the screen off after you stop using the laptop"
 msgstr ""
 
-#: src/ui/power.rs:252
+#: src/ui/power.rs:257
 msgid "Automatic Suspend on Battery"
 msgstr ""
 
-#: src/ui/power.rs:252
+#: src/ui/power.rs:257
 msgid "Sleeping uses far less power than staying on"
 msgstr ""
 
-#: src/ui/power.rs:254
+#: src/ui/power.rs:259
 msgid "Automatic Suspend When Plugged In"
 msgstr ""
 
-#: src/ui/power.rs:263
+#: src/ui/power.rs:268
 msgid "Power Button and Lid"
 msgstr ""
 
-#: src/ui/power.rs:265
+#: src/ui/power.rs:270
 msgid "Power Button"
 msgstr ""
 
-#: src/ui/power.rs:266
+#: src/ui/power.rs:271
 msgid "Close the Lid on Battery"
 msgstr ""
 
-#: src/ui/power.rs:267
+#: src/ui/power.rs:272
 msgid "Close the Lid When Plugged In"
 msgstr ""
 
-#: src/ui/power.rs:277
+#: src/ui/power.rs:282
 msgid "Power Saving and Power Button Settings Aren't Available"
 msgstr ""
 
-#: src/ui/power.rs:278
-msgid "GNOME's power settings weren't found. They need GNOME Settings Daemon."
-msgstr ""
-
 #: src/ui/power.rs:284
-msgid "Show Battery Percentage"
-msgstr ""
-
-#: src/ui/power.rs:284
-msgid "Shows the percentage next to the battery icon in the top bar"
+msgid "The snap can't see GNOME's power settings. Use the regular version of the app, or change them in Settings → Power."
 msgstr ""
 
 #: src/ui/power.rs:286
+msgid "GNOME's power settings weren't found. They need GNOME Settings Daemon."
+msgstr ""
+
+#: src/ui/power.rs:294
+msgid "Show Battery Percentage"
+msgstr ""
+
+#: src/ui/power.rs:294
+msgid "Shows the percentage next to the battery icon in the top bar"
+msgstr ""
+
+#: src/ui/power.rs:296
 msgid "Top Bar"
 msgstr ""
 

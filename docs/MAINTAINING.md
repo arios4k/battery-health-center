@@ -69,6 +69,30 @@ Fedora's build service for personal repositories, so people can install it with
    `copr-cli build-package battery-health-center --name battery-health-center`).
 4. Optionally test the spec locally first: `packaging/rpm/build-in-lxd.sh /tmp/rpm-out`.
 
+## Snap Store
+
+[`snap/snapcraft.yaml`](../snap/snapcraft.yaml) builds a strictly confined snap. The sandbox can't use
+`pkexec`, so in the snap `bhc-helper serve` runs as a root service: the app sends it charge-limit and
+schedule requests over a socket in `$SNAP_COMMON`, and it re-applies saved limits and runs the schedule
+every 30 seconds. The snap's version comes from `Cargo.toml`. What the snap can't do (power modes,
+GNOME's power-saving settings, the charging behaviour switch) is listed in its store description, which is
+the `description` in `snapcraft.yaml`.
+
+The [Release workflow](../.github/workflows/release.yml) builds the snap for every tag and releases it to the
+stable channel. It needs one repository secret, made once on your laptop:
+
+```bash
+snapcraft export-login --snaps=battery-health-center --channels=stable \
+  --acls=package_access,package_push,package_update,package_release - | gh secret set SNAPCRAFT_STORE_CREDENTIALS
+```
+
+The credentials expire after a year; run it again then. To build and test locally:
+`snapcraft pack --use-lxd`, then `sudo snap install --dangerous battery-health-center_*.snap`.
+
+An upload doesn't change the store listing's description. When you change `description`, update the
+listing too: paste it into the Description box at <https://snapcraft.io/battery-health-center/listing>.
+Don't use `snapcraft upload-metadata`: it rewrites the listing's images.
+
 ## Publishing new versions
 
 There are two ways: push a tag and let GitHub Actions do it, or run the script on your laptop.
@@ -76,7 +100,8 @@ There are two ways: push a tag and let GitHub Actions do it, or run the script o
 ### Automated: push a tag
 
 The [Release workflow](../.github/workflows/release.yml) builds the `.deb`, publishes a GitHub Release with
-it, and adds the package to the signed apt repository (`arios4k/apt`). The [CI workflow](../.github/workflows/ci.yml)
+it, adds the package to the signed apt repository (`arios4k/apt`), asks COPR to build the Fedora package,
+and releases the snap to the Snap Store (see [Snap Store](#snap-store)). The [CI workflow](../.github/workflows/ci.yml)
 checks every push and pull request (build, tests, clippy, the `.deb`, and that the translation template is
 up to date).
 

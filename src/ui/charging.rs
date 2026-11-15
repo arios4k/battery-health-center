@@ -720,8 +720,9 @@ impl ChargingPage {
             self.status_row.set_subtitle(tr("Charging to 100% for your schedule; your limit comes back afterwards"));
         }
 
-        // Charging behavior (charge_behaviour)
-        let has_modes = b.charge_behaviours.len() > 1;
+        // Charging mode (charge_behaviour)
+        // The snap's interfaces don't allow writing charge_behaviour.
+        let has_modes = b.charge_behaviours.len() > 1 && !system::in_snap();
         self.mode_group.set_visible(has_modes);
         if has_modes {
             if *self.mode_ids.borrow() != b.charge_behaviours {

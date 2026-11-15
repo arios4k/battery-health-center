@@ -55,7 +55,11 @@ pub fn build_window(app: &adw::Application, ctrl: &Rc<Controller>) -> adw::Appli
     let no_battery = adw::StatusPage::builder()
         .icon_name("battery-missing-symbolic")
         .title(tr("No Battery Found"))
-        .description(tr("Battery Health Center needs a laptop battery to show information."))
+        .description(if crate::system::in_snap() {
+            tr("Battery Health Center needs a laptop battery to show information. If this laptop has one, make sure the hardware-observe permission is connected.")
+        } else {
+            tr("Battery Health Center needs a laptop battery to show information.")
+        })
         .build();
     let content = gtk::Stack::new();
     content.add_named(&stack, Some("main"));
@@ -134,6 +138,9 @@ pub fn build_window(app: &adw::Application, ctrl: &Rc<Controller>) -> adw::Appli
         dialog.present(Some(banner));
     });
     toolbar.add_top_bar(&save_banner);
+    if let Some(banner) = permissions_banner() {
+        toolbar.add_top_bar(&banner);
+    }
     toolbar.set_content(Some(&toasts));
     let workspace = adw::NavigationPage::new(&toolbar, trc("page title", "Overview"));
     let split = adw::NavigationSplitView::builder().sidebar(&sidebar).content(&workspace).build();
@@ -256,6 +263,31 @@ pub fn build_window(app: &adw::Application, ctrl: &Rc<Controller>) -> adw::Appli
     });
 
     window
+}
+
+/// In the snap, explains how to connect any interfaces that aren't connected.
+fn permissions_banner() -> Option<adw::Banner> {
+    let missing = crate::system::missing_snap_plugs();
+    if missing.is_empty() {
+        return None;
+    }
+    let banner = adw::Banner::builder()
+        .title(tr("Some features need permissions that aren't connected yet"))
+        .button_label(tr("How to Fix"))
+        .revealed(true)
+        .build();
+    banner.connect_button_clicked(move |banner| {
+        let mut body = String::from(tr("Run these commands in a terminal, then restart Battery Health Center:\n\n"));
+        for plug in &missing {
+            let purpose = crate::system::SNAP_PLUGS.iter().find(|(p, _)| p == plug).map(|(_, d)| tr(d)).unwrap_or("");
+            body.push_str(&format!("sudo snap connect battery-health-center:{plug}\n    (to {purpose})\n"));
+        }
+        let dialog = adw::AlertDialog::builder().heading(tr("Connect Permissions")).body(body.trim_end()).build();
+        dialog.set_body_use_markup(false);
+        dialog.add_response("close", tr("Close"));
+        dialog.present(Some(banner));
+    });
+    Some(banner)
 }
 
 /// Asks where to save the HTML battery report, then writes it.

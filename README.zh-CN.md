@@ -54,7 +54,7 @@ Linux 能提供电池数据，但它们分散各处：满屏 `upower` 和 `/sys`
 - **谨慎使用 root。** 只有一个小型辅助程序以 root 身份运行。它只接受经过验证的值，并且只写入电池的充电上限
   文件和它自己的配置。
 - **说您的语言。** 英语、西班牙语、德语、法语和简体中文，跟随您的系统语言。
-- **随系统更新。** 从已签名的 apt 仓库（或 Fedora 的 COPR）安装，日常系统更新就会让它保持最新。
+- **随系统更新。** 从已签名的 apt 仓库（或 Fedora 的 COPR、Snap Store）安装，日常系统更新就会让它保持最新。
 
 更多问题的答案（例如充电上限能否在您的笔记本电脑上使用）请见手册中的[故障排除与常见问题](https://arios4k.github.io/battery-health-center/manual/troubleshooting.html#faq)。
 
@@ -87,10 +87,26 @@ sudo dnf install battery-health-center
 然后在应用程序列表中打开 **Battery Health Center**。更新通过 `sudo dnf upgrade` 获取。充电上限和计划服务会在
 安装时自动启用，无需其他设置。
 
-## 从 snap 迁移
+## 从 Snap Store 安装
 
-如果您安装过旧版本的 snap，请先用 `sudo snap remove battery-health-center` 将其移除。这会删除其历史记录，所以
-请在此之前把 `~/snap/battery-health-center/current/.local/share/battery-health-center/*.csv` 复制到
+适用于任何支持 snap 的发行版，仅限 64 位 Intel/AMD：
+
+```bash
+sudo snap install battery-health-center
+sudo snap connect battery-health-center:hardware-observe
+sudo snap connect battery-health-center:system-observe
+sudo snap connect battery-health-center:power-control
+```
+
+snap 不会自动获得这些权限：`hardware-observe` 用于读取电池信息，`system-observe` 用于查看哪些应用在耗电，
+`power-control` 用于更改充电上限。snap 在沙盒中运行，因此无法更改电源模式或 GNOME 的节能设置，更改充电上限
+也不会要求输入密码。apt 和 Fedora 软件包提供全部功能；完整列表请见手册中的
+[Install](https://arios4k.github.io/battery-health-center/manual/getting-started.html#install)（英文）。
+
+## 在 snap 与软件包之间切换
+
+请只安装一个版本。snap 将历史记录保存在 `~/snap` 中，所以在用 `sudo snap remove battery-health-center`
+移除它之前，请先把 `~/snap/battery-health-center/current/.local/share/battery-health-center/*.csv` 复制到
 `~/.local/share/battery-health-center/`。
 
 ## 从源码构建

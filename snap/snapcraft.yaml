@@ -1,0 +1,133 @@
+name: battery-health-center
+title: Battery Health Center
+base: core24
+adopt-info: battery-health-center # the version comes from Cargo.toml
+summary: Battery health, charge limits and app energy usage in one place
+description: |
+  Everything about your laptop battery in one native GNOME app, much like the
+  Battery settings on macOS. In English, Spanish, German, French and Simplified
+  Chinese.
+
+  **What it does**
+  - Health: maximum capacity against design capacity, condition, cycle count,
+    and a trend with the date it is projected to reach 80%
+  - Guided calibration for when the percentage jumps or the laptop shuts down early
+  - Charge limits: Maximum Lifespan (60%), Balanced (80%), Full Capacity (100%)
+    or your own; "Charge to 100% Now" for a trip
+  - Charging schedule: full by the times you choose, or optimized charging that
+    learns when you usually unplug
+  - Usage: battery level and power draw over a day or a week, battery used
+    during sleep, and the apps using the most energy
+  - Notifications, an HTML battery report and CSV exports
+  - Battery levels of wireless mice, keyboards and headphones
+
+  The full guide is the user manual:
+  https://arios4k.github.io/battery-health-center/manual/
+
+  **After installing: connect the permissions**
+  Snaps don't get these permissions by themselves. Run once in a terminal:
+
+      sudo snap connect battery-health-center:hardware-observe
+      sudo snap connect battery-health-center:system-observe
+      sudo snap connect battery-health-center:power-control
+
+  hardware-observe reads the battery, system-observe sees which apps use
+  energy, and power-control changes the charge limit. Then restart the app.
+  Until they're connected, the app shows a banner with the same commands.
+
+  **What the snap can't do**
+  The snap runs in a sandbox, so a few things work differently from the apt
+  and Fedora packages:
+  - Power mode and Automatic Power Mode are not available: the sandbox has no
+    access to the power mode service. Change the mode in Settings → Power.
+  - GNOME's power-saving settings (dim screen, screen blank, automatic suspend,
+    power button, lid) are not available. Change them in Settings → Power. The
+    battery percentage in the top bar does work.
+  - The charging behaviour switch (pause charging, discharge on AC) is hidden.
+  - Charge limits are applied by a small service inside the snap instead of
+    asking for your password, so any user of the computer can change them.
+  - With background recording on, the hidden copy closes when an update is
+    waiting so it can install, and starts again at your next login.
+  - History is kept inside the snap (~/snap/battery-health-center), separate
+    from the apt or Fedora version.
+
+  For all features, install the apt or Fedora package instead (don't install
+  both): https://github.com/arios4k/battery-health-center#install-ubuntu-debian-and-derivatives
+
+  **Compatibility**
+  Battery information works on any laptop with a standard Linux battery driver.
+  Charge limits need firmware support exposed by the kernel, as on ThinkPads
+  and many ASUS, Dell, Huawei, LG, Samsung and System76 laptops; if yours
+  doesn't have it, the Charging page says so. Linux doesn't measure power per
+  app, so app energy use is an estimate based on CPU time.
+
+  Free and open source (GPL-3.0-or-later). Everything stays on your computer:
+  no internet access and no telemetry.
+grade: stable
+confinement: strict
+license: GPL-3.0-or-later
+website: https://arios4k.github.io/battery-health-center/manual/
+source-code: https://github.com/arios4k/battery-health-center
+issues: https://github.com/arios4k/battery-health-center/issues
+contact: https://github.com/arios4k/battery-health-center/issues
+donation: https://paypal.me/AlexisRios
+icon: data/icons/hicolor/scalable/apps/io.github.BatteryHealthCenter.svg
+
+platforms:
+  amd64:
+    build-on: [amd64]
+    build-for: [amd64]
+
+apps:
+  battery-health-center:
+    command: bin/battery-health-center
+    desktop: usr/share/applications/io.github.BatteryHealthCenter.desktop
+    common-id: io.github.BatteryHealthCenter
+    autostart: io.github.BatteryHealthCenter.desktop
+    extensions: [gnome]
+    plugs:
+      - hardware-observe
+      - system-observe
+      - upower-observe # wireless device batteries (auto-connected)
+
+  # Root service that applies charge limits for the app (pkexec can't be used
+  # inside a snap), re-applies saved limits at boot and after sleep, and runs
+  # the charging schedule. See `bhc-helper serve`.
+  helper:
+    command: bin/bhc-helper serve
+    daemon: simple
+    restart-condition: always
+    plugs:
+      - hardware-observe
+      - power-control
+      - network-bind # listening on the app's local socket (auto-connected)
+
+parts:
+  battery-health-center:
+    # Built with an explicit cargo call because the gnome extension's
+    # LD_LIBRARY_PATH (the SDK's own libc) crashes rustup; it's cleared just for
+    # the Rust toolchain. pkg-config still finds GTK in the SDK.
+    plugin: nil
+    source: .
+    build-snaps: [rustup]
+    build-packages: [gettext]
+    override-pull: |
+      craftctl default
+      craftctl set version="$(sed -n 's/^version = "\(.*\)"$/\1/p' Cargo.toml | head -n 1)"
+    override-build: |
+      env -u LD_LIBRARY_PATH /snap/bin/rustup toolchain install stable --profile minimal
+      env -u LD_LIBRARY_PATH /snap/bin/rustup default stable
+      # cargo runs without the SDK's LD_LIBRARY_PATH, but the SDK's pkg-config
+      # needs it to start, so the build scripts call it through a small wrapper.
+      sdk_pkg_config="$(command -v pkg-config)"
+      printf '#!/bin/sh\nLD_LIBRARY_PATH="%s" exec "%s" "$@"\n' "$LD_LIBRARY_PATH" "$sdk_pkg_config" > /tmp/bhc-pkg-config
+      chmod +x /tmp/bhc-pkg-config
+      PKG_CONFIG=/tmp/bhc-pkg-config env -u LD_LIBRARY_PATH /snap/bin/cargo install --locked --path . --root "$CRAFT_PART_INSTALL"
+      rm -f "$CRAFT_PART_INSTALL/.crates.toml" "$CRAFT_PART_INSTALL/.crates2.json"
+      scripts/build-locale.sh "$CRAFT_PART_INSTALL/share/locale"
+      install -Dm644 data/io.github.BatteryHealthCenter.desktop \
+        "$CRAFT_PART_INSTALL/usr/share/applications/io.github.BatteryHealthCenter.desktop"
+      install -Dm644 data/io.github.BatteryHealthCenter.metainfo.xml \
+        "$CRAFT_PART_INSTALL/usr/share/metainfo/io.github.BatteryHealthCenter.metainfo.xml"
+      install -Dm644 data/icons/hicolor/scalable/apps/io.github.BatteryHealthCenter.svg \
+        "$CRAFT_PART_INSTALL/usr/share/icons/hicolor/scalable/apps/io.github.BatteryHealthCenter.svg"
