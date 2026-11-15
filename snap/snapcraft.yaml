@@ -111,8 +111,10 @@ parts:
     source: .
     build-snaps: [rustup]
     build-packages: [gettext]
-    override-build: |
+    override-pull: |
+      craftctl default
       craftctl set version="$(sed -n 's/^version = "\(.*\)"$/\1/p' Cargo.toml | head -n 1)"
+    override-build: |
       env -u LD_LIBRARY_PATH /snap/bin/rustup toolchain install stable --profile minimal
       env -u LD_LIBRARY_PATH /snap/bin/rustup default stable
       # cargo runs without the SDK's LD_LIBRARY_PATH, but the SDK's pkg-config
