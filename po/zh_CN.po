@@ -45,7 +45,7 @@ msgstr "显示服务器（Xorg）"
 msgid "Linux Kernel"
 msgstr "Linux 内核"
 
-#: src/battery.rs:110 src/system.rs:245 src/ui/charging.rs:14
+#: src/battery.rs:110 src/system.rs:318 src/ui/charging.rs:14
 #: src/ui/usage.rs:183
 msgid "Normal"
 msgstr "正常"
@@ -67,7 +67,7 @@ msgid "USB-C Power Delivery"
 msgstr "USB-C Power Delivery"
 
 #: src/battery.rs:35 src/battery.rs:47 src/ui/overview.rs:182
-#: src/ui/power.rs:183
+#: src/ui/power.rs:184
 msgid "On Battery"
 msgstr "使用电池"
 
@@ -109,7 +109,7 @@ msgstr "{h} 小时 {m} 分钟"
 msgid "Not Charging"
 msgstr "未充电"
 
-#: src/battery.rs:49 src/system.rs:247
+#: src/battery.rs:49 src/system.rs:320
 msgid "Full"
 msgstr "已满"
 
@@ -195,98 +195,129 @@ msgstr "睡眠期间耗电较多"
 msgid "Your laptop used {0}% in {1} asleep ({rate}% per hour)."
 msgstr "您的笔记本电脑在睡眠的 {1} 内消耗了 {0}% 的电量（每小时 {rate}%）。"
 
-#: src/desktop.rs:250
+#: src/desktop.rs:251
 msgid "Suspend"
 msgstr "挂起"
 
-#: src/desktop.rs:251
+#: src/desktop.rs:252
 msgid "Hibernate"
 msgstr "休眠"
 
-#: src/desktop.rs:252
+#: src/desktop.rs:253
 msgid "Do Nothing"
 msgstr "不执行任何操作"
 
-#: src/desktop.rs:253
+#: src/desktop.rs:254
 msgid "Ask What to Do"
 msgstr "询问如何操作"
 
-#: src/desktop.rs:254
+#: src/desktop.rs:255
 msgid "Turn Off the Screen"
 msgstr "关闭屏幕"
 
-#: src/desktop.rs:255
+#: src/desktop.rs:256
 msgid "Shut Down"
 msgstr "关机"
 
-#: src/desktop.rs:256
+#: src/desktop.rs:257
 msgid "Log Out"
 msgstr "注销"
 
-#: src/desktop.rs:268
+#: src/desktop.rs:269
 #, no-c-format
 msgid "{n} second"
 msgid_plural "{n} seconds"
 msgstr[0] "{n} 秒"
 
-#: src/desktop.rs:269 src/desktop.rs:271
+#: src/desktop.rs:270 src/desktop.rs:272
 #, no-c-format
 msgid "{n} minute"
 msgid_plural "{n} minutes"
 msgstr[0] "{n} 分钟"
 
-#: src/desktop.rs:270
+#: src/desktop.rs:271
 #, no-c-format
 msgid "{n} hour"
 msgid_plural "{n} hours"
 msgstr[0] "{n} 小时"
 
-#: src/system.rs:110
+#: src/main.rs:176
+msgid "Battery Health Center Is Updating"
+msgstr "Battery Health Center 正在更新"
+
+#: src/main.rs:177
+msgid ""
+"It closed so the update can install. Background recording starts again the "
+"next time you log in or open the app."
+msgstr "应用已关闭，以便安装更新。下次您登录或打开应用时，后台记录会重新开始。"
+
+#: src/system.rs:163
 msgid "Power Saver"
 msgstr "节能"
 
-#: src/system.rs:111
+#: src/system.rs:164
 msgid "Balanced"
 msgstr "平衡"
 
-#: src/system.rs:112
+#: src/system.rs:165
 msgid "Performance"
 msgstr "性能"
 
-#: src/system.rs:243 src/ui/usage.rs:56
+#: src/system.rs:18
+msgid "read battery information"
+msgstr "读取电池信息"
+
+#: src/system.rs:19
+msgid "see which apps use energy"
+msgstr "查看哪些应用在耗电"
+
+#: src/system.rs:20
+msgid "change the charge limit"
+msgstr "更改充电上限"
+
+#: src/system.rs:316 src/ui/usage.rs:56
 msgid "Low"
 msgstr "低"
 
-#: src/system.rs:244
+#: src/system.rs:317
 msgid "Critical"
 msgstr "严重不足"
 
-#: src/system.rs:246 src/ui/usage.rs:52 src/ui/usage.rs:183
+#: src/system.rs:319 src/ui/usage.rs:52 src/ui/usage.rs:183
 msgid "High"
 msgstr "高"
 
-#: src/system.rs:292
+#: src/system.rs:365
 msgid "Wireless Device"
 msgstr "无线设备"
 
-#: src/system.rs:32
-msgid "The bhc-helper program was not found. Is the app installed?"
-msgstr "找不到 bhc-helper 程序。应用是否已安装？"
+#: src/system.rs:60
+msgid "The Battery Health Center service is not running"
+msgstr "Battery Health Center 服务未运行"
 
-#: src/system.rs:35
+#: src/system.rs:67
+msgid ""
+"Permission denied. Run: snap connect battery-health-center:power-control"
+msgstr "权限被拒绝。请运行：snap connect battery-health-center:power-control"
+
+#: src/system.rs:79 src/system.rs:84
 msgid "The helper crashed"
 msgstr "辅助程序已崩溃"
 
-#: src/system.rs:36
+#: src/system.rs:81
+msgid "The bhc-helper program was not found. Is the app installed?"
+msgstr "找不到 bhc-helper 程序。应用是否已安装？"
+
+#: src/system.rs:85
 #, no-c-format
 msgid "Could not run pkexec: {e}"
 msgstr "无法运行 pkexec：{e}"
 
-#: src/system.rs:39
+#: src/system.rs:88
 msgid "Authorization was cancelled"
 msgstr "授权已取消"
 
-#: src/system.rs:42
+#: src/system.rs:91
 msgid "The change could not be applied"
 msgstr "无法应用更改"
 
@@ -478,7 +509,7 @@ msgstr "限制最大电量"
 msgid "Stop Charging At"
 msgstr "停止充电的电量"
 
-#: src/ui/charging.rs:171 src/ui/power.rs:190 src/ui/preferences.rs:53
+#: src/ui/charging.rs:171 src/ui/power.rs:191 src/ui/preferences.rs:53
 msgid "Percent"
 msgstr "百分比"
 
@@ -1040,39 +1071,43 @@ msgid ""
 "the overall direction."
 msgstr "每天记录一次。读数每天会略有波动；趋势线显示总体走向。"
 
-#: src/ui/mod.rs:102
+#: src/ui/mod.rs:100
+msgid "User Manual"
+msgstr "用户手册"
+
+#: src/ui/mod.rs:106
 msgid "Your battery, charger and recommendations at a glance."
 msgstr "电池、充电器和建议，一目了然。"
 
-#: src/ui/mod.rs:103
+#: src/ui/mod.rs:107
 msgid "Understand battery capacity, wear and long-term health."
 msgstr "了解电池容量、损耗和长期健康状况。"
 
-#: src/ui/mod.rs:104
+#: src/ui/mod.rs:108
 msgid "Protect your battery with charge limits and schedules."
 msgstr "通过充电上限和计划保护您的电池。"
 
-#: src/ui/mod.rs:105
+#: src/ui/mod.rs:109
 msgid "Choose a power mode and adjust energy-saving settings."
 msgstr "选择电源模式并调整节能设置。"
 
-#: src/ui/mod.rs:106
+#: src/ui/mod.rs:110
 msgid "Explore battery history, sleep drain and app energy use."
 msgstr "查看电池历史、睡眠耗电和各应用的能耗。"
 
-#: src/ui/mod.rs:126
+#: src/ui/mod.rs:130
 msgid "Some changes could not be saved"
 msgstr "部分更改无法保存"
 
-#: src/ui/mod.rs:126 src/ui/overview.rs:314 src/ui/overview.rs:323
+#: src/ui/mod.rs:130 src/ui/overview.rs:314 src/ui/overview.rs:323
 msgid "Details"
 msgstr "详情"
 
-#: src/ui/mod.rs:130
+#: src/ui/mod.rs:134
 msgid "Could Not Save Data"
 msgstr "无法保存数据"
 
-#: src/ui/mod.rs:131
+#: src/ui/mod.rs:135
 msgid ""
 "Check available disk space and folder permissions. Failed preferences were "
 "not applied; unsaved history may be lost when the app closes."
@@ -1080,51 +1115,71 @@ msgstr ""
 "请检查可用磁盘空间和文件夹权限。保存失败的首选项未被应用；应用关闭时，未保存"
 "的历史记录可能丢失。"
 
-#: src/ui/mod.rs:133
+#: src/ui/mod.rs:137 src/ui/mod.rs:287
 msgid "Close"
 msgstr "关闭"
 
-#: src/ui/mod.rs:266
+#: src/ui/mod.rs:275
+msgid "Some features need permissions that aren't connected yet"
+msgstr "部分功能需要的权限尚未连接"
+
+#: src/ui/mod.rs:276
+msgid "How to Fix"
+msgstr "如何修复"
+
+#: src/ui/mod.rs:280
+msgid ""
+"Run these commands in a terminal, then restart Battery Health Center:\n"
+"\n"
+msgstr ""
+"请在终端中运行以下命令，然后重新启动 Battery Health Center：\n"
+"\n"
+
+#: src/ui/mod.rs:285
+msgid "Connect Permissions"
+msgstr "连接权限"
+
+#: src/ui/mod.rs:298
 msgid "Export Battery Report"
 msgstr "导出电池报告"
 
-#: src/ui/mod.rs:281
+#: src/ui/mod.rs:313
 msgid "Battery report saved"
 msgstr "电池报告已保存"
 
-#: src/ui/mod.rs:281 src/ui/mod.rs:308
+#: src/ui/mod.rs:313 src/ui/mod.rs:340
 msgid "Open"
 msgstr "打开"
 
-#: src/ui/mod.rs:288
+#: src/ui/mod.rs:320
 #, no-c-format
 msgid "Could not save the report: {0}"
 msgstr "无法保存报告：{0}"
 
-#: src/ui/mod.rs:296
+#: src/ui/mod.rs:328
 msgid "Export Data as CSV"
 msgstr "将数据导出为 CSV"
 
-#: src/ui/mod.rs:296
+#: src/ui/mod.rs:328
 msgid "Save Here"
 msgstr "保存到此处"
 
-#: src/ui/mod.rs:307
+#: src/ui/mod.rs:339
 #, no-c-format
 msgid "Saved {n} file"
 msgid_plural "Saved {n} files"
 msgstr[0] "已保存 {n} 个文件"
 
-#: src/ui/mod.rs:316
+#: src/ui/mod.rs:348
 #, no-c-format
 msgid "Could not save the files: {0}"
 msgstr "无法保存文件：{0}"
 
-#: src/ui/mod.rs:333
+#: src/ui/mod.rs:365
 msgid "Record History in the Background?"
 msgstr "在后台记录历史？"
 
-#: src/ui/mod.rs:334
+#: src/ui/mod.rs:366
 msgid ""
 "Battery Health Center can start hidden when you log in, so battery history, "
 "sleep drain and notifications keep working with the window closed. You can "
@@ -1133,35 +1188,35 @@ msgstr ""
 "Battery Health Center 可以在您登录时隐藏启动，这样即使关闭窗口，电池历史、睡"
 "眠耗电和通知也能继续工作。您可以随时在“使用情况”页面更改此设置。"
 
-#: src/ui/mod.rs:336
+#: src/ui/mod.rs:368
 msgid "Not Now"
 msgstr "暂不"
 
-#: src/ui/mod.rs:336
+#: src/ui/mod.rs:368
 msgid "Turn On"
 msgstr "开启"
 
-#: src/ui/mod.rs:49 src/ui/mod.rs:102 src/ui/mod.rs:138
+#: src/ui/mod.rs:49 src/ui/mod.rs:106 src/ui/mod.rs:145
 msgctxt "page title"
 msgid "Overview"
 msgstr "概览"
 
-#: src/ui/mod.rs:50 src/ui/mod.rs:103
+#: src/ui/mod.rs:50 src/ui/mod.rs:107
 msgctxt "page title"
 msgid "Health"
 msgstr "健康"
 
-#: src/ui/mod.rs:51 src/ui/mod.rs:104
+#: src/ui/mod.rs:51 src/ui/mod.rs:108
 msgctxt "page title"
 msgid "Charging"
 msgstr "充电"
 
-#: src/ui/mod.rs:52 src/ui/mod.rs:105
+#: src/ui/mod.rs:52 src/ui/mod.rs:109
 msgctxt "page title"
 msgid "Power"
 msgstr "电源"
 
-#: src/ui/mod.rs:53 src/ui/mod.rs:106
+#: src/ui/mod.rs:53 src/ui/mod.rs:110
 msgctxt "page title"
 msgid "Usage"
 msgstr "使用情况"
@@ -1170,49 +1225,53 @@ msgstr "使用情况"
 msgid "No Battery Found"
 msgstr "未找到电池"
 
-#: src/ui/mod.rs:58
+#: src/ui/mod.rs:59
+msgid ""
+"Battery Health Center needs a laptop battery to show information. If this "
+"laptop has one, make sure the hardware-observe permission is connected."
+msgstr ""
+"Battery Health Center 需要笔记本电脑电池才能显示信息。如果这台笔记本电脑有电"
+"池，请确认已连接 hardware-observe 权限。"
+
+#: src/ui/mod.rs:61
 msgid "Battery Health Center needs a laptop battery to show information."
 msgstr "Battery Health Center 需要笔记本电脑电池才能显示信息。"
 
-#: src/ui/mod.rs:77
+#: src/ui/mod.rs:81
 msgid "_Refresh"
 msgstr "刷新(_R)"
 
-#: src/ui/mod.rs:78
+#: src/ui/mod.rs:82
 msgid "_Export Battery Report…"
 msgstr "导出电池报告(_E)…"
 
-#: src/ui/mod.rs:79
+#: src/ui/mod.rs:83
 msgid "Export _Data as CSV…"
 msgstr "将数据导出为 CSV(_D)…"
 
-#: src/ui/mod.rs:82
+#: src/ui/mod.rs:86
 msgid "_Preferences"
 msgstr "首选项(_P)"
 
-#: src/ui/mod.rs:83
+#: src/ui/mod.rs:87
 msgid "_User Manual"
 msgstr "用户手册(_U)"
 
-#: src/ui/mod.rs:84
+#: src/ui/mod.rs:88
 msgid "_About Battery Health Center"
 msgstr "关于 Battery Health Center(_A)"
 
-#: src/ui/mod.rs:85
+#: src/ui/mod.rs:89
 msgid "_Quit"
 msgstr "退出(_Q)"
 
-#: src/ui/mod.rs:91 src/ui/mod.rs:93
+#: src/ui/mod.rs:95 src/ui/mod.rs:97
 msgid "Main Menu"
 msgstr "主菜单"
 
-#: src/ui/mod.rs:95
+#: src/ui/mod.rs:99
 msgid "User Manual (F1)"
 msgstr "用户手册 (F1)"
-
-#: src/ui/mod.rs:96
-msgid "User Manual"
-msgstr "用户手册"
 
 #: src/ui/overview.rs:116 src/ui/overview.rs:219
 msgid "Since Last Charge"
@@ -1454,25 +1513,25 @@ msgstr "电池健康"
 msgid "Never"
 msgstr "从不"
 
-#: src/ui/power.rs:165
+#: src/ui/power.rs:166
 msgid "Power Mode"
 msgstr "电源模式"
 
-#: src/ui/power.rs:166
+#: src/ui/power.rs:167
 msgid ""
 "Power Saver reduces performance to extend battery life. Performance is only "
 "offered on some laptops."
 msgstr "节能模式会降低性能以延长电池续航。性能模式仅在部分笔记本电脑上提供。"
 
-#: src/ui/power.rs:169
+#: src/ui/power.rs:170
 msgid "Current Mode"
 msgstr "当前模式"
 
-#: src/ui/power.rs:175
+#: src/ui/power.rs:176
 msgid "Automatic Power Mode"
 msgstr "自动电源模式"
 
-#: src/ui/power.rs:177
+#: src/ui/power.rs:178
 msgid ""
 "Switches the power mode by itself when you plug in or unplug the charger. "
 "You can still change the mode by hand; it's only switched again the next "
@@ -1481,123 +1540,139 @@ msgstr ""
 "在您接通或拔下充电器时自动切换电源模式。您仍可以手动更改模式；只有在下次状态"
 "变化时才会再次自动切换。"
 
-#: src/ui/power.rs:181
+#: src/ui/power.rs:182
 msgid "Switch Automatically"
 msgstr "自动切换"
 
-#: src/ui/power.rs:182
+#: src/ui/power.rs:183
 msgid "When Plugged In"
 msgstr "接通电源时"
 
-#: src/ui/power.rs:185
+#: src/ui/power.rs:186
 msgid "Use Power Saver When Battery Is Low"
 msgstr "电量不足时使用节能模式"
 
-#: src/ui/power.rs:186
+#: src/ui/power.rs:187
 msgid "Overrides the mode above on battery"
 msgstr "使用电池时覆盖上面的模式"
 
-#: src/ui/power.rs:189
+#: src/ui/power.rs:190
 msgid "Low Battery Level"
 msgstr "低电量阈值"
 
-#: src/ui/power.rs:201
+#: src/ui/power.rs:202
 msgid "Power Mode and Automatic Power Mode Aren't Available"
 msgstr "电源模式和自动电源模式不可用"
 
-#: src/ui/power.rs:202
+#: src/ui/power.rs:204
+msgid ""
+"The snap sandbox doesn't allow access to the power mode service. Use the "
+"regular version of the app, or change the mode in Settings → Power."
+msgstr ""
+"snap 沙盒不允许访问电源模式服务。请使用常规版本的应用，或在“设置”→“电源”中更"
+"改模式。"
+
+#: src/ui/power.rs:206
 msgid ""
 "Power Profiles Daemon isn't running, so the power mode can't be read or "
 "changed."
 msgstr "Power Profiles Daemon 未运行，因此无法读取或更改电源模式。"
 
-#: src/ui/power.rs:214
+#: src/ui/power.rs:219
 msgid "Power Saving"
 msgstr "节能"
 
-#: src/ui/power.rs:215
+#: src/ui/power.rs:220
 msgid ""
 "GNOME's own settings that save the most battery. The same ones are in "
 "Settings → Power."
 msgstr "GNOME 自带的最能省电的设置。它们同样位于“设置”→“电源”中。"
 
-#: src/ui/power.rs:222
+#: src/ui/power.rs:227
 msgid "Power Saver When Battery Is Low"
 msgstr "电量不足时启用节能模式"
 
-#: src/ui/power.rs:223
+#: src/ui/power.rs:228
 msgid "GNOME switches to Power Saver mode when the battery gets low"
 msgstr "电量不足时 GNOME 会切换到节能模式"
 
-#: src/ui/power.rs:230
+#: src/ui/power.rs:235
 msgid "Dim Screen When Inactive"
 msgstr "无操作时调暗屏幕"
 
-#: src/ui/power.rs:231
+#: src/ui/power.rs:236
 msgid "The screen is usually the biggest power user, so dimming it saves a lot"
 msgstr "屏幕通常是最耗电的部件，调暗它可以节省大量电量"
 
-#: src/ui/power.rs:235
+#: src/ui/power.rs:240
 msgid "Automatic Screen Brightness"
 msgstr "自动屏幕亮度"
 
-#: src/ui/power.rs:235
+#: src/ui/power.rs:240
 msgid "Adjusts the brightness to the light around you"
 msgstr "根据周围光线调整亮度"
 
-#: src/ui/power.rs:241
+#: src/ui/power.rs:246
 msgid "Screen Blank"
 msgstr "屏幕空白"
 
-#: src/ui/power.rs:242
+#: src/ui/power.rs:247
 msgid "Turns the screen off after you stop using the laptop"
 msgstr "在您停止使用笔记本电脑后关闭屏幕"
 
-#: src/ui/power.rs:252
+#: src/ui/power.rs:257
 msgid "Automatic Suspend on Battery"
 msgstr "使用电池时自动挂起"
 
-#: src/ui/power.rs:252
+#: src/ui/power.rs:257
 msgid "Sleeping uses far less power than staying on"
 msgstr "睡眠比保持开机省电得多"
 
-#: src/ui/power.rs:254
+#: src/ui/power.rs:259
 msgid "Automatic Suspend When Plugged In"
 msgstr "接通电源时自动挂起"
 
-#: src/ui/power.rs:263
+#: src/ui/power.rs:268
 msgid "Power Button and Lid"
 msgstr "电源按钮和屏幕盖"
 
-#: src/ui/power.rs:265
+#: src/ui/power.rs:270
 msgid "Power Button"
 msgstr "电源按钮"
 
-#: src/ui/power.rs:266
+#: src/ui/power.rs:271
 msgid "Close the Lid on Battery"
 msgstr "使用电池时合上屏幕盖"
 
-#: src/ui/power.rs:267
+#: src/ui/power.rs:272
 msgid "Close the Lid When Plugged In"
 msgstr "接通电源时合上屏幕盖"
 
-#: src/ui/power.rs:277
+#: src/ui/power.rs:282
 msgid "Power Saving and Power Button Settings Aren't Available"
 msgstr "节能和电源按钮设置不可用"
 
-#: src/ui/power.rs:278
+#: src/ui/power.rs:284
+msgid ""
+"The snap can't see GNOME's power settings. Use the regular version of the "
+"app, or change them in Settings → Power."
+msgstr ""
+"snap 无法读取 GNOME 的电源设置。请使用常规版本的应用，或在“设置”→“电源”中更改"
+"它们。"
+
+#: src/ui/power.rs:286
 msgid "GNOME's power settings weren't found. They need GNOME Settings Daemon."
 msgstr "未找到 GNOME 的电源设置。它们需要 GNOME Settings Daemon。"
 
-#: src/ui/power.rs:284
+#: src/ui/power.rs:294
 msgid "Show Battery Percentage"
 msgstr "显示电量百分比"
 
-#: src/ui/power.rs:284
+#: src/ui/power.rs:294
 msgid "Shows the percentage next to the battery icon in the top bar"
 msgstr "在顶栏的电池图标旁显示百分比"
 
-#: src/ui/power.rs:286
+#: src/ui/power.rs:296
 msgid "Top Bar"
 msgstr "顶栏"
 

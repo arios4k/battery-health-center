@@ -55,7 +55,7 @@ in one native GNOME app, much like the Battery settings on macOS:
 - **Careful with root.** Only a small helper runs as root. It accepts nothing but validated values and
   writes only the battery's charge-limit files and its own config.
 - **Speaks your language.** English, Spanish, German, French and Simplified Chinese, following your system language.
-- **Updates with your system.** Install it from a signed apt repository (or Fedora's COPR) and your usual updates keep it current.
+- **Updates with your system.** Install it from a signed apt repository (or Fedora's COPR, or the Snap Store) and your usual updates keep it current.
 
 More answers, such as whether the charge limit works on your laptop, are in the manual's [Troubleshooting and FAQ](https://arios4k.github.io/battery-health-center/manual/troubleshooting.html#faq).
 
@@ -90,11 +90,28 @@ sudo dnf install battery-health-center
 Then open **Battery Health Center** from your applications. Updates arrive with `sudo dnf upgrade`. The
 charge-limit and schedule services are turned on by the installation, so nothing else needs setting up.
 
-## Moving from the snap
+## Install (Snap Store)
 
-If you installed an older version as a snap, remove it first with `sudo snap remove battery-health-center`.
-That deletes its history, so copy `~/snap/battery-health-center/current/.local/share/battery-health-center/*.csv`
-to `~/.local/share/battery-health-center/` before you do.
+For any distribution with snap support, on 64-bit Intel/AMD:
+
+```bash
+sudo snap install battery-health-center
+sudo snap connect battery-health-center:hardware-observe
+sudo snap connect battery-health-center:system-observe
+sudo snap connect battery-health-center:power-control
+```
+
+Snaps don't get these permissions by themselves: `hardware-observe` reads the battery, `system-observe`
+sees which apps use energy, and `power-control` changes the charge limit. The snap runs in a sandbox, so it
+can't change the power mode or GNOME's power-saving settings, and charge limits don't ask for a password.
+The apt and Fedora packages have every feature; see [Install](https://arios4k.github.io/battery-health-center/manual/getting-started.html#install)
+in the manual for the full list.
+
+## Moving between the snap and the packages
+
+Install only one version. The snap keeps its history in `~/snap`, so before you remove it with
+`sudo snap remove battery-health-center`, copy `~/snap/battery-health-center/current/.local/share/battery-health-center/*.csv`
+to `~/.local/share/battery-health-center/`.
 
 ## Build from source
 

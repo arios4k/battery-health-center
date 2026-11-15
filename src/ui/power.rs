@@ -159,6 +159,7 @@ pub struct PowerPage {
 impl PowerPage {
     pub fn new(ctrl: &Rc<Controller>) -> Rc<Self> {
         let root = super::workspace::Workspace::single_column();
+        let in_snap = system::in_snap();
 
         // Power mode: needs power-profiles-daemon.
         let mode_group = adw::PreferencesGroup::builder()
@@ -199,7 +200,11 @@ impl PowerPage {
         if ctrl.profiles.is_none() {
             root.add(&note(
                 tr("Power Mode and Automatic Power Mode Aren't Available"),
-                tr("Power Profiles Daemon isn't running, so the power mode can't be read or changed."),
+                if in_snap {
+                    tr("The snap sandbox doesn't allow access to the power mode service. Use the regular version of the app, or change the mode in Settings → Power.")
+                } else {
+                    tr("Power Profiles Daemon isn't running, so the power mode can't be read or changed.")
+                },
                 "dialog-information-symbolic",
             ));
         }
@@ -275,11 +280,16 @@ impl PowerPage {
         } else {
             root.add(&note(
                 tr("Power Saving and Power Button Settings Aren't Available"),
-                tr("GNOME's power settings weren't found. They need GNOME Settings Daemon."),
+                if in_snap {
+                    tr("The snap can't see GNOME's power settings. Use the regular version of the app, or change them in Settings → Power.")
+                } else {
+                    tr("GNOME's power settings weren't found. They need GNOME Settings Daemon.")
+                },
                 "dialog-information-symbolic",
             ));
         }
 
+        // This one is readable and writable even inside the snap.
         if let Some(row) = desktop::settings(desktop::INTERFACE_SCHEMA).and_then(|s| {
             bool_row(&s, "show-battery-percentage", tr("Show Battery Percentage"), tr("Shows the percentage next to the battery icon in the top bar"))
         }) {

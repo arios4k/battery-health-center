@@ -70,6 +70,10 @@ def table(head, rows):
 # What's new: one entry per release, newest first. Add the new release at the top when you publish it.
 # (version, date, [items as HTML: bold lead-in, then what changed and where to read more])
 WHATS_NEW = [
+    ("0.6.6", "November 14, 2026", [
+        "<strong>Back on the Snap Store.</strong> Install with <code>sudo snap install battery-health-center</code>. The snap runs in a sandbox, so power modes and GNOME's power-saving settings stay in the apt and Fedora packages; see <a href=\"getting-started.html#install\">Install</a> for what to connect and what the snap can't do.",
+        "Nothing changes for the apt and Fedora packages.",
+    ]),
     ("0.6.5", "November 9, 2026", [
         "<strong>Help opens the right page.</strong> The help button, <kbd>F1</kbd> and <em>User Manual</em> now open the manual page that matches the page you are on: on Charging they open the Charging page. See <a href=\"getting-started.html#layout\">Finding your way around</a>.",
         "<strong>What's new.</strong> This page lists what changed in every release.",
@@ -173,9 +177,27 @@ sudo apt update &amp;&amp; sudo apt install battery-health-center</code></pre>
 sudo dnf install battery-health-center</code></pre>
 <p>Updates arrive with <code>sudo dnf upgrade</code>. The charge-limit and schedule services are turned on by the
 installation, so nothing else needs setting up.</p>
+<h3>Snap Store</h3>
+<p>For any distribution with snap support, on 64-bit Intel/AMD:</p>
+<pre><code>sudo snap install battery-health-center
+sudo snap connect battery-health-center:hardware-observe
+sudo snap connect battery-health-center:system-observe
+sudo snap connect battery-health-center:power-control</code></pre>
+<p>Snaps don't get these permissions by themselves: <code>hardware-observe</code> reads the battery,
+<code>system-observe</code> sees which apps use energy, and <code>power-control</code> changes the charge limit.
+Until they are connected, the app shows a banner with the same commands. Updates install by themselves.</p>
+<p>The snap runs in a sandbox, so it can't do everything the apt and Fedora packages do:</p>
+<ul>
+<li><strong>Power mode</strong> and <strong>Automatic Power Mode</strong> are not available. Change the mode in Settings → Power.</li>
+<li><strong>GNOME's power-saving settings</strong> (dim screen, screen blank, automatic suspend, power button, lid) are not available. Change them in Settings → Power. The battery percentage in the top bar works.</li>
+<li>The <strong>charging behaviour</strong> switch is hidden.</li>
+<li>Charge limits are applied by a service inside the snap instead of asking for your password, so any user of the computer can change them.</li>
+<li>With background recording on, the hidden copy closes when an update is waiting so it can install, and starts again at your next login.</li>
+<li>History is kept in <code>~/snap/battery-health-center</code>, separate from the apt or Fedora version.</li>
+</ul>
+{note("note", "Install only one version. To move from the snap to apt or Fedora, copy <code>~/snap/battery-health-center/current/.local/share/battery-health-center/*.csv</code> to <code>~/.local/share/battery-health-center/</code>, then remove the snap with <code>sudo snap remove battery-health-center</code>, which deletes its history.")}
 <h3>From source</h3>
 <p>See <a href="{REPO}#build-from-source">Build from source</a> in the README.</p>
-{note("note", "If you installed an older version as a snap, remove it first with <code>sudo snap remove battery-health-center</code>. That deletes its history, so copy <code>~/snap/battery-health-center/current/.local/share/battery-health-center/*.csv</code> to <code>~/.local/share/battery-health-center/</code> before you do.")}
 
 <h2 id="first-launch">Your first launch</h2>
 <p>Open <strong>Battery Health Center</strong> from your applications. The first time, the app asks whether it should
@@ -747,10 +769,11 @@ CONTENT["privacy"] = f"""
 <li>With <em>Keep After Restart</em> on, a small systemd service re-applies the limit at startup and after sleep. With a schedule saved, a second service (started by a <code>.path</code> unit only while a schedule exists) lifts and restores the limit at the right times without asking for a password each time.</li>
 </ul>
 <p>Everything else (reading battery data, drawing charts, power modes, GNOME settings) is done as you, with no extra permissions.</p>
+<p>In the <strong>snap</strong>, the sandbox doesn't allow <code>pkexec</code>, so the same helper runs as a service inside the snap instead. The app sends it the same validated requests over a local socket, without asking for a password, and the service re-applies the saved limit and follows the schedule. Its files are in <code>/var/snap/battery-health-center/common</code>.</p>
 
 <h2 id="open">Open source</h2>
 <p>The app is free software under the <strong>GPL-3.0-or-later</strong>. You can read exactly what it does in the
-<a href="{REPO}">source code</a>. Packages are published from a signed apt repository and Fedora's COPR, so your usual updates keep it current.</p>
+<a href="{REPO}">source code</a>. Packages are published from a signed apt repository, Fedora's COPR and the Snap Store, so your usual updates keep it current.</p>
 """
 
 

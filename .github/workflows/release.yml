@@ -14,7 +14,11 @@ name: Release
 # (packaging/rpm/battery-health-center.spec, which names the tag it downloads). That needs one more
 # secret, COPR_WEBHOOK_URL, and is skipped with a notice until it exists.
 #
-# Running the workflow by hand builds the .deb and attaches it to the run, and (when the
+# A tag also builds the snap (snap/snapcraft.yaml) and releases it to the stable channel of
+# the Snap Store. That needs the secret SNAPCRAFT_STORE_CREDENTIALS and is skipped with a
+# notice until it exists.
+#
+# Running the workflow by hand builds the .deb and the snap and attaches them to the run, and (when the
 # secrets exist) checks them by signing a copy of the apt repository without pushing.
 # It publishes nothing.
 on:
@@ -141,3 +145,40 @@ jobs:
           fi
           curl --fail --silent --show-error -X POST "$COPR_WEBHOOK_URL"
           echo "COPR was asked to build ${GITHUB_REF_NAME#v}."
+
+  snap:
+    needs: build
+    if: github.ref_type == 'tag' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build the snap
+        id: build
+        uses: snapcore/action-build@v1
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: snap
+          path: ${{ steps.build.outputs.snap }}
+
+      - name: Check that the Snap Store secret exists
+        id: secrets
+        if: github.ref_type == 'tag'
+        env:
+          CREDENTIALS: ${{ secrets.SNAPCRAFT_STORE_CREDENTIALS }}
+        run: |
+          if [ -n "$CREDENTIALS" ]; then
+            echo "present=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "::notice::SNAPCRAFT_STORE_CREDENTIALS is not set, so the snap was built but not published. Add it (see docs/MAINTAINING.md) and re-run this job."
+          fi
+
+      - name: Release to the stable channel of the Snap Store
+        if: steps.secrets.outputs.present == 'true'
+        uses: snapcore/action-publish@v1
+        env:
+          SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAPCRAFT_STORE_CREDENTIALS }}
+        with:
+          snap: ${{ steps.build.outputs.snap }}
+          release: stable

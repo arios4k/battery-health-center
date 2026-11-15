@@ -56,7 +56,7 @@ batterie de macOS :
 - **Prudent avec root.** Seul un petit assistant s’exécute en tant que root. Il n’accepte que des valeurs
   validées et n’écrit que les fichiers de limite de charge de la batterie et sa propre configuration.
 - **Parle votre langue.** Anglais, espagnol, allemand, français et chinois simplifié, selon la langue de votre système.
-- **Se met à jour avec votre système.** Installez-le depuis un dépôt apt signé (ou le COPR de Fedora) et vos
+- **Se met à jour avec votre système.** Installez-le depuis un dépôt apt signé (ou le COPR de Fedora, ou le Snap Store) et vos
   mises à jour habituelles le tiennent à jour.
 
 D’autres réponses, par exemple pour savoir si la limite de charge fonctionne sur votre ordinateur, se trouvent dans la page [Troubleshooting and FAQ](https://arios4k.github.io/battery-health-center/manual/troubleshooting.html#faq) du manuel.
@@ -92,12 +92,30 @@ Ouvrez ensuite **Battery Health Center** depuis vos applications. Les mises à j
 `sudo dnf upgrade`. Les services de limite de charge et de programmation sont activés par l’installation : il n’y
 a rien d’autre à configurer.
 
-## Passer depuis le snap
+## Installation (Snap Store)
 
-Si vous avez installé une ancienne version sous forme de snap, supprimez-la d’abord avec
-`sudo snap remove battery-health-center`. Cela efface son historique : copiez donc
+Pour toute distribution compatible avec les snaps, sur Intel/AMD 64 bits :
+
+```bash
+sudo snap install battery-health-center
+sudo snap connect battery-health-center:hardware-observe
+sudo snap connect battery-health-center:system-observe
+sudo snap connect battery-health-center:power-control
+```
+
+Les snaps ne reçoivent pas ces autorisations d’eux-mêmes : `hardware-observe` lit la batterie,
+`system-observe` voit quelles applications consomment de l’énergie et `power-control` modifie la limite de
+charge. Le snap s’exécute dans un bac à sable : il ne peut donc pas changer le mode d’alimentation ni les
+réglages d’économie d’énergie de GNOME, et les limites de charge ne demandent pas de mot de passe. Les paquets
+apt et Fedora ont toutes les fonctions ; la liste complète se trouve dans
+[Install](https://arios4k.github.io/battery-health-center/manual/getting-started.html#install) du manuel (en anglais).
+
+## Passer du snap aux paquets, ou l’inverse
+
+N’installez qu’une seule version. Le snap garde son historique dans `~/snap` : avant de le supprimer avec
+`sudo snap remove battery-health-center`, copiez
 `~/snap/battery-health-center/current/.local/share/battery-health-center/*.csv` vers
-`~/.local/share/battery-health-center/` avant de le faire.
+`~/.local/share/battery-health-center/`.
 
 ## Compiler depuis les sources
 

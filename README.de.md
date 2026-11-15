@@ -56,7 +56,7 @@ einer nativen GNOME-App zusammen, ähnlich den Akku-Einstellungen von macOS:
   schreibt ausschließlich die Ladelimit-Dateien des Akkus und seine eigene Konfiguration.
 - **Spricht Ihre Sprache.** Englisch, Spanisch, Deutsch, Französisch und Vereinfachtes Chinesisch, passend zu Ihrer Systemsprache.
 - **Aktualisiert sich mit Ihrem System.** Installieren Sie sie aus einem signierten apt-Repository (oder dem COPR
-  von Fedora), und Ihre üblichen Updates halten sie aktuell.
+  von Fedora oder dem Snap Store), und Ihre üblichen Updates halten sie aktuell.
 
 Weitere Antworten, etwa ob das Ladelimit auf Ihrem Laptop funktioniert, finden Sie im Handbuch unter [Troubleshooting and FAQ](https://arios4k.github.io/battery-health-center/manual/troubleshooting.html#faq).
 
@@ -91,10 +91,28 @@ sudo dnf install battery-health-center
 Dienste für Ladelimit und Ladeplan werden bei der Installation eingeschaltet, sodass nichts weiter eingerichtet
 werden muss.
 
-## Umstieg vom Snap
+## Installation (Snap Store)
 
-Wenn Sie eine ältere Version als Snap installiert haben, entfernen Sie sie zuerst mit
-`sudo snap remove battery-health-center`. Das löscht ihren Verlauf, kopieren Sie also vorher
+Für jede Distribution mit Snap-Unterstützung, auf 64-Bit-Intel/AMD:
+
+```bash
+sudo snap install battery-health-center
+sudo snap connect battery-health-center:hardware-observe
+sudo snap connect battery-health-center:system-observe
+sudo snap connect battery-health-center:power-control
+```
+
+Snaps erhalten diese Berechtigungen nicht von selbst: `hardware-observe` liest den Akku, `system-observe`
+sieht, welche Apps Energie verbrauchen, und `power-control` ändert das Ladelimit. Der Snap läuft in einer
+Sandbox und kann daher weder den Energiemodus noch die Energiespareinstellungen von GNOME ändern, und
+Ladelimits fragen nicht nach einem Passwort. Die Pakete für apt und Fedora haben alle Funktionen; die vollständige
+Liste steht unter [Install](https://arios4k.github.io/battery-health-center/manual/getting-started.html#install)
+im Handbuch (auf Englisch).
+
+## Wechsel zwischen Snap und Paketen
+
+Installieren Sie nur eine Version. Der Snap speichert seinen Verlauf in `~/snap`. Bevor Sie ihn mit
+`sudo snap remove battery-health-center` entfernen, kopieren Sie daher
 `~/snap/battery-health-center/current/.local/share/battery-health-center/*.csv` nach
 `~/.local/share/battery-health-center/`.
 

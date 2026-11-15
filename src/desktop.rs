@@ -2,7 +2,8 @@
 //! through GSettings, plus checks for what the hardware supports.
 //!
 //! Every function copes with a missing schema or key, because the desktop
-//! may not be GNOME.
+//! may not be GNOME, and inside the snap GNOME Settings Daemon's schema isn't
+//! visible at all.
 
 use gtk::gio;
 use gtk::glib;
@@ -96,7 +97,7 @@ pub fn can_hibernate() -> bool {
 
 /// What could save battery right now: screen and keyboard brightness (through
 /// GNOME's power daemon) and Bluetooth (through BlueZ). Each part is None when
-/// it can't be read, for example when there is no Bluetooth adapter.
+/// it can't be read, for example inside the snap's sandbox.
 #[derive(Clone, Debug, Default, PartialEq)]
 pub struct SavingState {
     /// Percent.

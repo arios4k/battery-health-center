@@ -4,7 +4,7 @@
 %global debug_package %{nil}
 
 Name:           battery-health-center
-Version:        0.6.5
+Version:        0.6.6
 Release:        1%{?dist}
 Summary:        Laptop battery health, charge limits and energy usage in one place
 
@@ -100,6 +100,9 @@ fi
 %{_unitdir}/battery-health-center-scheduler.path
 
 %changelog
+* Sat Nov 14 2026 Alexis Rios-Negron <182820807+arios4k@users.noreply.github.com> - 0.6.6-1
+- Back on the Snap Store; nothing changes for this package
+
 * Mon Nov 09 2026 Alexis Rios-Negron <182820807+arios4k@users.noreply.github.com> - 0.6.5-1
 - Help opens the manual page for the page you are on; the manual gets a What's new page
 

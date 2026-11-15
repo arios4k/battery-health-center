@@ -55,7 +55,7 @@ Center los reúne en una aplicación nativa de GNOME, parecida a los ajustes de 
 - **Cuidadosa con root.** Solo un pequeño ayudante se ejecuta como root. Acepta únicamente valores validados y
   escribe solo los archivos de límite de carga de la batería y su propia configuración.
 - **Habla tu idioma.** Inglés, español, alemán, francés y chino simplificado, según el idioma de tu sistema.
-- **Se actualiza con tu sistema.** Instálala desde un repositorio apt firmado (o el COPR de Fedora) y tus
+- **Se actualiza con tu sistema.** Instálala desde un repositorio apt firmado (o el COPR de Fedora, o la Snap Store) y tus
   actualizaciones habituales la mantienen al día.
 
 Encontrarás más respuestas, como si el límite de carga funciona en tu portátil, en [Solución de problemas y preguntas frecuentes](https://arios4k.github.io/battery-health-center/manual/troubleshooting.html#faq) del manual.
@@ -91,11 +91,29 @@ Después abre **Battery Health Center** desde tus aplicaciones. Las actualizacio
 `sudo dnf upgrade`. La instalación activa los servicios de límite de carga y programación, así que no hay que
 configurar nada más.
 
-## Si vienes del snap
+## Instalación (Snap Store)
 
-Si instalaste una versión anterior como snap, quítala primero con `sudo snap remove battery-health-center`. Eso
-borra su historial, así que copia `~/snap/battery-health-center/current/.local/share/battery-health-center/*.csv`
-a `~/.local/share/battery-health-center/` antes de hacerlo.
+Para cualquier distribución compatible con snap, en Intel/AMD de 64 bits:
+
+```bash
+sudo snap install battery-health-center
+sudo snap connect battery-health-center:hardware-observe
+sudo snap connect battery-health-center:system-observe
+sudo snap connect battery-health-center:power-control
+```
+
+Los snaps no reciben estos permisos por sí solos: `hardware-observe` lee la batería, `system-observe` ve
+qué aplicaciones gastan energía y `power-control` cambia el límite de carga. El snap se ejecuta aislado, así
+que no puede cambiar el modo de energía ni los ajustes de ahorro de energía de GNOME, y los límites de carga no
+piden contraseña. Los paquetes de apt y Fedora tienen todas las funciones; consulta
+[Install](https://arios4k.github.io/battery-health-center/manual/getting-started.html#install) en el manual (en inglés)
+para ver la lista completa.
+
+## Pasar entre el snap y los paquetes
+
+Instala solo una versión. El snap guarda su historial en `~/snap`, así que antes de quitarlo con
+`sudo snap remove battery-health-center`, copia `~/snap/battery-health-center/current/.local/share/battery-health-center/*.csv`
+a `~/.local/share/battery-health-center/`.
 
 ## Compilar desde el código fuente
 
