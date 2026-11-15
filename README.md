@@ -16,6 +16,7 @@ Health, cycle count, charge limits and schedules, and which apps drain it, for G
 [![Install with apt](https://img.shields.io/badge/install-apt-orange)](#install-ubuntu-debian-and-derivatives)
 [![Install on Fedora](https://img.shields.io/badge/install-Fedora%20COPR-51a2da)](#install-fedora)
 [![COPR build](https://copr.fedorainfracloud.org/coprs/arios/battery-health-center/package/battery-health-center/status_image/last_build.png)](https://copr.fedorainfracloud.org/coprs/arios/battery-health-center/builds/)
+[![Get it from the Snap Store](https://snapcraft.io/battery-health-center/badge.svg)](https://snapcraft.io/battery-health-center)
 [![License: GPL-3.0-or-later](https://img.shields.io/badge/license-GPL--3.0--or--later-blue)](LICENSE)
 [![Languages](https://img.shields.io/badge/languages-EN%20%C2%B7%20ES%20%C2%B7%20DE%20%C2%B7%20FR%20%C2%B7%20ZH-lightgrey)](#translations)
 [![Made with Rust and GTK4](https://img.shields.io/badge/made%20with-Rust%20%2B%20GTK4-informational)](#build-from-source)

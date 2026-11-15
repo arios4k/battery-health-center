@@ -16,6 +16,7 @@ Salud, ciclos, límites y programación de la carga, y qué aplicaciones la gast
 [![Instalar con apt](https://img.shields.io/badge/install-apt-orange)](#instalación-ubuntu-debian-y-derivadas)
 [![Instalar en Fedora](https://img.shields.io/badge/install-Fedora%20COPR-51a2da)](#instalación-fedora)
 [![Compilación COPR](https://copr.fedorainfracloud.org/coprs/arios/battery-health-center/package/battery-health-center/status_image/last_build.png)](https://copr.fedorainfracloud.org/coprs/arios/battery-health-center/builds/)
+[![Obtenlo en la Snap Store](https://snapcraft.io/battery-health-center/badge.svg)](https://snapcraft.io/battery-health-center)
 [![Licencia: GPL-3.0-or-later](https://img.shields.io/badge/licencia-GPL--3.0--or--later-blue)](LICENSE)
 [![Idiomas](https://img.shields.io/badge/idiomas-EN%20%C2%B7%20ES%20%C2%B7%20DE%20%C2%B7%20FR%20%C2%B7%20ZH-lightgrey)](#traducciones)
 [![Hecho con Rust y GTK4](https://img.shields.io/badge/made%20with-Rust%20%2B%20GTK4-informational)](#compilar-desde-el-código-fuente)

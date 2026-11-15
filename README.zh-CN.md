@@ -16,6 +16,7 @@
 [![使用 apt 安装](https://img.shields.io/badge/install-apt-orange)](#在-ubuntu-和-debian-上安装)
 [![在 Fedora 上安装](https://img.shields.io/badge/install-Fedora%20COPR-51a2da)](#在-fedora-上安装)
 [![COPR 构建](https://copr.fedorainfracloud.org/coprs/arios/battery-health-center/package/battery-health-center/status_image/last_build.png)](https://copr.fedorainfracloud.org/coprs/arios/battery-health-center/builds/)
+[![从 Snap Store 获取](https://snapcraft.io/battery-health-center/badge.svg)](https://snapcraft.io/battery-health-center)
 [![许可证：GPL-3.0-or-later](https://img.shields.io/badge/%E8%AE%B8%E5%8F%AF%E8%AF%81-GPL--3.0--or--later-blue)](LICENSE)
 [![语言](https://img.shields.io/badge/%E8%AF%AD%E8%A8%80-EN%20%C2%B7%20ES%20%C2%B7%20DE%20%C2%B7%20FR%20%C2%B7%20ZH-lightgrey)](#翻译)
 [![使用 Rust 和 GTK4 开发](https://img.shields.io/badge/made%20with-Rust%20%2B%20GTK4-informational)](#从源码构建)

@@ -16,6 +16,7 @@ Zustand, Ladezyklen, Ladelimits und Ladepläne und welche Apps ihn leeren, für 
 [![Mit apt installieren](https://img.shields.io/badge/install-apt-orange)](#installation-ubuntu-debian-und-abkömmlinge)
 [![Unter Fedora installieren](https://img.shields.io/badge/install-Fedora%20COPR-51a2da)](#installation-fedora)
 [![COPR-Build](https://copr.fedorainfracloud.org/coprs/arios/battery-health-center/package/battery-health-center/status_image/last_build.png)](https://copr.fedorainfracloud.org/coprs/arios/battery-health-center/builds/)
+[![Aus dem Snap Store installieren](https://snapcraft.io/battery-health-center/badge.svg)](https://snapcraft.io/battery-health-center)
 [![Lizenz: GPL-3.0-or-later](https://img.shields.io/badge/Lizenz-GPL--3.0--or--later-blue)](LICENSE)
 [![Sprachen](https://img.shields.io/badge/Sprachen-EN%20%C2%B7%20ES%20%C2%B7%20DE%20%C2%B7%20FR%20%C2%B7%20ZH-lightgrey)](#übersetzungen)
 [![Gemacht mit Rust und GTK4](https://img.shields.io/badge/made%20with-Rust%20%2B%20GTK4-informational)](#aus-dem-quellcode-bauen)
