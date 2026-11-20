@@ -95,14 +95,15 @@ pub fn build_html(st: &State) -> String {
     }
 
     b.push_str("<h2>Capacity Over Time</h2>");
-    let entries = &st.health_log.entries;
+    let id = st.batteries.first().map(|b| b.identity()).unwrap_or_else(|| "legacy".into());
+    let entries = st.health_log.entries_for(&id);
     if entries.len() >= 2 {
         let pts: Vec<(i64, f64)> = entries.iter().map(|e| (e.ts, e.health)).collect();
         let lowest = pts.iter().map(|p| p.1).fold(100.0, f64::min);
         let y_min = ((lowest.min(80.0) - 5.0) / 10.0).floor().max(0.0) * 10.0;
         b.push_str(&svg_chart(&pts, entries[0].ts, now, y_min, 100.0, "%", true));
     }
-    if let Some(t) = st.health_log.trend() {
+    if let Some(t) = st.health_log.trend_for(&id) {
         let _ = write!(b, "<p>Trend: {:+.1}% per month over {:.0} days", t.per_month, t.span_days);
         if let Some(ts) = t.reaches_80_ts {
             let _ = write!(b, "; projected to reach 80% around {}", esc(&date(ts, "%B %Y")));

@@ -169,12 +169,12 @@ impl OverviewPage {
         let charging = b.status == Status::Charging;
         self.gauge.set(b.percent, charging, b.status.short_label());
 
-        let (headline, detail) = match (b.status, b.hours_remaining()) {
+        let (headline, detail) = match (b.status, st.remaining_hours) {
             (Status::Charging, _) if st.full_charge => (
-                b.hours_remaining().map_or(tr("Charging to 100%").into(), |h| trf("{0} until 100%", &[("0", format_hours(h).to_string())])),
+                st.remaining_hours.map_or(tr("Charging to 100%").into(), |h| trf("{0} until 100%", &[("0", format_hours(h).to_string())])),
                 tr("One-time full charge; your limit comes back afterwards").into(),
             ),
-            (Status::Discharging, Some(h)) => (trf("{0} remaining", &[("0", format_hours(h).to_string())]), tr("Estimated at the current usage").to_string()),
+            (Status::Discharging, Some(h)) => (trf("{0} remaining", &[("0", format_hours(h).to_string())]), tr("Estimated from recent usage").to_string()),
             (Status::Charging, Some(h)) => {
                 let target = b.end_threshold.unwrap_or(100).min(100);
                 (trf("{0} until {target}%", &[("0", format_hours(h).to_string()), ("target", target.to_string())]), tr("Charging").to_string())

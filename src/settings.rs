@@ -59,6 +59,9 @@ pub struct Settings {
     /// The first-launch question about recording history in the background has been
     /// answered, or never applied (settings saved by an earlier version).
     pub background_asked: bool,
+    pub history_days: u16,
+    pub app_history_days: u16,
+    pub health_history_days: u16,
 }
 
 impl Default for Settings {
@@ -77,6 +80,9 @@ impl Default for Settings {
             low_profile: true,
             low_profile_level: 20,
             background_asked: false,
+            history_days: 30,
+            app_history_days: 7,
+            health_history_days: 0,
         }
     }
 }
@@ -119,13 +125,16 @@ impl Settings {
             profile_battery: profile("profile_battery", &d.profile_battery),
             low_profile: flag("low_profile", d.low_profile),
             low_profile_level: level("low_profile_level", d.low_profile_level, 5..=60),
+            history_days: map.get("history_days").and_then(|v| v.parse::<u16>().ok()).filter(|v| *v <= 3650).unwrap_or(d.history_days),
+            app_history_days: map.get("app_history_days").and_then(|v| v.parse::<u16>().ok()).filter(|v| *v <= 3650).unwrap_or(d.app_history_days),
+            health_history_days: map.get("health_history_days").and_then(|v| v.parse::<u16>().ok()).filter(|v| *v <= 3650).unwrap_or(d.health_history_days),
             // A settings file from before this question existed means a returning user.
             background_asked: map.get("background_asked").map_or(!text.trim().is_empty(), |v| *v == "true"),
         }
     }
 
     fn to_text(&self) -> String {
-        format!(
+        let original = format!(
             "notify_limit_reached={}\nnotify_low={}\nlow_level={}\nnotify_full_no_limit={}\n\
              notify_app_drain={}\nnotify_sleep_drain={}\ncalibration={}\n\
              auto_profile={}\nprofile_ac={}\nprofile_battery={}\nlow_profile={}\nlow_profile_level={}\nbackground_asked={}\n",
@@ -142,7 +151,8 @@ impl Settings {
             self.low_profile,
             self.low_profile_level,
             self.background_asked
-        )
+        );
+        format!("{original}history_days={}\napp_history_days={}\nhealth_history_days={}\n", self.history_days, self.app_history_days, self.health_history_days)
     }
 
     pub fn save(&self) -> Result<(), String> {

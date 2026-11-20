@@ -11,7 +11,7 @@ use std::path::PathBuf;
 use crate::apps::AppUsage;
 use crate::history::data_dir;
 
-const RETENTION_SECS: i64 = 7 * 86_400;
+const CHECKPOINT_SECS: i64 = 60;
 
 #[derive(Clone, Debug, Default, PartialEq)]
 pub struct AppTotal {
@@ -24,7 +24,10 @@ pub struct AppTotal {
 pub struct AppHistory {
     path: PathBuf,
     pub write_error: Option<String>,
-    pending: String,
+    dirty: bool,
+    writer: bool,
+    last_checkpoint: Option<i64>,
+    retention_days: u16,
     /// Completed hours, keyed by (hour start, app key).
     buckets: HashMap<(i64, String), AppTotal>,
     /// The hour currently being accumulated.
@@ -48,55 +51,63 @@ fn parse_line(line: &str) -> Option<(i64, AppTotal)> {
 
 impl AppHistory {
     pub fn load(now: i64) -> Self {
-        let path = data_dir().join("app-history.csv");
-        let cutoff = now - RETENTION_SECS;
-        let mut buckets = HashMap::new();
-        for (hour, total) in fs::read_to_string(&path).unwrap_or_default().lines().filter_map(parse_line) {
-            if hour >= cutoff {
-                buckets.insert((hour, total.key.clone()), total);
+        Self::from_path(data_dir().join("app-history.csv"), now, crate::settings::Settings::load().app_history_days)
+    }
+
+    fn from_path(path: PathBuf, now: i64, retention_days: u16) -> Self {
+        let mut h = Self { path, write_error: None, dirty: false, writer: false, last_checkpoint: None,
+            retention_days, buckets: HashMap::new(), current_hour: hour_of(now), current: HashMap::new() };
+        for (hour, total) in fs::read_to_string(&h.path).unwrap_or_default().lines().filter_map(parse_line) {
+            if retention_days == 0 || hour + 3600 > now - i64::from(retention_days) * 86_400 {
+                if hour == h.current_hour { h.current.insert(total.key.clone(), total); }
+                else { h.buckets.insert((hour, total.key.clone()), total); }
             }
         }
-        AppHistory { path, write_error: None, pending: String::new(), buckets, current_hour: hour_of(now), current: HashMap::new() }
+        h
     }
 
-    /// Adds `secs` seconds of the given usage. When an hour ends, its totals
-    /// are written to disk if `write` is set (only the history writer does).
+    /// Checkpoint the current hour every minute, as well as at hour boundaries.
     pub fn add(&mut self, apps: &[AppUsage], secs: f64, now: i64, write: bool) {
-        if write && !self.pending.is_empty() { self.flush_pending(); }
-        if hour_of(now) != self.current_hour {
-            self.close_hour(write, now);
+        self.writer = write;
+        let changed_hour = hour_of(now) != self.current_hour;
+        if changed_hour {
+            for (key, total) in self.current.drain() { self.buckets.insert((self.current_hour, key), total); }
+            self.current_hour = hour_of(now);
         }
-        for app in apps.iter().filter(|a| a.impact > 0.0) {
+        for app in apps.iter().filter(|a| a.impact.is_finite() && a.impact > 0.0) {
             let t = self.current.entry(app.key.clone()).or_insert_with(|| AppTotal {
-                key: app.key.clone(),
-                name: app.name.clone(),
-                ..Default::default()
+                key: app.key.clone(), name: app.name.clone(), ..Default::default()
             });
-            t.cpu_secs += app.impact / 100.0 * secs;
-            t.wh += app.watts.unwrap_or(0.0) * secs / 3600.0;
+            t.cpu_secs += app.impact / 100.0 * secs.max(0.0);
+            t.wh += app.watts.filter(|w| w.is_finite() && *w >= 0.0).unwrap_or(0.0) * secs.max(0.0) / 3600.0;
+            self.dirty = true;
+        }
+        if changed_hour { self.prune(now, self.retention_days); }
+        if write && (changed_hour || self.last_checkpoint.is_none_or(|t| now - t >= CHECKPOINT_SECS) || self.write_error.is_some()) {
+            self.checkpoint(now);
         }
     }
 
-    fn close_hour(&mut self, write: bool, now: i64) {
-        let hour = self.current_hour;
-        let finished: Vec<AppTotal> = self.current.drain().map(|(_, t)| t).collect();
-        if write && !finished.is_empty() {
-            let text: String = finished.iter().map(|t| format!("{hour},{},{:.1},{:.4},{}\n", t.key, t.cpu_secs, t.wh, t.name.replace('\n', " "))).collect();
-            self.pending.push_str(&text);
-            self.flush_pending();
-        }
-        for t in finished {
-            self.buckets.insert((hour, t.key.clone()), t);
-        }
-        self.current_hour = hour_of(now);
-        let cutoff = now - RETENTION_SECS;
-        self.buckets.retain(|(h, _), _| *h >= cutoff);
+    pub fn record_count(&self) -> usize { self.buckets.len() + self.current.len() }
+
+    pub fn prune(&mut self, now: i64, days: u16) {
+        self.retention_days = days;
+        let before = self.buckets.len();
+        self.buckets.retain(|(hour, _), _| days == 0 || *hour + 3600 > now - i64::from(days) * 86_400);
+        self.dirty |= self.buckets.len() != before;
     }
 
-    fn flush_pending(&mut self) {
-        self.write_error = crate::storage::append(&self.path, &self.pending).err();
-        if self.write_error.is_none() { self.pending.clear(); }
+    /// Atomic replacement makes checkpoints restart-safe and avoids duplicate hours.
+    pub fn checkpoint(&mut self, now: i64) {
+        if !self.dirty { return; }
+        let mut rows: Vec<_> = self.buckets.iter().map(|((hour, _), t)| (*hour, t)).chain(self.current.values().map(|t| (self.current_hour, t))).collect();
+        rows.sort_by(|a, b| (a.0, &a.1.key).cmp(&(b.0, &b.1.key)));
+        let text: String = rows.into_iter().map(|(hour, t)| format!("{hour},{},{:.3},{:.6},{}\n", t.key.replace([',', '\n', '\r'], "_"), t.cpu_secs, t.wh, t.name.replace(['\n', '\r'], " "))).collect();
+        self.write_error = crate::storage::replace(&self.path, &text).err();
+        if self.write_error.is_none() { self.dirty = false; self.last_checkpoint = Some(now); }
     }
+
+    pub fn flush(&mut self) { if self.writer { self.checkpoint(crate::history::now_unix()); } }
 
     /// Totals per app since `since`, including the hour in progress, sorted
     /// by CPU time.
@@ -155,7 +166,7 @@ impl AppHistory {
 
     /// Every stored hour and app, oldest first, for exporting.
     pub fn hourly(&self) -> Vec<(i64, AppTotal)> {
-        let mut rows: Vec<(i64, AppTotal)> = self.buckets.iter().map(|((h, _), t)| (*h, t.clone())).collect();
+        let mut rows: Vec<(i64, AppTotal)> = self.buckets.iter().map(|((h, _), t)| (*h, t.clone())).chain(self.current.values().map(|t| (self.current_hour, t.clone()))).collect();
         rows.sort_by(|a, b| (a.0, &a.1.name).cmp(&(b.0, &b.1.name)));
         rows
     }
@@ -170,27 +181,59 @@ mod tests {
     }
 
     #[test]
+    fn checkpoints_resume_current_hour_and_flush_without_duplicates() {
+        let dir = std::env::temp_dir().join(format!("bhc-checkpoints-{}", std::process::id()));
+        fs::create_dir_all(&dir).unwrap();
+        let path = dir.join("apps.csv");
+        let mut h = AppHistory::from_path(path.clone(), 10, 7);
+        h.add(&[usage("a", 100.0)], 10.0, 10, true);
+        h.add(&[usage("a", 50.0)], 20.0, 30, true);
+        let checkpoint = AppHistory::from_path(path.clone(), 31, 7);
+        assert_eq!(checkpoint.totals(0)[0].cpu_secs, 10.0);
+        h.flush();
+        let mut resumed = AppHistory::from_path(path.clone(), 40, 7);
+        assert_eq!(resumed.totals(0)[0].cpu_secs, 20.0);
+        resumed.add(&[usage("a", 100.0)], 5.0, 40, true);
+        resumed.checkpoint(41);
+        assert_eq!(AppHistory::from_path(path.clone(), 42, 7).totals(0)[0].cpu_secs, 25.0);
+        assert_eq!(fs::read_to_string(path).unwrap().lines().count(), 1);
+        fs::remove_dir_all(dir).unwrap();
+    }
+
+    #[test]
+    fn retention_prunes_persisted_app_hours() {
+        let dir = std::env::temp_dir().join(format!("bhc-app-retention-{}", std::process::id()));
+        fs::create_dir_all(&dir).unwrap(); let path = dir.join("apps.csv");
+        let mut h = AppHistory::from_path(path.clone(), 0, 0);
+        h.add(&[usage("a", 100.0)], 10.0, 0, true);
+        h.add(&[usage("b", 100.0)], 10.0, 10 * 86_400, true);
+        h.prune(10 * 86_400, 7); h.flush();
+        let text = fs::read_to_string(path).unwrap(); assert!(!text.contains(",a,")); assert!(text.contains(",b,"));
+        fs::remove_dir_all(dir).unwrap();
+    }
+
+    #[test]
     fn failed_hour_remains_pending_and_retries_without_new_hour() {
         let dir = std::env::temp_dir().join(format!("bhc-app-errors-{}", std::process::id()));
         fs::create_dir_all(&dir).unwrap();
         let blocker = dir.join("blocker");
         fs::write(&blocker, "file").unwrap();
-        let mut h = AppHistory { path: blocker.join("apps.csv"), write_error: None, pending: String::new(), buckets: HashMap::new(), current_hour: 0, current: HashMap::new() };
+        let mut h = AppHistory::from_path(blocker.join("apps.csv"), 0, 7);
         h.add(&[usage("a", 50.0)], 10.0, 0, true);
         h.add(&[], 1.0, 3600, true);
         assert!(h.write_error.is_some());
-        assert!(!h.pending.is_empty());
+        assert!(h.dirty);
         h.path = dir.join("apps.csv");
         h.add(&[], 1.0, 3601, true);
         assert!(h.write_error.is_none());
-        assert!(h.pending.is_empty());
+        assert!(!h.dirty);
         assert_eq!(fs::read_to_string(&h.path).unwrap().lines().count(), 1);
         fs::remove_dir_all(dir).unwrap();
     }
 
     #[test]
     fn series_has_a_point_for_every_recorded_hour() {
-        let mut h = AppHistory { path: PathBuf::new(), write_error: None, pending: String::new(), buckets: HashMap::new(), current_hour: 0, current: HashMap::new() };
+        let mut h = AppHistory::from_path(PathBuf::new(), 0, 7);
         // Hour 0: both apps, hour 1: only "b", hour 2 (in progress): only "a".
         h.add(&[usage("a", 50.0), usage("b", 10.0)], 3600.0, 10, false);
         h.add(&[usage("b", 10.0)], 3600.0, 3600 + 10, false);
@@ -203,7 +246,7 @@ mod tests {
         assert_eq!(a[2].covered_secs, 1800.0);
         assert_eq!(a[2].impact().round(), 20.0);
         assert!(h.series("a", 3600, 7200 + 1800).iter().all(|p| p.hour >= 3600));
-        assert_eq!(h.hourly().len(), 3, "completed hours only");
+        assert_eq!(h.hourly().len(), 4, "includes the current hour");
     }
 
     #[test]

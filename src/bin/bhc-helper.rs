@@ -12,6 +12,8 @@
 //!   bhc-helper set-behaviour <BATTERY> <auto|inhibit-charge|force-discharge>
 //!   bhc-helper charge-full <BATTERY>          (charge to 100% once)
 //!   bhc-helper finish-full-charge <BATTERY>   (put the previous limit back)
+//!   bhc-helper set-one-off <UNIX-TIMESTAMP|->
+//!   bhc-helper skip-next | resume-next
 //!   bhc-helper set-schedule <0|1> <LEAD-MINUTES> [<DAYS>@<HH:MM>]...   (see schedule.rs)
 //!   bhc-helper schedule-daemon   (runs the schedule while a schedule is set)
 //!   bhc-helper restore
@@ -368,10 +370,14 @@ fn track_plug(optimized: bool, now: i64, first_tick: bool) {
 /// One look at the schedule: lifts the saved limit to 100% while a ready-by
 /// time is near, and puts it back afterwards (or when the schedule is removed).
 fn schedule_tick_at(now: i64, clock: schedule::Clock, first_tick: bool) -> Result<(), String> {
-    let plan = fs::read_to_string(schedule_path()).map(|t| schedule::Schedule::parse(&t)).unwrap_or_default();
+    let mut plan = fs::read_to_string(schedule_path()).map(|t| schedule::Schedule::parse(&t)).unwrap_or_default();
+    if plan.expire(now) { save_plan(&plan)?; }
     track_plug(plan.optimized, now, first_tick);
     let learned = if plan.optimized { schedule::learn(&read_unplug_log(), now) } else { schedule::Learned::default() };
-    let want = !plan.is_empty() && schedule::full_charge_wanted(&plan, &learned, clock);
+    // Tests of recurring windows provide an explicit clock; dated exceptions use timestamps.
+    let want = !plan.is_empty() && if plan.one_off.is_some() || plan.skip_ready.is_some() {
+        schedule::full_charge_wanted_at(&plan, &learned, now)
+    } else { schedule::full_charge_wanted(&plan, &learned, clock) };
     let mut failed = None;
     for (name, start, end) in saved_limits() {
         let result = if want && end < 100 {
@@ -429,7 +435,8 @@ fn set_schedule(optimized: &str, lead: &str, rules: &[&str]) -> Result<(), Strin
     if rules.len() > schedule::MAX_RULES {
         return Err(format!("at most {} times", schedule::MAX_RULES));
     }
-    let mut plan = schedule::Schedule { optimized, lead_min, rules: Vec::new() };
+    let existing = fs::read_to_string(schedule_path()).map(|t| schedule::Schedule::parse(&t)).unwrap_or_default();
+    let mut plan = schedule::Schedule { optimized, lead_min, rules: Vec::new(), one_off: existing.one_off, skip_ready: existing.skip_ready };
     for rule in rules {
         let (days, time) = rule.split_once('@').ok_or_else(|| format!("invalid time: {rule:?}"))?;
         let days: u8 = days.parse().map_err(|_| format!("invalid days: {days:?}"))?;
@@ -439,11 +446,35 @@ fn set_schedule(optimized: &str, lead: &str, rules: &[&str]) -> Result<(), Strin
         let ready = schedule::parse_time(time).ok_or_else(|| format!("invalid time: {time:?}"))?;
         plan.rules.push(schedule::Rule { days, ready });
     }
+    save_plan(&plan)?;
+    schedule_tick(true)
+}
+
+fn save_plan(plan: &schedule::Schedule) -> Result<(), String> {
     if plan.is_empty() {
-        let _ = fs::remove_file(schedule_path());
-    } else {
-        write_public(&schedule_path(), &plan.to_text())?;
+        match fs::remove_file(schedule_path()) {
+            Ok(()) => Ok(()),
+            Err(e) if e.kind() == std::io::ErrorKind::NotFound => Ok(()),
+            Err(e) => Err(e.to_string()),
+        }
+    } else { write_public(&schedule_path(), &plan.to_text()) }
+}
+
+fn edit_exception(command: &str, ready: Option<&str>) -> Result<(), String> {
+    let now = std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).map(|d| d.as_secs() as i64).unwrap_or(0);
+    let mut plan = fs::read_to_string(schedule_path()).map(|t| schedule::Schedule::parse(&t)).unwrap_or_default();
+    plan.expire(now);
+    match command {
+        "set-one-off" => {
+            let ready = match ready { Some("-") => None, Some(t) => Some(t.parse::<i64>().map_err(|_| "Invalid ready-by time")?), None => return Err("Missing ready-by time".into()) };
+            if ready.is_some() && !saved_limits().iter().any(|(_, _, end)| *end < 100) { return Err("Save a charge limit below 100% first.".into()); }
+            plan.set_one_off(ready, now)?;
+        }
+        "skip-next" => plan.skip_next(&schedule::learn(&read_unplug_log(), now), now)?,
+        "resume-next" => plan.skip_ready = None,
+        _ => return Err("Unknown schedule exception".into()),
     }
+    save_plan(&plan)?;
     schedule_tick(true)
 }
 
@@ -476,6 +507,9 @@ fn run(args: &[String]) -> Result<(), String> {
             let dir = battery_dir(name)?;
             write(&dir.join("charge_behaviour"), mode)
         }
+        ["set-one-off", ready] => edit_exception("set-one-off", Some(ready)),
+        ["skip-next"] => edit_exception("skip-next", None),
+        ["resume-next"] => edit_exception("resume-next", None),
         ["set-schedule", optimized, lead, rules @ ..] => set_schedule(optimized, lead, rules),
         ["schedule-daemon"] => schedule_daemon(),
         ["charge-full", name] => charge_full(name),
@@ -487,6 +521,8 @@ fn run(args: &[String]) -> Result<(), String> {
                   bhc-helper charge-full <BAT>\n       \
                   bhc-helper finish-full-charge <BAT>\n       \
                   bhc-helper set-schedule <0|1> <LEAD-MINUTES> [<DAYS>@<HH:MM>]...\n       \
+                  bhc-helper set-one-off <UNIX-TIMESTAMP|->\n       \
+                  bhc-helper skip-next | resume-next\n       \
                   bhc-helper restore"
             .into()),
     }
@@ -564,7 +600,7 @@ fn serve() -> Result<(), String> {
         }
         let args: Vec<String> = line.split_whitespace().map(String::from).collect();
         let reply = match args.first().map(String::as_str) {
-            Some("set-thresholds" | "charge-full" | "finish-full-charge" | "set-schedule") => match run_locked(&args) {
+            Some("set-thresholds" | "charge-full" | "finish-full-charge" | "set-schedule" | "set-one-off" | "skip-next" | "resume-next") => match run_locked(&args) {
                 Ok(()) => "OK\n".to_string(),
                 Err(e) => format!("ERR {}\n", e.replace('\n', " ")),
             },
@@ -780,6 +816,23 @@ mod tests {
         assert!(!refresh_inhibited("pending: ready\nchannel: stable\n"));
         assert!(!refresh_inhibited("pending: none\n"));
         assert!(!refresh_inhibited(""));
+    }
+
+    #[test]
+    fn one_off_skip_and_cancel_restore_saved_thresholds() {
+        setup("dated-plan");
+        fs::create_dir_all(config_path().parent().unwrap()).unwrap();
+        fs::write(config_path(), "BAT0 75 80\n").unwrap();
+        let now = std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).unwrap().as_secs() as i64;
+        edit_exception("set-one-off", Some(&(now + 3600).to_string())).unwrap();
+        assert_eq!(limits(), ("99".into(), "100".into()));
+        edit_exception("skip-next", None).unwrap();
+        assert_eq!(limits(), ("75".into(), "80".into()));
+        edit_exception("resume-next", None).unwrap();
+        assert_eq!(limits(), ("99".into(), "100".into()));
+        edit_exception("set-one-off", Some("-")).unwrap();
+        assert_eq!(limits(), ("75".into(), "80".into()));
+        assert!(!schedule_path().exists());
     }
 
     #[test]

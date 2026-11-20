@@ -12,6 +12,8 @@ pub struct HealthEntry {
     pub ts: i64,
     pub health: f64,
     pub cycles: Option<u32>,
+    pub battery_id: String,
+    pub battery_label: String,
 }
 
 /// Capacity trend from a linear fit over the log.
@@ -35,11 +37,13 @@ pub struct HealthLog {
 }
 
 fn parse_line(line: &str) -> Option<HealthEntry> {
-    let mut f = line.split(',');
+    let mut f = line.splitn(5, ',');
     Some(HealthEntry {
         ts: f.next()?.parse().ok()?,
         health: f.next()?.parse().ok()?,
         cycles: f.next().and_then(|c| c.parse().ok()),
+        battery_id: f.next().unwrap_or("legacy").to_string(),
+        battery_label: f.next().unwrap_or("legacy").to_string(),
     })
 }
 
@@ -55,20 +59,37 @@ impl HealthLog {
     pub fn record(&mut self, battery: &Battery, now: i64) -> bool {
         let Some(health) = battery.health_percent() else { return false };
         let day = |ts: i64| ts.div_euclid(86_400);
-        if self.entries.last().is_some_and(|e| day(e.ts) == day(now)) {
+        if self.entries.iter().rev().any(|e| e.battery_id == battery.identity() && day(e.ts) == day(now)) {
             return false;
         }
-        let entry = HealthEntry { ts: now, health, cycles: battery.cycle_count };
+        let entry = HealthEntry { ts: now, health, cycles: battery.cycle_count, battery_id: battery.identity(),
+            battery_label: format!("{} · {}", battery.name, battery.model.as_deref().unwrap_or("")).replace(['\n', '\r'], " ") };
         let cycles = entry.cycles.map(|c| c.to_string()).unwrap_or_default();
-        self.write_error = crate::storage::append(&self.path, &format!("{},{:.2},{}\n", entry.ts, entry.health, cycles)).err();
+        self.write_error = crate::storage::append(&self.path, &format!("{},{:.2},{},{},{}\n", entry.ts, entry.health, cycles, entry.battery_id, entry.battery_label)).err();
         if self.write_error.is_some() { return false; } // retry on the next tick
         self.entries.push(entry);
         true
     }
 
-    pub fn trend(&self) -> Option<Trend> {
-        trend(&self.entries)
+    pub fn entries_for(&self, id: &str) -> Vec<HealthEntry> {
+        self.entries.iter().filter(|e| e.battery_id == id).cloned().collect()
     }
+
+    pub fn trend_for(&self, id: &str) -> Option<Trend> { trend(&self.entries_for(id)) }
+
+    pub fn prune(&mut self, now: i64, days: u16, write: bool) {
+        if days == 0 { return; }
+        let retained: Vec<_> = self.entries.iter().filter(|e| e.ts >= now - i64::from(days) * 86_400).cloned().collect();
+        if retained.len() == self.entries.len() { return; }
+        if write {
+            let text: String = retained.iter().map(|e| format!("{},{:.2},{},{},{}\n", e.ts, e.health,
+                e.cycles.map(|c| c.to_string()).unwrap_or_default(), e.battery_id, e.battery_label)).collect();
+            self.write_error = crate::storage::replace(&self.path, &text).err();
+            if self.write_error.is_some() { return; }
+        }
+        self.entries = retained;
+    }
+
 }
 
 fn trend(entries: &[HealthEntry]) -> Option<Trend> {
@@ -119,10 +140,32 @@ mod tests {
     }
 
     #[test]
+    fn replacement_batteries_and_legacy_records_never_share_a_trend() {
+        let dir = std::env::temp_dir().join(format!("bhc-health-identities-{}", std::process::id()));
+        fs::create_dir_all(&dir).unwrap();
+        fs::write(dir.join("energy_full"), "40000000").unwrap();
+        fs::write(dir.join("energy_full_design"), "50000000").unwrap();
+        fs::write(dir.join("serial_number"), "original").unwrap();
+        let old = crate::battery::read_battery(&dir).unwrap();
+        fs::write(dir.join("serial_number"), "replacement").unwrap();
+        let new = crate::battery::read_battery(&dir).unwrap();
+        assert_ne!(old.identity(), new.identity());
+        let legacy = parse_line("1,70,200").unwrap(); assert_eq!(legacy.battery_id, "legacy");
+        let mut log = HealthLog { path: dir.join("health.csv"), entries: vec![legacy], write_error: None };
+        for day in 0..20 { log.record(&old, day * 86_400 + 100); }
+        assert!(log.trend_for(&old.identity()).is_some());
+        assert!(log.record(&new, 19 * 86_400 + 100));
+        assert_eq!(log.entries_for(&new.identity()).len(), 1);
+        assert!(log.trend_for(&new.identity()).is_none());
+        assert_eq!(log.entries_for("legacy").len(), 1);
+        fs::remove_dir_all(dir).unwrap();
+    }
+
+    #[test]
     fn declining_trend() {
         // Losing 0.1 points per day from 90%: 80% is 100 days after day 0.
         let entries: Vec<HealthEntry> = (0..30)
-            .map(|d| HealthEntry { ts: d * 86_400, health: 90.0 - 0.1 * d as f64, cycles: None })
+            .map(|d| HealthEntry { ts: d * 86_400, health: 90.0 - 0.1 * d as f64, cycles: None, battery_id: "legacy".into(), battery_label: "legacy".into() })
             .collect();
         let t = trend(&entries).unwrap();
         assert!((t.per_month + 3.0).abs() < 1e-6);
@@ -133,7 +176,7 @@ mod tests {
     #[test]
     fn too_little_data() {
         let entries: Vec<HealthEntry> =
-            (0..5).map(|d| HealthEntry { ts: d * 86_400, health: 90.0, cycles: None }).collect();
+            (0..5).map(|d| HealthEntry { ts: d * 86_400, health: 90.0, cycles: None, battery_id: "legacy".into(), battery_label: "legacy".into() }).collect();
         assert!(trend(&entries).is_none());
     }
 }

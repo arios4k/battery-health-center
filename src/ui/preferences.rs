@@ -79,6 +79,7 @@ pub fn show(parent: &impl IsA<gtk::Widget>, ctrl: &Rc<Controller>) {
     page.add(&group);
 
     let dialog = adw::PreferencesDialog::new();
+    super::data::add(&page, &dialog, ctrl);
     dialog.add(&page);
     dialog.present(Some(parent));
 }

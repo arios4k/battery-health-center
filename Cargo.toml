@@ -1,6 +1,6 @@
 [package]
 name = "battery-health-center"
-version = "0.6.6"
+version = "0.7.0"
 edition = "2021"
 description = "All your laptop battery information in one place, for GNOME"
 license = "GPL-3.0-or-later"
@@ -45,7 +45,7 @@ GNOME app: health and cycle count, charge limits and profiles to reduce \
 wear, a charging schedule and optimized charging, battery use during sleep, \
 power modes and power-saving settings, battery-saving tips, and which apps \
 use the most energy (with an hour-by-hour view per app). History can be \
-exported as CSV. It is available in English, Spanish and German.
+exported as CSV, backed up locally, or managed with retention controls. It is available in English, Spanish, German, French and Simplified Chinese.
 .
 Charge limits need a laptop whose firmware exposes charge thresholds to the \
 kernel (as on ThinkPads and many others). Changing them asks for your \

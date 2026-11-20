@@ -23,8 +23,8 @@ Health, cycle count, charge limits and schedules, and which apps drain it, for G
 [![Support on PayPal](https://img.shields.io/badge/PayPal-Support-00457C?logo=paypal&logoColor=white)](https://paypal.me/AlexisRios)
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/v0.5.0/overview-dark.png">
-  <img src="docs/screenshots/v0.5.0/overview-light.png" alt="Battery Health Center 0.5.0: sidebar navigation, battery status and health in an adaptive dashboard">
+  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/v0.7.0/overview-dark.png">
+  <img src="docs/screenshots/v0.7.0/overview-light.png" alt="Battery Health Center 0.7.0: sidebar navigation, battery status and health in an adaptive dashboard">
 </picture>
 
 </div>
@@ -37,11 +37,11 @@ in one native GNOME app, much like the Battery settings on macOS:
 
 | Instead of… | Battery Health Center gives you |
 |---|---|
-| reading `/sys/class/power_supply` and `upower -i` by hand | **Health**: maximum capacity against design capacity, cycle count, condition, and a trend with a projected 80% date |
-| a script or extension to set the charge limit | **Charging**: one-tap profiles, a custom limit, a charging schedule and optimized charging |
+| reading `/sys/class/power_supply` and `upower -i` by hand | **Health**: maximum capacity against design capacity, cycle count, condition, and separate battery trends with a projected 80% date |
+| a script or extension to set the charge limit | **Charging**: one-tap profiles, a custom limit, dated and recurring charging plans, skip/undo and optimized charging |
 | guessing which app drains the battery | **Usage**: apps ranked by energy, with estimated watts and an hour-by-hour view for each |
-| digging through Settings, Tweaks and extensions for power options | **Power**: power mode, automatic power mode and GNOME's power-saving settings on one page |
-| a spreadsheet of readings | **Reports**: an HTML battery report and CSV exports of your history |
+| digging through Settings, Tweaks and extensions for power options | **Power**: power mode, automatic power mode and GNOME's power-saving settings and read-only diagnostics |
+| a spreadsheet of readings | **Reports**: an HTML battery report, CSV exports, local backup/restore and retention controls |
 
 ## Manual
 

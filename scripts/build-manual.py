@@ -70,6 +70,14 @@ def table(head, rows):
 # What's new: one entry per release, newest first. Add the new release at the top when you publish it.
 # (version, date, [items as HTML: bold lead-in, then what changed and where to read more])
 WHATS_NEW = [
+    ("0.7.0", "November 19, 2026", [
+        '<strong>Steadier time estimates.</strong> Remaining time uses up to two minutes of recent power readings, resetting after sleep or a charging-state change. See <a href="overview.html">Overview</a>.',
+        '<strong>More reliable app history.</strong> The current hour is saved every minute and at shutdown, and recovered on restart. See <a href="usage.html#apps">App energy</a>.',
+        '<strong>Separate battery histories.</strong> Current, archived and legacy capacity records can be selected without mixing replacement batteries. See <a href="health.html#trend">Health trends</a>.',
+        '<strong>Power diagnostics.</strong> Inspect competing power services, helper availability and changed charge limits; failed mode changes remain visible. See <a href="power.html#diagnostics">Diagnostics</a>.',
+        '<strong>Dated charging plans.</strong> Plan one full charge for a local date and time, or skip and undo the next occurrence without changing recurring rules. See <a href="schedule.html#one-off">One-off plans</a>.',
+        '<strong>Control your history.</strong> Choose retention per category, back up and restore locally, or clear selected categories. See <a href="data.html#manage">Manage history</a>.',
+    ]),
     ("0.6.6", "November 14, 2026", [
         "<strong>Back on the Snap Store.</strong> Install with <code>sudo snap install battery-health-center</code>. The snap runs in a sandbox, so power modes and GNOME's power-saving settings stay in the apt and Fedora packages; see <a href=\"getting-started.html#install\">Install</a> for what to connect and what the snap can't do.",
         "Nothing changes for the apt and Fedora packages.",
@@ -315,7 +323,11 @@ rated the battery for when new. <strong>Capacity Lost</strong> is the difference
 {note("note", "Some drivers report charge in µAh (charge-based) and others in µWh (energy-based). The app supports both.")}
 
 <h2 id="trend">Capacity over time and the trend</h2>
-{fig("health-trend", "A chart of capacity from 70 to 100 percent over three weeks with a dashed line at 80 percent, and a Trend row saying 14 of 5 readings and 12 of 14 days.", "Capacity is recorded once a day. The dashed line marks 80%, the usual point where a battery is considered worn.", narrow=True)}
+<p>Use <strong>Health History</strong> to select a current battery, an archived battery, or older unassigned records.
+Each battery has its own daily readings and trend. Records from before version 0.7.0 remain under legacy history;
+they are never guessed to belong to the current battery. Identification uses manufacturer, model and serial number.
+If no usable serial is available, identical replacement batteries cannot always be distinguished.</p>
+{fig("health-trend", "The Health History selector and the progress toward enough daily readings for a trend.", "Capacity is recorded once a day for each battery. A new history shows its progress toward a trend.", narrow=True)}
 <p>The app records the maximum capacity once a day (the first time it runs that day) and plots it. Readings wobble a little from
 day to day, so the line is the direction that matters, not any single point.</p>
 <p>After <strong>at least 5 daily readings spanning at least 14 days</strong> the <em>Trend</em> row switches from progress
@@ -418,6 +430,15 @@ full on time, then put back.</p>
 {fig("charging-schedule", "The Charging Schedule card with Optimized Charging on, learned unplug times, Start Charging Before 2.0 hours, two ready-by rules and an Add a Time row.", "The Charging Schedule card: optimized charging, the ready-by times, and the lead time.")}
 {note("warn", "The schedule needs a saved charge limit below 100%. Turn on <em>Limit Maximum Charge</em> and <em>Keep After Restart</em> on the Charging page, then choose <strong>Apply</strong>. Until then the schedule card tells you so.")}
 
+<h2 id="one-off">One-off charging plans</h2>
+{fig("charging-one-off", "The One-Off Charging Plans card with a dated plan button and Skip Next Charge.", "Plan one dated charge or skip a single occurrence.")}
+<p>Under <strong>One-Off Charging Plans</strong>, choose <strong>Plan Full Charge…</strong> and enter a local date
+(<code>YYYY-MM-DD</code>) and time (<code>HH:MM</code>). Choose a time more than a minute ahead and within the next year.
+Invalid dates and times are rejected. The plan uses your schedule's lead time and needs a saved limit below 100%.
+The helper must be upgraded with the app.</p>
+<p><strong>Cancel Plan</strong> removes only the dated plan. <strong>Skip Next</strong> skips the next upcoming occurrence,
+including a dated plan or a recurring rule. <strong>Undo Skip</strong> restores that occurrence before it expires.
+Neither action removes recurring rules. After the planned window ends, the temporary exception expires automatically.</p>
 <h2 id="rules">Ready-by times</h2>
 <p>A <strong>ready-by time</strong> is a day or group of days with the time you want the battery to be full by, for example
 <em>Weekdays, 07:30</em>.</p>
@@ -498,6 +519,16 @@ you only see the ones your system supports.</p>
 {note("note", "If GNOME's power settings cannot be found, this part of the page says \"Power Saving and Power Button Settings Aren't Available\". They need GNOME Settings Daemon. The page is the part of the app that is most tied to GNOME.")}
 """
 
+CONTENT["power"] += f"""
+<h2 id="diagnostics">Diagnostics</h2>
+{fig("power-diagnostics", "Read-only diagnostics for power services, the charging helper and saved charge limits.", "Diagnostics reports findings without changing other utilities.")}
+<p>Choose <strong>Check Again</strong> to inspect helper availability, power-mode support, active TLP, auto-cpufreq and
+TuneD services, and differences between saved and current charge limits. These checks are read-only: no service is stopped
+and no setting is changed. A sandbox or a system without systemd may prevent service inspection.</p>
+<p>Failed power-mode changes remain visible. Automatic mode retries after a delay; use <strong>Retry Power Mode</strong>
+to retry sooner when automatic mode is enabled. Review conflicting utilities before changing their settings.</p>
+"""
+
 CONTENT["usage"] = f"""
 <p>The Usage page answers "where did my battery go?" It has the history of the battery level and power draw, how much the laptop used
 while asleep, and the apps that use the most energy.</p>
@@ -554,12 +585,12 @@ started, how long it slept, and how much battery it used, in percent and in perc
 <h2 id="detail">App detail</h2>
 {fig("app-detail", "The detail dialog for an app with its energy impact and energy used, and charts for the last 24 hours and 7 days.", "Click an app to see its energy impact and estimated use hour by hour.", narrow=True)}
 <p>Click any app to open its detail. It shows the <strong>Energy Impact</strong> and the <strong>Energy Used</strong> (an estimate in Wh on battery), with the period set
-by the <strong>24 Hours / 7 Days</strong> buttons, and an hour-by-hour chart of CPU use and energy. Only hours when the app was running are shown, and completed hours are saved for the last 7 days. A new install says "No hourly history yet. Keep the app running to collect activity."</p>
+by the <strong>24 Hours / 7 Days</strong> buttons, and an hour-by-hour chart of CPU use and energy. Only hours when the app was running are shown, and completed hours are saved for 7 days by default. A new install says "No hourly history yet. Keep the app running to collect activity."</p>
 """
 
 CONTENT["preferences"] = f"""
 <p>Open <strong>Preferences</strong> from the main menu or with <kbd>Ctrl</kbd>+<kbd>,</kbd> to choose which notifications you
-get. Everything else in the app is on its own page.</p>
+get and manage recorded history.</p>
 {fig("preferences", "The Preferences dialog with switches for Charge Limit Reached, Fully Charged Without a Limit, Low Battery with a Notify At level, Apps Using Significant Energy and High Drain During Sleep.", "The Preferences dialog.")}
 
 <h2 id="notifications">Notifications</h2>
@@ -605,10 +636,10 @@ HTML page you can open in any browser, print, email or keep. It is useful for a 
 <p>Choose <strong>Export Data as CSV…</strong>, pick a folder, and choose <strong>Save Here</strong>. The app writes four files you can open in a spreadsheet
 or load into your own tools (the confirmation says how many files were saved):</p>
 {table(["File", "Contents"], [
-    ["<code>battery-history.csv</code>", "Battery level and power samples, one per minute (kept for 30 days)."],
+    ["<code>battery-history.csv</code>", "Battery level and power samples, one per minute (30 days by default)."],
     ["<code>capacity-history.csv</code>", "The daily capacity readings used for the trend."],
     ["<code>sleep-sessions.csv</code>", "Each recorded sleep session and how much battery it used."],
-    ["<code>app-energy.csv</code>", "Each app's CPU use and estimated energy, per hour (kept for 7 days)."],
+    ["<code>app-energy.csv</code>", "Each app's CPU use and estimated energy, per hour (7 days by default)."],
 ])}
 <p>Timestamps use the ISO 8601 format with your time zone, for example <code>2026-11-07T08:15:00-05:00</code>.</p>
 
@@ -620,15 +651,50 @@ battery-health-center --export-csv ~/battery-data</code></pre>
 
 <h2 id="stored">Where your data is stored</h2>
 {table(["Location", "What it holds"], [
-    ["<code>~/.local/share/battery-health-center/history.csv</code>", "Battery samples, once a minute, for the last 30 days."],
+    ["<code>~/.local/share/battery-health-center/history.csv</code>", "Battery samples, once a minute, for 30 days by default."],
     ["<code>~/.local/share/battery-health-center/health.csv</code>", "The daily capacity readings used for the trend."],
-    ["<code>~/.local/share/battery-health-center/app-history.csv</code>", "Per-app energy by the hour, for the last 7 days."],
+    ["<code>~/.local/share/battery-health-center/app-history.csv</code>", "Per-app energy by the hour, for 7 days by default."],
     ["<code>~/.config/battery-health-center/settings.ini</code>", "Your preferences."],
     ["<code>~/.config/autostart/io.github.BatteryHealthCenter.desktop</code>", "Present only when background recording is on."],
 ])}
 <p>The charge limit and the schedule are stored by the root helper, outside your home folder (see <a href="reference.html#files">Reference</a>).
-To start over, quit the app and delete the files you want to reset.</p>
+Use <strong>Preferences → Manage History</strong> to back up, restore or clear selected history.</p>
 <p>Writes are made safely: preferences are replaced atomically, and if a save fails the app keeps the previous file, shows a banner with the path and the error, and retries the history when storage recovers.</p>
+"""
+
+CONTENT["overview"] += """
+<h2 id="runtime">Time remaining</h2>
+<p>Runtime and charging estimates average up to two minutes of recent power readings to reduce sudden jumps.
+The estimate resets after sleep, a power-source or charging-state change, or a battery change.
+Missing or invalid power readings show no estimate. Workload changes can still affect actual runtime.</p>
+"""
+CONTENT["usage"] += """
+<h2 id="checkpoints">Saving the current hour</h2>
+<p>App history includes the current partial hour. It is checkpointed every minute, at an hour change and on orderly shutdown.
+Restarting resumes the saved hour without duplicating it. An abrupt stop may lose readings since the last checkpoint.
+CSV exports include the current saved hour.</p>
+"""
+CONTENT["preferences"] += """
+<h2 id="retention">History retention</h2>
+<p>Choose separate periods for <strong>Battery History</strong>, <strong>App Activity</strong> and
+<strong>Battery Health History</strong>: 7, 30, 90 or 365 days, or <strong>Keep All History</strong>.
+Defaults remain 30 days, 7 days and all health history respectively. Shortening a period requires confirmation
+and permanently removes older records in that category. Back up first if you may want them later.</p>
+<p>The <strong>Manage History</strong> group also provides <a href="data.html#manage">backup, restore and selective clearing</a>.</p>
+"""
+CONTENT["data"] += """
+<h2 id="manage">Back up, restore and clear history</h2>
+<p>Open <strong>Preferences → Manage History → Back Up History…</strong> to save a local <code>.bhc</code> file.
+It contains battery samples, app names and energy records, and daily battery health readings. It does not include preferences,
+charge limits, charging schedules or the helper's unplug log. Store it somewhere private.</p>
+<p><strong>Restore History…</strong> validates the backup before asking to replace all three recorded datasets.
+Backups with malformed records, unexpected files or unsupported versions are rejected. A failed write rolls back the existing files;
+if rollback itself fails, the error names a recovery backup. Current retention settings still apply to restored history.</p>
+<p><strong>Clear History…</strong> lets you select categories; none is selected initially. Confirming permanently removes
+only the chosen categories. Back up first if you might need them again. Cancel leaves everything intact.</p>
+<p>Other current app copies reload replaced history before their next write. If an older background version owns recording,
+close it and reopen this version before restoring or clearing. Backup is limited to 64 MiB.</p>
+<p>Capacity CSV exports now include battery identity and label columns, so replacement histories remain distinguishable.</p>
 """
 
 CONTENT["reference"] = f"""

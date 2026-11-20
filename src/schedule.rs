@@ -41,18 +41,20 @@ pub struct Schedule {
     /// How long before the ready-by time to start charging to 100%.
     pub lead_min: u16,
     pub rules: Vec<Rule>,
+    pub one_off: Option<i64>,
+    pub skip_ready: Option<i64>,
 }
 
 impl Default for Schedule {
     fn default() -> Self {
-        Schedule { optimized: false, lead_min: DEFAULT_LEAD_MIN, rules: Vec::new() }
+        Schedule { optimized: false, lead_min: DEFAULT_LEAD_MIN, rules: Vec::new(), one_off: None, skip_ready: None }
     }
 }
 
 impl Schedule {
     /// Nothing to carry out: no rules and no learning.
     pub fn is_empty(&self) -> bool {
-        !self.optimized && self.rules.is_empty()
+        !self.optimized && self.rules.is_empty() && self.one_off.is_none()
     }
 
     /// Reads the config text, ignoring lines it doesn't understand.
@@ -61,6 +63,8 @@ impl Schedule {
         for line in text.lines() {
             let f: Vec<&str> = line.split_whitespace().collect();
             match f.as_slice() {
+                ["once", v] => s.one_off = v.parse::<i64>().ok().filter(|t| *t > 0),
+                ["skip", v] => s.skip_ready = v.parse::<i64>().ok().filter(|t| *t > 0),
                 ["optimized", v] => s.optimized = *v == "1",
                 ["lead", v] => {
                     if let Ok(m) = v.parse::<u16>() {
@@ -83,6 +87,8 @@ impl Schedule {
     pub fn to_text(&self) -> String {
         let mut t = String::from("# Managed by Battery Health Center: optimized, lead (minutes), rule <days> <HH:MM>\n");
         t.push_str(&format!("optimized {}\nlead {}\n", u8::from(self.optimized), self.lead_min));
+        if let Some(ts) = self.one_off { t.push_str(&format!("once {ts}\n")); }
+        if let Some(ts) = self.skip_ready { t.push_str(&format!("skip {ts}\n")); }
         for r in &self.rules {
             t.push_str(&format!("rule {} {}\n", r.days, format_time(r.ready)));
         }
@@ -194,33 +200,87 @@ pub fn full_charge_wanted(schedule: &Schedule, learned: &Learned, now: Clock) ->
     })
 }
 
-/// Next ready-by time on the local calendar, including learned rules and DST changes.
-pub fn next_ready(schedule: &Schedule, learned: &Learned, now: i64) -> Option<i64> {
+/// Ready-by occurrences on the local calendar, including the previous day for grace windows.
+fn occurrences(schedule: &Schedule, learned: &Learned, now: i64) -> Vec<i64> {
     let mut rules = schedule.rules.clone();
     if schedule.optimized { rules.extend(learned.rules()); }
     let t = now as libc::time_t;
-    // SAFETY: localtime_r initializes the provided tm; mktime normalizes a copy.
+    // SAFETY: localtime_r fills the initialized output; mktime normalizes a copy.
     let local = unsafe {
         let mut local: libc::tm = std::mem::zeroed();
-        if libc::localtime_r(&t, &mut local).is_null() { return None; }
+        if libc::localtime_r(&t, &mut local).is_null() { return Vec::new(); }
         local
     };
     let weekday = (local.tm_wday + 6) % 7;
-    (0..=7).flat_map(|days| {
+    let mut result: Vec<i64> = (-1..=7).flat_map(|days| {
         let rules = &rules;
         rules.iter().filter_map(move |rule| {
-            if rule.days >> ((weekday + days) % 7) & 1 == 0 { return None; }
+            if rule.days >> (weekday + days).rem_euclid(7) & 1 == 0 { return None; }
             let mut ready = local;
             ready.tm_mday += days;
             ready.tm_hour = i32::from(rule.ready / 60);
             ready.tm_min = i32::from(rule.ready % 60);
             ready.tm_sec = 0;
             ready.tm_isdst = -1;
-            // SAFETY: ready is an initialized local calendar time.
+            // SAFETY: ready is initialized; a negative result denotes conversion failure here.
             let ts = unsafe { libc::mktime(&mut ready) } as i64;
-            (ts > now).then_some(ts)
+            (ts > 0).then_some(ts)
         })
-    }).min()
+    }).collect();
+    result.extend(schedule.one_off);
+    result.sort_unstable(); result.dedup();
+    result
+}
+
+/// Next unskipped ready-by timestamp, interpreted in the system's local timezone.
+pub fn next_ready(schedule: &Schedule, learned: &Learned, now: i64) -> Option<i64> {
+    occurrences(schedule, learned, now).into_iter().filter(|ts| *ts > now && Some(*ts) != schedule.skip_ready).min()
+}
+
+pub fn full_charge_wanted_at(schedule: &Schedule, learned: &Learned, now: i64) -> bool {
+    occurrences(schedule, learned, now).into_iter().any(|ts| Some(ts) != schedule.skip_ready
+        && now >= ts - i64::from(schedule.lead_min) * 60 && now <= ts + i64::from(GRACE_MIN) * 60)
+}
+
+impl Schedule {
+    pub fn set_one_off(&mut self, ready: Option<i64>, now: i64) -> Result<(), String> {
+        if ready.is_some_and(|ts| ts <= now + 60 || ts > now + 366 * 86_400) {
+            return Err("Choose a ready-by time at least one minute ahead and within the next year.".into());
+        }
+        if self.skip_ready == self.one_off { self.skip_ready = None; }
+        self.one_off = ready; Ok(())
+    }
+
+    pub fn skip_next(&mut self, learned: &Learned, now: i64) -> Result<(), String> {
+        if self.skip_ready.is_some_and(|ts| ts + i64::from(GRACE_MIN) * 60 >= now) {
+            return Err("A charge is already skipped. Undo it before skipping another.".into());
+        }
+        self.skip_ready = Some(next_ready(self, learned, now).ok_or("There is no upcoming charge to skip.")?);
+        Ok(())
+    }
+
+    pub fn expire(&mut self, now: i64) -> bool {
+        let before = (self.one_off, self.skip_ready);
+        if self.one_off.is_some_and(|ts| ts + i64::from(GRACE_MIN) * 60 < now) { self.one_off = None; }
+        if self.skip_ready.is_some_and(|ts| ts + i64::from(GRACE_MIN) * 60 < now) { self.skip_ready = None; }
+        before != (self.one_off, self.skip_ready)
+    }
+
+    /// Typed local calendar input. Reject invalid and DST-normalized nonexistent times.
+    pub fn local_ready(date: &str, time: &str) -> Option<i64> {
+        let parts: Vec<_> = date.split('-').collect();
+        if parts.len() != 3 || parts[0].len() != 4 || parts[1].len() != 2 || parts[2].len() != 2 { return None; }
+        let (year, month, day) = (parts[0].parse::<i32>().ok()?, parts[1].parse::<i32>().ok()?, parts[2].parse::<i32>().ok()?);
+        let minute = parse_time(time)?;
+        if !(1970..=2200).contains(&year) || !(1..=12).contains(&month) || !(1..=31).contains(&day) { return None; }
+        // SAFETY: mktime initializes the calendar normalization of this local tm.
+        let mut tm: libc::tm = unsafe { std::mem::zeroed() };
+        tm.tm_year = year - 1900; tm.tm_mon = month - 1; tm.tm_mday = day;
+        tm.tm_hour = i32::from(minute / 60); tm.tm_min = i32::from(minute % 60); tm.tm_isdst = -1;
+        let ts = unsafe { libc::mktime(&mut tm) } as i64;
+        (ts > 0 && tm.tm_year == year - 1900 && tm.tm_mon == month - 1 && tm.tm_mday == day
+            && tm.tm_hour == i32::from(minute / 60) && tm.tm_min == i32::from(minute % 60)).then_some(ts)
+    }
 }
 
 #[cfg(test)]
@@ -249,8 +309,36 @@ mod tests {
     }
 
     #[test]
+    fn one_off_can_be_skipped_restored_and_expires_without_losing_rules() {
+        let now = 1_800_000_000;
+        let mut plan = Schedule::default();
+        plan.set_one_off(Some(now + 3600), now).unwrap();
+        assert!(full_charge_wanted_at(&plan, &Learned::default(), now));
+        assert_eq!(Schedule::parse(&plan.to_text()), plan);
+        plan.skip_next(&Learned::default(), now).unwrap();
+        assert!(!full_charge_wanted_at(&plan, &Learned::default(), now));
+        assert!(next_ready(&plan, &Learned::default(), now).is_none());
+        assert!(plan.skip_next(&Learned::default(), now).is_err());
+        plan.skip_ready = None;
+        assert!(full_charge_wanted_at(&plan, &Learned::default(), now));
+        plan.rules.push(Rule { days: EVERY_DAY, ready: 480 });
+        assert!(plan.expire(now + 3600 + i64::from(GRACE_MIN) * 60 + 1));
+        assert!(plan.one_off.is_none()); assert_eq!(plan.rules.len(), 1);
+        assert!(plan.set_one_off(Some(now - 1), now).is_err());
+    }
+
+    #[test]
+    fn typed_local_dates_reject_invalid_calendar_values() {
+        assert!(Schedule::local_ready("2026-02-30", "08:00").is_none());
+        assert!(Schedule::local_ready("2026-11-20", "25:00").is_none());
+        assert!(Schedule::local_ready("2026-1-1", "08:00").is_none());
+        let ts = Schedule::local_ready("2026-11-20", "08:30").unwrap();
+        assert_eq!(clock_at(ts).unwrap().minute, 510);
+    }
+
+    #[test]
     fn text_roundtrip_and_clamping() {
-        let s = Schedule { optimized: true, lead_min: 90, rules: vec![Rule { days: WEEKDAYS, ready: 7 * 60 + 30 }, Rule { days: 64, ready: 600 }] };
+        let s = Schedule { optimized: true, lead_min: 90, rules: vec![Rule { days: WEEKDAYS, ready: 7 * 60 + 30 }, Rule { days: 64, ready: 600 }], ..Schedule::default() };
         assert_eq!(Schedule::parse(&s.to_text()), s);
         let odd = Schedule::parse("lead 5\nrule 0 07:00\nrule 200 07:00\nrule 3 25:00\nrule 3 07:61\nnonsense\nrule 3 06:15\n");
         assert_eq!(odd.lead_min, MIN_LEAD_MIN);

@@ -4,7 +4,7 @@
 %global debug_package %{nil}
 
 Name:           battery-health-center
-Version:        0.6.6
+Version:        0.7.0
 Release:        1%{?dist}
 Summary:        Laptop battery health, charge limits and energy usage in one place
 
@@ -100,6 +100,12 @@ fi
 %{_unitdir}/battery-health-center-scheduler.path
 
 %changelog
+* Thu Nov 19 2026 Alexis Rios-Negron <182820807+arios4k@users.noreply.github.com> - 0.7.0-1
+- Add stable runtime estimates, frequent history checkpoints and per-battery trends
+- Add power diagnostics, dated charging plans and skip/undo
+- Add history retention, selective clearing and local backup/restore
+- Update help, release history and screenshots
+
 * Sat Nov 14 2026 Alexis Rios-Negron <182820807+arios4k@users.noreply.github.com> - 0.6.6-1
 - Back on the Snap Store; nothing changes for this package
 

@@ -23,8 +23,8 @@ Salud, ciclos, límites y programación de la carga, y qué aplicaciones la gast
 [![Apoyar en PayPal](https://img.shields.io/badge/PayPal-Support-00457C?logo=paypal&logoColor=white)](https://paypal.me/AlexisRios)
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/v0.5.0/overview-dark.png">
-  <img src="docs/screenshots/v0.5.0/overview-light.png" alt="Battery Health Center 0.5.0: navegación lateral, estado y salud de la batería en un panel adaptable">
+  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/v0.7.0/overview-dark.png">
+  <img src="docs/screenshots/v0.7.0/overview-light.png" alt="Battery Health Center 0.7.0: navegación lateral, estado y salud de la batería en un panel adaptable">
 </picture>
 
 </div>

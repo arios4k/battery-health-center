@@ -10,9 +10,6 @@ use std::time::{SystemTime, UNIX_EPOCH};
 
 use crate::battery::{Battery, Status};
 
-/// How long samples are kept on disk.
-const RETENTION_SECS: i64 = 30 * 24 * 3600;
-
 #[derive(Clone, Debug)]
 pub struct Sample {
     pub ts: i64,
@@ -129,17 +126,13 @@ fn format_line(s: &Sample) -> String {
 impl History {
     pub fn load() -> Self {
         let path = data_dir().join("history.csv");
-        let cutoff = now_unix() - RETENTION_SECS;
         let samples: Vec<Sample> = fs::read_to_string(&path)
             .unwrap_or_default()
             .lines()
             .filter_map(parse_line)
-            .filter(|s| s.ts >= cutoff)
             .collect();
         let mut history = History { path, samples, writer_lock: None, write_error: None };
-        if history.try_become_writer() {
-            history.rewrite();
-        }
+        history.try_become_writer();
         history
     }
 
@@ -165,10 +158,20 @@ impl History {
         self.writer_lock.is_some()
     }
 
-    /// Rewrites the file with only retained samples (prunes old entries).
-    fn rewrite(&mut self) {
-        let data: String = self.samples.iter().map(format_line).collect();
-        self.write_error = crate::storage::replace(&self.path, &data).err();
+    pub fn prune(&mut self, now: i64, days: u16) {
+        if days == 0 { return; }
+        let retained: Vec<_> = self.samples.iter().filter(|s| s.ts >= now - i64::from(days) * 86_400).cloned().collect();
+        if retained.len() == self.samples.len() { return; }
+        if self.is_writer() {
+            let text: String = retained.iter().map(format_line).collect();
+            self.write_error = crate::storage::replace(&self.path, &text).err();
+            if self.write_error.is_some() { return; }
+        }
+        self.samples = retained;
+    }
+
+    pub fn reload_samples(&mut self) {
+        self.samples = fs::read_to_string(&self.path).unwrap_or_default().lines().filter_map(parse_line).collect();
     }
 
     /// Whether this process writes history (and so also sends notifications
