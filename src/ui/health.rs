@@ -16,6 +16,10 @@ pub struct HealthPage {
     battery_select: adw::ComboRow,
     battery_names: RefCell<Vec<String>>,
     selected: Rc<Cell<usize>>,
+    history_id: Rc<RefCell<String>>,
+    history_choices: RefCell<Vec<(String, String)>>,
+    history_select: adw::ComboRow,
+    history_note: gtk::Label,
     chart: gtk::DrawingArea,
     chart_frame: gtk::Frame,
     trend_hint: gtk::Label,
@@ -86,12 +90,18 @@ impl HealthPage {
             .title(tr("Capacity Over Time"))
             .description(tr("Recorded once a day. Readings vary a little from day to day; the trend shows the overall direction."))
             .build();
+        let history_id = Rc::new(RefCell::new(ctrl.state().batteries.first().map(|b| b.identity()).unwrap_or_else(|| "legacy".into())));
+        let history_select = adw::ComboRow::builder().title(tr("Health History")).use_subtitle(true).build();
+        over_time.add(&history_select);
+        let history_note = gtk::Label::builder().wrap(true).xalign(0.0).css_classes(["caption", "dim-label"]).margin_top(8).build();
+        over_time.add(&history_note);
         let chart = super::widgets::drawn_area(0, 180, tr("Capacity Over Time"));
         chart.set_hexpand(true);
         let weak = Rc::downgrade(ctrl);
+        let chart_id = history_id.clone();
         chart.set_draw_func(move |area, cr, w, h| {
             if let Some(ctrl) = weak.upgrade() {
-                draw_health(cr, w as f64, h as f64, &area.color(), &ctrl.state().health_log.entries, now_unix());
+                draw_health(cr, w as f64, h as f64, &area.color(), &ctrl.state().health_log.entries_for(&chart_id.borrow()), now_unix());
             }
         });
         chart.set_margin_top(12);
@@ -151,6 +161,10 @@ impl HealthPage {
             battery_select,
             battery_names: RefCell::new(Vec::new()),
             selected: Rc::new(Cell::new(0)),
+            history_id,
+            history_choices: RefCell::new(Vec::new()),
+            history_select,
+            history_note,
             chart,
             chart_frame,
             trend_hint,
@@ -181,6 +195,17 @@ impl HealthPage {
             ctrl: Rc::downgrade(ctrl),
         });
 
+        let weak = Rc::downgrade(&page);
+        page.history_select.connect_selected_notify(move |row| {
+            if let Some(page) = weak.upgrade() {
+                let id = page.history_choices.borrow().get(row.selected() as usize).map(|(id, _)| id.clone());
+                if let Some(id) = id {
+                    *page.history_id.borrow_mut() = id;
+                    page.chart.queue_draw();
+                    if let Some(ctrl) = page.ctrl.upgrade() { page.update_trend(&ctrl.state()); }
+                }
+            }
+        });
         let sel = page.selected.clone();
         let weak = Rc::downgrade(&page);
         page.battery_select.connect_selected_notify(move |row| {
@@ -250,21 +275,28 @@ impl HealthPage {
     }
 
     fn update_trend(&self, st: &State) {
-        let count = st.health_log.entries.len();
+        let id = self.history_id.borrow().clone();
+        let entries = st.health_log.entries_for(&id);
+        self.history_note.set_label(if id == "legacy" {
+            tr("Earlier records have no battery identity. They are kept separately and never used for the current battery's trend.")
+        } else if st.batteries.iter().find(|b| b.identity() == id).is_some_and(|b| b.serial.as_ref().is_none_or(|s| s.is_empty() || s == "0" || s == "Unknown")) {
+            tr("This battery has no usable serial number. An identical replacement may not be detected.")
+        } else { tr("Each physical battery has its own daily readings and trend. Previous batteries remain available in this list.") });
+        let count = entries.len();
         self.chart_frame.set_visible(count >= 2);
-        self.trend_hint.set_visible(st.health_log.trend().is_none());
+        self.trend_hint.set_visible(st.health_log.trend_for(&id).is_none());
         self.trend_hint.set_label(if st.batteries.first().and_then(|b| b.health_percent()).is_none() {
             tr("This battery does not report capacity data, so a health trend cannot be calculated.")
         } else {
             tr("A trend needs at least 5 daily readings spanning 14 days. Open the app on different days, or enable background recording on the Usage page.")
         });
-        if let (Some(first), Some(last)) = (st.health_log.entries.first(), st.health_log.entries.last()) {
+        if let (Some(first), Some(last)) = (entries.first(), entries.last()) {
             super::widgets::a11y_description(&self.chart, &format!("{:.0}% → {:.0}%", first.health, last.health));
         }
-        if self.last_log_len.replace(st.health_log.entries.len()) != st.health_log.entries.len() {
+        if self.last_log_len.replace(entries.len()) != entries.len() {
             self.chart.queue_draw();
         }
-        match st.health_log.trend() {
+        match st.health_log.trend_for(&id) {
             Some(t) => {
                 self.trend_month.set_label(&trf("{0}% per month", &[("0", format!("{:+.1}", t.per_month))]));
                 let when = t.reaches_80_ts.and_then(|ts| gtk::glib::DateTime::from_unix_local(ts).ok()?.format("%B %Y").ok());
@@ -276,7 +308,7 @@ impl HealthPage {
                 });
             }
             None => {
-                let days = st.health_log.entries.first().zip(st.health_log.entries.last()).map_or(0, |(a, b)| (b.ts - a.ts).max(0) / 86_400);
+                let days = entries.first().zip(entries.last()).map_or(0, |(a, b)| (b.ts - a.ts).max(0) / 86_400);
                 self.trend_month.set_label(&trf("{readings}/5 readings · {days}/14 days", &[("readings", count.to_string()), ("days", days.to_string())]));
                 self.projection_row.set_visible(false);
             }
@@ -285,6 +317,21 @@ impl HealthPage {
 
     pub fn update(&self, st: &State) {
         self.update_calibration(st);
+        let mut choices: Vec<(String, String)> = st.batteries.iter().map(|b| (b.identity(), format!("{} · {}", b.name, b.model.as_deref().unwrap_or("")))).collect();
+        for e in &st.health_log.entries {
+            if !choices.iter().any(|(id, _)| *id == e.battery_id) {
+                let label = if e.battery_id == "legacy" { tr("Unidentified history from earlier versions").into() }
+                    else { trf("Archived: {battery}", &[("battery", e.battery_label.clone())]) };
+                choices.push((e.battery_id.clone(), label));
+            }
+        }
+        if *self.history_choices.borrow() != choices {
+            let labels: Vec<&str> = choices.iter().map(|(_, label)| label.as_str()).collect();
+            let wanted = choices.iter().position(|(id, _)| *id == *self.history_id.borrow()).unwrap_or(0);
+            *self.history_choices.borrow_mut() = choices.clone();
+            self.history_select.set_model(Some(&gtk::StringList::new(&labels)));
+            self.history_select.set_selected(wanted as u32);
+        }
         self.update_trend(st);
 
         let names: Vec<String> = st.batteries.iter().map(|b| b.name.clone()).collect();

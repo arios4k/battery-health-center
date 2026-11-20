@@ -115,6 +115,16 @@ impl Condition {
 }
 
 impl Battery {
+    /// Stable, non-secret fingerprint for grouping physical-battery history.
+    /// Without a serial number, identical replacements cannot be distinguished.
+    pub fn identity(&self) -> String {
+        let serial = self.serial.as_deref().filter(|s| !s.trim().is_empty() && !matches!(*s, "0" | "Unknown"));
+        let source = format!("{}|{}|{}|{}", self.manufacturer.as_deref().unwrap_or(""), self.model.as_deref().unwrap_or(""),
+            serial.unwrap_or(&self.name), if serial.is_none() { format!("{:.2}", self.energy_design_wh.unwrap_or(0.0)) } else { String::new() });
+        let hash = source.bytes().fold(0xcbf29ce484222325u64, |h, b| (h ^ u64::from(b)).wrapping_mul(0x100000001b3));
+        format!("battery-{hash:016x}")
+    }
+
     /// Maximum capacity relative to when new (full charge / design capacity).
     pub fn health_percent(&self) -> Option<f64> {
         match (self.energy_full_wh, self.energy_design_wh) {
@@ -147,8 +157,8 @@ impl Battery {
     }
 
     /// Hours until empty (discharging) or until the charge limit (charging).
-    pub fn hours_remaining(&self) -> Option<f64> {
-        let power = self.power_w.filter(|p| *p > 0.1)?;
+    pub fn hours_remaining_at(&self, power: f64) -> Option<f64> {
+        if !power.is_finite() || power <= 0.1 { return None; }
         let now = self.energy_now_wh?;
         match self.status {
             Status::Discharging => Some(now / power),

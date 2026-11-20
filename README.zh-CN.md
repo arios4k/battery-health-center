@@ -23,8 +23,8 @@
 [![通过 PayPal 支持](https://img.shields.io/badge/PayPal-Support-00457C?logo=paypal&logoColor=white)](https://paypal.me/AlexisRios)
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/v0.5.0/overview-dark.png">
-  <img src="docs/screenshots/v0.5.0/overview-light.png" alt="Battery Health Center 0.5.0：侧边栏导航，在自适应仪表盘中显示电池状态与健康">
+  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/v0.7.0/overview-dark.png">
+  <img src="docs/screenshots/v0.7.0/overview-light.png" alt="Battery Health Center 0.7.0：侧边栏导航，在自适应仪表盘中显示电池状态与健康">
 </picture>
 
 </div>

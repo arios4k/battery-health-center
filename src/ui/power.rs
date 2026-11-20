@@ -142,6 +142,12 @@ fn profile_combo(title: &str) -> adw::ComboRow {
 pub struct PowerPage {
     pub root: adw::BreakpointBin,
     mode_group: adw::PreferencesGroup,
+    diagnostics_list: gtk::ListBox,
+    diagnostics_check: gtk::Button,
+    diagnostics_spinner: gtk::Spinner,
+    diagnostics_generation: Cell<u64>,
+    mode_error: adw::ActionRow,
+    retry_mode: gtk::Button,
     mode: adw::ComboRow,
     auto_group: adw::PreferencesGroup,
     auto_switch: adw::SwitchRow,
@@ -299,9 +305,29 @@ impl PowerPage {
             root.add(&top_bar);
         }
 
+        let diagnostics = adw::PreferencesGroup::builder().title(tr("Power Management Diagnostics"))
+            .description(tr("Read-only checks for services and settings that may conflict. No other utility is changed."))
+            .css_classes(["workspace-card"]).build();
+        let diagnostics_list = gtk::ListBox::builder().selection_mode(gtk::SelectionMode::None).css_classes(["boxed-list"]).build();
+        let diagnostics_check = gtk::Button::with_label(tr("Check Again"));
+        let diagnostics_spinner = gtk::Spinner::new();
+        let controls = gtk::Box::builder().spacing(8).halign(gtk::Align::End).margin_top(12).build();
+        controls.append(&diagnostics_spinner); controls.append(&diagnostics_check);
+        diagnostics.add(&diagnostics_list); diagnostics.add(&controls);
+        let mode_error = adw::ActionRow::builder().title(tr("Power Mode Change Failed")).visible(false).build();
+        let retry_mode = gtk::Button::builder().label(tr("Retry Power Mode")).valign(gtk::Align::Center).build();
+        mode_error.add_suffix(&retry_mode); diagnostics.add(&mode_error);
+        root.add(&diagnostics);
+
         let page = Rc::new(PowerPage {
             root: root.root,
             mode_group,
+            diagnostics_list,
+            diagnostics_check,
+            diagnostics_spinner,
+            diagnostics_generation: Cell::new(u64::MAX),
+            mode_error,
+            retry_mode,
             mode,
             auto_group,
             auto_switch,
@@ -328,6 +354,10 @@ impl PowerPage {
     }
 
     fn connect_signals(self: &Rc<Self>) {
+        let weak = self.ctrl.clone();
+        self.diagnostics_check.connect_clicked(move |_| { if let Some(ctrl) = weak.upgrade() { ctrl.refresh_diagnostics(); } });
+        let weak = self.ctrl.clone();
+        self.retry_mode.connect_clicked(move |_| { if let Some(ctrl) = weak.upgrade() { ctrl.retry_power_mode(); } });
         let this = Rc::downgrade(self);
         self.mode.connect_selected_notify(move |row| {
             let Some(this) = this.upgrade() else { return };
@@ -341,8 +371,9 @@ impl PowerPage {
                 // A selection that matches the current mode isn't a user choice (the
                 // page also selects the current mode itself when it refreshes).
                 if profiles.active().as_deref() != Some(id.as_str()) {
-                    if let Err(e) = profiles.set_active(&id) {
-                        eprintln!("battery-health-center: could not change power mode: {}", e.message());
+                    match profiles.set_active(&id) {
+                        Ok(()) => ctrl.clear_power_error(),
+                        Err(e) => ctrl.report_power_error(e.message().to_string()),
                     }
                     ctrl.refresh();
                 }
@@ -381,6 +412,20 @@ impl PowerPage {
     }
 
     pub fn update(&self, st: &State) {
+        self.diagnostics_check.set_sensitive(!st.diagnostics_busy);
+        self.diagnostics_spinner.set_spinning(st.diagnostics_busy);
+        self.diagnostics_spinner.set_visible(st.diagnostics_busy);
+        self.mode_error.set_visible(st.power_error.is_some());
+        self.retry_mode.set_sensitive(st.settings.auto_profile);
+        if let Some(error) = &st.power_error { self.mode_error.set_subtitle(error); }
+        if self.diagnostics_generation.replace(st.diagnostics_generation) != st.diagnostics_generation {
+            while let Some(child) = self.diagnostics_list.first_child() { self.diagnostics_list.remove(&child); }
+            for finding in &st.diagnostics {
+                let row = adw::ActionRow::builder().title(&finding.title).subtitle(&finding.detail).use_markup(false).build();
+                row.add_prefix(&super::widgets::decorative_icon(if finding.warning { "dialog-warning-symbolic" } else { "dialog-information-symbolic" }));
+                self.diagnostics_list.append(&row);
+            }
+        }
         let Some(ctrl) = self.ctrl.upgrade() else { return };
         let Some(profiles) = &ctrl.profiles else { return };
         let ids = profiles.available();

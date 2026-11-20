@@ -1,4 +1,4 @@
-.TH BATTERY-HEALTH-CENTER 1 "November 2026" "battery-health-center 0.6.6" "User Commands"
+.TH BATTERY-HEALTH-CENTER 1 "November 2026" "battery-health-center 0.7.0" "User Commands"
 .SH NAME
 battery-health-center \- battery health, charge limits and energy use in one place
 .SH SYNOPSIS
@@ -19,6 +19,11 @@ or on a schedule, switch the power mode automatically, and change GNOME's
 power-saving settings.
 .PP
 Changing the charge limit asks for a password through PolicyKit.
+.PP
+Preferences provides separate history retention periods, local history backup and
+restore, and selective history clearing. Health history is separated by battery.
+The Power page provides read-only diagnostics; Charging supports a dated full
+charge and skipping or undoing the next scheduled charge.
 .SH OPTIONS
 .TP
 .B \-\-background

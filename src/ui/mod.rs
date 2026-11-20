@@ -2,6 +2,7 @@ mod about;
 mod app_trend;
 mod appearance;
 mod charging;
+mod data;
 mod health;
 mod overview;
 mod power;

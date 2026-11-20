@@ -43,9 +43,9 @@ pub fn battery_csv(st: &State, iso: &dyn Fn(i64) -> String) -> String {
 }
 
 pub fn capacity_csv(st: &State, iso: &dyn Fn(i64) -> String) -> String {
-    let mut out = String::from("time,unix_time,max_capacity_percent,cycles\n");
+    let mut out = String::from("time,unix_time,max_capacity_percent,cycles,battery_id,battery\n");
     for e in &st.health_log.entries {
-        out.push_str(&format!("{},{},{:.1},{}\n", iso(e.ts), e.ts, e.health, e.cycles.map(|c| c.to_string()).unwrap_or_default()));
+        out.push_str(&format!("{},{},{:.1},{},{},{}\n", iso(e.ts), e.ts, e.health, e.cycles.map(|c| c.to_string()).unwrap_or_default(), field(&e.battery_id), field(&e.battery_label)));
     }
     out
 }

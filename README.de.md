@@ -23,8 +23,8 @@ Zustand, Ladezyklen, Ladelimits und Ladepläne und welche Apps ihn leeren, für 
 [![Über PayPal unterstützen](https://img.shields.io/badge/PayPal-Support-00457C?logo=paypal&logoColor=white)](https://paypal.me/AlexisRios)
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/v0.5.0/overview-dark.png">
-  <img src="docs/screenshots/v0.5.0/overview-light.png" alt="Battery Health Center 0.5.0: Seitenleisten-Navigation, Akkustatus und Zustand in einem anpassbaren Dashboard">
+  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/v0.7.0/overview-dark.png">
+  <img src="docs/screenshots/v0.7.0/overview-light.png" alt="Battery Health Center 0.7.0: Seitenleisten-Navigation, Akkustatus und Zustand in einem anpassbaren Dashboard">
 </picture>
 
 </div>

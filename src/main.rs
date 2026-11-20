@@ -3,9 +3,12 @@ mod apps;
 mod battery;
 mod controller;
 mod desktop;
+mod diagnostics;
 mod export;
+mod estimate;
 mod health_log;
 mod history;
+mod history_store;
 mod i18n;
 #[allow(dead_code)]
 mod schedule;
@@ -157,6 +160,8 @@ fn main() -> glib::ExitCode {
                 app.send_notification(Some(id), &n);
             }
         });
+        let flush = Rc::downgrade(&ctrl);
+        app.connect_shutdown(move |_| { if let Some(ctrl) = flush.upgrade() { ctrl.flush_history(); } });
         ctrl.start();
         setup_actions(app, &ctrl);
         *c.borrow_mut() = Some(ctrl);

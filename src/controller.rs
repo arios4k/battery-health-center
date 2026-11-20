@@ -39,6 +39,7 @@ pub const CALIBRATION_EMPTY: f64 = 5.0;
 pub struct State {
     /// Overall view (combined when there are several batteries).
     pub battery: Option<Battery>,
+    pub remaining_hours: Option<f64>,
     pub batteries: Vec<Battery>,
     pub charger: Option<Charger>,
     /// Selected and available system sleep modes.
@@ -53,6 +54,10 @@ pub struct State {
     pub apps_avg: Vec<AppUsage>,
     pub settings: Settings,
     pub settings_error: Option<String>,
+    pub power_error: Option<String>,
+    pub diagnostics: Vec<crate::diagnostics::Finding>,
+    pub diagnostics_busy: bool,
+    pub diagnostics_generation: u64,
     /// Incremented whenever the app lists change.
     pub apps_generation: u64,
     /// Incremented whenever a history sample is added.
@@ -77,6 +82,10 @@ struct Announced {
 pub struct Controller {
     state: RefCell<State>,
     sampler: RefCell<AppSampler>,
+    estimator: RefCell<crate::estimate::RuntimeEstimator>,
+    history_revision: RefCell<String>,
+    retention_checked: Cell<i64>,
+    retention_applied: Cell<(u16, u16, u16)>,
     /// Lowest power seen on battery this session; used as the idle floor
     /// when splitting power between apps.
     idle_floor_w: Cell<Option<f64>>,
@@ -91,6 +100,7 @@ pub struct Controller {
     /// The power mode automatic mode last chose, so it only acts when the
     /// choice changes and never fights a mode picked by hand.
     last_auto_profile: RefCell<Option<String>>,
+    last_auto_attempt: Cell<i64>,
     pub profiles: Option<PowerProfiles>,
 }
 
@@ -106,6 +116,7 @@ impl Controller {
         Rc::new(Controller {
             state: RefCell::new(State {
                 battery: battery::combine(&batteries),
+                remaining_hours: None,
                 batteries,
                 charger: battery::charger(),
                 sleep_mode: battery::sleep_mode(),
@@ -118,10 +129,18 @@ impl Controller {
                 apps_avg: Vec::new(),
                 settings: Settings::load(),
                 settings_error: None,
+                power_error: None,
+                diagnostics: Vec::new(),
+                diagnostics_busy: false,
+                diagnostics_generation: 0,
                 apps_generation: 0,
                 history_generation: 0,
             }),
             sampler: RefCell::new(AppSampler::new()),
+            estimator: RefCell::new(crate::estimate::RuntimeEstimator::default()),
+            history_revision: RefCell::new(String::new()),
+            retention_checked: Cell::new(0),
+            retention_applied: Cell::new((30, 7, 0)),
             idle_floor_w: Cell::new(None),
             last_apps_sample: Cell::new(None),
             ticks: Cell::new(0),
@@ -131,6 +150,7 @@ impl Controller {
             settings_mtime: Cell::new(settings_mtime()),
             helper_busy: Cell::new(false),
             last_auto_profile: RefCell::new(None),
+            last_auto_attempt: Cell::new(0),
             profiles: PowerProfiles::connect(),
         })
     }
@@ -199,6 +219,7 @@ impl Controller {
         let mut st = self.state.borrow_mut();
         st.batteries = battery::all_batteries();
         st.battery = battery::combine(&st.batteries);
+        st.remaining_hours = self.estimator.borrow_mut().estimate(&st.batteries, st.battery.as_ref(), history::now_unix());
         st.charger = battery::charger();
         st.full_charge = st.batteries.iter().any(|b| system::full_charge_active(&b.name));
     }
@@ -208,6 +229,11 @@ impl Controller {
         self.ticks.set(n + 1);
         self.read_power();
         let now = history::now_unix();
+        let store = match crate::history_store::HistoryStore::open() {
+            Ok(store) => store,
+            Err(error) => { self.state.borrow_mut().history.write_error = Some(error); self.notify(); return; }
+        };
+        self.reload_if_changed(&store);
         {
             let mut st = self.state.borrow_mut();
             let st = &mut *st;
@@ -254,18 +280,96 @@ impl Controller {
                 }
             }
             if st.history.is_writer() {
-                if let Some(b) = st.batteries.first() {
-                    st.health_log.record(b, now);
-                }
+                let _ = store.heartbeat(now);
+                for b in &st.batteries { st.health_log.record(b, now); }
             }
+            let retention = (st.settings.history_days, st.settings.app_history_days, st.settings.health_history_days);
+            if now - self.retention_checked.get() >= 60 || retention != self.retention_applied.get() {
+                self.retention_checked.set(now); self.retention_applied.set(retention);
+            let before = (st.history.samples.len(), st.health_log.entries.len(), st.app_history.record_count());
+            st.history.prune(now, st.settings.history_days);
+            st.health_log.prune(now, st.settings.health_history_days, st.history.is_writer());
+            st.app_history.prune(now, st.settings.app_history_days);
+            if st.history.is_writer() && before != (st.history.samples.len(), st.health_log.entries.len(), st.app_history.record_count()) {
+                st.app_history.flush();
+                if store.touch().is_ok() { *self.history_revision.borrow_mut() = store.revision(); }
+                st.history_generation += 1; st.apps_generation += 1;
+            }            }
+
         }
+        drop(store);
         if self.state.borrow().history.is_writer() {
             self.finish_full_charge_outside_snap();
             self.advance_calibration();
             self.apply_auto_profile();
             self.send_notifications(n == 0, now);
         }
+        if n.is_multiple_of(DEVICES_EVERY_TICKS) { self.refresh_diagnostics(); }
         self.notify();
+    }
+
+    fn reload_if_changed(&self, store: &crate::history_store::HistoryStore) {
+        let revision = store.revision();
+        if revision != *self.history_revision.borrow() {
+            self.reload_history();
+            *self.history_revision.borrow_mut() = revision;
+        }
+    }
+
+    fn reload_history(&self) {
+        let mut st = self.state.borrow_mut();
+        st.history.reload_samples();
+        st.health_log = HealthLog::load();
+        st.app_history = AppHistory::load(history::now_unix());
+        st.history_generation += 1; st.apps_generation += 1;
+        self.last_apps_sample.set(None);
+    }
+
+    pub fn flush_history(&self) {
+        if let Ok(store) = crate::history_store::HistoryStore::open() {
+            self.reload_if_changed(&store);
+            if self.state.borrow().history.is_writer() { self.state.borrow_mut().app_history.flush(); }
+        }
+    }
+
+    pub fn backup_history(&self) -> Result<String, String> {
+        let store = crate::history_store::HistoryStore::open()?;
+        self.reload_if_changed(&store);
+        if self.state.borrow().history.is_writer() { self.state.borrow_mut().app_history.flush(); }
+        if let Some(error) = &self.state.borrow().app_history.write_error { return Err(error.clone()); }
+        Ok(crate::history_store::encode(&store.snapshot()?))
+    }
+
+    pub fn restore_history(&self, data: &crate::history_store::Backup) -> Result<(), String> {
+        let store = crate::history_store::HistoryStore::open()?;
+        self.reload_if_changed(&store);
+        if !self.state.borrow().history.is_writer() && !store.compatible_writer(history::now_unix()) {
+            return Err(tr("Close older or background copies of Battery Health Center before replacing history, then try again.").into());
+        }
+        store.replace(data)?;
+        self.reload_history();
+        *self.history_revision.borrow_mut() = store.revision();
+        drop(store); self.notify(); Ok(())
+    }
+
+    pub fn clear_history(&self, selected: &[&str]) -> Result<(), String> {
+        if selected.is_empty() { return Ok(()); }
+        let store = crate::history_store::HistoryStore::open()?;
+        self.reload_if_changed(&store);
+        if !self.state.borrow().history.is_writer() && !store.compatible_writer(history::now_unix()) {
+            return Err(tr("Close older or background copies of Battery Health Center before replacing history, then try again.").into());
+        }
+        if self.state.borrow().history.is_writer() { self.state.borrow_mut().app_history.flush(); }
+        if let Some(error) = &self.state.borrow().app_history.write_error { return Err(error.clone()); }
+        let mut data = store.snapshot()?;
+        for name in selected {
+            if !crate::history_store::FILES.contains(name) { return Err("Unknown history dataset".into()); }
+            data.insert((*name).into(), String::new());
+        }
+        store.replace(&data)?;
+        self.reload_history();
+        *self.history_revision.borrow_mut() = store.revision();
+        drop(store); self.notify(); Ok(())
     }
 
     /// Sends helper requests in order without blocking; one batch at a time.
@@ -324,17 +428,55 @@ impl Controller {
             st.settings.desired_profile(b.ac_online, b.percent, &profiles.available())
         };
         let mut last = self.last_auto_profile.borrow_mut();
-        if *last == wanted {
-            return;
-        }
+        if *last == wanted { return; }
+        let now = history::now_unix();
+        if self.state.borrow().power_error.is_some() && now - self.last_auto_attempt.get() < 30 { return; }
         if let Some(mode) = &wanted {
+            self.last_auto_attempt.set(now);
             if profiles.active().as_deref() != Some(mode.as_str()) {
                 if let Err(e) = profiles.set_active(mode) {
-                    eprintln!("battery-health-center: could not switch power mode to {mode}: {}", e.message());
+                    self.state.borrow_mut().power_error = Some(trf("Could not switch power mode to {mode}: {error}. The app will retry shortly.", &[("mode", system::profile_label(mode).into()), ("error", e.message().to_string())]));
+                    return; // Do not mark a failed choice as applied.
                 }
             }
         }
+        self.state.borrow_mut().power_error = None;
         *last = wanted;
+    }
+
+    pub fn retry_power_mode(&self) {
+        self.last_auto_attempt.set(0);
+        *self.last_auto_profile.borrow_mut() = None;
+        self.apply_auto_profile(); self.notify();
+    }
+
+    pub fn clear_power_error(&self) { self.state.borrow_mut().power_error = None; }
+
+    pub fn report_power_error(&self, error: String) {
+        self.state.borrow_mut().power_error = Some(error); self.notify();
+    }
+
+    pub fn refresh_diagnostics(self: &Rc<Self>) {
+        if self.state.borrow().diagnostics_busy { return; }
+        let batteries = self.state.borrow().batteries.clone();
+        let available = self.profiles.is_some();
+        self.state.borrow_mut().diagnostics_busy = true;
+        let weak = Rc::downgrade(self);
+        glib::spawn_future_local(async move {
+            let result = gtk::gio::spawn_blocking(move || crate::diagnostics::collect(&batteries, available)).await;
+            if let Some(ctrl) = weak.upgrade() {
+                {
+                    let mut st = ctrl.state.borrow_mut();
+                    st.diagnostics_busy = false;
+                    st.diagnostics = result.unwrap_or_else(|_| vec![crate::diagnostics::Finding {
+                        warning: true, title: tr("Diagnostics Unavailable").into(), detail: tr("The check did not finish. Try checking again.").into()
+                    }]);
+                    st.diagnostics_generation += 1;
+                }
+                ctrl.notify();
+            }
+        });
+        self.notify();
     }
 
     pub fn start_calibration(self: &Rc<Self>) {
@@ -413,7 +555,7 @@ impl Controller {
 
         let low = b.is_on_battery() && b.percent <= s.low_level as f64;
         if low && !a.low && s.notify_low && !calibrating {
-            let remaining = b.hours_remaining().map(|h| format!(" {}", trf("About {0} remaining.", &[("0", battery::format_hours(h).to_string())]))).unwrap_or_default();
+            let remaining = st.remaining_hours.map(|h| format!(" {}", trf("About {0} remaining.", &[("0", battery::format_hours(h).to_string())]))).unwrap_or_default();
             out.push(("low", trf("Battery at {0}%", &[("0", format!("{:.0}", b.percent))]), trf("Connect the charger soon.{remaining}", &[("remaining", remaining.to_string())])));
         }
         a.low = low || (a.low && b.is_on_battery());
@@ -464,4 +606,8 @@ impl Controller {
         kept.append(&mut current);
         *current = kept;
     }
+}
+
+impl Drop for Controller {
+    fn drop(&mut self) { self.flush_history(); }
 }

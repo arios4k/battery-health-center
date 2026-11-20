@@ -94,7 +94,7 @@ listing too: paste it into the Description box at <https://snapcraft.io/battery-
 Don't use `snapcraft upload-metadata`: it rewrites the listing's images.
 
 The listing's images are uploaded on the same page: the icon is `data/icons/hicolor/scalable/apps/io.github.BatteryHealthCenter.svg`,
-the screenshots come from `docs/screenshots/v0.5.0/`, and the banner is `docs/store/banner.png`, made by
+the screenshots come from `docs/screenshots/v0.7.0/`, and the banner is `docs/store/banner.png`, made by
 `scripts/make-store-banner.py` (needs Pillow, pycairo and librsvg) from the icon and those screenshots.
 Regenerate it when the app's look changes.
 

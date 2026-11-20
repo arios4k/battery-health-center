@@ -42,3 +42,12 @@ The details behind the app, for the curious and for contributors. Back to the [R
   icon directly in the About dialog, notifications and app-usage list, so an older installed
   icon does not override it.
 - **Accessibility.** The charge ring and the charts are exposed to screen readers as images with a name and a description (the latest value and what the colors mean), level bars announce their value, icon-only buttons have names, and decorative icons are hidden. Chart colors keep at least 3:1 contrast on light and dark cards, periods on the charger also get a rail along the bottom of the chart so they don't depend on color alone, and the dark-theme accent keeps 4.5:1 for white button text. High-contrast mode keeps the system palette.
+
+## History and charging additions in 0.7.0
+
+- Remaining-time estimates average up to two minutes of recent power readings, resetting after sleep or a state change.
+- App history checkpoints include the current hour and are saved every minute and on orderly shutdown. A restart resumes the saved bucket.
+- Daily health readings are keyed by battery identity; replacement histories and pre-0.7 legacy records stay separate. Identical replacements without usable serial numbers may not be distinguishable.
+- Power diagnostics inspect services, helper availability and saved/current threshold differences without changing them. Failed mode changes remain visible and automatic mode retries.
+- A dated full-charge plan uses local date/time and the existing lead time. Skip Next and Undo Skip affect one occurrence while keeping recurring rules. These controls require the matching updated helper.
+- Preferences provides independent retention (30 days battery, 7 days app, all health by default), selective clearing, and validated local `.bhc` backup/restore. Backups include the three history files and app names; they exclude preferences, schedules, limits and the helper unplug log. Restored data is subject to current retention. New app copies coordinate writes and reload restored data; older background copies must be closed before destructive operations.

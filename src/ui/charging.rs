@@ -88,6 +88,12 @@ fn learned_text(l: &Learned) -> String {
 pub struct ChargingPage {
     pub root: adw::BreakpointBin,
     limit_group: adw::PreferencesGroup,
+    exceptions_group: adw::PreferencesGroup,
+    once_row: adw::ActionRow,
+    once_button: gtk::Button,
+    cancel_once: gtk::Button,
+    skip_row: adw::ActionRow,
+    skip_button: gtk::Button,
     active_limit: adw::ActionRow,
     next_charge: adw::ActionRow,
     override_status: adw::ActionRow,
@@ -230,6 +236,19 @@ impl ChargingPage {
         schedule_group.add_css_class("workspace-card");
         root.add(&schedule_group);
 
+        let exceptions_group = adw::PreferencesGroup::builder().title(tr("One-Off Charging Plans"))
+            .description(tr("Use a local date and time for a single full charge, or skip one upcoming charge. Recurring rules stay saved."))
+            .css_classes(["workspace-card"]).build();
+        let once_row = adw::ActionRow::builder().title(tr("Ready By Once")).build();
+        let once_button = gtk::Button::builder().label(tr("Plan a Full Charge…")).valign(gtk::Align::Center).build();
+        let cancel_once = gtk::Button::builder().label(tr("Cancel Plan")).valign(gtk::Align::Center).visible(false).build();
+        once_row.add_suffix(&once_button); once_row.add_suffix(&cancel_once);
+        let skip_row = adw::ActionRow::builder().title(tr("Skip One Charge")).build();
+        let skip_button = gtk::Button::builder().label(tr("Skip Next Charge")).valign(gtk::Align::Center).build();
+        skip_row.add_suffix(&skip_button);
+        exceptions_group.add(&once_row); exceptions_group.add(&skip_row);
+        root.add(&exceptions_group);
+
         let unsupported = adw::PreferencesGroup::builder().title(tr("Charge Limit")).visible(false).build();
         let row = adw::ActionRow::builder()
             .title(tr("Not supported on this laptop"))
@@ -262,6 +281,12 @@ impl ChargingPage {
         let page = Rc::new(ChargingPage {
             root: root.root,
             limit_group,
+            exceptions_group,
+            once_row,
+            once_button,
+            cancel_once,
+            skip_row,
+            skip_button,
             active_limit,
             next_charge,
             override_status,
@@ -302,6 +327,19 @@ impl ChargingPage {
     }
 
     fn connect_signals(self: &Rc<Self>) {
+        let weak = Rc::downgrade(self);
+        self.once_button.connect_clicked(move |_| { if let Some(page) = weak.upgrade() { page.ask_for_one_off(); } });
+        let weak = Rc::downgrade(self);
+        self.cancel_once.connect_clicked(move |_| { if let Some(page) = weak.upgrade() {
+            page.run_helper(vec![vec!["set-one-off".into(), "-".into()]], tr("One-off charging plan cancelled").into());
+        } });
+        let weak = Rc::downgrade(self);
+        self.skip_button.connect_clicked(move |_| { if let Some(page) = weak.upgrade() {
+            let plan = system::read_schedule();
+            let skipped = plan.skip_ready.is_some_and(|t| t + i64::from(schedule::GRACE_MIN) * 60 >= crate::history::now_unix());
+            let command = if skipped { "resume-next" } else { "skip-next" };
+            page.run_helper(vec![vec![command.into()]], if skipped { tr("Skipped charge restored") } else { tr("Next charge skipped") }.into());
+        } });
         let this = Rc::downgrade(self);
         self.enable.connect_active_notify(move |_| {
             if let Some(this) = this.upgrade() {
@@ -516,6 +554,45 @@ impl ChargingPage {
         dialog.present(Some(&self.root));
     }
 
+    fn ask_for_one_off(self: &Rc<Self>) {
+        let dialog = adw::AlertDialog::builder().heading(tr("Plan a Full Charge"))
+            .body(tr("Enter a local date as YYYY-MM-DD and a time as HH:MM. The saved charge limit returns after this charging window."))
+            .build();
+        let group = adw::PreferencesGroup::new();
+        let date = adw::EntryRow::builder().title(tr("Date (YYYY-MM-DD)")).build();
+        let tomorrow = glib::DateTime::now_local().and_then(|d| d.add_days(1)).and_then(|d| d.format("%Y-%m-%d")).map(|d| d.to_string()).unwrap_or_default();
+        date.set_text(&tomorrow);
+        let time = adw::EntryRow::builder().title(tr("Time (HH:MM)")).text("08:00").build();
+        group.add(&date); group.add(&time);
+        let hint = gtk::Label::builder().label(tr("Use a valid local date and time at least one minute ahead and within the next year."))
+            .wrap(true).xalign(0.0).css_classes(["error"]).visible(false).margin_top(8).build();
+        group.add(&hint);
+        dialog.set_extra_child(Some(&group));
+        dialog.add_responses(&[("cancel", tr("Cancel")), ("plan", tr("Save One-Off Plan"))]);
+        dialog.set_response_appearance("plan", adw::ResponseAppearance::Suggested);
+        dialog.set_default_response(Some("plan")); dialog.set_close_response("cancel");
+        let validate: Rc<dyn Fn()> = {
+            let (date, time, hint, dialog) = (date.clone(), time.clone(), hint.clone(), dialog.downgrade());
+            Rc::new(move || {
+                let now = crate::history::now_unix();
+                let valid = Schedule::local_ready(date.text().as_str(), time.text().as_str()).is_some_and(|t| t > now + 60 && t <= now + 366 * 86_400);
+                hint.set_visible(!valid);
+                if let Some(dialog) = dialog.upgrade() { dialog.set_response_enabled("plan", valid); }
+            })
+        };
+        for field in [&date, &time] { let check = validate.clone(); field.connect_changed(move |_| check()); }
+        validate();
+        let weak = Rc::downgrade(self);
+        dialog.connect_response(None, move |_, response| {
+            if response == "plan" {
+                if let (Some(page), Some(ready)) = (weak.upgrade(), Schedule::local_ready(date.text().as_str(), time.text().as_str())) {
+                    page.run_helper(vec![vec!["set-one-off".into(), ready.to_string()]], tr("One-off charging plan saved").into());
+                }
+            }
+        });
+        dialog.present(Some(&self.root));
+    }
+
     fn save_plan(self: &Rc<Self>) {
         let plan = self.plan.borrow().clone();
         let mut args: Vec<String> = vec!["set-schedule".into(), u8::from(plan.optimized).to_string(), plan.lead_min.to_string()];
@@ -578,6 +655,9 @@ impl ChargingPage {
             return;
         }
         self.apply.set_sensitive(false);
+        self.once_button.set_sensitive(false);
+        self.cancel_once.set_sensitive(false);
+        self.skip_button.set_sensitive(false);
         self.save_schedule.set_sensitive(false);
         let this = self.clone();
         glib::spawn_future_local(async move {
@@ -697,6 +777,16 @@ impl ChargingPage {
 
         // The schedule: load what is saved, unless you are in the middle of editing.
         let saved = system::read_schedule();
+        // Exceptions are saved independently; preserve pending recurring-rule edits
+        // while synchronizing dated plans and skip/undo state.
+        {
+            let mut plan = self.plan.borrow_mut();
+            plan.one_off = saved.one_off;
+            plan.skip_ready = saved.skip_ready;
+            let mut previous = self.saved_plan.borrow_mut();
+            previous.one_off = saved.one_off;
+            previous.skip_ready = saved.skip_ready;
+        }
         let editing = *self.plan.borrow() != *self.saved_plan.borrow();
         if !self.schedule_loaded.get() || (!editing && saved != *self.saved_plan.borrow()) {
             self.schedule_loaded.set(true);
@@ -708,6 +798,18 @@ impl ChargingPage {
             self.save_schedule.set_sensitive(false);
         }
         self.schedule_group.set_visible(supported);
+        self.exceptions_group.set_visible(supported);
+        let now = crate::history::now_unix();
+        let display_time = |ts| glib::DateTime::from_unix_local(ts).and_then(|d| d.format("%x %H:%M")).map(|d| d.to_string()).unwrap_or_default();
+        let once = saved.one_off.filter(|t| *t + i64::from(schedule::GRACE_MIN) * 60 >= now);
+        self.once_row.set_subtitle(&once.map(display_time).unwrap_or_else(|| tr("No one-off charging plan").into()));
+        self.cancel_once.set_visible(once.is_some());
+        self.once_button.set_sensitive(system::has_saved_limit() && !self.busy.get());
+        self.cancel_once.set_sensitive(!self.busy.get());
+        let skipped = saved.skip_ready.filter(|t| *t + i64::from(schedule::GRACE_MIN) * 60 >= now);
+        self.skip_row.set_subtitle(&skipped.map(|t| trf("Skipped: {time}", &[("time", display_time(t))])).unwrap_or_else(|| tr("Skip only the next ready-by time; later charges continue normally.").into()));
+        self.skip_button.set_label(if skipped.is_some() { tr("Undo Skip") } else { tr("Skip Next Charge") });
+        self.skip_button.set_sensitive(!self.busy.get() && (skipped.is_some() || schedule::next_ready(&saved, &system::read_learned(), now).is_some()));
         let has_limit = system::has_saved_limit();
         self.optimized.set_sensitive(has_limit);
         self.lead.set_sensitive(has_limit);

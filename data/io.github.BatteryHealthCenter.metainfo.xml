@@ -53,6 +53,15 @@
   </supports>
   <content_rating type="oars-1.1"/>
   <releases>
+    <release version="0.7.0" date="2026-11-19">
+      <description><p>More reliable estimates and history, with new charging and data controls.</p><ul>
+        <li>Runtime estimates use recent readings; app history is saved every minute and on shutdown.</li>
+        <li>Health history is separated by battery, including archived and legacy records.</li>
+        <li>Read-only power diagnostics explain conflicts and failed power-mode changes.</li>
+        <li>Plan a dated full charge, or skip and undo the next scheduled charge.</li>
+        <li>Choose history retention, clear selected categories, and back up or restore history locally.</li>
+      </ul></description>
+    </release>
     <release version="0.6.6" date="2026-11-14">
       <description><p>Battery Health Center is back on the Snap Store. Nothing changes for the apt and Fedora packages.</p></description>
     </release>
